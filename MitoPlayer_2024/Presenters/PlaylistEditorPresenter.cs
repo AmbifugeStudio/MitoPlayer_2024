@@ -1,4 +1,5 @@
-﻿using MitoPlayer_2024._Repositories;
+﻿using MitoPlayer_2024.Dao;
+using MitoPlayer_2024.Helpers;
 using MitoPlayer_2024.Model;
 using MitoPlayer_2024.Models;
 using MitoPlayer_2024.Views;
@@ -17,28 +18,31 @@ namespace MitoPlayer_2024.Presenters
     {
         private IPlaylistEditorView playlistEditorView;
         private IPlaylistDao playlistDao;
-        private PlaylistModel playlistModel;
+        private ISettingDao settingDao;
+        private Playlist playlistModel;
         private bool isEditMode = false;
 
-        public PlaylistModel newPlaylist;
+        public Playlist newPlaylist;
 
-        public PlaylistEditorPresenter(IPlaylistEditorView view, IPlaylistDao playlistDao)
+        public PlaylistEditorPresenter(IPlaylistEditorView view, IPlaylistDao playlistDao, ISettingDao settingDao)
         {
             this.playlistEditorView = view;
             this.playlistDao = playlistDao;
+            this.settingDao = settingDao;
             this.isEditMode = false;
 
-            int number = Convert.ToInt32(ConfigurationManager.AppSettings["LastGeneratedPlaylistId"]);
+            int number = this.settingDao.GetIntegerSettingByName(Settings.LastGeneratedPlaylistId.ToString());
 
             ((PlaylistEditorView)this.playlistEditorView).SetPlaylistName("New Playlist "+ number.ToString());
             
             number = number + 1;
-            ConfigurationManager.AppSettings["LastGeneratedPlaylistId"] = number.ToString();
+
+            this.settingDao.SetIntegerSetting(Settings.LastGeneratedPlaylistId.ToString(), number);
 
             this.playlistEditorView.CreateOrEditPlaylist += CreateOrEditPlaylist;
         }
 
-        public PlaylistEditorPresenter(IPlaylistEditorView view, IPlaylistDao playlistDao, PlaylistModel playlistModel)
+        public PlaylistEditorPresenter(IPlaylistEditorView view, IPlaylistDao playlistDao, Playlist playlistModel)
         {
             this.playlistEditorView = view;
             this.playlistDao = playlistDao;
@@ -63,7 +67,7 @@ namespace MitoPlayer_2024.Presenters
                     }
                     else
                     {
-                        PlaylistModel playlist = this.playlistDao.GetPlaylistByName(e.StringField1);
+                        Playlist playlist = this.playlistDao.GetPlaylistByName(e.StringField1);
                         if(playlist != null)
                         {
                             MessageBox.Show("Playlist name already exists!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -93,7 +97,7 @@ namespace MitoPlayer_2024.Presenters
             {
                 if (!String.IsNullOrEmpty(e.StringField1))
                 {
-                    List<PlaylistModel> playlistList = this.playlistDao.GetAllPlaylist();
+                    List<Playlist> playlistList = this.playlistDao.GetAllPlaylist();
                     if (playlistList != null && playlistList.Count > 0)
                     {
                         if (playlistList.Exists(x => x.Name.Equals(e.StringField1)))
@@ -104,7 +108,7 @@ namespace MitoPlayer_2024.Presenters
                         {
                             try
                             {
-                                PlaylistModel playlist = new PlaylistModel();
+                                Playlist playlist = new Playlist();
                                 playlist.Id = this.GetNewPlaylistId();
                                 playlist.Name = e.StringField1;
                                 playlist.OrderInList = playlistList.Count;
@@ -123,7 +127,7 @@ namespace MitoPlayer_2024.Presenters
                     {
                         try
                         {
-                            PlaylistModel playlist = new PlaylistModel();
+                            Playlist playlist = new Playlist();
                             playlist.Id = this.GetNewPlaylistId();
                             playlist.Name = e.StringField1;
                             playlist.OrderInList = 0;

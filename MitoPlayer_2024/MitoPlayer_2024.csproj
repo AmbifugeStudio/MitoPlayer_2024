@@ -132,11 +132,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dao\SettingDao.cs" />
+    <Compile Include="Helpers\Enums.cs" />
     <Compile Include="Helpers\ListEventArgs.cs" />
-    <Compile Include="Helpers\UserSettings.cs" />
     <Compile Include="Models\IPlaylistDao.cs" />
+    <Compile Include="Models\ISettingDao.cs" />
     <Compile Include="Models\ITrackDao.cs" />
-    <Compile Include="Models\PlaylistModel.cs" />
+    <Compile Include="Models\Playlist.cs" />
+    <Compile Include="Models\Setting.cs" />
     <Compile Include="Presenters\PlaylistEditorPresenter.cs" />
     <Compile Include="Presenters\PlaylistPresenter.cs" />
     <Compile Include="Views\IPlaylistEditorView.cs" />
@@ -147,7 +150,7 @@
     <Compile Include="Views\MainView.Designer.cs">
       <DependentUpon>MainView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Models\TrackModel.cs" />
+    <Compile Include="Models\Track.cs" />
     <Compile Include="Presenters\MainPresenter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -164,9 +167,9 @@
     <Compile Include="Views\PlaylistView.Designer.cs">
       <DependentUpon>PlaylistView.cs</DependentUpon>
     </Compile>
-    <Compile Include="_Repositories\BaseDao.cs" />
-    <Compile Include="_Repositories\PlaylistDao.cs" />
-    <Compile Include="_Repositories\TrackDao.cs" />
+    <Compile Include="Dao\BaseDao.cs" />
+    <Compile Include="Dao\PlaylistDao.cs" />
+    <Compile Include="Dao\TrackDao.cs" />
     <EmbeddedResource Include="Views\MainView.resx">
       <DependentUpon>MainView.cs</DependentUpon>
     </EmbeddedResource>

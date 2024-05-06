@@ -21,7 +21,8 @@ namespace MitoPlayer_2024.Helpers
         public int ColumnIndex { get; set; }
 
         public String StringField1 { get; set; }
-        public PlaylistModel Playlist { get; set; }
+        public int IntegerField1 { get; set; }
+        public Playlist Playlist { get; set; }
     }
    
 }

@@ -14,8 +14,8 @@ namespace MitoPlayer_2024.Views
     public interface IPlaylistView
     {
         //Properties - Fields
-        List<PlaylistModel> PlaylistList { get; set; }
-        List<TrackModel> TrackList { get; set; }
+        List<Playlist> PlaylistList { get; set; }
+        List<Track> TrackList { get; set; }
         bool IsEdit { get; set; }
         bool IsSuccessful { get; set; }
         string Message { get; set; }
@@ -38,6 +38,8 @@ namespace MitoPlayer_2024.Views
         event EventHandler<ListEventArgs> DeletePlaylist;
         event EventHandler<ListEventArgs> LoadPlaylist;
 
+        event EventHandler<ListEventArgs> ChangeVolume;
+
 
         /* event EventHandler CreatePlaylist;
          event EventHandler RenamePlaylist;
@@ -51,6 +53,8 @@ namespace MitoPlayer_2024.Views
         void SetPlaylistListBindingSource(BindingSource playlistList);
         void SetTrackListBindingSource(BindingSource trackList);
         void SetSelectedTrackListBindingSource(BindingSource selectedTrackList);
+
+        void SetVolume(int volume);
         void Show();//Optional
     }
 }

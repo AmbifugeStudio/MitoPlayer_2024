@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.IO;
@@ -31,8 +32,8 @@ namespace MitoPlayer_2024.Views
         private string message;
         private bool isSuccessful;
         private bool isEdit;
-        private List<PlaylistModel> playlistList;
-        private List<TrackModel> trackList;
+        private List<Playlist> playlistList;
+        private List<Track> trackList;
 
 
         private int lastTrackIndex;
@@ -52,15 +53,19 @@ namespace MitoPlayer_2024.Views
             lastPlayedTrackIndex = -1;
             isPaused = false;
 
-            trackVolume.Value = 50;
-            lblVolume.Text = "50%";
+            
+        }
+        public void SetVolume(int volume)
+        {
+            trackVolume.Value = volume;
+            lblVolume.Text = volume.ToString() + "%";
         }
         //Properties
         public bool IsEdit { get { return isEdit; } set { isEdit = value; } }
         public bool IsSuccessful { get { return isSuccessful; } set { isSuccessful = value; } }
         public string Message { get { return message; } set { message = value; } }
-        public List<PlaylistModel> PlaylistList { get { return playlistList; } set { playlistList = value; } }
-        public List<TrackModel> TrackList { get { return trackList; } set { trackList = value; } }
+        public List<Playlist> PlaylistList { get { return playlistList; } set { playlistList = value; } }
+        public List<Track> TrackList { get { return trackList; } set { trackList = value; } }
 
         //Events
         public event EventHandler OpenFiles;
@@ -75,6 +80,8 @@ namespace MitoPlayer_2024.Views
         public event EventHandler<ListEventArgs> DeleteRows;
         public event EventHandler<ListEventArgs> OrderTableByColumn;
         public event EventHandler<ListEventArgs> DragAndDrop;
+
+        public event EventHandler<ListEventArgs> ChangeVolume;
 
         
         public event EventHandler RenamePlaylist;
@@ -437,11 +444,11 @@ namespace MitoPlayer_2024.Views
                         lastTrackIndex = dgvTrackList.Rows.IndexOf(dgvTrackList.SelectedRows[0]);
                     }
                     else
-                    {
+                    {/*
                         if (lastTrackIndex >= dgvTrackList.Rows.Count)
                         {
                             lastTrackIndex = dgvTrackList.Rows.Count;
-                        }
+                        }*/
                     }
                 }
             }
@@ -457,10 +464,10 @@ namespace MitoPlayer_2024.Views
                         }
                         else
                         {
-                            if (lastTrackIndex >= dgvTrackList.Rows.Count)
+                           /* if (lastTrackIndex >= dgvTrackList.Rows.Count)
                             {
                                 lastTrackIndex = dgvTrackList.Rows.Count - 1;
-                            }
+                            }*/
                         }
                     }
                     else
@@ -471,10 +478,10 @@ namespace MitoPlayer_2024.Views
                         }
                         else
                         {
-                            if (lastTrackIndex >= dgvTrackList.Rows.Count)
+                           /* if (lastTrackIndex >= dgvTrackList.Rows.Count)
                             {
                                 lastTrackIndex = dgvTrackList.Rows.Count;
-                            }
+                            }*/
                         }
                     }
                 }
@@ -544,8 +551,10 @@ namespace MitoPlayer_2024.Views
         //VOLUME
         private void trackVolume_Scroll(object sender, EventArgs e)
         {
-            mediaPlayer.settings.volume = trackVolume.Value;
             lblVolume.Text = trackVolume.Value.ToString() + "%";
+            ListEventArgs args = new ListEventArgs();
+            args.IntegerField1 = trackVolume.Value;
+            ChangeVolume?.Invoke(this, args);
         }
 
         //PROGRESS BAR
@@ -1181,5 +1190,7 @@ namespace MitoPlayer_2024.Views
                 }
             }
         }
+
+  
     }
 }

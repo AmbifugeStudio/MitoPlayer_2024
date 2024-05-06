@@ -14,11 +14,10 @@ using System.Windows.Input;
 using MitoPlayer_2024.Presenters;
 using System.Xml.Linq;
 
-namespace MitoPlayer_2024._Repositories
+namespace MitoPlayer_2024.Dao
 {
     public class PlaylistDao : BaseDao, IPlaylistDao
     {
-        //Constructor
         public PlaylistDao(string connectionString)
         {
             this.connectionString = connectionString;
@@ -54,9 +53,9 @@ namespace MitoPlayer_2024._Repositories
         /*
          * az összes playlist lekérése
          */
-        public List<PlaylistModel> GetAllPlaylist()
+        public List<Playlist> GetAllPlaylist()
         {
-            List<PlaylistModel> playListList = new List<PlaylistModel>();
+            List<Playlist> playListList = new List<Playlist>();
 
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
@@ -69,7 +68,7 @@ namespace MitoPlayer_2024._Repositories
                 {
                     while (reader.Read())
                     {
-                        var playlistModel = new PlaylistModel();
+                        var playlistModel = new Playlist();
                         playlistModel.Id = (int)reader[0];
                         playlistModel.Name = reader[1].ToString();
                         playlistModel.OrderInList = (int)reader[2];
@@ -84,7 +83,7 @@ namespace MitoPlayer_2024._Repositories
         /*
          * üres playlist létrehozása
          */
-        public void CreatePlaylist(PlaylistModel playlistModel)
+        public void CreatePlaylist(Playlist playlistModel)
         {
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
@@ -112,9 +111,9 @@ namespace MitoPlayer_2024._Repositories
         /*
          * a playlist-hez tartozó számok lekérése
          */
-        public List<TrackModel> LoadPlaylist(PlaylistModel playlistModel)
+        public List<Track> LoadPlaylist(Playlist playlistModel)
         {
-            List<TrackModel> trackList = new List<TrackModel>();
+            List<Track> trackList = new List<Track>();
 
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
@@ -151,7 +150,7 @@ namespace MitoPlayer_2024._Repositories
                         var trackLength = (int)reader[7];
                         var idInPlaylist = (int)reader[8];
 
-                        TrackModel track = new TrackModel();
+                        Track track = new Track();
                         track.Id = trackId;
                         track.Path = trackPath;
                         track.FileName = trackFileName;
@@ -226,9 +225,9 @@ namespace MitoPlayer_2024._Repositories
             }
         }
 
-        public PlaylistModel GetPlaylistByName(String playlistName)
+        public Playlist GetPlaylistByName(String playlistName)
         {
-            PlaylistModel playlistModel = null;
+            Playlist playlistModel = null;
 
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
@@ -242,7 +241,7 @@ namespace MitoPlayer_2024._Repositories
                 {
                     while (reader.Read())
                     {
-                        playlistModel = new PlaylistModel();
+                        playlistModel = new Playlist();
                         playlistModel.Id = (int)reader[0];
                         playlistModel.Name = reader[1].ToString();
                         playlistModel.OrderInList = (int)reader[2];
@@ -253,7 +252,7 @@ namespace MitoPlayer_2024._Repositories
             return playlistModel;
         }
 
-        public void UpdatePlaylist(PlaylistModel playlistModel)
+        public void UpdatePlaylist(Playlist playlistModel)
         {
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
@@ -279,7 +278,7 @@ namespace MitoPlayer_2024._Repositories
             }
         }
 
-        public void DeletePlaylist(PlaylistModel playlistModel)
+        public void DeletePlaylist(Playlist playlistModel)
         {
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
@@ -303,7 +302,7 @@ namespace MitoPlayer_2024._Repositories
             DeleteTracksFromPlaylist(playlistModel);
         }
 
-        public void DeleteTracksFromPlaylist(PlaylistModel playlistModel)
+        public void DeleteTracksFromPlaylist(Playlist playlistModel)
         {
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
@@ -324,96 +323,6 @@ namespace MitoPlayer_2024._Repositories
                 connection.Close();
             }
         }
-
-
-
-        /*
-        public int GetPlaylistContentIdByPlaylistAndTracklist(int playlistId, int trackId)
-        {
-            int playlistContentId = -1;
-
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
-            {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = "SELECT Id FROM PlaylistContent WHERE PlaylistId = @PlaylistId and TrackId = @TrackId ";
-                command.Parameters.Add("@PlaylistId", MySqlDbType.Int32).Value = playlistId;
-                command.Parameters.Add("@TrackId", MySqlDbType.Int32).Value = trackId;
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        playlistContentId = (int)reader[0];
-                    }
-                }
-            }
-            return playlistContentId;
-
-        }
-
-        //Methods
-
-
-
-        public void UpdatePlaylist(PlaylistModel playlistModel)
-        {
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
-            {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"UPDATE Playlist 
-                                        SET Name=@Name, PlaylistOrder = @PlaylistOrder,IsCurrent= @IsCurrent 
-                                        WHERE Id = @Id";
-                command.Parameters.Add("@Id", MySqlDbType.Int32).Value = playlistModel.Id;
-                command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = playlistModel.Name;
-                command.Parameters.Add("@PlaylistOrder", MySqlDbType.VarChar).Value = playlistModel.PlaylistOrder;
-                command.Parameters.Add("@IsCurrent", MySqlDbType.Int32).Value = playlistModel.IsCurrent;
-                try
-                {
-                    command.ExecuteNonQuery();
-                    MessageBox.Show("Playlist updated succesfully.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                catch (MySqlException ex)
-                {
-                    MessageBox.Show("Playlist is not updated. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                connection.Close();
-            }
-        }
-        
-
-        public void AddTracksToPlaylist(PlaylistModel playlistModel)
-        {
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
-            {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                for (int i = 0; i < playlistModel.TrackList.Count; i++)
-                {
-                    command.CommandText = "INSERT INTO PlaylistContent values (@PlaylistId, @TrackId)";
-                    command.Parameters.Add("@PlaylistId", MySqlDbType.Int32).Value = playlistModel.Id;
-                    command.Parameters.Add("@TrackId", MySqlDbType.Int32).Value = playlistModel.TrackList[i].Id;
-                    try
-                    {
-                        command.ExecuteNonQuery();
-                        MessageBox.Show("Track inserted succesfully.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                    catch (MySqlException ex)
-                    {
-                        MessageBox.Show("Track is not inserted. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
-                connection.Close();
-            }
-        }
-        */
-
 
     }
 }

@@ -1,5 +1,5 @@
 ﻿using AxWMPLib;
-using MitoPlayer_2024._Repositories;
+using MitoPlayer_2024.Dao;
 using MitoPlayer_2024.Helpers;
 using MitoPlayer_2024.Model;
 using MitoPlayer_2024.Models;
@@ -42,6 +42,7 @@ namespace MitoPlayer_2024.Presenters
         private IPlaylistView playlistView;
         private IPlaylistDao playlistDao;
         private ITrackDao trackDao;
+        private ISettingDao settingDao;
 
         private BindingSource playlistListBindingSource;
         private BindingSource trackListBindingSource;
@@ -51,8 +52,8 @@ namespace MitoPlayer_2024.Presenters
         private DataTable trackListTable;
         private DataTable selectedTrackListTable;
 
-        private List<PlaylistModel> playlistList;
-        private List<TrackModel> tracklist;
+        private List<Playlist> playlistList;
+        private List<Track> tracklist;
 
         private string[] scannedFiles;
         private int[] columnOrder;
@@ -61,15 +62,21 @@ namespace MitoPlayer_2024.Presenters
 
         private int CurrentPlaylistId;
 
-        //private IPlaylistEditorView playlistEditorView;
-
         //CONSTRUCTOR
-        public PlaylistPresenter(IPlaylistView view, IPlaylistDao playlistDao, ITrackDao trackDao)
+        public PlaylistPresenter(IPlaylistView view, IPlaylistDao playlistDao, ITrackDao trackDao, ISettingDao settingDao)
         {
             this.playlistView = view;
             this.playlistDao = playlistDao;
             this.trackDao = trackDao;
+            this.settingDao = settingDao;
             this.columnOrder = new int[8] {-1,-1,-1,-1,-1,-1,-1,-1};
+
+            int volume = this.settingDao.GetIntegerSettingByName(Settings.Volume.ToString());
+            if(volume == -1)
+            {
+                volume = 50;
+            }
+            this.playlistView.SetVolume(volume);
 
 
             //TABLE BINDING SOURCES
@@ -132,6 +139,8 @@ namespace MitoPlayer_2024.Presenters
             this.playlistView.DeletePlaylist += DeletePlaylist;
             this.playlistView.LoadPlaylist += LoadPlaylist;
 
+            this.playlistView.ChangeVolume += ChangeVolume;
+
             //LOAD ALL PLAYLIST
             this.LoadAllPlaylist();
 
@@ -139,12 +148,13 @@ namespace MitoPlayer_2024.Presenters
             this.playlistView.Show();
         }
 
-        
+        private void ChangeVolume(object sender, ListEventArgs e)
+        {
+            this.settingDao.SetIntegerSetting(Settings.Volume.ToString(), e.IntegerField1);
+        }
 
 
         //METHODS
-
-
 
         //LOAD ALL PLAYLIST
 
@@ -161,23 +171,28 @@ namespace MitoPlayer_2024.Presenters
 
             if(playlistList == null || playlistList.Count() <= 0)
             {
-                PlaylistModel playlist = new PlaylistModel();
+                Playlist playlist = new Playlist();
                 playlist.Id = this.GetNewPlaylistId();
-                playlist.Name = ConfigurationManager.AppSettings["DefaultPlaylistName"];
+                playlist.Name = this.settingDao.GetStringSettingByName(Settings.DefaultPlaylistName.ToString());
+
                 playlist.OrderInList = 0;
                 playlistList.Add(playlist);
                 CreatePlaylist(playlist);
 
                 this.CurrentPlaylistId = playlist.Id;
-                ConfigurationManager.AppSettings["CurrentPlaylistId"] = this.CurrentPlaylistId.ToString();
+                this.settingDao.SetIntegerSetting(Settings.CurrentPlaylistId.ToString(), this.CurrentPlaylistId);
 
                 LoadPlaylist(playlist);
             }
             else
             {
-                this.CurrentPlaylistId = int.Parse(ConfigurationManager.AppSettings["CurrentPlaylistId"]);
-
+                this.CurrentPlaylistId = this.settingDao.GetIntegerSettingByName(Settings.CurrentPlaylistId.ToString());
+                if(this.CurrentPlaylistId == -1)
+                {
+                    this.CurrentPlaylistId = 0;
+                }
                 LoadPlaylist(playlistList[this.CurrentPlaylistId]);
+
             }
 
             foreach (var playlist in playlistList)
@@ -192,10 +207,13 @@ namespace MitoPlayer_2024.Presenters
             this.playlistListBindingSource.DataSource = playlistListTable;
             this.playlistView.SetPlaylistListBindingSource(this.playlistListBindingSource);
         }
+
+       
+
         /*
          * létrehoz egy új üres playlist-et a megadott paraméterekkel
          */
-        private void CreatePlaylist(PlaylistModel model)
+        private void CreatePlaylist(Playlist model)
         {
             try
             {
@@ -211,9 +229,9 @@ namespace MitoPlayer_2024.Presenters
         /*
          * betölti a megadott playlist track-jeit
          */
-        private void LoadPlaylist(PlaylistModel playlist)
+        private void LoadPlaylist(Playlist playlist)
         {
-            List<TrackModel> trackList = playlistDao.LoadPlaylist(playlist);
+            List<Track> trackList = playlistDao.LoadPlaylist(playlist);
             if(trackList != null && trackList.Count > 0)
             {
                 LoadTrackList(trackList);
@@ -222,17 +240,17 @@ namespace MitoPlayer_2024.Presenters
 
         private void LoadPlaylist(object sender, ListEventArgs e)
         {
-            PlaylistModel playlistModel = this.playlistDao.GetPlaylistByName(e.StringField1);
+            Playlist playlistModel = this.playlistDao.GetPlaylistByName(e.StringField1);
             if (playlistModel != null)
             {
                 this.CurrentPlaylistId = playlistModel.Id;
-                ConfigurationManager.AppSettings["CurrentPlaylistId"] = this.CurrentPlaylistId.ToString();
+                this.settingDao.SetIntegerSetting(Settings.CurrentPlaylistId.ToString(), this.CurrentPlaylistId);
 
                 trackListTable.Rows.Clear();
 
-                List<TrackModel> trackList = playlistDao.LoadPlaylist(playlistModel);
+                List<Track> trackList = playlistDao.LoadPlaylist(playlistModel);
 
-                foreach (TrackModel track in trackList)
+                foreach (Track track in trackList)
                 {
                     String length = this.LengthToString(track.Length);
                     trackListTable.Rows.Add(track.Id, track.Album, track.Artist, track.Title, track.Year.ToString(), length, track.IsMissing, track.Path, track.FileName, track.IdInPlaylist);
@@ -295,11 +313,11 @@ namespace MitoPlayer_2024.Presenters
         /*
          * végig meg a playlist felvételein, átkonvertálja a hosszt sztringekké és hozzáadja a grid datatable-jéhez őket
          */
-        private void LoadTrackList(List<TrackModel> trackList)
+        private void LoadTrackList(List<Track> trackList)
         {
             if (trackList != null && trackList.Count > 0)
             {
-                foreach (TrackModel track in trackList)
+                foreach (Track track in trackList)
                 {
                     String length = this.LengthToString(track.Length);
                     trackListTable.Rows.Add(track.Id, track.Album, track.Artist, track.Title, track.Year.ToString(), length, track.IsMissing, track.Path, track.FileName, track.IdInPlaylist);
@@ -328,7 +346,8 @@ namespace MitoPlayer_2024.Presenters
             ofd.Filter = "Audio files (*.mp3,*.wav,*.flac)|*.mp3;*.wav;*.flac|Playlist files (*.m3u)|*.m3u";
 
             int filterIndex = 0;
-            filterIndex = int.Parse(ConfigurationManager.AppSettings["LastOpenFilesFilterIndex"]); 
+            filterIndex = this.settingDao.GetIntegerSettingByName(Settings.LastOpenFilesFilterIndex.ToString());
+
             ofd.FilterIndex = filterIndex;
 
             if (ofd.ShowDialog() == DialogResult.OK)
@@ -336,7 +355,7 @@ namespace MitoPlayer_2024.Presenters
                 this.ReadFiles(ofd.FileNames);
             }
 
-            ConfigurationManager.AppSettings["LastOpenFilesFilterIndex"] = ofd.FilterIndex.ToString(); 
+            this.settingDao.SetIntegerSetting(Settings.LastOpenFilesFilterIndex.ToString(), ofd.FilterIndex);
         }
         //OPEN DIRECTORY
         private void OpenDirectory(object sender, EventArgs e)
@@ -344,7 +363,7 @@ namespace MitoPlayer_2024.Presenters
             scannedFiles = null;
             using (var fbd = new FolderBrowserDialog())
             {
-                String path = ConfigurationManager.AppSettings["LastOpenDirectoryPath"];
+                String path = this.settingDao.GetStringSettingByName(Settings.LastOpenDirectoryPath.ToString());
                 if (System.IO.File.Exists(path))
                 {
                     fbd.SelectedPath = path;
@@ -356,7 +375,7 @@ namespace MitoPlayer_2024.Presenters
                     ScanDirectory(fbd.SelectedPath);
                     ReadFiles(scannedFiles);
                 }
-                ConfigurationManager.AppSettings["LastOpenDirectoryPath"] = fbd.SelectedPath;
+                this.settingDao.SetStringSetting(Settings.LastOpenDirectoryPath.ToString(), fbd.SelectedPath);
             }
            
         }
@@ -414,7 +433,7 @@ namespace MitoPlayer_2024.Presenters
         private void ReadFiles(string[] fileNames)
         {
             List<String> filePathList = new List<String>();
-            List<TrackModel> trList = new List<TrackModel>();
+            List<Track> trList = new List<Track>();
             if(fileNames != null && fileNames .Length > 0)
             {
                 foreach (String path in fileNames)
@@ -457,7 +476,7 @@ namespace MitoPlayer_2024.Presenters
 
                 foreach (string path in filePathList)
                 {
-                    TrackModel track = new TrackModel();
+                    Track track = new Track();
                     track.Path = path;
 
                     string fileName = path.Substring(path.LastIndexOf(@"\") + 1);
@@ -471,7 +490,7 @@ namespace MitoPlayer_2024.Presenters
                     }
                     else
                     {
-                        TrackModel trackFromDb = this.trackDao.GetTrackByPath(track.Path);
+                        Track trackFromDb = this.trackDao.GetTrackByPath(track.Path);
                         if (trackFromDb != null)
                         {
                             track = trackFromDb;
@@ -517,7 +536,7 @@ namespace MitoPlayer_2024.Presenters
                     track.IdInPlaylist = idInPlaylist;
 
                     int currentPlaylistIndex = 0;
-                    PlaylistModel pls = playlistList.Find(x => x.Id == this.CurrentPlaylistId);
+                    Playlist pls = playlistList.Find(x => x.Id == this.CurrentPlaylistId);
                     if (pls != null)
                     {
                         currentPlaylistIndex = pls.Id; 
@@ -682,24 +701,24 @@ namespace MitoPlayer_2024.Presenters
             int sortingId = 0;
 
             int currentPlaylistIndex = 0;
-            PlaylistModel pls = playlistList.Find(x => x.Id == this.CurrentPlaylistId);
+            Playlist pls = playlistList.Find(x => x.Id == this.CurrentPlaylistId);
             if (pls != null)
             {
                 currentPlaylistIndex = pls.Id;
             }
 
-            foreach (TrackModel track in this.tracklist)
+            foreach (Track track in this.tracklist)
             {
                 this.trackDao.AddTrackToPlaylist(GetNewPlaylistContentId(), playlistList[currentPlaylistIndex].Id, track.Id, sortingId++, track.IdInPlaylist);
             }
         }
-        private List<TrackModel> ConvertDataTableToList(DataTable dt)
+        private List<Track> ConvertDataTableToList(DataTable dt)
         {
-            List<TrackModel> trackList = new List<TrackModel>();
+            List<Track> trackList = new List<Track>();
 
             for (int i = 0; i < dt.Rows.Count; i++)
             {
-                TrackModel track = new TrackModel();
+                Track track = new Track();
                 track.Id = Convert.ToInt32(dt.Rows[i]["ID"]);
                 track.Album = dt.Rows[i]["Album"].ToString();
                 track.Artist = dt.Rows[i]["Artist"].ToString();
@@ -726,11 +745,11 @@ namespace MitoPlayer_2024.Presenters
             {
                 //ADD
                 PlaylistEditorView editorView = new PlaylistEditorView();
-                PlaylistEditorPresenter presenter = new PlaylistEditorPresenter(editorView, this.playlistDao);
+                PlaylistEditorPresenter presenter = new PlaylistEditorPresenter(editorView, this.playlistDao, this.settingDao);
 
                 if (editorView.ShowDialog((PlaylistView)this.playlistView) == DialogResult.OK)
                 {
-                    PlaylistModel newPlaylist = presenter.newPlaylist;
+                    Playlist newPlaylist = presenter.newPlaylist;
                     if(newPlaylist != null)
                     {
                        // playlistListTable.Rows.Add(newPlaylist.Id, newPlaylist.Name, );
@@ -748,7 +767,7 @@ namespace MitoPlayer_2024.Presenters
             else
             {
                 //EDIT
-                PlaylistModel playlistModel = this.playlistDao.GetPlaylistByName(e.StringField1);
+                Playlist playlistModel = this.playlistDao.GetPlaylistByName(e.StringField1);
                 if(playlistModel != null)
                 {
                     PlaylistEditorView editorView = new PlaylistEditorView();
@@ -776,10 +795,11 @@ namespace MitoPlayer_2024.Presenters
         {
             if (!String.IsNullOrEmpty(e.StringField1))
             {
-                PlaylistModel playlistModel = this.playlistDao.GetPlaylistByName(e.StringField1);
+                Playlist playlistModel = this.playlistDao.GetPlaylistByName(e.StringField1);
                 if (playlistModel != null)
                 {
-                    if (playlistModel.Name.Equals(ConfigurationManager.AppSettings["DefaultPlaylistName"]))
+                    String defaultPlaylistName = this.settingDao.GetStringSettingByName(Settings.DefaultPlaylistName.ToString());
+                    if (playlistModel.Name.Equals(defaultPlaylistName))
                     {
                         MessageBox.Show("Default playlist cannot be deleted!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }

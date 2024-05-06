@@ -11,31 +11,16 @@ namespace MitoPlayer_2024.Models
 {
     public interface IPlaylistDao
     {
-        List<PlaylistModel> GetAllPlaylist();
-        void CreatePlaylist(PlaylistModel playlistModel);
-        List<TrackModel> LoadPlaylist(PlaylistModel playlistModel);
+        List<Playlist> GetAllPlaylist();
+        void CreatePlaylist(Playlist playlistModel);
+        List<Track> LoadPlaylist(Playlist playlistModel);
         int GetLastObjectId(String tableName);
-
         void DeletePlaylistContent(int playlistId);
-
         bool ValidatePlaylistName(String playlistName);
-        PlaylistModel GetPlaylistByName(String playlistName);
-        void UpdatePlaylist(PlaylistModel playlistModel);
-        void DeletePlaylist(PlaylistModel playlistModel);
-        void DeleteTracksFromPlaylist(PlaylistModel playlistModel);
-
-        /*
-
-        int GetPlaylistContentIdByPlaylistAndTracklist(int playlistId, int trackId);
-
-        int GetLastPlaylistContentId();
-        TrackModel GetTrackByPath(String path);
-       
-        void UpdatePlaylist(PlaylistModel playlistModel);
-        void DeletePlaylist(PlaylistModel playlistModel);
-        void AddTracksToPlaylist(PlaylistModel playlistModel);
-        */
-
+        Playlist GetPlaylistByName(String playlistName);
+        void UpdatePlaylist(Playlist playlistModel);
+        void DeletePlaylist(Playlist playlistModel);
+        void DeleteTracksFromPlaylist(Playlist playlistModel);
 
     }
 }

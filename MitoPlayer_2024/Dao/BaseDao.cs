@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MitoPlayer_2024._Repositories
+namespace MitoPlayer_2024.Dao
 {
     public abstract class BaseDao
     {

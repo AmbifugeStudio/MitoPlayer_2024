@@ -1,4 +1,4 @@
-﻿using MitoPlayer_2024._Repositories;
+﻿using MitoPlayer_2024.Dao;
 using MitoPlayer_2024.Model;
 using MitoPlayer_2024.Models;
 using MitoPlayer_2024.Views;
@@ -52,7 +52,8 @@ namespace MitoPlayer_2024.Presenters
             this.view = view;
             IPlaylistDao playlistDao = new PlaylistDao(sqlConnectionString);
             ITrackDao trackDao = new TrackDao(sqlConnectionString);
-            new PlaylistPresenter(view, playlistDao, trackDao);
+            ISettingDao settingDao = new SettingDao(sqlConnectionString);
+            new PlaylistPresenter(view, playlistDao, trackDao, settingDao);
         }
 
         private void RemoveMissingTracks(object sender, EventArgs e)

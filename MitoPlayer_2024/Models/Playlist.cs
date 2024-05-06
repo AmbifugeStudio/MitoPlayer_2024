@@ -5,24 +5,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel;
 using MitoPlayer_2024.Model;
 
 namespace MitoPlayer_2024.Models
 {
-    public class PlaylistModel
+    public class Playlist
     {
         public int Id { get; set; }
         public string Name { get; set; }
         public int OrderInList { get; set; }
 
-        private List<TrackModel> trackList;
+        private List<Track> trackList;
 
-        public PlaylistModel()
+        public Playlist()
         {
         }
 
-        public PlaylistModel(int id, string name, int orderInList)
+        public Playlist(int id, string name, int orderInList)
         {
             this.Id = id;
             this.Name = name;

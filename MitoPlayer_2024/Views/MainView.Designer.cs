@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainView));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -67,24 +66,8 @@
             this.button1 = new System.Windows.Forms.Button();
             this.btnPlayer = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.trackVolume = new System.Windows.Forms.TrackBar();
-            this.pBar = new System.Windows.Forms.ProgressBar();
-            this.lblVolume = new System.Windows.Forms.Label();
-            this.lblTrackEnd = new System.Windows.Forms.Label();
-            this.lblTrackStart = new System.Windows.Forms.Label();
-            this.btnOpenDirectory = new System.Windows.Forms.Button();
-            this.btnOpen = new System.Windows.Forms.Button();
-            this.btnNext = new System.Windows.Forms.Button();
-            this.btnStop = new System.Windows.Forms.Button();
-            this.btnPause = new System.Windows.Forms.Button();
-            this.btnPrev = new System.Windows.Forms.Button();
-            this.btnPlay = new System.Windows.Forms.Button();
-            this.mediaPlayer = new AxWMPLib.AxWindowsMediaPlayer();
             this.menuStrip1.SuspendLayout();
             this.panel2.SuspendLayout();
-            this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackVolume)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.mediaPlayer)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -374,154 +357,11 @@
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.trackVolume);
-            this.panel1.Controls.Add(this.pBar);
-            this.panel1.Controls.Add(this.lblVolume);
-            this.panel1.Controls.Add(this.lblTrackEnd);
-            this.panel1.Controls.Add(this.lblTrackStart);
-            this.panel1.Controls.Add(this.btnOpenDirectory);
-            this.panel1.Controls.Add(this.btnOpen);
-            this.panel1.Controls.Add(this.btnNext);
-            this.panel1.Controls.Add(this.btnStop);
-            this.panel1.Controls.Add(this.btnPause);
-            this.panel1.Controls.Add(this.btnPrev);
-            this.panel1.Controls.Add(this.btnPlay);
-            this.panel1.Controls.Add(this.mediaPlayer);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(86, 24);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(1074, 53);
             this.panel1.TabIndex = 4;
-            // 
-            // trackVolume
-            // 
-            this.trackVolume.Location = new System.Drawing.Point(871, 5);
-            this.trackVolume.Maximum = 100;
-            this.trackVolume.Name = "trackVolume";
-            this.trackVolume.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.trackVolume.Size = new System.Drawing.Size(139, 45);
-            this.trackVolume.TabIndex = 22;
-            this.trackVolume.TickFrequency = 10;
-            // 
-            // pBar
-            // 
-            this.pBar.Location = new System.Drawing.Point(414, 14);
-            this.pBar.Name = "pBar";
-            this.pBar.Size = new System.Drawing.Size(365, 23);
-            this.pBar.Step = 1;
-            this.pBar.TabIndex = 21;
-            // 
-            // lblVolume
-            // 
-            this.lblVolume.AutoSize = true;
-            this.lblVolume.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.lblVolume.Location = new System.Drawing.Point(1016, 17);
-            this.lblVolume.Name = "lblVolume";
-            this.lblVolume.Size = new System.Drawing.Size(50, 20);
-            this.lblVolume.TabIndex = 18;
-            this.lblVolume.Text = "100%";
-            // 
-            // lblTrackEnd
-            // 
-            this.lblTrackEnd.AutoSize = true;
-            this.lblTrackEnd.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.lblTrackEnd.Location = new System.Drawing.Point(785, 14);
-            this.lblTrackEnd.Name = "lblTrackEnd";
-            this.lblTrackEnd.Size = new System.Drawing.Size(80, 24);
-            this.lblTrackEnd.TabIndex = 19;
-            this.lblTrackEnd.Text = "00:00:00";
-            // 
-            // lblTrackStart
-            // 
-            this.lblTrackStart.AutoSize = true;
-            this.lblTrackStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.lblTrackStart.Location = new System.Drawing.Point(328, 14);
-            this.lblTrackStart.Name = "lblTrackStart";
-            this.lblTrackStart.Size = new System.Drawing.Size(80, 24);
-            this.lblTrackStart.TabIndex = 20;
-            this.lblTrackStart.Text = "00:00:00";
-            // 
-            // btnOpenDirectory
-            // 
-            this.btnOpenDirectory.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.btnOpenDirectory.Location = new System.Drawing.Point(282, 7);
-            this.btnOpenDirectory.Name = "btnOpenDirectory";
-            this.btnOpenDirectory.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.btnOpenDirectory.Size = new System.Drawing.Size(40, 40);
-            this.btnOpenDirectory.TabIndex = 11;
-            this.btnOpenDirectory.Text = "🗁";
-            this.btnOpenDirectory.UseVisualStyleBackColor = true;
-            // 
-            // btnOpen
-            // 
-            this.btnOpen.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.btnOpen.Location = new System.Drawing.Point(236, 7);
-            this.btnOpen.Name = "btnOpen";
-            this.btnOpen.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.btnOpen.Size = new System.Drawing.Size(40, 40);
-            this.btnOpen.TabIndex = 12;
-            this.btnOpen.Text = "⏏";
-            this.btnOpen.UseVisualStyleBackColor = true;
-            // 
-            // btnNext
-            // 
-            this.btnNext.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.btnNext.Location = new System.Drawing.Point(190, 7);
-            this.btnNext.Name = "btnNext";
-            this.btnNext.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.btnNext.Size = new System.Drawing.Size(40, 40);
-            this.btnNext.TabIndex = 13;
-            this.btnNext.Text = "⏯️";
-            this.btnNext.UseVisualStyleBackColor = true;
-            // 
-            // btnStop
-            // 
-            this.btnStop.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.btnStop.Location = new System.Drawing.Point(6, 7);
-            this.btnStop.Name = "btnStop";
-            this.btnStop.Size = new System.Drawing.Size(40, 40);
-            this.btnStop.TabIndex = 14;
-            this.btnStop.Text = "⏹️";
-            this.btnStop.UseVisualStyleBackColor = true;
-            // 
-            // btnPause
-            // 
-            this.btnPause.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.btnPause.Location = new System.Drawing.Point(52, 7);
-            this.btnPause.Name = "btnPause";
-            this.btnPause.Size = new System.Drawing.Size(40, 40);
-            this.btnPause.TabIndex = 15;
-            this.btnPause.Text = "⏸";
-            this.btnPause.UseVisualStyleBackColor = true;
-            // 
-            // btnPrev
-            // 
-            this.btnPrev.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.btnPrev.Location = new System.Drawing.Point(144, 7);
-            this.btnPrev.Name = "btnPrev";
-            this.btnPrev.Size = new System.Drawing.Size(40, 40);
-            this.btnPrev.TabIndex = 16;
-            this.btnPrev.Text = "⏮";
-            this.btnPrev.UseVisualStyleBackColor = true;
-            // 
-            // btnPlay
-            // 
-            this.btnPlay.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.btnPlay.Location = new System.Drawing.Point(98, 7);
-            this.btnPlay.Name = "btnPlay";
-            this.btnPlay.Size = new System.Drawing.Size(40, 40);
-            this.btnPlay.TabIndex = 17;
-            this.btnPlay.Text = "▶";
-            this.btnPlay.UseVisualStyleBackColor = true;
-            // 
-            // mediaPlayer
-            // 
-            this.mediaPlayer.Enabled = true;
-            this.mediaPlayer.Location = new System.Drawing.Point(245, 27);
-            this.mediaPlayer.Name = "mediaPlayer";
-            this.mediaPlayer.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("mediaPlayer.OcxState")));
-            this.mediaPlayer.Size = new System.Drawing.Size(10, 10);
-            this.mediaPlayer.TabIndex = 23;
             // 
             // MainView
             // 
@@ -538,10 +378,6 @@
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.panel2.ResumeLayout(false);
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackVolume)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.mediaPlayer)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -587,19 +423,6 @@
         private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.TrackBar trackVolume;
-        private System.Windows.Forms.ProgressBar pBar;
-        private System.Windows.Forms.Label lblVolume;
-        private System.Windows.Forms.Label lblTrackEnd;
-        private System.Windows.Forms.Label lblTrackStart;
-        private System.Windows.Forms.Button btnOpenDirectory;
-        private System.Windows.Forms.Button btnOpen;
-        private System.Windows.Forms.Button btnNext;
-        private System.Windows.Forms.Button btnStop;
-        private System.Windows.Forms.Button btnPause;
-        private System.Windows.Forms.Button btnPrev;
-        private System.Windows.Forms.Button btnPlay;
-        private AxWMPLib.AxWindowsMediaPlayer mediaPlayer;
     }
 }
 
