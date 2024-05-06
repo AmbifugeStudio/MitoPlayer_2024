@@ -1,0 +1,42 @@
+﻿using MitoPlayer_2024._Repositories;
+using MitoPlayer_2024.Helpers;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Configuration;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Xml;
+using System.Xml.Linq;
+
+namespace MitoPlayer_2024.Views
+{
+    public partial class PlaylistEditorView : Form, IPlaylistEditorView
+    {
+        public event EventHandler<ListEventArgs> CreateOrEditPlaylist;
+
+        public PlaylistEditorView()
+        {
+            InitializeComponent();
+            this.txtPlaylistName.Focus();
+            this.CenterToScreen();
+        }
+
+        public void SetPlaylistName(String playlistName)
+        {
+            this.txtPlaylistName.Text = playlistName;
+        }
+
+        private void btnOk_Click(object sender, EventArgs e)
+        {
+            ListEventArgs args = new ListEventArgs();
+            args.StringField1 = txtPlaylistName.Text;
+            CreateOrEditPlaylist?.Invoke(this, args);
+        }
+
+    }
+}

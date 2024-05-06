@@ -1,0 +1,158 @@
+﻿using MitoPlayer_2024._Repositories;
+using MitoPlayer_2024.Model;
+using MitoPlayer_2024.Models;
+using MitoPlayer_2024.Views;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
+
+namespace MitoPlayer_2024.Presenters
+{
+    public class PlaylistEditorPresenter
+    {
+        private IPlaylistEditorView playlistEditorView;
+        private IPlaylistDao playlistDao;
+        private PlaylistModel playlistModel;
+        private bool isEditMode = false;
+
+        public PlaylistModel newPlaylist;
+
+        public PlaylistEditorPresenter(IPlaylistEditorView view, IPlaylistDao playlistDao)
+        {
+            this.playlistEditorView = view;
+            this.playlistDao = playlistDao;
+            this.isEditMode = false;
+
+            int number = Convert.ToInt32(ConfigurationManager.AppSettings["LastGeneratedPlaylistId"]);
+
+            ((PlaylistEditorView)this.playlistEditorView).SetPlaylistName("New Playlist "+ number.ToString());
+            
+            number = number + 1;
+            ConfigurationManager.AppSettings["LastGeneratedPlaylistId"] = number.ToString();
+
+            this.playlistEditorView.CreateOrEditPlaylist += CreateOrEditPlaylist;
+        }
+
+        public PlaylistEditorPresenter(IPlaylistEditorView view, IPlaylistDao playlistDao, PlaylistModel playlistModel)
+        {
+            this.playlistEditorView = view;
+            this.playlistDao = playlistDao;
+            this.playlistModel = playlistModel;
+            this.isEditMode = true;
+
+            ((PlaylistEditorView)this.playlistEditorView).SetPlaylistName(playlistModel.Name);
+            
+            this.playlistEditorView.CreateOrEditPlaylist += CreateOrEditPlaylist;
+        }
+
+        private void CreateOrEditPlaylist(object sender, Helpers.ListEventArgs e)
+        {
+            ((PlaylistEditorView)this.playlistEditorView).DialogResult = DialogResult.None;
+
+            if (this.isEditMode)
+            {
+                if (!String.IsNullOrEmpty(e.StringField1))
+                {
+                    if (e.StringField1.Equals(playlistModel.Name)){
+                        ((PlaylistEditorView)this.playlistEditorView).DialogResult = DialogResult.OK;
+                    }
+                    else
+                    {
+                        PlaylistModel playlist = this.playlistDao.GetPlaylistByName(e.StringField1);
+                        if(playlist != null)
+                        {
+                            MessageBox.Show("Playlist name already exists!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        else
+                        {
+                            try
+                            {
+                                this.playlistModel.Name = e.StringField1;
+                                this.playlistDao.UpdatePlaylist(this.playlistModel);
+                                ((PlaylistEditorView)this.playlistEditorView).DialogResult = DialogResult.OK;
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show("Playlist hasn't been updated!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+
+                        }
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Playlist name must be entered!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            else
+            {
+                if (!String.IsNullOrEmpty(e.StringField1))
+                {
+                    List<PlaylistModel> playlistList = this.playlistDao.GetAllPlaylist();
+                    if (playlistList != null && playlistList.Count > 0)
+                    {
+                        if (playlistList.Exists(x => x.Name.Equals(e.StringField1)))
+                        {
+                            MessageBox.Show("Playlist name already exists!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                        else
+                        {
+                            try
+                            {
+                                PlaylistModel playlist = new PlaylistModel();
+                                playlist.Id = this.GetNewPlaylistId();
+                                playlist.Name = e.StringField1;
+                                playlist.OrderInList = playlistList.Count;
+                                this.playlistDao.CreatePlaylist(playlist);
+                                this.newPlaylist = playlist;
+                                ((PlaylistEditorView)this.playlistEditorView).DialogResult = DialogResult.OK;
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show("Playlist hasn't been created!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+
+                        }
+                    }
+                    else
+                    {
+                        try
+                        {
+                            PlaylistModel playlist = new PlaylistModel();
+                            playlist.Id = this.GetNewPlaylistId();
+                            playlist.Name = e.StringField1;
+                            playlist.OrderInList = 0;
+                            this.playlistDao.CreatePlaylist(playlist);
+                            this.newPlaylist = playlist;
+                            ((PlaylistEditorView)this.playlistEditorView).DialogResult = DialogResult.OK;
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("Playlist hasn't been created!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Playlist name must be entered!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+
+            
+            
+        }
+        private int GetNewPlaylistId()
+        {
+            int id = this.playlistDao.GetLastObjectId(TableName.Playlist.ToString());
+            if (id == -1)
+                return 0;
+            else
+                return id + 1;
+        }
+    }
+}
