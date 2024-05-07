@@ -27,5 +27,10 @@ namespace MitoPlayer_2024.Views
         event EventHandler Reverse;
         event EventHandler Shuffle;
         event EventHandler Clear;
+
+        event EventHandler CreatePlaylist;
+        event EventHandler LoadPlaylist;
+        event EventHandler RenamePlaylist;
+        event EventHandler DeletePlaylist;
     }
 }

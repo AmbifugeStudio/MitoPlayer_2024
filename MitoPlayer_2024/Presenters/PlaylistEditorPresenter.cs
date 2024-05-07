@@ -19,11 +19,8 @@ namespace MitoPlayer_2024.Presenters
         private IPlaylistEditorView playlistEditorView;
         private IPlaylistDao playlistDao;
         private ISettingDao settingDao;
-        private Playlist playlistModel;
         private bool isEditMode = false;
-
         public Playlist newPlaylist;
-
         private int lastGeneratedPlaylistId;
 
         public PlaylistEditorPresenter(IPlaylistEditorView view, IPlaylistDao playlistDao, ISettingDao settingDao)
@@ -39,18 +36,17 @@ namespace MitoPlayer_2024.Presenters
 
             this.settingDao.SetIntegerSetting(Settings.LastGeneratedPlaylistId.ToString(), this.lastGeneratedPlaylistId);
 
-
             this.playlistEditorView.CreateOrEditPlaylist += CreateOrEditPlaylist;
         }
 
-        public PlaylistEditorPresenter(IPlaylistEditorView view, IPlaylistDao playlistDao, Playlist playlistModel)
+        public PlaylistEditorPresenter(IPlaylistEditorView view, IPlaylistDao playlistDao, Playlist playlist)
         {
             this.playlistEditorView = view;
             this.playlistDao = playlistDao;
-            this.playlistModel = playlistModel;
+            this.newPlaylist = playlist;
             this.isEditMode = true;
 
-            ((PlaylistEditorView)this.playlistEditorView).SetPlaylistName(playlistModel.Name);
+            ((PlaylistEditorView)this.playlistEditorView).SetPlaylistName(playlist.Name);
             
             this.playlistEditorView.CreateOrEditPlaylist += CreateOrEditPlaylist;
         }
@@ -63,7 +59,7 @@ namespace MitoPlayer_2024.Presenters
             {
                 if (!String.IsNullOrEmpty(e.StringField1))
                 {
-                    if (e.StringField1.Equals(playlistModel.Name)){
+                    if (e.StringField1.Equals(this.newPlaylist.Name)){
                         ((PlaylistEditorView)this.playlistEditorView).DialogResult = DialogResult.OK;
                     }
                     else
@@ -77,8 +73,7 @@ namespace MitoPlayer_2024.Presenters
                         {
                             try
                             {
-                                this.playlistModel.Name = e.StringField1;
-                                this.playlistDao.UpdatePlaylist(this.playlistModel);
+                                this.newPlaylist.Name = e.StringField1;
                                 ((PlaylistEditorView)this.playlistEditorView).DialogResult = DialogResult.OK;
                             }
                             catch (Exception ex)
@@ -113,7 +108,6 @@ namespace MitoPlayer_2024.Presenters
                                 playlist.Id = this.GetNewPlaylistId();
                                 playlist.Name = e.StringField1;
                                 playlist.OrderInList = playlistList.Count;
-                                this.playlistDao.CreatePlaylist(playlist);
                                 this.newPlaylist = playlist;
                                 ((PlaylistEditorView)this.playlistEditorView).DialogResult = DialogResult.OK;
                             }

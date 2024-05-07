@@ -38,5 +38,14 @@ namespace MitoPlayer_2024.Views
             CreateOrEditPlaylist?.Invoke(this, args);
         }
 
+        private void txtPlaylistName_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.KeyCode == Keys.Enter)
+            {
+                ListEventArgs args = new ListEventArgs();
+                args.StringField1 = txtPlaylistName.Text;
+                CreateOrEditPlaylist?.Invoke(this, args);
+            }
+        }
     }
 }

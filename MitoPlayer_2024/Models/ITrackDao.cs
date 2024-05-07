@@ -10,6 +10,6 @@ namespace MitoPlayer_2024.Model
     {
         Track GetTrackByPath(String path);
         void AddTrackToDatabase(Track track);
-        void AddTrackToPlaylist(int id, int playlistId, int trackId, int sortingId, int trackIdInPlaylist);
+        void AddTrackToPlaylist(int id, int playlistId, int trackId, int orderInList);
     }
 }

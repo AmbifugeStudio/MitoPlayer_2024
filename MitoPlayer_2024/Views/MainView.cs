@@ -42,6 +42,11 @@ namespace MitoPlayer_2024
         public event EventHandler Shuffle;
         public event EventHandler Clear;
 
+        public event EventHandler CreatePlaylist;
+        public event EventHandler LoadPlaylist;
+        public event EventHandler RenamePlaylist;
+        public event EventHandler DeletePlaylist;
+
         private void btnPlayer_Click(object sender, EventArgs e)
         {
             ShowPlaylistView?.Invoke(this, EventArgs.Empty);
@@ -125,6 +130,26 @@ namespace MitoPlayer_2024
         private void clearToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Clear?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void newPlaylistToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CreatePlaylist?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void loadPlaylistToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LoadPlaylist?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void savePlaylistToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RenamePlaylist?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void toolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            DeletePlaylist?.Invoke(this, EventArgs.Empty);
         }
     }
 }

@@ -23,27 +23,30 @@ namespace MitoPlayer_2024.Presenters
         {
             this.mainView = mainView;
             this.sqlConnectionString = sqlConnectionString;
+
             this.mainView.ShowPlaylistView += ShowPlaylistView;
-            this.mainView.RemoveMissingTracks += RemoveMissingTracks;
-            this.mainView.RemoveDuplicatedTracks += RemoveDuplicatedTracks;
+
             this.mainView.OpenFiles += OpenFiles;
             this.mainView.OpenDirectory += OpenDirectory;
-
             this.mainView.PlayTrack += PlayTrack;
             this.mainView.PauseTrack += PauseTrack;
             this.mainView.StopTrack += StopTrack;
             this.mainView.PrevTrack += PrevTrack;
             this.mainView.NextTrack += NextTrack;
-            this.mainView.RandomTrack += RandomTrack;
-
             this.mainView.OrderByTitle += OrderByTitle;
             this.mainView.OrderByArtist += OrderByArtist;
             this.mainView.OrderByFileName += OrderByFileName;
             this.mainView.Reverse += Reverse;
             this.mainView.Shuffle += Shuffle;
+            this.mainView.RandomTrack += RandomTrack;
             this.mainView.Clear += Clear;
+            this.mainView.RemoveMissingTracks += RemoveMissingTracks;
+            this.mainView.RemoveDuplicatedTracks += RemoveDuplicatedTracks;
 
-
+            this.mainView.CreatePlaylist += CreatePlaylist;
+            this.mainView.LoadPlaylist += LoadPlaylist;
+            this.mainView.RenamePlaylist += RenamePlaylist;
+            this.mainView.DeletePlaylist += DeletePlaylist;
 
             this.ShowPlaylistView(this, new EventArgs());
         }
@@ -59,20 +62,6 @@ namespace MitoPlayer_2024.Presenters
             new PlaylistPresenter(view, playlistDao, trackDao, settingDao);
         }
 
-        private void RemoveMissingTracks(object sender, EventArgs e)
-        {
-            if (this.view != null)
-            {
-                ((PlaylistView)this.view).RemoveMissingTracks();
-            }
-        }
-        private void RemoveDuplicatedTracks(object sender, EventArgs e)
-        {
-            if (this.view != null)
-            {
-                ((PlaylistView)this.view).RemoveDuplicatedTracks();
-            }
-        }
         private void OpenFiles(object sender, EventArgs e)
         {
             if (this.view != null)
@@ -122,13 +111,6 @@ namespace MitoPlayer_2024.Presenters
                 ((PlaylistView)this.view).NextEvent();
             }
         }
-        private void RandomTrack(object sender, EventArgs e)
-        {
-            if (this.view != null)
-            {
-                ((PlaylistView)this.view).RandomEvent();
-            }
-        }
         private void OrderByTitle(object sender, EventArgs e)
         {
             if (this.view != null)
@@ -164,6 +146,13 @@ namespace MitoPlayer_2024.Presenters
                 ((PlaylistView)this.view).ReverseEvent();
             }
         }
+        private void RandomTrack(object sender, EventArgs e)
+        {
+            if (this.view != null)
+            {
+                ((PlaylistView)this.view).RandomEvent();
+            }
+        }
         private void Clear(object sender, EventArgs e)
         {
             if (this.view != null)
@@ -171,5 +160,49 @@ namespace MitoPlayer_2024.Presenters
                 ((PlaylistView)this.view).ClearEvent();
             }
         }
+        private void RemoveMissingTracks(object sender, EventArgs e)
+        {
+            if (this.view != null)
+            {
+                ((PlaylistView)this.view).RemoveMissingTracksEvent();
+            }
+        }
+        private void RemoveDuplicatedTracks(object sender, EventArgs e)
+        {
+            if (this.view != null)
+            {
+                ((PlaylistView)this.view).RemoveDuplicatedTracksEvent();
+            }
+        }
+
+        private void CreatePlaylist(object sender, EventArgs e)
+        {
+            if (this.view != null)
+            {
+                ((PlaylistView)this.view).CreatePlaylistEvent();
+            }
+        }
+        private void LoadPlaylist(object sender, EventArgs e)
+        {
+            if (this.view != null)
+            {
+                ((PlaylistView)this.view).LoadPlaylistEvent();
+            }
+        }
+        private void RenamePlaylist(object sender, EventArgs e)
+        {
+            if (this.view != null)
+            {
+                ((PlaylistView)this.view).RenamePlaylistEvent();
+            }
+        }
+        private void DeletePlaylist(object sender, EventArgs e)
+        {
+            if (this.view != null)
+            {
+                ((PlaylistView)this.view).DeletePlaylistEvent();
+            }
+        }
+
     }
 }

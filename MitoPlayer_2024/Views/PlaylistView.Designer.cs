@@ -31,10 +31,8 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PlaylistView));
             this.tabPagePlaylistDetail = new System.Windows.Forms.TabPage();
-            this.txtDebug = new System.Windows.Forms.RichTextBox();
             this.lblSelectedItemsLength = new System.Windows.Forms.Label();
             this.lblSelectedItemsCount = new System.Windows.Forms.Label();
-            this.lblDebug = new System.Windows.Forms.Label();
             this.lblCurrentTrack = new System.Windows.Forms.Label();
             this.dgvPlaylistList = new System.Windows.Forms.DataGridView();
             this.dgvTrackList = new System.Windows.Forms.DataGridView();
@@ -74,10 +72,8 @@
             // 
             // tabPagePlaylistDetail
             // 
-            this.tabPagePlaylistDetail.Controls.Add(this.txtDebug);
             this.tabPagePlaylistDetail.Controls.Add(this.lblSelectedItemsLength);
             this.tabPagePlaylistDetail.Controls.Add(this.lblSelectedItemsCount);
-            this.tabPagePlaylistDetail.Controls.Add(this.lblDebug);
             this.tabPagePlaylistDetail.Controls.Add(this.lblCurrentTrack);
             this.tabPagePlaylistDetail.Controls.Add(this.dgvPlaylistList);
             this.tabPagePlaylistDetail.Controls.Add(this.dgvTrackList);
@@ -88,14 +84,6 @@
             this.tabPagePlaylistDetail.TabIndex = 1;
             this.tabPagePlaylistDetail.Text = "Player";
             this.tabPagePlaylistDetail.UseVisualStyleBackColor = true;
-            // 
-            // txtDebug
-            // 
-            this.txtDebug.Location = new System.Drawing.Point(924, 6);
-            this.txtDebug.Name = "txtDebug";
-            this.txtDebug.Size = new System.Drawing.Size(194, 460);
-            this.txtDebug.TabIndex = 4;
-            this.txtDebug.Text = "";
             // 
             // lblSelectedItemsLength
             // 
@@ -117,29 +105,20 @@
             this.lblSelectedItemsCount.TabIndex = 3;
             this.lblSelectedItemsCount.Text = "- items selected";
             // 
-            // lblDebug
-            // 
-            this.lblDebug.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.lblDebug.AutoSize = true;
-            this.lblDebug.Location = new System.Drawing.Point(620, 471);
-            this.lblDebug.Name = "lblDebug";
-            this.lblDebug.Size = new System.Drawing.Size(54, 13);
-            this.lblDebug.TabIndex = 2;
-            this.lblDebug.Text = "DEBUG - ";
-            // 
             // lblCurrentTrack
             // 
             this.lblCurrentTrack.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblCurrentTrack.AutoSize = true;
             this.lblCurrentTrack.Location = new System.Drawing.Point(170, 469);
             this.lblCurrentTrack.Name = "lblCurrentTrack";
-            this.lblCurrentTrack.Size = new System.Drawing.Size(62, 13);
+            this.lblCurrentTrack.Size = new System.Drawing.Size(50, 13);
             this.lblCurrentTrack.TabIndex = 2;
-            this.lblCurrentTrack.Text = "PLAYING: -";
+            this.lblCurrentTrack.Text = "Playing: -";
             // 
             // dgvPlaylistList
             // 
             this.dgvPlaylistList.AllowUserToAddRows = false;
+            this.dgvPlaylistList.AllowUserToDeleteRows = false;
             this.dgvPlaylistList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.dgvPlaylistList.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
@@ -165,11 +144,11 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvTrackList.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dgvTrackList.Location = new System.Drawing.Point(173, 3);
+            this.dgvTrackList.Location = new System.Drawing.Point(173, 6);
             this.dgvTrackList.Name = "dgvTrackList";
             this.dgvTrackList.ReadOnly = true;
             this.dgvTrackList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvTrackList.Size = new System.Drawing.Size(745, 463);
+            this.dgvTrackList.Size = new System.Drawing.Size(940, 460);
             this.dgvTrackList.TabIndex = 0;
             this.dgvTrackList.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTrackList_CellClick);
             this.dgvTrackList.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTrackList_CellDoubleClick);
@@ -453,8 +432,6 @@
         private System.Windows.Forms.Label lblCurrentTrack;
         private System.Windows.Forms.Label lblSelectedItemsLength;
         private System.Windows.Forms.Label lblSelectedItemsCount;
-        private System.Windows.Forms.Label lblDebug;
-        private System.Windows.Forms.RichTextBox txtDebug;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem playToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem renameToolStripMenuItem;

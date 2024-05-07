@@ -13,7 +13,14 @@ namespace MitoPlayer_2024.Helpers
         CurrentPlaylistId,
         LastOpenFilesFilterIndex,
         LastOpenDirectoryPath,
-        LastGeneratedPlaylistId
+        LastGeneratedPlaylistId,
+        PlaylistColumnNames,
+        PlaylistColumnTypes,
+        PlaylistColumnVisibility,
+        TrackColumnNames,
+        TrackColumnTypes,
+        TrackColumnVisibility,
+        TrackColumnOrderingFlags
     }
 
 }

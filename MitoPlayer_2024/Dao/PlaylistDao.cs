@@ -68,11 +68,11 @@ namespace MitoPlayer_2024.Dao
                 {
                     while (reader.Read())
                     {
-                        var playlistModel = new Playlist();
-                        playlistModel.Id = (int)reader[0];
-                        playlistModel.Name = reader[1].ToString();
-                        playlistModel.OrderInList = (int)reader[2];
-                        playListList.Add(playlistModel);
+                        var playlist = new Playlist();
+                        playlist.Id = (int)reader[0];
+                        playlist.Name = reader[1].ToString();
+                        playlist.OrderInList = (int)reader[2];
+                        playListList.Add(playlist);
                     }
                 }
                 connection.Close();
@@ -83,7 +83,7 @@ namespace MitoPlayer_2024.Dao
         /*
          * üres playlist létrehozása
          */
-        public void CreatePlaylist(Playlist playlistModel)
+        public void CreatePlaylist(Playlist playlist)
         {
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
@@ -92,9 +92,9 @@ namespace MitoPlayer_2024.Dao
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
                 command.CommandText = "INSERT INTO Playlist values (@Id, @Name, @OrderInList)";
-                command.Parameters.Add("@Id", MySqlDbType.Int32).Value = playlistModel.Id;
-                command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = playlistModel.Name;
-                command.Parameters.Add("@OrderInList", MySqlDbType.Int32).Value = playlistModel.OrderInList;
+                command.Parameters.Add("@Id", MySqlDbType.Int32).Value = playlist.Id;
+                command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = playlist.Name;
+                command.Parameters.Add("@OrderInList", MySqlDbType.Int32).Value = playlist.OrderInList;
                 try
                 {
                     command.ExecuteNonQuery();
@@ -111,7 +111,7 @@ namespace MitoPlayer_2024.Dao
         /*
          * a playlist-hez tartozó számok lekérése
          */
-        public List<Track> LoadPlaylist(Playlist playlistModel)
+        public List<Track> LoadPlaylist(int id)
         {
             List<Track> trackList = new List<Track>();
 
@@ -130,12 +130,12 @@ namespace MitoPlayer_2024.Dao
                    "tra.Album, " +
                    "tra.Year, " +
                    "tra.Length, " +
-                   "plc.TrackIdInPlaylist " +
+                   "plc.OrderInList " +
                    "FROM Playlist pll, PlaylistContent plc, Track tra " +
                    "WHERE pll.Id = plc.PlaylistId and plc.TrackId = tra.Id " +
                    "AND pll.Id = @PlaylistId " +
-                   "ORDER BY plc.SortingId ";
-                command.Parameters.Add("@PlaylistId", MySqlDbType.Int32).Value = playlistModel.Id;
+                   "ORDER BY plc.OrderInList ";
+                command.Parameters.Add("@PlaylistId", MySqlDbType.Int32).Value = id;
                 using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())
@@ -148,7 +148,7 @@ namespace MitoPlayer_2024.Dao
                         var trackAlbum = reader[5].ToString();
                         var trackYear = (int)reader[6];
                         var trackLength = (int)reader[7];
-                        var idInPlaylist = (int)reader[8];
+                        var orderInList = (int)reader[8];
 
                         Track track = new Track();
                         track.Id = trackId;
@@ -159,7 +159,7 @@ namespace MitoPlayer_2024.Dao
                         track.Album = trackAlbum;
                         track.Year = trackYear;
                         track.Length = trackLength;
-                        track.IdInPlaylist = idInPlaylist;
+                        track.OrderInList = orderInList;
 
                         trackList.Add(track);
                     }
@@ -225,6 +225,34 @@ namespace MitoPlayer_2024.Dao
             }
         }
 
+        public Playlist GetPlaylistByName(int id)
+        {
+            Playlist playlist = null;
+
+            using (var connection = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand())
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = "SELECT * FROM Playlist WHERE Id = @Id ";
+                command.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        playlist = new Playlist();
+                        playlist.Id = (int)reader[0];
+                        playlist.Name = reader[1].ToString();
+                        playlist.OrderInList = (int)reader[2];
+                        break;
+                    }
+                }
+            }
+            return playlist;
+        }
+
+
         public Playlist GetPlaylistByName(String playlistName)
         {
             Playlist playlistModel = null;
@@ -278,7 +306,7 @@ namespace MitoPlayer_2024.Dao
             }
         }
 
-        public void DeletePlaylist(Playlist playlistModel)
+        public void DeletePlaylist(int id)
         {
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
@@ -287,22 +315,43 @@ namespace MitoPlayer_2024.Dao
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
                 command.CommandText = "DELETE FROM Playlist WHERE Id = @Id";
-                command.Parameters.Add("@Id", MySqlDbType.Int32).Value = playlistModel.Id;
+                command.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
                 try
                 {
                     command.ExecuteNonQuery();
                 }
                 catch (MySqlException ex)
                 {
-                    MessageBox.Show("Playlist is not deleted. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Object is not deleted. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 connection.Close();
             }
 
-            DeleteTracksFromPlaylist(playlistModel);
+            DeleteTracksFromPlaylist(id);
         }
 
-        public void DeleteTracksFromPlaylist(Playlist playlistModel)
+        public void DeleteAllPlaylist()
+        {
+            using (var connection = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand())
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = "DELETE FROM Playlist";
+                try
+                {
+                    command.ExecuteNonQuery();
+                }
+                catch (MySqlException ex)
+                {
+                    MessageBox.Show("Object is not deleted. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                connection.Close();
+            }
+        }
+
+        public void DeleteTracksFromPlaylist(int id)
         {
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
@@ -311,7 +360,7 @@ namespace MitoPlayer_2024.Dao
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
                 command.CommandText = "DELETE FROM PlaylistContent WHERE PlaylistId = @PlaylistId";
-                command.Parameters.Add("@PlaylistId", MySqlDbType.Int32).Value = playlistModel.Id;
+                command.Parameters.Add("@PlaylistId", MySqlDbType.Int32).Value = id;
                 try
                 {
                     command.ExecuteNonQuery();

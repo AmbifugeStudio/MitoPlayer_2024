@@ -65,7 +65,7 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.button1 = new System.Windows.Forms.Button();
             this.btnPlayer = new System.Windows.Forms.Button();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
@@ -92,6 +92,7 @@
             this.newPlaylistToolStripMenuItem,
             this.loadPlaylistToolStripMenuItem,
             this.savePlaylistToolStripMenuItem,
+            this.toolStripMenuItem2,
             this.toolStripSeparator3,
             this.preferencesToolStripMenuItem,
             this.exitToolStripMenuItem});
@@ -102,55 +103,58 @@
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.openToolStripMenuItem.Text = "Add files...";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
             // addFolderToolStripMenuItem
             // 
             this.addFolderToolStripMenuItem.Name = "addFolderToolStripMenuItem";
-            this.addFolderToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.addFolderToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.addFolderToolStripMenuItem.Text = "Add folder...";
             this.addFolderToolStripMenuItem.Click += new System.EventHandler(this.addFolderToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(146, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
             // 
             // newPlaylistToolStripMenuItem
             // 
             this.newPlaylistToolStripMenuItem.Name = "newPlaylistToolStripMenuItem";
-            this.newPlaylistToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.newPlaylistToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.newPlaylistToolStripMenuItem.Text = "New playlist";
+            this.newPlaylistToolStripMenuItem.Click += new System.EventHandler(this.newPlaylistToolStripMenuItem_Click);
             // 
             // loadPlaylistToolStripMenuItem
             // 
             this.loadPlaylistToolStripMenuItem.Name = "loadPlaylistToolStripMenuItem";
-            this.loadPlaylistToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.loadPlaylistToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.loadPlaylistToolStripMenuItem.Text = "Load playlist...";
+            this.loadPlaylistToolStripMenuItem.Click += new System.EventHandler(this.loadPlaylistToolStripMenuItem_Click);
             // 
             // savePlaylistToolStripMenuItem
             // 
             this.savePlaylistToolStripMenuItem.Name = "savePlaylistToolStripMenuItem";
-            this.savePlaylistToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
-            this.savePlaylistToolStripMenuItem.Text = "Save playlist...";
+            this.savePlaylistToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.savePlaylistToolStripMenuItem.Text = "Rename playlist...";
+            this.savePlaylistToolStripMenuItem.Click += new System.EventHandler(this.savePlaylistToolStripMenuItem_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(146, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(177, 6);
             // 
             // preferencesToolStripMenuItem
             // 
             this.preferencesToolStripMenuItem.Name = "preferencesToolStripMenuItem";
-            this.preferencesToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.preferencesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.preferencesToolStripMenuItem.Text = "Preferences";
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             // 
             // editToolStripMenuItem
@@ -355,20 +359,18 @@
             this.btnPlayer.UseVisualStyleBackColor = true;
             this.btnPlayer.Click += new System.EventHandler(this.btnPlayer_Click);
             // 
-            // panel1
+            // toolStripMenuItem2
             // 
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel1.Location = new System.Drawing.Point(86, 24);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1074, 53);
-            this.panel1.TabIndex = 4;
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItem2.Text = "Delete playlist...";
+            this.toolStripMenuItem2.Click += new System.EventHandler(this.toolStripMenuItem2_Click);
             // 
             // MainView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1160, 482);
-            this.Controls.Add(this.panel1);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.menuStrip1);
             this.IsMdiContainer = true;
@@ -421,8 +423,8 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
-        private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
     }
 }
 

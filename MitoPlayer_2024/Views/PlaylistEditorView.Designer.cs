@@ -49,6 +49,7 @@
             this.txtPlaylistName.Size = new System.Drawing.Size(238, 20);
             this.txtPlaylistName.TabIndex = 1;
             this.txtPlaylistName.Text = "New Playlist";
+            this.txtPlaylistName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPlaylistName_KeyDown);
             // 
             // btnOk
             // 
