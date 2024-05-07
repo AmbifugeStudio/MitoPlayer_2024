@@ -12,10 +12,10 @@ namespace MitoPlayer_2024.Models
         void CreateIntegerSetting(String name, Int32 value);
         void CreateDecimalSetting(String name, Decimal value);
         void CreateBooleanSetting(String name, Boolean value);
-        String GetStringSettingByName(string name);
-        int GetIntegerSettingByName(string name);
-        decimal GetDecimalSettingByName(string name);
-        bool? GetBooleanSettingByName(string name);
+        String GetStringSettingByName(string name, bool external);
+        int GetIntegerSettingByName(string name, bool external);
+        decimal GetDecimalSettingByName(string name, bool external);
+        bool? GetBooleanSettingByName(string name, bool external);
         void SetStringSetting(String name, String value);
         void SetIntegerSetting(String name, Int32 value);
         void SetDecimalSetting(String name, Decimal value);

@@ -24,6 +24,8 @@ namespace MitoPlayer_2024.Presenters
 
         public Playlist newPlaylist;
 
+        private int lastGeneratedPlaylistId;
+
         public PlaylistEditorPresenter(IPlaylistEditorView view, IPlaylistDao playlistDao, ISettingDao settingDao)
         {
             this.playlistEditorView = view;
@@ -31,13 +33,12 @@ namespace MitoPlayer_2024.Presenters
             this.settingDao = settingDao;
             this.isEditMode = false;
 
-            int number = this.settingDao.GetIntegerSettingByName(Settings.LastGeneratedPlaylistId.ToString());
+            this.lastGeneratedPlaylistId = this.settingDao.GetIntegerSettingByName(Settings.LastGeneratedPlaylistId.ToString(), true);
+            this.lastGeneratedPlaylistId = this.lastGeneratedPlaylistId + 1;
+            ((PlaylistEditorView)this.playlistEditorView).SetPlaylistName("New Playlist "+ this.lastGeneratedPlaylistId.ToString());
 
-            ((PlaylistEditorView)this.playlistEditorView).SetPlaylistName("New Playlist "+ number.ToString());
-            
-            number = number + 1;
+            this.settingDao.SetIntegerSetting(Settings.LastGeneratedPlaylistId.ToString(), this.lastGeneratedPlaylistId);
 
-            this.settingDao.SetIntegerSetting(Settings.LastGeneratedPlaylistId.ToString(), number);
 
             this.playlistEditorView.CreateOrEditPlaylist += CreateOrEditPlaylist;
         }

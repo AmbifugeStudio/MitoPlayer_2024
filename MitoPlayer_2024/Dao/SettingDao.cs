@@ -1,4 +1,5 @@
-﻿using MitoPlayer_2024.Models;
+﻿using MitoPlayer_2024.Helpers;
+using MitoPlayer_2024.Models;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
@@ -106,7 +107,7 @@ namespace MitoPlayer_2024.Dao
                 connection.Close();
             }
         }
-        public String GetStringSettingByName(string name)
+        public String GetStringSettingByName(string name, bool external)
         {
             String result = null;
 
@@ -127,9 +128,14 @@ namespace MitoPlayer_2024.Dao
                 }
             }
 
+            if (String.IsNullOrEmpty(result) && external)
+            {
+                result = System.Configuration.ConfigurationManager.AppSettings[name];
+            }
+
             return result;
         }
-        public int GetIntegerSettingByName(string name)
+        public int GetIntegerSettingByName(string name, bool external)
         {
             int result = -1;
 
@@ -150,9 +156,14 @@ namespace MitoPlayer_2024.Dao
                 }
             }
 
+            if (result == -1 && external)
+            {
+                result = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings[name]);
+            }
+
             return result;
         }
-        public decimal GetDecimalSettingByName(string name)
+        public decimal GetDecimalSettingByName(string name, bool external)
         {
             decimal result = -1;
 
@@ -173,9 +184,14 @@ namespace MitoPlayer_2024.Dao
                 }
             }
 
+            if (result == -1 && external)
+            {
+                result = Convert.ToDecimal(System.Configuration.ConfigurationManager.AppSettings[name]);
+            }
+
             return result;
         }
-        public bool? GetBooleanSettingByName(string name)
+        public bool? GetBooleanSettingByName(string name, bool external)
         {
             bool? result = null;
 
@@ -196,11 +212,16 @@ namespace MitoPlayer_2024.Dao
                 }
             }
 
+            if (result == null && external)
+            {
+                result = Convert.ToBoolean(System.Configuration.ConfigurationManager.AppSettings[name]);
+            }
+
             return result;
         }
         public void SetStringSetting(String name, String value)
         {
-            String result = GetStringSettingByName(name);
+            String result = GetStringSettingByName(name, false);
             if (String.IsNullOrEmpty(result))
             {
                 this.CreateStringSetting(name, value);
@@ -235,7 +256,7 @@ namespace MitoPlayer_2024.Dao
         }
         public void SetIntegerSetting(String name, Int32 value)
         {
-            int result = GetIntegerSettingByName(name);
+            int result = GetIntegerSettingByName(name, false);
             if (result == -1)
             {
                 this.CreateIntegerSetting(name, value);
@@ -269,7 +290,7 @@ namespace MitoPlayer_2024.Dao
         }
         public void SetDecimalSetting(String name, Decimal value)
         {
-            decimal result = GetDecimalSettingByName(name);
+            decimal result = GetDecimalSettingByName(name, false);
             if (result == -1)
             {
                 this.CreateDecimalSetting(name, value);
@@ -303,7 +324,7 @@ namespace MitoPlayer_2024.Dao
         }
         public void SetBooleanSetting(String name, Boolean value)
         {
-            bool? result = GetBooleanSettingByName(name);
+            bool? result = GetBooleanSettingByName(name, false);
             if (result == null)
             {
                 this.CreateBooleanSetting(name, value);

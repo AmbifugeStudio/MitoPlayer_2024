@@ -44,8 +44,11 @@ namespace MitoPlayer_2024.Presenters
             this.mainView.Clear += Clear;
 
 
+
             this.ShowPlaylistView(this, new EventArgs());
         }
+
+
         private void ShowPlaylistView(object sender, EventArgs e)
         {
             IPlaylistView view = PlaylistView.GetInstance((MainView)mainView);

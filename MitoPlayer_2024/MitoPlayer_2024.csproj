@@ -139,7 +139,6 @@
     <Compile Include="Models\ISettingDao.cs" />
     <Compile Include="Models\ITrackDao.cs" />
     <Compile Include="Models\Playlist.cs" />
-    <Compile Include="Models\Setting.cs" />
     <Compile Include="Presenters\PlaylistEditorPresenter.cs" />
     <Compile Include="Presenters\PlaylistPresenter.cs" />
     <Compile Include="Views\IPlaylistEditorView.cs" />

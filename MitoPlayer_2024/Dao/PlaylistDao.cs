@@ -265,7 +265,7 @@ namespace MitoPlayer_2024.Dao
                                             WHERE Id = @Id";
                 command.Parameters.Add("@Id", MySqlDbType.Int32).Value = playlistModel.Id;
                 command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = playlistModel.Name;
-                command.Parameters.Add("@PlaylistOrder", MySqlDbType.VarChar).Value = playlistModel.OrderInList;
+                command.Parameters.Add("@OrderInList", MySqlDbType.VarChar).Value = playlistModel.OrderInList;
                 try
                 {
                     command.ExecuteNonQuery();

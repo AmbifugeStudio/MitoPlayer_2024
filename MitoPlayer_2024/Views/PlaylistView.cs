@@ -585,8 +585,26 @@ namespace MitoPlayer_2024.Views
                 {
                     if (mediaPlayer.playState == WMPLib.WMPPlayState.wmppsPlaying)
                     {
-                        lblTrackStart.Text = mediaPlayer.Ctlcontrols.currentPositionString;
-                        lblTrackEnd.Text = mediaPlayer.Ctlcontrols.currentItem.durationString.ToString();
+                        if(mediaPlayer.Ctlcontrols.currentPositionString.Length > 5)
+                        {
+                            lblTrackStart.Text = mediaPlayer.Ctlcontrols.currentPositionString;
+                            
+                        }
+                        else
+                        {
+                            lblTrackStart.Text = "00:" + mediaPlayer.Ctlcontrols.currentPositionString;
+                           
+                        }
+                        if (mediaPlayer.Ctlcontrols.currentItem.durationString.ToString().Length > 5)
+                        {
+                            lblTrackEnd.Text = mediaPlayer.Ctlcontrols.currentItem.durationString.ToString();
+                        }
+                        else
+                        {
+                            lblTrackEnd.Text = "00:" + mediaPlayer.Ctlcontrols.currentItem.durationString.ToString();
+                        }
+
+
                     }
                     else
                     {
@@ -1140,7 +1158,7 @@ namespace MitoPlayer_2024.Views
             if (dgvPlaylistList.SelectedRows.Count > 0)
             {
                 var row = dgvPlaylistList.SelectedRows[0];
-                selectedPlaylistName = dgvPlaylistList.SelectedRows[0].Cells[0].Value.ToString();
+                selectedPlaylistName = dgvPlaylistList.SelectedRows[0].Cells["Name"].Value.ToString();
 
                 ListEventArgs args = new ListEventArgs();
                 args.StringField1 = selectedPlaylistName;
@@ -1153,7 +1171,7 @@ namespace MitoPlayer_2024.Views
             if (dgvPlaylistList.SelectedRows.Count > 0)
             {
                 var row = dgvPlaylistList.SelectedRows[0];
-                selectedPlaylistName = dgvPlaylistList.SelectedRows[0].Cells[0].Value.ToString();
+                selectedPlaylistName = dgvPlaylistList.SelectedRows[0].Cells[1].Value.ToString();
 
                 ListEventArgs args = new ListEventArgs();
                 args.StringField1 = selectedPlaylistName;
