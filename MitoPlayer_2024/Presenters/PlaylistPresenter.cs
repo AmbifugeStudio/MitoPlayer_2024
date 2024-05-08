@@ -261,7 +261,13 @@ namespace MitoPlayer_2024.Presenters
                 {
                     this.currentPlaylistId = 0;
                 }
-                this.LoadPlaylist(plsList[this.currentPlaylistId]);
+
+                Playlist pls = plsList.Find(x => x.Id == this.currentPlaylistId);
+                if(pls != null)
+                {
+                    this.LoadPlaylist(pls);
+                }
+                
             }
 
             foreach (Playlist playlist in plsList)
@@ -518,8 +524,19 @@ namespace MitoPlayer_2024.Presenters
                     Track track = new Track();
                     track.Path = path;
 
-                    string fileName = path.Substring(path.LastIndexOf(@"\") + 1);
-                    fileName = fileName.Remove(fileName.LastIndexOf("."), 4);
+                    string fileName = "";
+
+                    if (path.EndsWith("flac"))
+                    {
+                        fileName = path.Substring(path.LastIndexOf(@"\") + 1);
+                        fileName = fileName.Remove(fileName.LastIndexOf("."), 5);
+                    }
+                    else
+                    {
+                        fileName = path.Substring(path.LastIndexOf(@"\") + 1);
+                        fileName = fileName.Remove(fileName.LastIndexOf("."), 4);
+                    }
+
                     track.FileName = fileName;
 
                     if (!System.IO.File.Exists(path))
@@ -864,6 +881,9 @@ namespace MitoPlayer_2024.Presenters
                             trackListTable.Rows.Clear();
                             this.SaveTrackList(trackListTable);
                             this.SetTrackList(trackListTable);
+
+                            this.currentPlaylistId = Convert.ToInt32(playlistListTable.Rows[0]["Id"]);
+                            this.settingDao.SetIntegerSetting(Settings.CurrentPlaylistId.ToString(), this.currentPlaylistId);
                         }
                     }
                 }

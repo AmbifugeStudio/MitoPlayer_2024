@@ -18,6 +18,7 @@ namespace MitoPlayer_2024.Views
     public partial class PlaylistEditorView : Form, IPlaylistEditorView
     {
         public event EventHandler<ListEventArgs> CreateOrEditPlaylist;
+        public event EventHandler ClosePlaylistEditor;
 
         public PlaylistEditorView()
         {
@@ -45,6 +46,9 @@ namespace MitoPlayer_2024.Views
                 ListEventArgs args = new ListEventArgs();
                 args.StringField1 = txtPlaylistName.Text;
                 CreateOrEditPlaylist?.Invoke(this, args);
+            }else if(e.KeyCode == Keys.Escape)
+            {
+                ClosePlaylistEditor?.Invoke(this,new EventArgs());
             }
         }
     }

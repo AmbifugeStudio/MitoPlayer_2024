@@ -12,6 +12,7 @@ namespace MitoPlayer_2024.Views
     {
 
         event EventHandler<ListEventArgs> CreateOrEditPlaylist;
+        event EventHandler ClosePlaylistEditor;
 
     }
 }

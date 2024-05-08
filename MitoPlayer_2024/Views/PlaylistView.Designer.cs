@@ -31,6 +31,7 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PlaylistView));
             this.tabPagePlaylistDetail = new System.Windows.Forms.TabPage();
+            this.debug = new System.Windows.Forms.RichTextBox();
             this.lblSelectedItemsLength = new System.Windows.Forms.Label();
             this.lblSelectedItemsCount = new System.Windows.Forms.Label();
             this.lblCurrentTrack = new System.Windows.Forms.Label();
@@ -72,6 +73,7 @@
             // 
             // tabPagePlaylistDetail
             // 
+            this.tabPagePlaylistDetail.Controls.Add(this.debug);
             this.tabPagePlaylistDetail.Controls.Add(this.lblSelectedItemsLength);
             this.tabPagePlaylistDetail.Controls.Add(this.lblSelectedItemsCount);
             this.tabPagePlaylistDetail.Controls.Add(this.lblCurrentTrack);
@@ -84,6 +86,14 @@
             this.tabPagePlaylistDetail.TabIndex = 1;
             this.tabPagePlaylistDetail.Text = "Player";
             this.tabPagePlaylistDetail.UseVisualStyleBackColor = true;
+            // 
+            // debug
+            // 
+            this.debug.Location = new System.Drawing.Point(961, 6);
+            this.debug.Name = "debug";
+            this.debug.Size = new System.Drawing.Size(152, 460);
+            this.debug.TabIndex = 4;
+            this.debug.Text = "";
             // 
             // lblSelectedItemsLength
             // 
@@ -148,7 +158,7 @@
             this.dgvTrackList.Name = "dgvTrackList";
             this.dgvTrackList.ReadOnly = true;
             this.dgvTrackList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvTrackList.Size = new System.Drawing.Size(940, 460);
+            this.dgvTrackList.Size = new System.Drawing.Size(782, 460);
             this.dgvTrackList.TabIndex = 0;
             this.dgvTrackList.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTrackList_CellClick);
             this.dgvTrackList.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTrackList_CellDoubleClick);
@@ -247,6 +257,7 @@
             this.lblTrackStart.TabIndex = 32;
             this.lblTrackStart.Text = "00:00:00";
             this.lblTrackStart.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.lblTrackStart.Click += new System.EventHandler(this.lblTrackStart_Click);
             // 
             // btnOpenDirectory
             // 
@@ -331,11 +342,12 @@
             // mediaPlayer
             // 
             this.mediaPlayer.Enabled = true;
-            this.mediaPlayer.Location = new System.Drawing.Point(325, 32);
+            this.mediaPlayer.Location = new System.Drawing.Point(299, 32);
             this.mediaPlayer.Name = "mediaPlayer";
             this.mediaPlayer.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("mediaPlayer.OcxState")));
             this.mediaPlayer.Size = new System.Drawing.Size(10, 10);
             this.mediaPlayer.TabIndex = 35;
+            this.mediaPlayer.Enter += new System.EventHandler(this.mediaPlayer_Enter);
             // 
             // timer1
             // 
@@ -453,5 +465,6 @@
         private System.Windows.Forms.Button btnPrev;
         private System.Windows.Forms.Button btnPlay;
         private AxWMPLib.AxWindowsMediaPlayer mediaPlayer;
+        private System.Windows.Forms.RichTextBox debug;
     }
 }

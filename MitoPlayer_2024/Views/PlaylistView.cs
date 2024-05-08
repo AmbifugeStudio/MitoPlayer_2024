@@ -15,6 +15,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
@@ -333,7 +334,7 @@ namespace MitoPlayer_2024.Views
                     trackIdInPlaylist = Convert.ToInt32(dgvTrackList.Rows[currentTrackIndex].Cells["OrderInList"].Value);
                     lastTrackIndex = currentTrackIndex;
 
-                    String path = (string)dgvTrackList.Rows[currentTrackIndex].Cells[7].Value;
+                    String path = (string)dgvTrackList.Rows[currentTrackIndex].Cells["Path"].Value;
                     if (File.Exists(path))
                     {
                         mediaPlayer.URL = path;
@@ -364,7 +365,7 @@ namespace MitoPlayer_2024.Views
 
             }
         }
-        private void SetCurrentTrackColor()
+        private void SetCurrentTrackColor(int rowIndex = -1)
         {
             for (int i = 0; i < dgvTrackList.Rows.Count; i++)
             {
@@ -385,6 +386,13 @@ namespace MitoPlayer_2024.Views
                         dgvTrackList.Rows[i].DefaultCellStyle.BackColor = Color.LightSeaGreen;
                         break;
                     }
+                }
+            }
+            else
+            {
+                if(rowIndex > -1)
+                {
+                    dgvTrackList.Rows[rowIndex].DefaultCellStyle.BackColor = Color.LightSeaGreen;
                 }
             }
         }
@@ -517,6 +525,7 @@ namespace MitoPlayer_2024.Views
         private void trackVolume_Scroll(object sender, EventArgs e)
         {
             lblVolume.Text = trackVolume.Value.ToString() + "%";
+            mediaPlayer.settings.volume = trackVolume.Value;
             ListEventArgs args = new ListEventArgs();
             args.IntegerField1 = trackVolume.Value;
             ChangeVolume?.Invoke(this, args);
@@ -700,6 +709,7 @@ namespace MitoPlayer_2024.Views
          */
         private void dgvTrackList_MouseDown(object sender, MouseEventArgs e) 
         {
+           
             mouseDown = true;
             HitTestInfo hitTest = dgvTrackList.HitTest(e.X, e.Y);
             if (hitTest != null && hitTest.RowIndex > -1) 
@@ -734,13 +744,15 @@ namespace MitoPlayer_2024.Views
          * törli a kijelölést
          * indítja a draganddrop-ot
          */
+        int rowCount = -1;
         private void Drag()
         {
             initialFirstDisplayedScrollingRowIndex = dgvTrackList.FirstDisplayedScrollingRowIndex;
+            rowCount = dgvTrackList.RowCount;
 
             SaveSelectedRows();
             RemoveSelectedRows();
-
+            
             dgvTrackList.ClearSelection();
             dgvTrackList.Invalidate();
 
@@ -967,6 +979,16 @@ namespace MitoPlayer_2024.Views
         private void dgvTrackList_MouseUp(object sender, MouseEventArgs e)
         {
             mouseDown = false;
+
+            if(rowCount > -1 && rowCount != dgvTrackList.RowCount)
+            {
+                if (Control.MouseButtons != MouseButtons.Left)
+                {
+                    rowCount = -1;
+                    this.Drop(currentRowIndex);
+                    dgvTrackList.Capture = false;
+                }
+            }
         }
         //DROP
         private List<int> selectionIndicesAfterDragAndDrop = new List<int>();
@@ -1124,6 +1146,19 @@ namespace MitoPlayer_2024.Views
             args.IntegerField1 = dgvPlaylistList.SelectedRows[0].Index;
             LoadPlaylist?.Invoke(this, args);
 
+            if(mediaPlayer.playState == WMPLib.WMPPlayState.wmppsPlaying || mediaPlayer.playState == WMPLib.WMPPlayState.wmppsPaused)
+            {
+                String path1 = mediaPlayer.URL;
+                for(int i = 0; i<= dgvTrackList.Rows.Count - 1; i++)
+                {
+                    if (((string)dgvTrackList.Rows[i].Cells["Path"].Value).Equals(path1))
+                    {
+                        this.SetCurrentTrackColor(i);
+                        break;
+                    }
+                }
+            }
+
             trackIdInPlaylist = -1;
             currentTrackIndex = -1;
             lastTrackIndex = -1;
@@ -1160,5 +1195,14 @@ namespace MitoPlayer_2024.Views
         }
         #endregion
 
+        private void mediaPlayer_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblTrackStart_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

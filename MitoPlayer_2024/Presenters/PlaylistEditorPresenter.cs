@@ -37,6 +37,7 @@ namespace MitoPlayer_2024.Presenters
             this.settingDao.SetIntegerSetting(Settings.LastGeneratedPlaylistId.ToString(), this.lastGeneratedPlaylistId);
 
             this.playlistEditorView.CreateOrEditPlaylist += CreateOrEditPlaylist;
+            this.playlistEditorView.ClosePlaylistEditor += ClosePlaylistEditor;
         }
 
         public PlaylistEditorPresenter(IPlaylistEditorView view, IPlaylistDao playlistDao, Playlist playlist)
@@ -49,8 +50,13 @@ namespace MitoPlayer_2024.Presenters
             ((PlaylistEditorView)this.playlistEditorView).SetPlaylistName(playlist.Name);
             
             this.playlistEditorView.CreateOrEditPlaylist += CreateOrEditPlaylist;
+            this.playlistEditorView.ClosePlaylistEditor += ClosePlaylistEditor;
         }
-
+        private void ClosePlaylistEditor(object sender, EventArgs e)
+        {
+            ((PlaylistEditorView)this.playlistEditorView).DialogResult = DialogResult.Cancel;
+            ((PlaylistEditorView)this.playlistEditorView).Close();
+        }
         private void CreateOrEditPlaylist(object sender, Helpers.ListEventArgs e)
         {
             ((PlaylistEditorView)this.playlistEditorView).DialogResult = DialogResult.None;
