@@ -27,9 +27,17 @@ namespace MitoPlayer_2024.Views
             this.CenterToScreen();
         }
 
-        public void SetPlaylistName(String playlistName)
+        public void SetPlaylistName(String playlistName, bool edit = false)
         {
             this.txtPlaylistName.Text = playlistName;
+            if (edit)
+            {
+                this.Text = "Edit playlist";
+            }
+            else
+            {
+                this.Text = "Create playlist";
+            }
         }
 
         private void btnOk_Click(object sender, EventArgs e)
@@ -46,7 +54,8 @@ namespace MitoPlayer_2024.Views
                 ListEventArgs args = new ListEventArgs();
                 args.StringField1 = txtPlaylistName.Text;
                 CreateOrEditPlaylist?.Invoke(this, args);
-            }else if(e.KeyCode == Keys.Escape)
+            }
+            else if(e.KeyCode == Keys.Escape)
             {
                 ClosePlaylistEditor?.Invoke(this,new EventArgs());
             }

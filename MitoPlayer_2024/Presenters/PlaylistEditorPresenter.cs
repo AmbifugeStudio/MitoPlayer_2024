@@ -47,7 +47,7 @@ namespace MitoPlayer_2024.Presenters
             this.newPlaylist = playlist;
             this.isEditMode = true;
 
-            ((PlaylistEditorView)this.playlistEditorView).SetPlaylistName(playlist.Name);
+            ((PlaylistEditorView)this.playlistEditorView).SetPlaylistName(playlist.Name, true);
             
             this.playlistEditorView.CreateOrEditPlaylist += CreateOrEditPlaylist;
             this.playlistEditorView.ClosePlaylistEditor += ClosePlaylistEditor;

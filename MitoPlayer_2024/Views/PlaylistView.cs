@@ -20,7 +20,7 @@ using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using WMPLib;
+
 using static System.Windows.Forms.DataGridView;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
@@ -355,7 +355,7 @@ namespace MitoPlayer_2024.Views
             }
             else
             {
-                if (mediaPlayer.playState != WMPPlayState.wmppsPlaying)
+                if (mediaPlayer.playState != WMPLib.WMPPlayState.wmppsPlaying)
                 {
                     lblCurrentTrack.Text = lblCurrentTrack.Text.Replace("Paused: ", "Playing: ");
 
@@ -399,7 +399,7 @@ namespace MitoPlayer_2024.Views
         //PAUSE TRACK
         private void PauseTrack()
         {
-            if (mediaPlayer.playState == WMPPlayState.wmppsPlaying)
+            if (mediaPlayer.playState == WMPLib.WMPPlayState.wmppsPlaying)
             {
                 lblCurrentTrack.Text = lblCurrentTrack.Text.Replace("Playing: ", "Paused: ");
 
