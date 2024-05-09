@@ -31,7 +31,6 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PlaylistView));
             this.tabPagePlaylistDetail = new System.Windows.Forms.TabPage();
-            this.debug = new System.Windows.Forms.RichTextBox();
             this.lblSelectedItemsLength = new System.Windows.Forms.Label();
             this.lblSelectedItemsCount = new System.Windows.Forms.Label();
             this.lblCurrentTrack = new System.Windows.Forms.Label();
@@ -61,6 +60,7 @@
             this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportToM3uToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportToTxtToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.button1 = new System.Windows.Forms.Button();
             this.tabPagePlaylistDetail.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPlaylistList)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTrackList)).BeginInit();
@@ -73,7 +73,7 @@
             // 
             // tabPagePlaylistDetail
             // 
-            this.tabPagePlaylistDetail.Controls.Add(this.debug);
+            this.tabPagePlaylistDetail.Controls.Add(this.button1);
             this.tabPagePlaylistDetail.Controls.Add(this.lblSelectedItemsLength);
             this.tabPagePlaylistDetail.Controls.Add(this.lblSelectedItemsCount);
             this.tabPagePlaylistDetail.Controls.Add(this.lblCurrentTrack);
@@ -86,14 +86,6 @@
             this.tabPagePlaylistDetail.TabIndex = 1;
             this.tabPagePlaylistDetail.Text = "Player";
             this.tabPagePlaylistDetail.UseVisualStyleBackColor = true;
-            // 
-            // debug
-            // 
-            this.debug.Location = new System.Drawing.Point(961, 6);
-            this.debug.Name = "debug";
-            this.debug.Size = new System.Drawing.Size(152, 460);
-            this.debug.TabIndex = 4;
-            this.debug.Text = "";
             // 
             // lblSelectedItemsLength
             // 
@@ -119,7 +111,7 @@
             // 
             this.lblCurrentTrack.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblCurrentTrack.AutoSize = true;
-            this.lblCurrentTrack.Location = new System.Drawing.Point(170, 469);
+            this.lblCurrentTrack.Location = new System.Drawing.Point(170, 453);
             this.lblCurrentTrack.Name = "lblCurrentTrack";
             this.lblCurrentTrack.Size = new System.Drawing.Size(50, 13);
             this.lblCurrentTrack.TabIndex = 2;
@@ -133,12 +125,12 @@
             | System.Windows.Forms.AnchorStyles.Left)));
             this.dgvPlaylistList.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvPlaylistList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvPlaylistList.Location = new System.Drawing.Point(3, 3);
+            this.dgvPlaylistList.Location = new System.Drawing.Point(3, 6);
             this.dgvPlaylistList.MultiSelect = false;
             this.dgvPlaylistList.Name = "dgvPlaylistList";
             this.dgvPlaylistList.ReadOnly = true;
             this.dgvPlaylistList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvPlaylistList.Size = new System.Drawing.Size(164, 447);
+            this.dgvPlaylistList.Size = new System.Drawing.Size(164, 444);
             this.dgvPlaylistList.TabIndex = 1;
             this.dgvPlaylistList.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvPlaylistList_CellDoubleClick);
             this.dgvPlaylistList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvPlaylistList_KeyDown);
@@ -154,11 +146,11 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvTrackList.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dgvTrackList.Location = new System.Drawing.Point(173, 6);
+            this.dgvTrackList.Location = new System.Drawing.Point(173, 35);
             this.dgvTrackList.Name = "dgvTrackList";
             this.dgvTrackList.ReadOnly = true;
             this.dgvTrackList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvTrackList.Size = new System.Drawing.Size(782, 460);
+            this.dgvTrackList.Size = new System.Drawing.Size(940, 415);
             this.dgvTrackList.TabIndex = 0;
             this.dgvTrackList.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTrackList_CellClick);
             this.dgvTrackList.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTrackList_CellDoubleClick);
@@ -411,6 +403,15 @@
             this.exportToTxtToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
             this.exportToTxtToolStripMenuItem.Text = "Export to txt";
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(1026, 6);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(87, 23);
+            this.button1.TabIndex = 5;
+            this.button1.Text = "Columns";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
             // PlaylistView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -420,6 +421,7 @@
             this.Controls.Add(this.panel1);
             this.Name = "PlaylistView";
             this.Text = "PlayerView";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.tabPagePlaylistDetail.ResumeLayout(false);
             this.tabPagePlaylistDetail.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPlaylistList)).EndInit();
@@ -465,6 +467,6 @@
         private System.Windows.Forms.Button btnPrev;
         private System.Windows.Forms.Button btnPlay;
         private AxWMPLib.AxWindowsMediaPlayer mediaPlayer;
-        private System.Windows.Forms.RichTextBox debug;
+        private System.Windows.Forms.Button button1;
     }
 }

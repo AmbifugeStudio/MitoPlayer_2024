@@ -30,42 +30,46 @@
         {
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.addFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStripOpenFiles = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStripOpenDirectories = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.newPlaylistToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.loadPlaylistToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.savePlaylistToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStripCreatePlaylist = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStripLoadPlaylist = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStripRenamePlaylist = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStripDeletePlaylist = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.preferencesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStripPreferences = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStripExit = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.removeDeadItemsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.removeDuplicatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStripRemoveMissingTracks = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStripRemoveDuplicatedTracks = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.orderByFilenameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.orderByArtistsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.orderByTitleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStripOrderByFileName = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStripOrderByArtist = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStripOrderByTitle = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-            this.reverseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.shuffleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStripReverse = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStripShuffle = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-            this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStripClear = new System.Windows.Forms.ToolStripMenuItem();
             this.playbackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.stopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.pauseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.playToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.previousToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.nextToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.randomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStripStop = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStripPause = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStripPlay = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStripPrev = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStripNext = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStripRandom = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStripAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.button1 = new System.Windows.Forms.Button();
-            this.btnPlayer = new System.Windows.Forms.Button();
-            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnTagValues = new System.Windows.Forms.Button();
+            this.btnPlaylist = new System.Windows.Forms.Button();
+            this.btnTracks = new System.Windows.Forms.Button();
+            this.btnRules = new System.Windows.Forms.Button();
+            this.btnTemplates = new System.Windows.Forms.Button();
+            this.btnHarmonizer = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
@@ -86,87 +90,96 @@
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.openToolStripMenuItem,
-            this.addFolderToolStripMenuItem,
+            this.menuStripOpenFiles,
+            this.menuStripOpenDirectories,
             this.toolStripSeparator2,
-            this.newPlaylistToolStripMenuItem,
-            this.loadPlaylistToolStripMenuItem,
-            this.savePlaylistToolStripMenuItem,
-            this.toolStripMenuItem2,
+            this.menuStripCreatePlaylist,
+            this.menuStripLoadPlaylist,
+            this.menuStripRenamePlaylist,
+            this.menuStripDeletePlaylist,
             this.toolStripSeparator3,
-            this.preferencesToolStripMenuItem,
-            this.exitToolStripMenuItem});
+            this.menuStripPreferences,
+            this.menuStripExit});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
-            // openToolStripMenuItem
+            // menuStripOpenFiles
             // 
-            this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.openToolStripMenuItem.Text = "Add files...";
-            this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
+            this.menuStripOpenFiles.Name = "menuStripOpenFiles";
+            this.menuStripOpenFiles.Size = new System.Drawing.Size(180, 22);
+            this.menuStripOpenFiles.Text = "Add files...";
+            this.menuStripOpenFiles.Click += new System.EventHandler(this.menuStripOpenFiles_Click);
             // 
-            // addFolderToolStripMenuItem
+            // menuStripOpenDirectories
             // 
-            this.addFolderToolStripMenuItem.Name = "addFolderToolStripMenuItem";
-            this.addFolderToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.addFolderToolStripMenuItem.Text = "Add folder...";
-            this.addFolderToolStripMenuItem.Click += new System.EventHandler(this.addFolderToolStripMenuItem_Click);
+            this.menuStripOpenDirectories.Name = "menuStripOpenDirectory";
+            this.menuStripOpenDirectories.Size = new System.Drawing.Size(180, 22);
+            this.menuStripOpenDirectories.Text = "Add folder...";
+            this.menuStripOpenDirectories.Click += new System.EventHandler(this.menuStripOpenDirectory_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
             // 
-            // newPlaylistToolStripMenuItem
+            // menuStripCreatePlaylist
             // 
-            this.newPlaylistToolStripMenuItem.Name = "newPlaylistToolStripMenuItem";
-            this.newPlaylistToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.newPlaylistToolStripMenuItem.Text = "New playlist";
-            this.newPlaylistToolStripMenuItem.Click += new System.EventHandler(this.newPlaylistToolStripMenuItem_Click);
+            this.menuStripCreatePlaylist.Name = "menuStripCreatePlaylist";
+            this.menuStripCreatePlaylist.Size = new System.Drawing.Size(180, 22);
+            this.menuStripCreatePlaylist.Text = "New playlist";
+            this.menuStripCreatePlaylist.Click += new System.EventHandler(this.menuStripCreatePlaylist_Click);
             // 
-            // loadPlaylistToolStripMenuItem
+            // menuStripLoadPlaylist
             // 
-            this.loadPlaylistToolStripMenuItem.Name = "loadPlaylistToolStripMenuItem";
-            this.loadPlaylistToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.loadPlaylistToolStripMenuItem.Text = "Load playlist...";
-            this.loadPlaylistToolStripMenuItem.Click += new System.EventHandler(this.loadPlaylistToolStripMenuItem_Click);
+            this.menuStripLoadPlaylist.Name = "menuStripLoadPlaylist";
+            this.menuStripLoadPlaylist.Size = new System.Drawing.Size(180, 22);
+            this.menuStripLoadPlaylist.Text = "Load playlist...";
+            this.menuStripLoadPlaylist.Click += new System.EventHandler(this.menuStripLoadPlaylist_Click);
             // 
-            // savePlaylistToolStripMenuItem
+            // menuStripRenamePlaylist
             // 
-            this.savePlaylistToolStripMenuItem.Name = "savePlaylistToolStripMenuItem";
-            this.savePlaylistToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.savePlaylistToolStripMenuItem.Text = "Rename playlist...";
-            this.savePlaylistToolStripMenuItem.Click += new System.EventHandler(this.savePlaylistToolStripMenuItem_Click);
+            this.menuStripRenamePlaylist.Name = "menuStripRenamePlaylist";
+            this.menuStripRenamePlaylist.Size = new System.Drawing.Size(180, 22);
+            this.menuStripRenamePlaylist.Text = "Rename playlist...";
+            this.menuStripRenamePlaylist.Click += new System.EventHandler(this.menuStripRenamePlaylist_Click);
+            // 
+            // menuStripDeletePlaylist
+            // 
+            this.menuStripDeletePlaylist.Name = "menuStripDeletePlaylist";
+            this.menuStripDeletePlaylist.Size = new System.Drawing.Size(180, 22);
+            this.menuStripDeletePlaylist.Text = "Delete playlist...";
+            this.menuStripDeletePlaylist.Click += new System.EventHandler(this.menuStripDeletePlaylist_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
             this.toolStripSeparator3.Size = new System.Drawing.Size(177, 6);
             // 
-            // preferencesToolStripMenuItem
+            // menuStripPreferences
             // 
-            this.preferencesToolStripMenuItem.Name = "preferencesToolStripMenuItem";
-            this.preferencesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.preferencesToolStripMenuItem.Text = "Preferences";
+            this.menuStripPreferences.Name = "menuStripPreferences";
+            this.menuStripPreferences.Size = new System.Drawing.Size(180, 22);
+            this.menuStripPreferences.Text = "Preferences";
+            this.menuStripPreferences.Click += new System.EventHandler(this.menuStripPreferences_Click);
             // 
-            // exitToolStripMenuItem
+            // menuStripExit
             // 
-            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.exitToolStripMenuItem.Text = "Exit";
+            this.menuStripExit.Name = "menuStripExit";
+            this.menuStripExit.Size = new System.Drawing.Size(180, 22);
+            this.menuStripExit.Text = "Exit";
+            this.menuStripExit.Click += new System.EventHandler(this.menuStripExit_Click);
             // 
             // editToolStripMenuItem
             // 
             this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripSeparator1,
-            this.removeDeadItemsToolStripMenuItem,
-            this.removeDuplicatesToolStripMenuItem,
+            this.menuStripRemoveMissingTracks,
+            this.menuStripRemoveDuplicatedTracks,
             this.toolStripSeparator6,
             this.toolStripMenuItem1,
             this.toolStripSeparator5,
-            this.clearToolStripMenuItem});
+            this.menuStripClear});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
             this.editToolStripMenuItem.Text = "Edit";
@@ -176,19 +189,19 @@
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(192, 6);
             // 
-            // removeDeadItemsToolStripMenuItem
+            // menuStripRemoveMissingTracks
             // 
-            this.removeDeadItemsToolStripMenuItem.Name = "removeDeadItemsToolStripMenuItem";
-            this.removeDeadItemsToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
-            this.removeDeadItemsToolStripMenuItem.Text = "Remove missing tracks";
-            this.removeDeadItemsToolStripMenuItem.Click += new System.EventHandler(this.removeDeadItemsToolStripMenuItem_Click);
+            this.menuStripRemoveMissingTracks.Name = "menuStripRemoveMissingTracks";
+            this.menuStripRemoveMissingTracks.Size = new System.Drawing.Size(195, 22);
+            this.menuStripRemoveMissingTracks.Text = "Remove missing tracks";
+            this.menuStripRemoveMissingTracks.Click += new System.EventHandler(this.menuStripRemoveMissingTracks_Click);
             // 
-            // removeDuplicatesToolStripMenuItem
+            // menuStripRemoveDuplicatedTracks
             // 
-            this.removeDuplicatesToolStripMenuItem.Name = "removeDuplicatesToolStripMenuItem";
-            this.removeDuplicatesToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
-            this.removeDuplicatesToolStripMenuItem.Text = "Remove duplicates";
-            this.removeDuplicatesToolStripMenuItem.Click += new System.EventHandler(this.removeDuplicatesToolStripMenuItem_Click);
+            this.menuStripRemoveDuplicatedTracks.Name = "menuStripRemoveDuplicatedTracks";
+            this.menuStripRemoveDuplicatedTracks.Size = new System.Drawing.Size(195, 22);
+            this.menuStripRemoveDuplicatedTracks.Text = "Remove duplicates";
+            this.menuStripRemoveDuplicatedTracks.Click += new System.EventHandler(this.menuStripRemoveDuplicatedTracks_Click);
             // 
             // toolStripSeparator6
             // 
@@ -198,173 +211,212 @@
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.orderByFilenameToolStripMenuItem,
-            this.orderByArtistsToolStripMenuItem,
-            this.orderByTitleToolStripMenuItem,
+            this.menuStripOrderByFileName,
+            this.menuStripOrderByArtist,
+            this.menuStripOrderByTitle,
             this.toolStripSeparator4,
-            this.reverseToolStripMenuItem,
-            this.shuffleToolStripMenuItem});
+            this.menuStripReverse,
+            this.menuStripShuffle});
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
             this.toolStripMenuItem1.Size = new System.Drawing.Size(195, 22);
             this.toolStripMenuItem1.Text = "Order";
             // 
-            // orderByFilenameToolStripMenuItem
+            // menuStripOrderByFileName
             // 
-            this.orderByFilenameToolStripMenuItem.Name = "orderByFilenameToolStripMenuItem";
-            this.orderByFilenameToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
-            this.orderByFilenameToolStripMenuItem.Text = "Order by filename";
-            this.orderByFilenameToolStripMenuItem.Click += new System.EventHandler(this.orderByFilenameToolStripMenuItem_Click);
+            this.menuStripOrderByFileName.Name = "menuStripOrderByFileName";
+            this.menuStripOrderByFileName.Size = new System.Drawing.Size(180, 22);
+            this.menuStripOrderByFileName.Text = "Order by filename";
+            this.menuStripOrderByFileName.Click += new System.EventHandler(this.menuStripOrderByFileName_Click);
             // 
-            // orderByArtistsToolStripMenuItem
+            // menuStripOrderByArtist
             // 
-            this.orderByArtistsToolStripMenuItem.Name = "orderByArtistsToolStripMenuItem";
-            this.orderByArtistsToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
-            this.orderByArtistsToolStripMenuItem.Text = "Order by artists";
-            this.orderByArtistsToolStripMenuItem.Click += new System.EventHandler(this.orderByArtistsToolStripMenuItem_Click);
+            this.menuStripOrderByArtist.Name = "menuStripOrderByArtist";
+            this.menuStripOrderByArtist.Size = new System.Drawing.Size(180, 22);
+            this.menuStripOrderByArtist.Text = "Order by artists";
+            this.menuStripOrderByArtist.Click += new System.EventHandler(this.menuStripOrderByArtist_Click);
             // 
-            // orderByTitleToolStripMenuItem
+            // menuStripOrderByTitle
             // 
-            this.orderByTitleToolStripMenuItem.Name = "orderByTitleToolStripMenuItem";
-            this.orderByTitleToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
-            this.orderByTitleToolStripMenuItem.Text = "Order by title";
-            this.orderByTitleToolStripMenuItem.Click += new System.EventHandler(this.orderByTitleToolStripMenuItem_Click);
+            this.menuStripOrderByTitle.Name = "menuStripOrderByTitle";
+            this.menuStripOrderByTitle.Size = new System.Drawing.Size(180, 22);
+            this.menuStripOrderByTitle.Text = "Order by title";
+            this.menuStripOrderByTitle.Click += new System.EventHandler(this.menuStripOrderByTitle_Click);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(166, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(177, 6);
             // 
-            // reverseToolStripMenuItem
+            // menuStripReverse
             // 
-            this.reverseToolStripMenuItem.Name = "reverseToolStripMenuItem";
-            this.reverseToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
-            this.reverseToolStripMenuItem.Text = "Reverse";
-            this.reverseToolStripMenuItem.Click += new System.EventHandler(this.reverseToolStripMenuItem_Click);
+            this.menuStripReverse.Name = "menuStripReverse";
+            this.menuStripReverse.Size = new System.Drawing.Size(180, 22);
+            this.menuStripReverse.Text = "Reverse";
+            this.menuStripReverse.Click += new System.EventHandler(this.menuStripReverse_Click);
             // 
-            // shuffleToolStripMenuItem
+            // menuStripShuffle
             // 
-            this.shuffleToolStripMenuItem.Name = "shuffleToolStripMenuItem";
-            this.shuffleToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
-            this.shuffleToolStripMenuItem.Text = "Shuffle";
-            this.shuffleToolStripMenuItem.Click += new System.EventHandler(this.shuffleToolStripMenuItem_Click);
+            this.menuStripShuffle.Name = "menuStripShuffle";
+            this.menuStripShuffle.Size = new System.Drawing.Size(180, 22);
+            this.menuStripShuffle.Text = "Shuffle";
+            this.menuStripShuffle.Click += new System.EventHandler(this.menuStripShuffle_Click);
             // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
             this.toolStripSeparator5.Size = new System.Drawing.Size(192, 6);
             // 
-            // clearToolStripMenuItem
+            // menuStripClear
             // 
-            this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-            this.clearToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
-            this.clearToolStripMenuItem.Text = "Clear";
-            this.clearToolStripMenuItem.Click += new System.EventHandler(this.clearToolStripMenuItem_Click);
+            this.menuStripClear.Name = "menuStripClear";
+            this.menuStripClear.Size = new System.Drawing.Size(195, 22);
+            this.menuStripClear.Text = "Clear";
+            this.menuStripClear.Click += new System.EventHandler(this.menuStripClear_Click);
             // 
             // playbackToolStripMenuItem
             // 
             this.playbackToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.stopToolStripMenuItem,
-            this.pauseToolStripMenuItem,
-            this.playToolStripMenuItem,
-            this.previousToolStripMenuItem,
-            this.nextToolStripMenuItem,
-            this.randomToolStripMenuItem});
+            this.menuStripStop,
+            this.menuStripPause,
+            this.menuStripPlay,
+            this.menuStripPrev,
+            this.menuStripNext,
+            this.menuStripRandom});
             this.playbackToolStripMenuItem.Name = "playbackToolStripMenuItem";
             this.playbackToolStripMenuItem.Size = new System.Drawing.Size(66, 20);
             this.playbackToolStripMenuItem.Text = "Playback";
             // 
-            // stopToolStripMenuItem
+            // menuStripStop
             // 
-            this.stopToolStripMenuItem.Name = "stopToolStripMenuItem";
-            this.stopToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
-            this.stopToolStripMenuItem.Text = "Stop";
-            this.stopToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
+            this.menuStripStop.Name = "menuStripStop";
+            this.menuStripStop.Size = new System.Drawing.Size(180, 22);
+            this.menuStripStop.Text = "Stop";
+            this.menuStripStop.Click += new System.EventHandler(this.menuStripStop_Click);
             // 
-            // pauseToolStripMenuItem
+            // menuStripPause
             // 
-            this.pauseToolStripMenuItem.Name = "pauseToolStripMenuItem";
-            this.pauseToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
-            this.pauseToolStripMenuItem.Text = "Pause";
-            this.pauseToolStripMenuItem.Click += new System.EventHandler(this.pauseToolStripMenuItem_Click);
+            this.menuStripPause.Name = "menuStripPause";
+            this.menuStripPause.Size = new System.Drawing.Size(180, 22);
+            this.menuStripPause.Text = "Pause";
+            this.menuStripPause.Click += new System.EventHandler(this.menuStripPause_Click);
             // 
-            // playToolStripMenuItem
+            // menuStripPlay
             // 
-            this.playToolStripMenuItem.Name = "playToolStripMenuItem";
-            this.playToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
-            this.playToolStripMenuItem.Text = "Play";
-            this.playToolStripMenuItem.Click += new System.EventHandler(this.playToolStripMenuItem_Click);
+            this.menuStripPlay.Name = "menuStripPlay";
+            this.menuStripPlay.Size = new System.Drawing.Size(180, 22);
+            this.menuStripPlay.Text = "Play";
+            this.menuStripPlay.Click += new System.EventHandler(this.menuStripPlay_Click);
             // 
-            // previousToolStripMenuItem
+            // menuStripPrev
             // 
-            this.previousToolStripMenuItem.Name = "previousToolStripMenuItem";
-            this.previousToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
-            this.previousToolStripMenuItem.Text = "Previous";
-            this.previousToolStripMenuItem.Click += new System.EventHandler(this.previousToolStripMenuItem_Click);
+            this.menuStripPrev.Name = "menuStripPrev";
+            this.menuStripPrev.Size = new System.Drawing.Size(180, 22);
+            this.menuStripPrev.Text = "Previous";
+            this.menuStripPrev.Click += new System.EventHandler(this.menuStripPrev_Click);
             // 
-            // nextToolStripMenuItem
+            // menuStripNext
             // 
-            this.nextToolStripMenuItem.Name = "nextToolStripMenuItem";
-            this.nextToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
-            this.nextToolStripMenuItem.Text = "Next";
-            this.nextToolStripMenuItem.Click += new System.EventHandler(this.nextToolStripMenuItem_Click);
+            this.menuStripNext.Name = "menuStripNext";
+            this.menuStripNext.Size = new System.Drawing.Size(180, 22);
+            this.menuStripNext.Text = "Next";
+            this.menuStripNext.Click += new System.EventHandler(this.menuStripNext_Click);
             // 
-            // randomToolStripMenuItem
+            // menuStripRandom
             // 
-            this.randomToolStripMenuItem.Name = "randomToolStripMenuItem";
-            this.randomToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
-            this.randomToolStripMenuItem.Text = "Random";
-            this.randomToolStripMenuItem.Click += new System.EventHandler(this.randomToolStripMenuItem_Click);
+            this.menuStripRandom.Name = "menuStripRandom";
+            this.menuStripRandom.Size = new System.Drawing.Size(180, 22);
+            this.menuStripRandom.Text = "Random";
+            this.menuStripRandom.Click += new System.EventHandler(this.menuStripRandom_Click);
             // 
             // helpToolStripMenuItem
             // 
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.aboutToolStripMenuItem});
+            this.menuStripAbout});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.helpToolStripMenuItem.Text = "Help";
             // 
-            // aboutToolStripMenuItem
+            // menuStripAbout
             // 
-            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
-            this.aboutToolStripMenuItem.Text = "About";
+            this.menuStripAbout.Name = "menuStripAbout";
+            this.menuStripAbout.Size = new System.Drawing.Size(180, 22);
+            this.menuStripAbout.Text = "About";
+            this.menuStripAbout.Click += new System.EventHandler(this.menuStripAbout_Click);
             // 
             // panel2
             // 
-            this.panel2.Controls.Add(this.button1);
-            this.panel2.Controls.Add(this.btnPlayer);
+            this.panel2.Controls.Add(this.btnHarmonizer);
+            this.panel2.Controls.Add(this.btnTemplates);
+            this.panel2.Controls.Add(this.btnRules);
+            this.panel2.Controls.Add(this.btnTracks);
+            this.panel2.Controls.Add(this.btnTagValues);
+            this.panel2.Controls.Add(this.btnPlaylist);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel2.Location = new System.Drawing.Point(0, 24);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(86, 458);
+            this.panel2.Size = new System.Drawing.Size(91, 458);
             this.panel2.TabIndex = 2;
             // 
-            // button1
+            // btnTagValues
             // 
-            this.button1.Location = new System.Drawing.Point(0, 59);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(86, 62);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "Player";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.btnPlayer_Click);
+            this.btnTagValues.Location = new System.Drawing.Point(0, 59);
+            this.btnTagValues.Name = "btnTagValues";
+            this.btnTagValues.Size = new System.Drawing.Size(91, 62);
+            this.btnTagValues.TabIndex = 0;
+            this.btnTagValues.Text = "Tag Values";
+            this.btnTagValues.UseVisualStyleBackColor = true;
+            this.btnTagValues.Click += new System.EventHandler(this.btnTagValues_Click);
             // 
-            // btnPlayer
+            // btnPlaylist
             // 
-            this.btnPlayer.Location = new System.Drawing.Point(0, 0);
-            this.btnPlayer.Name = "btnPlayer";
-            this.btnPlayer.Size = new System.Drawing.Size(86, 62);
-            this.btnPlayer.TabIndex = 0;
-            this.btnPlayer.Text = "Player";
-            this.btnPlayer.UseVisualStyleBackColor = true;
-            this.btnPlayer.Click += new System.EventHandler(this.btnPlayer_Click);
+            this.btnPlaylist.Location = new System.Drawing.Point(0, 0);
+            this.btnPlaylist.Name = "btnPlaylist";
+            this.btnPlaylist.Size = new System.Drawing.Size(91, 62);
+            this.btnPlaylist.TabIndex = 0;
+            this.btnPlaylist.Text = "Player";
+            this.btnPlaylist.UseVisualStyleBackColor = true;
+            this.btnPlaylist.Click += new System.EventHandler(this.btnPlaylist_Click);
             // 
-            // toolStripMenuItem2
+            // btnTracks
             // 
-            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(180, 22);
-            this.toolStripMenuItem2.Text = "Delete playlist...";
-            this.toolStripMenuItem2.Click += new System.EventHandler(this.toolStripMenuItem2_Click);
+            this.btnTracks.Location = new System.Drawing.Point(0, 118);
+            this.btnTracks.Name = "btnTracks";
+            this.btnTracks.Size = new System.Drawing.Size(91, 62);
+            this.btnTracks.TabIndex = 0;
+            this.btnTracks.Text = "Tracks";
+            this.btnTracks.UseVisualStyleBackColor = true;
+            this.btnTracks.Click += new System.EventHandler(this.btnTracks_Click);
+            // 
+            // btnRules
+            // 
+            this.btnRules.Location = new System.Drawing.Point(0, 176);
+            this.btnRules.Name = "btnRules";
+            this.btnRules.Size = new System.Drawing.Size(91, 62);
+            this.btnRules.TabIndex = 0;
+            this.btnRules.Text = "Rules";
+            this.btnRules.UseVisualStyleBackColor = true;
+            this.btnRules.Click += new System.EventHandler(this.btnRules_Click);
+            // 
+            // btnTemplates
+            // 
+            this.btnTemplates.Location = new System.Drawing.Point(0, 234);
+            this.btnTemplates.Name = "btnTemplates";
+            this.btnTemplates.Size = new System.Drawing.Size(91, 62);
+            this.btnTemplates.TabIndex = 0;
+            this.btnTemplates.Text = "Templates";
+            this.btnTemplates.UseVisualStyleBackColor = true;
+            this.btnTemplates.Click += new System.EventHandler(this.btnTemplates_Click);
+            // 
+            // btnHarmonizer
+            // 
+            this.btnHarmonizer.Location = new System.Drawing.Point(0, 292);
+            this.btnHarmonizer.Name = "btnHarmonizer";
+            this.btnHarmonizer.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.btnHarmonizer.Size = new System.Drawing.Size(91, 62);
+            this.btnHarmonizer.TabIndex = 0;
+            this.btnHarmonizer.Text = "HARMONIZER";
+            this.btnHarmonizer.UseVisualStyleBackColor = true;
+            this.btnHarmonizer.Click += new System.EventHandler(this.btnHarmonizer_Click);
             // 
             // MainView
             // 
@@ -376,7 +428,9 @@
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainView";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "MitoPlayer 2024 v0.1.3";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.panel2.ResumeLayout(false);
@@ -389,42 +443,46 @@
 
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem addFolderToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem newPlaylistToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem loadPlaylistToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem savePlaylistToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem preferencesToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem menuStripOpenFiles;
+        private System.Windows.Forms.ToolStripMenuItem menuStripOpenDirectories;
+        private System.Windows.Forms.ToolStripMenuItem menuStripCreatePlaylist;
+        private System.Windows.Forms.ToolStripMenuItem menuStripLoadPlaylist;
+        private System.Windows.Forms.ToolStripMenuItem menuStripRenamePlaylist;
+        private System.Windows.Forms.ToolStripMenuItem menuStripPreferences;
+        private System.Windows.Forms.ToolStripMenuItem menuStripExit;
         private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem removeDuplicatesToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem removeDeadItemsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem menuStripRemoveDuplicatedTracks;
+        private System.Windows.Forms.ToolStripMenuItem menuStripRemoveMissingTracks;
         private System.Windows.Forms.ToolStripMenuItem playbackToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem stopToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem pauseToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem playToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem previousToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem nextToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem randomToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem menuStripStop;
+        private System.Windows.Forms.ToolStripMenuItem menuStripPause;
+        private System.Windows.Forms.ToolStripMenuItem menuStripPlay;
+        private System.Windows.Forms.ToolStripMenuItem menuStripPrev;
+        private System.Windows.Forms.ToolStripMenuItem menuStripNext;
+        private System.Windows.Forms.ToolStripMenuItem menuStripRandom;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem menuStripAbout;
         private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.Button btnPlayer;
+        private System.Windows.Forms.Button btnPlaylist;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
-        private System.Windows.Forms.ToolStripMenuItem orderByFilenameToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem orderByArtistsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem orderByTitleToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem menuStripOrderByFileName;
+        private System.Windows.Forms.ToolStripMenuItem menuStripOrderByArtist;
+        private System.Windows.Forms.ToolStripMenuItem menuStripOrderByTitle;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
-        private System.Windows.Forms.ToolStripMenuItem reverseToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem shuffleToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem menuStripReverse;
+        private System.Windows.Forms.ToolStripMenuItem menuStripShuffle;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
-        private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
+        private System.Windows.Forms.ToolStripMenuItem menuStripClear;
+        private System.Windows.Forms.Button btnTagValues;
+        private System.Windows.Forms.ToolStripMenuItem menuStripDeletePlaylist;
+        private System.Windows.Forms.Button btnTemplates;
+        private System.Windows.Forms.Button btnRules;
+        private System.Windows.Forms.Button btnTracks;
+        private System.Windows.Forms.Button btnHarmonizer;
     }
 }
 

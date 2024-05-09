@@ -8,29 +8,42 @@ namespace MitoPlayer_2024.Views
 {
     public interface IMainView
     {
-        event EventHandler ShowPlaylistView;
-        event EventHandler RemoveMissingTracks;
-        event EventHandler RemoveDuplicatedTracks;
+        //MENUSTRIP
+        //FILE
         event EventHandler OpenFiles;
         event EventHandler OpenDirectory;
-
-        event EventHandler PlayTrack;
-        event EventHandler PauseTrack;
-        event EventHandler StopTrack;
-        event EventHandler PrevTrack;
-        event EventHandler NextTrack;
-        event EventHandler RandomTrack;
-
+        event EventHandler CreatePlaylist;
+        event EventHandler LoadPlaylist;
+        event EventHandler RenamePlaylist;
+        event EventHandler DeletePlaylist;
+        event EventHandler Preferences;
+        event EventHandler Exit;
+        //EDIT
+        event EventHandler RemoveMissingTracks;
+        event EventHandler RemoveDuplicatedTracks;
         event EventHandler OrderByTitle;
         event EventHandler OrderByArtist;
         event EventHandler OrderByFileName;
         event EventHandler Reverse;
         event EventHandler Shuffle;
         event EventHandler Clear;
+        //PLAYBACK
+        event EventHandler PlayTrack;
+        event EventHandler PauseTrack;
+        event EventHandler StopTrack;
+        event EventHandler PrevTrack;
+        event EventHandler NextTrack;
+        event EventHandler RandomTrack;
+        //HELP
+        event EventHandler About;
 
-        event EventHandler CreatePlaylist;
-        event EventHandler LoadPlaylist;
-        event EventHandler RenamePlaylist;
-        event EventHandler DeletePlaylist;
+        //OPEN VIEWS
+        event EventHandler ShowProfileEditorView;
+        event EventHandler ShowPlaylistView;
+        event EventHandler ShowTagValueEditorView;
+        event EventHandler ShowRuleEditorView;
+        event EventHandler ShowTrackEditorView;
+        event EventHandler ShowTemplateEditorView;
+        event EventHandler ShowHarmonizerView;
     }
 }

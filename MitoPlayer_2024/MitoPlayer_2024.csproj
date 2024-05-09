@@ -23,11 +23,14 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>1</ApplicationRevision>
+    <AutorunEnabled>true</AutorunEnabled>
+    <ApplicationRevision>5</ApplicationRevision>
     <ApplicationVersion>0.8.4.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <BootstrapperComponentsLocation>Absolute</BootstrapperComponentsLocation>
+    <BootstrapperComponentsUrl>https://www.apachefriends.org/hu/download.html</BootstrapperComponentsUrl>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -61,20 +64,11 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AxInterop.WMPLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\WMPLib.1.0.0\lib\AxInterop.WMPLib.dll</HintPath>
-    </Reference>
     <Reference Include="BouncyCastle.Cryptography, Version=2.0.0.0, Culture=neutral, PublicKeyToken=072edcf4a5328938, processorArchitecture=MSIL">
       <HintPath>..\packages\BouncyCastle.Cryptography.2.2.1\lib\net461\BouncyCastle.Cryptography.dll</HintPath>
     </Reference>
     <Reference Include="Google.Protobuf, Version=3.25.1.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Protobuf.3.25.1\lib\net45\Google.Protobuf.dll</HintPath>
-    </Reference>
-    <Reference Include="Interop.WMPLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-      <HintPath>..\packages\WMPLib.1.0.0\lib\Interop.WMPLib.dll</HintPath>
     </Reference>
     <Reference Include="K4os.Compression.LZ4, Version=1.3.5.0, Culture=neutral, PublicKeyToken=2186fa9121ef231d, processorArchitecture=MSIL">
       <HintPath>..\packages\K4os.Compression.LZ4.1.3.5\lib\net462\K4os.Compression.LZ4.dll</HintPath>
@@ -177,16 +171,34 @@
     <Compile Include="Models\ISettingDao.cs" />
     <Compile Include="Models\ITrackDao.cs" />
     <Compile Include="Models\Playlist.cs" />
+    <Compile Include="Presenters\HarmonizerPresenter.cs" />
     <Compile Include="Presenters\PlaylistEditorPresenter.cs" />
     <Compile Include="Presenters\PlaylistPresenter.cs" />
+    <Compile Include="Presenters\ProfileEditorPresenter.cs" />
+    <Compile Include="Presenters\RuleEditorPresenter.cs" />
+    <Compile Include="Presenters\TagValueEditorPresenter.cs" />
+    <Compile Include="Presenters\TemplateEditorPresenter.cs" />
+    <Compile Include="Presenters\TrackEditorPresenter.cs" />
     <Compile Include="Views\ColumnVisibilityEditorView.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Views\ColumnVisibilityEditorView.Designer.cs">
       <DependentUpon>ColumnVisibilityEditorView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\HarmonizerView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\HarmonizerView.Designer.cs">
+      <DependentUpon>HarmonizerView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\IHarmonizerView.cs" />
     <Compile Include="Views\IPlaylistEditorView.cs" />
     <Compile Include="Views\IPlaylistView.cs" />
+    <Compile Include="Views\IProfileEditorView.cs" />
+    <Compile Include="Views\IRuleEditorView.cs" />
+    <Compile Include="Views\ITagValueEditorView.cs" />
+    <Compile Include="Views\ITemplateEditorView.cs" />
+    <Compile Include="Views\ITrackEditorView.cs" />
     <Compile Include="Views\MainView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -213,6 +225,36 @@
     <Compile Include="Dao\BaseDao.cs" />
     <Compile Include="Dao\PlaylistDao.cs" />
     <Compile Include="Dao\TrackDao.cs" />
+    <Compile Include="Views\ProfileEditorView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\ProfileEditorView.Designer.cs">
+      <DependentUpon>ProfileEditorView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\RuleEditorView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\RuleEditorView.Designer.cs">
+      <DependentUpon>RuleEditorView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TagValueEditorView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\TagValueEditorView.Designer.cs">
+      <DependentUpon>TagValueEditorView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TemplateEditorView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\TemplateEditorView.Designer.cs">
+      <DependentUpon>TemplateEditorView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TrackEditorView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\TrackEditorView.Designer.cs">
+      <DependentUpon>TrackEditorView.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Views\MainView.resx">
       <DependentUpon>MainView.cs</DependentUpon>
     </EmbeddedResource>

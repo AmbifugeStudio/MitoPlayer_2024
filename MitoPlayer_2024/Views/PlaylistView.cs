@@ -158,15 +158,15 @@ namespace MitoPlayer_2024.Views
         #endregion
 
         #region EVENT CALLS FROM MAINVIEW
-        public void OpenFilesEvent()
+        public void OpenFilesExt()
         {
-            OpenFiles?.Invoke(this, EventArgs.Empty);
+            this.OpenFiles?.Invoke(this, EventArgs.Empty);
             if (mediaPlayer.playState != WMPLib.WMPPlayState.wmppsPlaying)
             {
-                PlayTrack();
+                this.PlayTrack();
             }
         }
-        public void OpenDirectoryEvent()
+        public void OpenDirectoryExt()
         {
             OpenDirectory?.Invoke(this, EventArgs.Empty);
             if (mediaPlayer.playState != WMPLib.WMPPlayState.wmppsPlaying)
@@ -174,51 +174,51 @@ namespace MitoPlayer_2024.Views
                 PlayTrack();
             }
         }
-        public void PlayEvent()
+        public void Play()
         {
             PlayTrack();
         }
-        public void PauseEvent()
+        public void Pause()
         {
             PauseTrack();
         }
-        public void StopEvent()
+        public void Stop()
         {
             StopTrack();
         }
-        public void PrevEvent()
+        public void Prev()
         {
             PrevTrack();
         }
-        public void NextEvent()
+        public void Next()
         {
             NextTrack();
         }
-        public void OrderByTitleEvent()
+        public void OrderByTitleExt()
         {
             OrderByTitle?.Invoke(this, EventArgs.Empty);
         }
-        public void OrderByArtistEvent()
+        public void OrderByArtistExt()
         {
             OrderByArtist?.Invoke(this, EventArgs.Empty);
         }
-        public void OrderByFileNameEvent()
+        public void OrderByFileNameExt()
         {
             OrderByFileName?.Invoke(this, EventArgs.Empty);
         }
-        public void ShuffleEvent()
+        public void ShuffleExt()
         {
             Shuffle?.Invoke(this, EventArgs.Empty);
         }
-        public void ReverseEvent()
+        public void ReverseExt()
         {
             Reverse?.Invoke(this, EventArgs.Empty);
         }
-        public void RandomEvent()
+        public void Random()
         {
             RandomTrack();
         }
-        public void ClearEvent()
+        public void ClearExt()
         {
             Clear?.Invoke(this, EventArgs.Empty);
             if (dgvTrackList.Rows == null || dgvTrackList.Rows.Count == 0)
@@ -228,7 +228,7 @@ namespace MitoPlayer_2024.Views
                 lastTrackIndex = -1;
             }
         }
-        public void RemoveMissingTracksEvent()
+        public void RemoveMissingTracksExt()
         {
             this.RemoveMissingTracks?.Invoke(this, EventArgs.Empty);
             if (dgvTrackList.Rows == null || dgvTrackList.Rows.Count == 0)
@@ -238,7 +238,7 @@ namespace MitoPlayer_2024.Views
                 lastTrackIndex = -1;
             }
         }
-        public void RemoveDuplicatedTracksEvent()
+        public void RemoveDuplicatedTracksExt()
         {
             this.RemoveDuplicatedTracks?.Invoke(this, EventArgs.Empty);
             if (dgvTrackList.Rows == null || dgvTrackList.Rows.Count == 0)
@@ -249,13 +249,13 @@ namespace MitoPlayer_2024.Views
             }
         }
 
-        public void CreatePlaylistEvent()
+        public void CreatePlaylist()
         {
-            CreatePlaylist();
+            CreatePlaylistExt();
         }
-        public void RenamePlaylistEvent()
+        public void RenamePlaylist()
         {
-            RenamePlaylist();
+            RenamePlaylistExt();
         }
         
         #endregion
@@ -1114,7 +1114,7 @@ namespace MitoPlayer_2024.Views
         {
             this.CreatePlaylist();
         }
-        private void CreatePlaylist()
+        private void CreatePlaylistExt()
         {
             ListEventArgs args = new ListEventArgs();
             args.IntegerField1 = -1;
@@ -1125,7 +1125,7 @@ namespace MitoPlayer_2024.Views
         {
             this.RenamePlaylist();
         }
-        private void RenamePlaylist()
+        private void RenamePlaylistExt()
         {
             if (dgvPlaylistList.SelectedRows.Count > 0)
             {
@@ -1137,10 +1137,10 @@ namespace MitoPlayer_2024.Views
         //LOAD PLAYLIST
         private void dgvPlaylistList_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            LoadPlaylistEvent();
+            LoadPlaylistExt();
         }
 
-        public void LoadPlaylistEvent()
+        public void LoadPlaylistExt()
         {
             ListEventArgs args = new ListEventArgs();
             args.IntegerField1 = dgvPlaylistList.SelectedRows[0].Index;
@@ -1169,7 +1169,7 @@ namespace MitoPlayer_2024.Views
         {
             if (dgvPlaylistList.SelectedRows.Count > 0)
             {
-                this.DeletePlaylistEvent();
+                this.DeletePlaylistExt();
             }
         }
         //DELETE PLAYLIST BY PRESSING DEL
@@ -1177,10 +1177,10 @@ namespace MitoPlayer_2024.Views
         {
             if (dgvPlaylistList.Rows.Count > 0 && dgvPlaylistList.SelectedRows.Count > 0 && e.KeyCode == Keys.Delete)
             {
-                this.DeletePlaylistEvent();
+                this.DeletePlaylistExt();
             }
         }
-        public void DeletePlaylistEvent()
+        public void DeletePlaylistExt()
         {
             ListEventArgs args = new ListEventArgs();
             args.IntegerField1 = dgvPlaylistList.SelectedRows[0].Index;
