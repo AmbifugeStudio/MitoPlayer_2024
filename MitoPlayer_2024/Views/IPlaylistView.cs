@@ -16,27 +16,33 @@ namespace MitoPlayer_2024.Views
         List<Playlist> PlaylistList { get; set; }
         List<Track> TrackList { get; set; }
 
-        event EventHandler OpenFiles;
+        event EventHandler<ListEventArgs> ShowPlaylistEditorView;
+        event EventHandler<ListEventArgs> LoadPlaylist;
+        event EventHandler<ListEventArgs> DeletePlaylist;
+        event EventHandler<ListEventArgs> OrderByColumn;
+
+        /*event EventHandler OpenFiles;
         event EventHandler OpenDirectory;
         event EventHandler<ListEventArgs> ScanFiles;
         event EventHandler<ListEventArgs> OrderTableByColumn;
+        
+        event EventHandler RemoveMissingTracks;
+        event EventHandler RemoveDuplicatedTracks;
+        
         event EventHandler OrderByArtist;
         event EventHandler OrderByTitle;
         event EventHandler OrderByFileName;
         event EventHandler Shuffle;
         event EventHandler Reverse;
         event EventHandler Clear;
-        event EventHandler RemoveMissingTracks;
-        event EventHandler RemoveDuplicatedTracks;
+
         event EventHandler<ListEventArgs> DeleteTracks;
        
         event EventHandler<ListEventArgs> TrackDragAndDrop;
 
-        event EventHandler<ListEventArgs> LoadPlaylist;
-        event EventHandler<ListEventArgs> ShowPlaylistEditorView;
-        event EventHandler<ListEventArgs> DeletePlaylist;
+        
 
-        event EventHandler<ListEventArgs> ChangeVolume;
+        event EventHandler<ListEventArgs> ChangeVolume;*/
 
         void SetPlaylistListBindingSource(BindingSource playlistList, bool[] columnVisibility, int currentPlaylistId);
         void SetTrackListBindingSource(BindingSource trackList, bool[] columnVisibility);

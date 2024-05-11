@@ -1,4 +1,5 @@
 ﻿
+using MitoPlayer_2024.Model;
 using MitoPlayer_2024.Models;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace MitoPlayer_2024.Helpers
 {
     public class ListEventArgs : EventArgs
     {
-
+        public List<Track> TrackList { get; set; }
         public string[] DragAndDropFiles { get; set; }
         public DataGridViewRowCollection Rows { get; set; }
 

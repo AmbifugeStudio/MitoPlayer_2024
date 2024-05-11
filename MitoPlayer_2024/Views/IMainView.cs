@@ -8,6 +8,17 @@ namespace MitoPlayer_2024.Views
 {
     public interface IMainView
     {
+        //OPEN VIEWS
+        event EventHandler ShowProfileEditorView;
+        event EventHandler ShowPlaylistView;
+        event EventHandler ShowTagValueEditorView;
+        event EventHandler ShowRuleEditorView;
+        event EventHandler ShowTrackEditorView;
+        event EventHandler ShowTemplateEditorView;
+        event EventHandler ShowHarmonizerView;
+        event EventHandler ShowPreferencesView;
+        event EventHandler ShowAboutView;
+
         //MENUSTRIP
         //FILE
         event EventHandler OpenFiles;
@@ -37,13 +48,5 @@ namespace MitoPlayer_2024.Views
         //HELP
         event EventHandler About;
 
-        //OPEN VIEWS
-        event EventHandler ShowProfileEditorView;
-        event EventHandler ShowPlaylistView;
-        event EventHandler ShowTagValueEditorView;
-        event EventHandler ShowRuleEditorView;
-        event EventHandler ShowTrackEditorView;
-        event EventHandler ShowTemplateEditorView;
-        event EventHandler ShowHarmonizerView;
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MitoPlayer_2024.Model;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -10,17 +11,36 @@ using System.Windows.Forms;
 
 namespace MitoPlayer_2024.Views
 {
-    public partial class TrackEditorView : Form
+    public partial class TrackEditorView : Form,ITrackEditorView
     {
         public TrackEditorView()
         {
             InitializeComponent();
         }
 
-        internal static ITrackEditorView GetInstance(MainView mainView)
+        #region SINGLETON
+
+        private static TrackEditorView instance;
+
+        //MDI nélkül kiveszed a containert a pm-ből
+        public static TrackEditorView GetInstance(Form mainView)
         {
-            throw new NotImplementedException();
+            if (instance == null || instance.IsDisposed)
+            {
+                instance = new TrackEditorView();
+                instance.MdiParent = mainView;
+                instance.FormBorderStyle = FormBorderStyle.None;
+                instance.Dock = DockStyle.Fill;
+            }
+            else
+            {
+                if (instance.WindowState == FormWindowState.Minimized)
+                    instance.WindowState = FormWindowState.Normal;
+                instance.BringToFront();
+            }
+            return instance;
         }
+        #endregion
 
         internal void Clear()
         {
@@ -113,6 +133,91 @@ namespace MitoPlayer_2024.Views
         }
 
         internal void Stop()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void AddTracksToTrackList(List<Track> trackList)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void LoadPlaylistExt()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void RenamePlaylistExt()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void DeletePlaylistExt()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void RemoveDuplicatedTracksExt()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void OrderByTitleExt()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void OrderByArtistExt()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void OrderByFileNameExt()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void PlayExt()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void PauseExt()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void PrevExt()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void NextExt()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void CreatePlaylistExt()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void CallCreatePlaylistEvent()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void CallLoadPlaylistEvent()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void CallRenamePlaylistEvent()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void CallDeletePlaylistEvent()
         {
             throw new NotImplementedException();
         }

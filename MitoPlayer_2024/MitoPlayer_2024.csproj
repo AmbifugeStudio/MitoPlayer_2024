@@ -171,14 +171,22 @@
     <Compile Include="Models\ISettingDao.cs" />
     <Compile Include="Models\ITrackDao.cs" />
     <Compile Include="Models\Playlist.cs" />
+    <Compile Include="Presenters\AboutPresenter.cs" />
     <Compile Include="Presenters\HarmonizerPresenter.cs" />
     <Compile Include="Presenters\PlaylistEditorPresenter.cs" />
     <Compile Include="Presenters\PlaylistPresenter.cs" />
+    <Compile Include="Presenters\PreferencesPresenter.cs" />
     <Compile Include="Presenters\ProfileEditorPresenter.cs" />
     <Compile Include="Presenters\RuleEditorPresenter.cs" />
     <Compile Include="Presenters\TagValueEditorPresenter.cs" />
     <Compile Include="Presenters\TemplateEditorPresenter.cs" />
     <Compile Include="Presenters\TrackEditorPresenter.cs" />
+    <Compile Include="Views\AboutView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\AboutView.Designer.cs">
+      <DependentUpon>AboutView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\ColumnVisibilityEditorView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -191,9 +199,11 @@
     <Compile Include="Views\HarmonizerView.Designer.cs">
       <DependentUpon>HarmonizerView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\IAboutView.cs" />
     <Compile Include="Views\IHarmonizerView.cs" />
     <Compile Include="Views\IPlaylistEditorView.cs" />
     <Compile Include="Views\IPlaylistView.cs" />
+    <Compile Include="Views\IPreferencesView.cs" />
     <Compile Include="Views\IProfileEditorView.cs" />
     <Compile Include="Views\IRuleEditorView.cs" />
     <Compile Include="Views\ITagValueEditorView.cs" />
@@ -225,6 +235,12 @@
     <Compile Include="Dao\BaseDao.cs" />
     <Compile Include="Dao\PlaylistDao.cs" />
     <Compile Include="Dao\TrackDao.cs" />
+    <Compile Include="Views\PreferencesView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\PreferencesView.Designer.cs">
+      <DependentUpon>PreferencesView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\ProfileEditorView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -312,6 +328,15 @@
       <Lcid>0</Lcid>
       <WrapperTool>aximp</WrapperTool>
       <Isolated>False</Isolated>
+    </COMReference>
+    <COMReference Include="WMPLib">
+      <Guid>{6BF52A50-394A-11D3-B153-00C04F79FAA6}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

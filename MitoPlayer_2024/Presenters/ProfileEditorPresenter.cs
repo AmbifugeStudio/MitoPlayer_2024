@@ -15,8 +15,17 @@ namespace MitoPlayer_2024.Presenters
         private IPlaylistDao playlistDao;
         private ITrackDao trackDao;
         private ISettingDao settingDao;
+        private IProfileEditorView profileEditorView;
 
-        public ProfileEditorPresenter(IProfileEditorView view, IPlaylistDao playlistDao, ITrackDao trackDao, ISettingDao settingDao)
+        public ProfileEditorPresenter(IProfileEditorView profileEditorView, IPlaylistDao playlistDao, ITrackDao trackDao, ISettingDao settingDao)
+        {
+            this.profileEditorView = profileEditorView;
+            this.playlistDao = playlistDao;
+            this.trackDao = trackDao;
+            this.settingDao = settingDao;
+        }
+
+        public ProfileEditorPresenter(IProfileEditorView view, AxWMPLib.AxWindowsMediaPlayer mediaPlayer, IPlaylistDao playlistDao, ITrackDao trackDao, ISettingDao settingDao)
         {
             this.view = view;
             this.playlistDao = playlistDao;

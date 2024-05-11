@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MitoPlayer_2024.Model;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -22,6 +23,11 @@ namespace MitoPlayer_2024.Views
             throw new NotImplementedException();
         }
 
+        internal void AddTracksToTrackList(List<Track> trackList)
+        {
+            throw new NotImplementedException();
+        }
+
         internal void Clear()
         {
             throw new NotImplementedException();
@@ -37,7 +43,7 @@ namespace MitoPlayer_2024.Views
             throw new NotImplementedException();
         }
 
-        internal void LoadPlaylist()
+        internal void RenamePlaylistExt()
         {
             throw new NotImplementedException();
         }
@@ -113,6 +119,81 @@ namespace MitoPlayer_2024.Views
         }
 
         internal void Stop()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void DeletePlaylistExt()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void RemoveDuplicatedTracksExt()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void OrderByTitleExt()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void OrderByArtistExt()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void OrderByFileNameExt()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void PlayExt()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void PauseExt()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void PrevExt()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void NextExt()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void LoadPlaylistExt()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void CreatePlaylistExt()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void CallCreatePlaylistEvent()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void CallLoadPlaylistEvent()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void CallRenamePlaylistEvent()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void CallDeletePlaylistEvent()
         {
             throw new NotImplementedException();
         }

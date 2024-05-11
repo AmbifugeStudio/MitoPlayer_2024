@@ -29,14 +29,33 @@ namespace MitoPlayer_2024.Views
 {
     public partial class PlaylistView : Form, IPlaylistView
     {
+        private BindingSource playlistListBindingSource;
+        private BindingSource selectedTrackListBindingSource;
+        private BindingSource trackListBindingSource;
+
+        public event EventHandler<ListEventArgs> ShowPlaylistEditorView;
+        public event EventHandler<ListEventArgs> LoadPlaylist;
+        public event EventHandler<ListEventArgs> DeletePlaylist;
+        public event EventHandler<ListEventArgs> OrderByColumn;
+
+
+
+
+
+        public event EventHandler<ListEventArgs> AddTracksToTrackListEvent;
+
+
+
         public List<Playlist> PlaylistList { get; set; }
         public List<Track> TrackList { get; set; }
         private int lastTrackIndex { get; set; }
         private double currentPlayPosition { get; set; }
 
-        private BindingSource playlistListBindingSource;
-        private BindingSource selectedTrackListBindingSource;
-        private BindingSource trackListBindingSource;
+       
+
+
+
+
 
         public event EventHandler OpenFiles;
         public event EventHandler OpenDirectory;
@@ -63,17 +82,12 @@ namespace MitoPlayer_2024.Views
         public event EventHandler ClearPlaylist;
 
 
-        public event EventHandler<ListEventArgs> ShowPlaylistEditorView;
-        public event EventHandler<ListEventArgs> LoadPlaylist;
-        public event EventHandler<ListEventArgs> DeletePlaylist;
+        
         
         public PlaylistView()
         {
             InitializeComponent();
-            AssociateAndRaiseViewEvents();
-        }
-        private void AssociateAndRaiseViewEvents()
-        {
+
             this.currentPlayPosition = 0;
             this.currentTrackIndex = 0;
         }
@@ -157,7 +171,30 @@ namespace MitoPlayer_2024.Views
         }
         #endregion
 
-        #region EVENT CALLS FROM MAINVIEW
+
+
+
+
+
+
+
+
+
+
+
+
+
+        public void AddTracksToTrackList(List<Track> trackList)
+        {
+            this.AddTracksToTrackListEvent?.Invoke(this, new ListEventArgs(){ TrackList = trackList });
+        }
+
+
+
+
+
+
+
         public void OpenFilesExt()
         {
             this.OpenFiles?.Invoke(this, EventArgs.Empty);
@@ -174,91 +211,18 @@ namespace MitoPlayer_2024.Views
                 PlayTrack();
             }
         }
-        public void Play()
-        {
-            PlayTrack();
-        }
-        public void Pause()
-        {
-            PauseTrack();
-        }
-        public void Stop()
-        {
-            StopTrack();
-        }
-        public void Prev()
-        {
-            PrevTrack();
-        }
-        public void Next()
-        {
-            NextTrack();
-        }
-        public void OrderByTitleExt()
-        {
-            OrderByTitle?.Invoke(this, EventArgs.Empty);
-        }
-        public void OrderByArtistExt()
-        {
-            OrderByArtist?.Invoke(this, EventArgs.Empty);
-        }
-        public void OrderByFileNameExt()
-        {
-            OrderByFileName?.Invoke(this, EventArgs.Empty);
-        }
-        public void ShuffleExt()
-        {
-            Shuffle?.Invoke(this, EventArgs.Empty);
-        }
-        public void ReverseExt()
-        {
-            Reverse?.Invoke(this, EventArgs.Empty);
-        }
+        
+
         public void Random()
         {
             RandomTrack();
         }
-        public void ClearExt()
-        {
-            Clear?.Invoke(this, EventArgs.Empty);
-            if (dgvTrackList.Rows == null || dgvTrackList.Rows.Count == 0)
-            {
-                trackIdInPlaylist = -1;
-                currentTrackIndex = -1;
-                lastTrackIndex = -1;
-            }
-        }
-        public void RemoveMissingTracksExt()
-        {
-            this.RemoveMissingTracks?.Invoke(this, EventArgs.Empty);
-            if (dgvTrackList.Rows == null || dgvTrackList.Rows.Count == 0)
-            {
-                trackIdInPlaylist = -1;
-                currentTrackIndex = -1;
-                lastTrackIndex = -1;
-            }
-        }
-        public void RemoveDuplicatedTracksExt()
-        {
-            this.RemoveDuplicatedTracks?.Invoke(this, EventArgs.Empty);
-            if (dgvTrackList.Rows == null || dgvTrackList.Rows.Count == 0)
-            {
-                trackIdInPlaylist = -1;
-                currentTrackIndex = -1;
-                lastTrackIndex = -1;
-            }
-        }
 
-        public void CreatePlaylist()
-        {
-            CreatePlaylistExt();
-        }
-        public void RenamePlaylist()
-        {
-            RenamePlaylistExt();
-        }
+       
+
+  
         
-        #endregion
+
 
         #region MEDIA PLAYER
 
@@ -365,25 +329,25 @@ namespace MitoPlayer_2024.Views
 
             }
         }
-        private void SetCurrentTrackColor(int rowIndex = -1)
+        public void SetCurrentTrackColor(int rowIndex = -1)
         {
-            for (int i = 0; i < dgvTrackList.Rows.Count; i++)
+            for (int i = 0; i < this.dgvTrackList.Rows.Count; i++)
             {
-                if (dgvTrackList.Rows[i].DefaultCellStyle.BackColor == Color.LightSeaGreen)
+                if (this.dgvTrackList.Rows[i].DefaultCellStyle.BackColor == Color.LightSeaGreen)
                 {
-                    dgvTrackList.Rows[i].DefaultCellStyle.BackColor = Color.White;
+                    this.dgvTrackList.Rows[i].DefaultCellStyle.BackColor = Color.White;
                     break;
                 }
             }
-            if (trackIdInPlaylist != -1)
+            if (this.trackIdInPlaylist != -1)
             {
                 int idInPlaylist = -1;
-                for (int i = 0; i < dgvTrackList.Rows.Count; i++)
+                for (int i = 0; i < this.dgvTrackList.Rows.Count; i++)
                 {
-                    idInPlaylist = Convert.ToInt32(dgvTrackList.Rows[i].Cells["OrderInList"].Value);
-                    if (trackIdInPlaylist == idInPlaylist)
+                    idInPlaylist = Convert.ToInt32(this.dgvTrackList.Rows[i].Cells["OrderInList"].Value);
+                    if (this.trackIdInPlaylist == idInPlaylist)
                     {
-                        dgvTrackList.Rows[i].DefaultCellStyle.BackColor = Color.LightSeaGreen;
+                        this.dgvTrackList.Rows[i].DefaultCellStyle.BackColor = Color.LightSeaGreen;
                         break;
                     }
                 }
@@ -392,7 +356,7 @@ namespace MitoPlayer_2024.Views
             {
                 if(rowIndex > -1)
                 {
-                    dgvTrackList.Rows[rowIndex].DefaultCellStyle.BackColor = Color.LightSeaGreen;
+                    this.dgvTrackList.Rows[rowIndex].DefaultCellStyle.BackColor = Color.LightSeaGreen;
                 }
             }
         }
@@ -1099,9 +1063,12 @@ namespace MitoPlayer_2024.Views
 
         #endregion
 
+
+
         #region PLAYLIST LIST
-        //CONTECT MENU
-        private String selectedPlaylistName;
+
+        //VIEW CONTROLS
+        //RIGHT CLICK - CONTEXT MENU
         private void dgvPlaylistList_MouseClick(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
@@ -1109,98 +1076,94 @@ namespace MitoPlayer_2024.Views
                 contextMenuStrip1.Show(Cursor.Position);
             }
         }
-        //ADD PLAYLIST
-        private void newToolStripMenuItem_Click(object sender, EventArgs e)
+        private void menuStripCreatePlaylist_Click(object sender, EventArgs e)
         {
-            this.CreatePlaylist();
+            this.CallCreatePlaylistEvent();
         }
-        private void CreatePlaylistExt()
+        private void menuStripLoadPlaylist_Click(object sender, EventArgs e)
         {
-            ListEventArgs args = new ListEventArgs();
-            args.IntegerField1 = -1;
-            this.ShowPlaylistEditorView?.Invoke(this, args);
+            this.CallLoadPlaylistEvent();
         }
-        //EDIT PLAYLIST
-        private void renameToolStripMenuItem_Click(object sender, EventArgs e)
+        private void menuStripRenamePlaylist_Click(object sender, EventArgs e)
         {
-            this.RenamePlaylist();
+            this.CallRenamePlaylistEvent();
         }
-        private void RenamePlaylistExt()
+        private void menuStripDeletePlaylist_Click(object sender, EventArgs e)
         {
-            if (dgvPlaylistList.SelectedRows.Count > 0)
-            {
-                ListEventArgs args = new ListEventArgs();
-                args.IntegerField1 = dgvPlaylistList.SelectedRows[0].Index;
-                this.ShowPlaylistEditorView?.Invoke(this, args);
-            }
+            this.CallDeletePlaylistEvent();
         }
-        //LOAD PLAYLIST
+        //PLAYLIST BUTTONS
+        private void btnNewPlaylist_Click(object sender, EventArgs e)
+        {
+            this.CallCreatePlaylistEvent();
+        }
+        private void btnLoadPlaylist_Click(object sender, EventArgs e)
+        {
+            this.CallLoadPlaylistEvent();
+        }
+        private void btnRenamePlaylist_Click(object sender, EventArgs e)
+        {
+            this.CallRenamePlaylistEvent();
+        }
+        private void btnDeletePlaylist_Click(object sender, EventArgs e)
+        {
+            this.CallDeletePlaylistEvent();
+        }
+        //DOUBLE CLICK - LOAD PLAYLIST
         private void dgvPlaylistList_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            LoadPlaylistExt();
+            this.CallLoadPlaylistEvent();
         }
-
-        public void LoadPlaylistExt()
-        {
-            ListEventArgs args = new ListEventArgs();
-            args.IntegerField1 = dgvPlaylistList.SelectedRows[0].Index;
-            LoadPlaylist?.Invoke(this, args);
-
-            if(mediaPlayer.playState == WMPLib.WMPPlayState.wmppsPlaying || mediaPlayer.playState == WMPLib.WMPPlayState.wmppsPaused)
-            {
-                String path1 = mediaPlayer.URL;
-                for(int i = 0; i<= dgvTrackList.Rows.Count - 1; i++)
-                {
-                    if (((string)dgvTrackList.Rows[i].Cells["Path"].Value).Equals(path1))
-                    {
-                        this.SetCurrentTrackColor(i);
-                        break;
-                    }
-                }
-            }
-
-            trackIdInPlaylist = -1;
-            currentTrackIndex = -1;
-            lastTrackIndex = -1;
-        }
-
-        //DELETE PLAYLIST
-        private void removeStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (dgvPlaylistList.SelectedRows.Count > 0)
-            {
-                this.DeletePlaylistExt();
-            }
-        }
-        //DELETE PLAYLIST BY PRESSING DEL
+        //PRESSING DEL - DELETE PLAYLIST
         private void dgvPlaylistList_KeyDown(object sender, KeyEventArgs e)
         {
-            if (dgvPlaylistList.Rows.Count > 0 && dgvPlaylistList.SelectedRows.Count > 0 && e.KeyCode == Keys.Delete)
+            if (dgvPlaylistList.SelectedRows.Count > 0 && e.KeyCode == Keys.Delete)
             {
-                this.DeletePlaylistExt();
+                this.CallDeletePlaylistEvent();
             }
         }
-        public void DeletePlaylistExt()
+        //
+        //MAIN MENU STRIP - EVENT CALLINGS
+        public void CallCreatePlaylistEvent()
         {
-            ListEventArgs args = new ListEventArgs();
-            args.IntegerField1 = dgvPlaylistList.SelectedRows[0].Index;
-            DeletePlaylist?.Invoke(this, args);
-
-            if (dgvTrackList.Rows == null || dgvTrackList.Rows.Count == 0)
-            {
-                trackIdInPlaylist = -1;
-                currentTrackIndex = -1;
-                lastTrackIndex = -1;
-            }
+            this.ShowPlaylistEditorView?.Invoke(this, new ListEventArgs() { IntegerField1 = -1 });
         }
+        public void CallRenamePlaylistEvent()
+        {
+            if (this.dgvPlaylistList.SelectedRows.Count > 0)
+                this.ShowPlaylistEditorView?.Invoke(this, new ListEventArgs() { IntegerField1 = dgvPlaylistList.SelectedRows[0].Index });
+        }
+        public void CallLoadPlaylistEvent()
+        {
+            if (this.dgvPlaylistList.SelectedRows.Count > 0)
+                this.LoadPlaylist?.Invoke(this, new ListEventArgs() { IntegerField1 = this.dgvPlaylistList.SelectedRows[0].Index });
+        }
+        public void CallDeletePlaylistEvent()
+        {
+            if (this.dgvPlaylistList.SelectedRows.Count > 0)
+                DeletePlaylist?.Invoke(this, new ListEventArgs() { IntegerField1 = dgvPlaylistList.SelectedRows[0].Index });
+        }
+
         #endregion
 
-        private void mediaPlayer_Enter(object sender, EventArgs e)
+        private void btnSetQuickListGroup2_Click(object sender, EventArgs e)
         {
 
         }
 
-        private void lblTrackStart_Click(object sender, EventArgs e)
+       
+
+        private void btnSetQuickListGroup1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnSetQuickListGroup3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnSetQuickListGroup4_Click(object sender, EventArgs e)
         {
 
         }

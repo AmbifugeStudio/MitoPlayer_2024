@@ -10,24 +10,22 @@ using System.Windows.Forms;
 
 namespace MitoPlayer_2024.Views
 {
-    public partial class TagValueEditorView : Form, ITagValueEditorView
+    public partial class AboutView : Form, IAboutView
     {
-        public TagValueEditorView()
+        public AboutView()
         {
             InitializeComponent();
         }
 
         #region SINGLETON
-
-        private static TagValueEditorView instance;
-
+        private static AboutView instance;
         //MDI nélkül kiveszed a containert a pm-ből
-        public static TagValueEditorView GetInstance(Form mainView)
+        public static AboutView GetInstance(Form parentContainer)
         {
             if (instance == null || instance.IsDisposed)
             {
-                instance = new TagValueEditorView();
-                instance.MdiParent = mainView;
+                instance = new AboutView();
+                instance.MdiParent = parentContainer;
                 instance.FormBorderStyle = FormBorderStyle.None;
                 instance.Dock = DockStyle.Fill;
             }
@@ -40,6 +38,5 @@ namespace MitoPlayer_2024.Views
             return instance;
         }
         #endregion
-
     }
 }

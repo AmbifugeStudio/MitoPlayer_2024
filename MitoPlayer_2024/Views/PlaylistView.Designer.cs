@@ -31,6 +31,7 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PlaylistView));
             this.tabPagePlaylistDetail = new System.Windows.Forms.TabPage();
+            this.button1 = new System.Windows.Forms.Button();
             this.lblSelectedItemsLength = new System.Windows.Forms.Label();
             this.lblSelectedItemsCount = new System.Windows.Forms.Label();
             this.lblCurrentTrack = new System.Windows.Forms.Label();
@@ -53,14 +54,23 @@
             this.mediaPlayer = new AxWMPLib.AxWindowsMediaPlayer();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.playToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.renameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.removeStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStripCreatePlaylist = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStripLoadPlaylist = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStripRenamePlaylist = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStripDeletePlaylist = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportToM3uToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportToTxtToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.button1 = new System.Windows.Forms.Button();
+            this.btnSetQuickListGroup1 = new System.Windows.Forms.Button();
+            this.btnSetQuickListGroup2 = new System.Windows.Forms.Button();
+            this.btnSetQuickListGroup3 = new System.Windows.Forms.Button();
+            this.btnSetQuickListGroup4 = new System.Windows.Forms.Button();
+            this.btnNewPlaylist = new System.Windows.Forms.Button();
+            this.btnLoadPlaylist = new System.Windows.Forms.Button();
+            this.btnRenamePlaylist = new System.Windows.Forms.Button();
+            this.btnDeletePlaylist = new System.Windows.Forms.Button();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.tabPagePlaylistDetail.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPlaylistList)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTrackList)).BeginInit();
@@ -69,10 +79,14 @@
             ((System.ComponentModel.ISupportInitialize)(this.trackVolume)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.mediaPlayer)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabPagePlaylistDetail
             // 
+            this.tabPagePlaylistDetail.Controls.Add(this.groupBox2);
+            this.tabPagePlaylistDetail.Controls.Add(this.groupBox1);
             this.tabPagePlaylistDetail.Controls.Add(this.button1);
             this.tabPagePlaylistDetail.Controls.Add(this.lblSelectedItemsLength);
             this.tabPagePlaylistDetail.Controls.Add(this.lblSelectedItemsCount);
@@ -86,6 +100,15 @@
             this.tabPagePlaylistDetail.TabIndex = 1;
             this.tabPagePlaylistDetail.Text = "Player";
             this.tabPagePlaylistDetail.UseVisualStyleBackColor = true;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(1026, 6);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(87, 23);
+            this.button1.TabIndex = 5;
+            this.button1.Text = "Columns";
+            this.button1.UseVisualStyleBackColor = true;
             // 
             // lblSelectedItemsLength
             // 
@@ -130,7 +153,7 @@
             this.dgvPlaylistList.Name = "dgvPlaylistList";
             this.dgvPlaylistList.ReadOnly = true;
             this.dgvPlaylistList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvPlaylistList.Size = new System.Drawing.Size(164, 444);
+            this.dgvPlaylistList.Size = new System.Drawing.Size(164, 304);
             this.dgvPlaylistList.TabIndex = 1;
             this.dgvPlaylistList.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvPlaylistList_CellDoubleClick);
             this.dgvPlaylistList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvPlaylistList_KeyDown);
@@ -249,7 +272,6 @@
             this.lblTrackStart.TabIndex = 32;
             this.lblTrackStart.Text = "00:00:00";
             this.lblTrackStart.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            this.lblTrackStart.Click += new System.EventHandler(this.lblTrackStart_Click);
             // 
             // btnOpenDirectory
             // 
@@ -339,7 +361,6 @@
             this.mediaPlayer.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("mediaPlayer.OcxState")));
             this.mediaPlayer.Size = new System.Drawing.Size(10, 10);
             this.mediaPlayer.TabIndex = 35;
-            this.mediaPlayer.Enter += new System.EventHandler(this.mediaPlayer_Enter);
             // 
             // timer1
             // 
@@ -349,47 +370,48 @@
             // contextMenuStrip1
             // 
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.playToolStripMenuItem,
-            this.renameToolStripMenuItem,
-            this.removeStripMenuItem,
+            this.menuStripCreatePlaylist,
+            this.menuStripLoadPlaylist,
+            this.menuStripRenamePlaylist,
+            this.menuStripDeletePlaylist,
             this.toolStripSeparator1,
-            this.newToolStripMenuItem,
             this.exportToM3uToolStripMenuItem,
             this.exportToTxtToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(150, 142);
             // 
-            // playToolStripMenuItem
+            // menuStripCreatePlaylist
             // 
-            this.playToolStripMenuItem.Name = "playToolStripMenuItem";
-            this.playToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
-            this.playToolStripMenuItem.Text = "Play";
+            this.menuStripCreatePlaylist.Name = "menuStripCreatePlaylist";
+            this.menuStripCreatePlaylist.Size = new System.Drawing.Size(149, 22);
+            this.menuStripCreatePlaylist.Text = "New";
+            this.menuStripCreatePlaylist.Click += new System.EventHandler(this.menuStripCreatePlaylist_Click);
             // 
-            // renameToolStripMenuItem
+            // menuStripLoadPlaylist
             // 
-            this.renameToolStripMenuItem.Name = "renameToolStripMenuItem";
-            this.renameToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
-            this.renameToolStripMenuItem.Text = "Rename";
-            this.renameToolStripMenuItem.Click += new System.EventHandler(this.renameToolStripMenuItem_Click);
+            this.menuStripLoadPlaylist.Name = "menuStripLoadPlaylist";
+            this.menuStripLoadPlaylist.Size = new System.Drawing.Size(149, 22);
+            this.menuStripLoadPlaylist.Text = "Load";
+            this.menuStripLoadPlaylist.Click += new System.EventHandler(this.menuStripLoadPlaylist_Click);
             // 
-            // removeStripMenuItem
+            // menuStripRenamePlaylist
             // 
-            this.removeStripMenuItem.Name = "removeStripMenuItem";
-            this.removeStripMenuItem.Size = new System.Drawing.Size(149, 22);
-            this.removeStripMenuItem.Text = "Remove";
-            this.removeStripMenuItem.Click += new System.EventHandler(this.removeStripMenuItem_Click);
+            this.menuStripRenamePlaylist.Name = "menuStripRenamePlaylist";
+            this.menuStripRenamePlaylist.Size = new System.Drawing.Size(149, 22);
+            this.menuStripRenamePlaylist.Text = "Rename";
+            this.menuStripRenamePlaylist.Click += new System.EventHandler(this.menuStripRenamePlaylist_Click);
+            // 
+            // menuStripDeletePlaylist
+            // 
+            this.menuStripDeletePlaylist.Name = "menuStripDeletePlaylist";
+            this.menuStripDeletePlaylist.Size = new System.Drawing.Size(149, 22);
+            this.menuStripDeletePlaylist.Text = "Remove";
+            this.menuStripDeletePlaylist.Click += new System.EventHandler(this.menuStripDeletePlaylist_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(146, 6);
-            // 
-            // newToolStripMenuItem
-            // 
-            this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-            this.newToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
-            this.newToolStripMenuItem.Text = "New";
-            this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
             // 
             // exportToM3uToolStripMenuItem
             // 
@@ -403,14 +425,111 @@
             this.exportToTxtToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
             this.exportToTxtToolStripMenuItem.Text = "Export to txt";
             // 
-            // button1
+            // btnSetQuickListGroup1
             // 
-            this.button1.Location = new System.Drawing.Point(1026, 6);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(87, 23);
-            this.button1.TabIndex = 5;
-            this.button1.Text = "Columns";
-            this.button1.UseVisualStyleBackColor = true;
+            this.btnSetQuickListGroup1.Location = new System.Drawing.Point(6, 19);
+            this.btnSetQuickListGroup1.Name = "btnSetQuickListGroup1";
+            this.btnSetQuickListGroup1.Size = new System.Drawing.Size(32, 23);
+            this.btnSetQuickListGroup1.TabIndex = 6;
+            this.btnSetQuickListGroup1.Text = "1";
+            this.btnSetQuickListGroup1.UseVisualStyleBackColor = true;
+            this.btnSetQuickListGroup1.Click += new System.EventHandler(this.btnSetQuickListGroup1_Click);
+            // 
+            // btnSetQuickListGroup2
+            // 
+            this.btnSetQuickListGroup2.Location = new System.Drawing.Point(44, 19);
+            this.btnSetQuickListGroup2.Name = "btnSetQuickListGroup2";
+            this.btnSetQuickListGroup2.Size = new System.Drawing.Size(32, 23);
+            this.btnSetQuickListGroup2.TabIndex = 6;
+            this.btnSetQuickListGroup2.Text = "2";
+            this.btnSetQuickListGroup2.UseVisualStyleBackColor = true;
+            this.btnSetQuickListGroup2.Click += new System.EventHandler(this.btnSetQuickListGroup2_Click);
+            // 
+            // btnSetQuickListGroup3
+            // 
+            this.btnSetQuickListGroup3.Location = new System.Drawing.Point(82, 19);
+            this.btnSetQuickListGroup3.Name = "btnSetQuickListGroup3";
+            this.btnSetQuickListGroup3.Size = new System.Drawing.Size(32, 23);
+            this.btnSetQuickListGroup3.TabIndex = 6;
+            this.btnSetQuickListGroup3.Text = "3";
+            this.btnSetQuickListGroup3.UseVisualStyleBackColor = true;
+            this.btnSetQuickListGroup3.Click += new System.EventHandler(this.btnSetQuickListGroup3_Click);
+            // 
+            // btnSetQuickListGroup4
+            // 
+            this.btnSetQuickListGroup4.Location = new System.Drawing.Point(120, 19);
+            this.btnSetQuickListGroup4.Name = "btnSetQuickListGroup4";
+            this.btnSetQuickListGroup4.Size = new System.Drawing.Size(35, 23);
+            this.btnSetQuickListGroup4.TabIndex = 6;
+            this.btnSetQuickListGroup4.Text = "4";
+            this.btnSetQuickListGroup4.UseVisualStyleBackColor = true;
+            this.btnSetQuickListGroup4.Click += new System.EventHandler(this.btnSetQuickListGroup4_Click);
+            // 
+            // btnNewPlaylist
+            // 
+            this.btnNewPlaylist.Location = new System.Drawing.Point(6, 19);
+            this.btnNewPlaylist.Name = "btnNewPlaylist";
+            this.btnNewPlaylist.Size = new System.Drawing.Size(70, 23);
+            this.btnNewPlaylist.TabIndex = 6;
+            this.btnNewPlaylist.Text = "New";
+            this.btnNewPlaylist.UseVisualStyleBackColor = true;
+            this.btnNewPlaylist.Click += new System.EventHandler(this.btnNewPlaylist_Click);
+            // 
+            // btnLoadPlaylist
+            // 
+            this.btnLoadPlaylist.Location = new System.Drawing.Point(78, 19);
+            this.btnLoadPlaylist.Name = "btnLoadPlaylist";
+            this.btnLoadPlaylist.Size = new System.Drawing.Size(80, 23);
+            this.btnLoadPlaylist.TabIndex = 6;
+            this.btnLoadPlaylist.Text = "Load";
+            this.btnLoadPlaylist.UseVisualStyleBackColor = true;
+            this.btnLoadPlaylist.Click += new System.EventHandler(this.btnLoadPlaylist_Click);
+            // 
+            // btnRenamePlaylist
+            // 
+            this.btnRenamePlaylist.Location = new System.Drawing.Point(6, 48);
+            this.btnRenamePlaylist.Name = "btnRenamePlaylist";
+            this.btnRenamePlaylist.Size = new System.Drawing.Size(70, 23);
+            this.btnRenamePlaylist.TabIndex = 6;
+            this.btnRenamePlaylist.Text = "Rename";
+            this.btnRenamePlaylist.UseVisualStyleBackColor = true;
+            this.btnRenamePlaylist.Click += new System.EventHandler(this.btnRenamePlaylist_Click);
+            // 
+            // btnDeletePlaylist
+            // 
+            this.btnDeletePlaylist.Location = new System.Drawing.Point(78, 48);
+            this.btnDeletePlaylist.Name = "btnDeletePlaylist";
+            this.btnDeletePlaylist.Size = new System.Drawing.Size(80, 23);
+            this.btnDeletePlaylist.TabIndex = 6;
+            this.btnDeletePlaylist.Text = "Delete";
+            this.btnDeletePlaylist.UseVisualStyleBackColor = true;
+            this.btnDeletePlaylist.Click += new System.EventHandler(this.btnDeletePlaylist_Click);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.btnNewPlaylist);
+            this.groupBox1.Controls.Add(this.btnRenamePlaylist);
+            this.groupBox1.Controls.Add(this.btnLoadPlaylist);
+            this.groupBox1.Controls.Add(this.btnDeletePlaylist);
+            this.groupBox1.Location = new System.Drawing.Point(3, 316);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(164, 79);
+            this.groupBox1.TabIndex = 7;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Playlist";
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.btnSetQuickListGroup1);
+            this.groupBox2.Controls.Add(this.btnSetQuickListGroup2);
+            this.groupBox2.Controls.Add(this.btnSetQuickListGroup4);
+            this.groupBox2.Controls.Add(this.btnSetQuickListGroup3);
+            this.groupBox2.Location = new System.Drawing.Point(3, 401);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(164, 49);
+            this.groupBox2.TabIndex = 8;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "QuickList";
             // 
             // PlaylistView
             // 
@@ -432,6 +551,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.trackVolume)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.mediaPlayer)).EndInit();
             this.contextMenuStrip1.ResumeLayout(false);
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -447,13 +568,15 @@
         private System.Windows.Forms.Label lblSelectedItemsLength;
         private System.Windows.Forms.Label lblSelectedItemsCount;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem playToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem renameToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem removeStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem menuStripLoadPlaylist;
+        private System.Windows.Forms.ToolStripMenuItem menuStripRenamePlaylist;
+        private System.Windows.Forms.ToolStripMenuItem menuStripDeletePlaylist;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem menuStripCreatePlaylist;
         private System.Windows.Forms.ToolStripMenuItem exportToM3uToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exportToTxtToolStripMenuItem;
+        private AxWMPLib.AxWindowsMediaPlayer mediaPlayer;
+        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.TrackBar trackVolume;
         private System.Windows.Forms.ProgressBar pBar;
         private System.Windows.Forms.Label lblVolume;
@@ -466,7 +589,15 @@
         private System.Windows.Forms.Button btnPause;
         private System.Windows.Forms.Button btnPrev;
         private System.Windows.Forms.Button btnPlay;
-        private AxWMPLib.AxWindowsMediaPlayer mediaPlayer;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnSetQuickListGroup4;
+        private System.Windows.Forms.Button btnSetQuickListGroup3;
+        private System.Windows.Forms.Button btnSetQuickListGroup2;
+        private System.Windows.Forms.Button btnRenamePlaylist;
+        private System.Windows.Forms.Button btnLoadPlaylist;
+        private System.Windows.Forms.Button btnNewPlaylist;
+        private System.Windows.Forms.Button btnSetQuickListGroup1;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Button btnDeletePlaylist;
     }
 }

@@ -19,8 +19,7 @@ namespace MitoPlayer_2024.Helpers
         PlaylistColumnVisibility,
         TrackColumnNames,
         TrackColumnTypes,
-        TrackColumnVisibility,
-        TrackColumnOrderingFlags
+        TrackColumnVisibility
     }
 
 }

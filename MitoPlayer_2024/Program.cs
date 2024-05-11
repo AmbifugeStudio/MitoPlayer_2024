@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.Configuration;
 using MitoPlayer_2024.Views;
 using MitoPlayer_2024.Presenters;
+using AxWMPLib;
 
 namespace MitoPlayer_2024
 {
@@ -20,9 +21,10 @@ namespace MitoPlayer_2024
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            string sqlConnectionString = ConfigurationManager.ConnectionStrings["SqlConnection"].ConnectionString;
             IMainView view = new MainView();
+            string sqlConnectionString = ConfigurationManager.ConnectionStrings["SqlConnection"].ConnectionString;
             new MainPresenter(view, sqlConnectionString);
+
             Application.Run((Form)view);
         }
     }

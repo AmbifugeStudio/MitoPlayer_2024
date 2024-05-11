@@ -10,16 +10,36 @@ using System.Windows.Forms;
 
 namespace MitoPlayer_2024.Views
 {
-    public partial class ProfileEditorView : Form
+    public partial class ProfileEditorView : Form,IProfileEditorView
     {
         public ProfileEditorView()
         {
             InitializeComponent();
         }
 
-        internal static IProfileEditorView GetInstance(MainView mainView)
+        #region SINGLETON
+
+        private static ProfileEditorView
+            instance;
+
+        //MDI nélkül kiveszed a containert a pm-ből
+        public static ProfileEditorView GetInstance(Form mainView)
         {
-            throw new NotImplementedException();
+            if (instance == null || instance.IsDisposed)
+            {
+                instance = new ProfileEditorView();
+                instance.MdiParent = mainView;
+                instance.FormBorderStyle = FormBorderStyle.None;
+                instance.Dock = DockStyle.Fill;
+            }
+            else
+            {
+                if (instance.WindowState == FormWindowState.Minimized)
+                    instance.WindowState = FormWindowState.Normal;
+                instance.BringToFront();
+            }
+            return instance;
         }
+        #endregion
     }
 }

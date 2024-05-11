@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MitoPlayer_2024.Views
 {
-    internal interface IRuleEditorView
+    public interface IRuleEditorView
     {
     }
 }

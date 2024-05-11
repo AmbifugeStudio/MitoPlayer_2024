@@ -16,12 +16,87 @@ namespace MitoPlayer_2024.Presenters
         private ITrackDao trackDao;
         private ISettingDao settingDao;
 
-        public HarmonizerPresenter(IHarmonizerView view, IPlaylistDao playlistDao, ITrackDao trackDao, ISettingDao settingDao)
+        public HarmonizerPresenter(IHarmonizerView view, AxWMPLib.AxWindowsMediaPlayer mediaPlayer, IPlaylistDao playlistDao, ITrackDao trackDao, ISettingDao settingDao)
         {
             this.view = view;
             this.playlistDao = playlistDao;
             this.trackDao = trackDao;
             this.settingDao = settingDao;
+        }
+
+        internal void AddTracksToTrackList(List<Track> trackList)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void Clear()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void CreatePlaylist()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void Next()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void OrderByArtist()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void OrderByFileName()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void OrderByTitle()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void Pause()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void Prev()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void Random()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void RemoveDuplicatedTracks()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void RemoveMissingTracks()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void Reverse()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void Shuffle()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void Stop()
+        {
+            throw new NotImplementedException();
         }
     }
 }

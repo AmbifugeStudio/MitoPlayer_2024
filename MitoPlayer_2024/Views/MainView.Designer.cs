@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainView));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStripOpenFiles = new System.Windows.Forms.ToolStripMenuItem();
@@ -64,14 +65,31 @@
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStripAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.btnHarmonizer = new System.Windows.Forms.Button();
+            this.btnTemplates = new System.Windows.Forms.Button();
+            this.btnRules = new System.Windows.Forms.Button();
+            this.btnTracks = new System.Windows.Forms.Button();
             this.btnTagValues = new System.Windows.Forms.Button();
             this.btnPlaylist = new System.Windows.Forms.Button();
-            this.btnTracks = new System.Windows.Forms.Button();
-            this.btnRules = new System.Windows.Forms.Button();
-            this.btnTemplates = new System.Windows.Forms.Button();
-            this.btnHarmonizer = new System.Windows.Forms.Button();
+            this.mediaPlayer = new AxWMPLib.AxWindowsMediaPlayer();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.trackVolume = new System.Windows.Forms.TrackBar();
+            this.pBar = new System.Windows.Forms.ProgressBar();
+            this.lblVolume = new System.Windows.Forms.Label();
+            this.lblTrackEnd = new System.Windows.Forms.Label();
+            this.lblTrackStart = new System.Windows.Forms.Label();
+            this.btnOpenDirectory = new System.Windows.Forms.Button();
+            this.btnOpen = new System.Windows.Forms.Button();
+            this.btnNext = new System.Windows.Forms.Button();
+            this.btnStop = new System.Windows.Forms.Button();
+            this.btnPause = new System.Windows.Forms.Button();
+            this.btnPrev = new System.Windows.Forms.Button();
+            this.btnPlay = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.mediaPlayer)).BeginInit();
+            this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackVolume)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -107,66 +125,66 @@
             // menuStripOpenFiles
             // 
             this.menuStripOpenFiles.Name = "menuStripOpenFiles";
-            this.menuStripOpenFiles.Size = new System.Drawing.Size(180, 22);
+            this.menuStripOpenFiles.Size = new System.Drawing.Size(166, 22);
             this.menuStripOpenFiles.Text = "Add files...";
             this.menuStripOpenFiles.Click += new System.EventHandler(this.menuStripOpenFiles_Click);
             // 
             // menuStripOpenDirectories
             // 
-            this.menuStripOpenDirectories.Name = "menuStripOpenDirectory";
-            this.menuStripOpenDirectories.Size = new System.Drawing.Size(180, 22);
+            this.menuStripOpenDirectories.Name = "menuStripOpenDirectories";
+            this.menuStripOpenDirectories.Size = new System.Drawing.Size(166, 22);
             this.menuStripOpenDirectories.Text = "Add folder...";
             this.menuStripOpenDirectories.Click += new System.EventHandler(this.menuStripOpenDirectory_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(163, 6);
             // 
             // menuStripCreatePlaylist
             // 
             this.menuStripCreatePlaylist.Name = "menuStripCreatePlaylist";
-            this.menuStripCreatePlaylist.Size = new System.Drawing.Size(180, 22);
+            this.menuStripCreatePlaylist.Size = new System.Drawing.Size(166, 22);
             this.menuStripCreatePlaylist.Text = "New playlist";
             this.menuStripCreatePlaylist.Click += new System.EventHandler(this.menuStripCreatePlaylist_Click);
             // 
             // menuStripLoadPlaylist
             // 
             this.menuStripLoadPlaylist.Name = "menuStripLoadPlaylist";
-            this.menuStripLoadPlaylist.Size = new System.Drawing.Size(180, 22);
+            this.menuStripLoadPlaylist.Size = new System.Drawing.Size(166, 22);
             this.menuStripLoadPlaylist.Text = "Load playlist...";
             this.menuStripLoadPlaylist.Click += new System.EventHandler(this.menuStripLoadPlaylist_Click);
             // 
             // menuStripRenamePlaylist
             // 
             this.menuStripRenamePlaylist.Name = "menuStripRenamePlaylist";
-            this.menuStripRenamePlaylist.Size = new System.Drawing.Size(180, 22);
+            this.menuStripRenamePlaylist.Size = new System.Drawing.Size(166, 22);
             this.menuStripRenamePlaylist.Text = "Rename playlist...";
             this.menuStripRenamePlaylist.Click += new System.EventHandler(this.menuStripRenamePlaylist_Click);
             // 
             // menuStripDeletePlaylist
             // 
             this.menuStripDeletePlaylist.Name = "menuStripDeletePlaylist";
-            this.menuStripDeletePlaylist.Size = new System.Drawing.Size(180, 22);
+            this.menuStripDeletePlaylist.Size = new System.Drawing.Size(166, 22);
             this.menuStripDeletePlaylist.Text = "Delete playlist...";
             this.menuStripDeletePlaylist.Click += new System.EventHandler(this.menuStripDeletePlaylist_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(163, 6);
             // 
             // menuStripPreferences
             // 
             this.menuStripPreferences.Name = "menuStripPreferences";
-            this.menuStripPreferences.Size = new System.Drawing.Size(180, 22);
+            this.menuStripPreferences.Size = new System.Drawing.Size(166, 22);
             this.menuStripPreferences.Text = "Preferences";
             this.menuStripPreferences.Click += new System.EventHandler(this.menuStripPreferences_Click);
             // 
             // menuStripExit
             // 
             this.menuStripExit.Name = "menuStripExit";
-            this.menuStripExit.Size = new System.Drawing.Size(180, 22);
+            this.menuStripExit.Size = new System.Drawing.Size(166, 22);
             this.menuStripExit.Text = "Exit";
             this.menuStripExit.Click += new System.EventHandler(this.menuStripExit_Click);
             // 
@@ -224,40 +242,40 @@
             // menuStripOrderByFileName
             // 
             this.menuStripOrderByFileName.Name = "menuStripOrderByFileName";
-            this.menuStripOrderByFileName.Size = new System.Drawing.Size(180, 22);
+            this.menuStripOrderByFileName.Size = new System.Drawing.Size(169, 22);
             this.menuStripOrderByFileName.Text = "Order by filename";
             this.menuStripOrderByFileName.Click += new System.EventHandler(this.menuStripOrderByFileName_Click);
             // 
             // menuStripOrderByArtist
             // 
             this.menuStripOrderByArtist.Name = "menuStripOrderByArtist";
-            this.menuStripOrderByArtist.Size = new System.Drawing.Size(180, 22);
+            this.menuStripOrderByArtist.Size = new System.Drawing.Size(169, 22);
             this.menuStripOrderByArtist.Text = "Order by artists";
             this.menuStripOrderByArtist.Click += new System.EventHandler(this.menuStripOrderByArtist_Click);
             // 
             // menuStripOrderByTitle
             // 
             this.menuStripOrderByTitle.Name = "menuStripOrderByTitle";
-            this.menuStripOrderByTitle.Size = new System.Drawing.Size(180, 22);
+            this.menuStripOrderByTitle.Size = new System.Drawing.Size(169, 22);
             this.menuStripOrderByTitle.Text = "Order by title";
             this.menuStripOrderByTitle.Click += new System.EventHandler(this.menuStripOrderByTitle_Click);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(166, 6);
             // 
             // menuStripReverse
             // 
             this.menuStripReverse.Name = "menuStripReverse";
-            this.menuStripReverse.Size = new System.Drawing.Size(180, 22);
+            this.menuStripReverse.Size = new System.Drawing.Size(169, 22);
             this.menuStripReverse.Text = "Reverse";
             this.menuStripReverse.Click += new System.EventHandler(this.menuStripReverse_Click);
             // 
             // menuStripShuffle
             // 
             this.menuStripShuffle.Name = "menuStripShuffle";
-            this.menuStripShuffle.Size = new System.Drawing.Size(180, 22);
+            this.menuStripShuffle.Size = new System.Drawing.Size(169, 22);
             this.menuStripShuffle.Text = "Shuffle";
             this.menuStripShuffle.Click += new System.EventHandler(this.menuStripShuffle_Click);
             // 
@@ -289,42 +307,42 @@
             // menuStripStop
             // 
             this.menuStripStop.Name = "menuStripStop";
-            this.menuStripStop.Size = new System.Drawing.Size(180, 22);
+            this.menuStripStop.Size = new System.Drawing.Size(119, 22);
             this.menuStripStop.Text = "Stop";
             this.menuStripStop.Click += new System.EventHandler(this.menuStripStop_Click);
             // 
             // menuStripPause
             // 
             this.menuStripPause.Name = "menuStripPause";
-            this.menuStripPause.Size = new System.Drawing.Size(180, 22);
+            this.menuStripPause.Size = new System.Drawing.Size(119, 22);
             this.menuStripPause.Text = "Pause";
             this.menuStripPause.Click += new System.EventHandler(this.menuStripPause_Click);
             // 
             // menuStripPlay
             // 
             this.menuStripPlay.Name = "menuStripPlay";
-            this.menuStripPlay.Size = new System.Drawing.Size(180, 22);
+            this.menuStripPlay.Size = new System.Drawing.Size(119, 22);
             this.menuStripPlay.Text = "Play";
             this.menuStripPlay.Click += new System.EventHandler(this.menuStripPlay_Click);
             // 
             // menuStripPrev
             // 
             this.menuStripPrev.Name = "menuStripPrev";
-            this.menuStripPrev.Size = new System.Drawing.Size(180, 22);
+            this.menuStripPrev.Size = new System.Drawing.Size(119, 22);
             this.menuStripPrev.Text = "Previous";
             this.menuStripPrev.Click += new System.EventHandler(this.menuStripPrev_Click);
             // 
             // menuStripNext
             // 
             this.menuStripNext.Name = "menuStripNext";
-            this.menuStripNext.Size = new System.Drawing.Size(180, 22);
+            this.menuStripNext.Size = new System.Drawing.Size(119, 22);
             this.menuStripNext.Text = "Next";
             this.menuStripNext.Click += new System.EventHandler(this.menuStripNext_Click);
             // 
             // menuStripRandom
             // 
             this.menuStripRandom.Name = "menuStripRandom";
-            this.menuStripRandom.Size = new System.Drawing.Size(180, 22);
+            this.menuStripRandom.Size = new System.Drawing.Size(119, 22);
             this.menuStripRandom.Text = "Random";
             this.menuStripRandom.Click += new System.EventHandler(this.menuStripRandom_Click);
             // 
@@ -339,7 +357,7 @@
             // menuStripAbout
             // 
             this.menuStripAbout.Name = "menuStripAbout";
-            this.menuStripAbout.Size = new System.Drawing.Size(180, 22);
+            this.menuStripAbout.Size = new System.Drawing.Size(107, 22);
             this.menuStripAbout.Text = "About";
             this.menuStripAbout.Click += new System.EventHandler(this.menuStripAbout_Click);
             // 
@@ -351,11 +369,51 @@
             this.panel2.Controls.Add(this.btnTracks);
             this.panel2.Controls.Add(this.btnTagValues);
             this.panel2.Controls.Add(this.btnPlaylist);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Left;
-            this.panel2.Location = new System.Drawing.Point(0, 24);
+            this.panel2.Location = new System.Drawing.Point(0, 73);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(91, 458);
+            this.panel2.Size = new System.Drawing.Size(91, 409);
             this.panel2.TabIndex = 2;
+            // 
+            // btnHarmonizer
+            // 
+            this.btnHarmonizer.Location = new System.Drawing.Point(0, 292);
+            this.btnHarmonizer.Name = "btnHarmonizer";
+            this.btnHarmonizer.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.btnHarmonizer.Size = new System.Drawing.Size(91, 62);
+            this.btnHarmonizer.TabIndex = 0;
+            this.btnHarmonizer.Text = "HARMONIZER";
+            this.btnHarmonizer.UseVisualStyleBackColor = true;
+            this.btnHarmonizer.Click += new System.EventHandler(this.btnHarmonizer_Click);
+            // 
+            // btnTemplates
+            // 
+            this.btnTemplates.Location = new System.Drawing.Point(0, 234);
+            this.btnTemplates.Name = "btnTemplates";
+            this.btnTemplates.Size = new System.Drawing.Size(91, 62);
+            this.btnTemplates.TabIndex = 0;
+            this.btnTemplates.Text = "Templates";
+            this.btnTemplates.UseVisualStyleBackColor = true;
+            this.btnTemplates.Click += new System.EventHandler(this.btnTemplates_Click);
+            // 
+            // btnRules
+            // 
+            this.btnRules.Location = new System.Drawing.Point(0, 176);
+            this.btnRules.Name = "btnRules";
+            this.btnRules.Size = new System.Drawing.Size(91, 62);
+            this.btnRules.TabIndex = 0;
+            this.btnRules.Text = "Rules";
+            this.btnRules.UseVisualStyleBackColor = true;
+            this.btnRules.Click += new System.EventHandler(this.btnRules_Click);
+            // 
+            // btnTracks
+            // 
+            this.btnTracks.Location = new System.Drawing.Point(0, 118);
+            this.btnTracks.Name = "btnTracks";
+            this.btnTracks.Size = new System.Drawing.Size(91, 62);
+            this.btnTracks.TabIndex = 0;
+            this.btnTracks.Text = "Tracks";
+            this.btnTracks.UseVisualStyleBackColor = true;
+            this.btnTracks.Click += new System.EventHandler(this.btnTracks_Click);
             // 
             // btnTagValues
             // 
@@ -377,52 +435,165 @@
             this.btnPlaylist.UseVisualStyleBackColor = true;
             this.btnPlaylist.Click += new System.EventHandler(this.btnPlaylist_Click);
             // 
-            // btnTracks
+            // mediaPlayer
             // 
-            this.btnTracks.Location = new System.Drawing.Point(0, 118);
-            this.btnTracks.Name = "btnTracks";
-            this.btnTracks.Size = new System.Drawing.Size(91, 62);
-            this.btnTracks.TabIndex = 0;
-            this.btnTracks.Text = "Tracks";
-            this.btnTracks.UseVisualStyleBackColor = true;
-            this.btnTracks.Click += new System.EventHandler(this.btnTracks_Click);
+            this.mediaPlayer.Enabled = true;
+            this.mediaPlayer.Location = new System.Drawing.Point(299, 23);
+            this.mediaPlayer.Name = "mediaPlayer";
+            this.mediaPlayer.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("mediaPlayer.OcxState")));
+            this.mediaPlayer.Size = new System.Drawing.Size(10, 10);
+            this.mediaPlayer.TabIndex = 1;
             // 
-            // btnRules
+            // panel1
             // 
-            this.btnRules.Location = new System.Drawing.Point(0, 176);
-            this.btnRules.Name = "btnRules";
-            this.btnRules.Size = new System.Drawing.Size(91, 62);
-            this.btnRules.TabIndex = 0;
-            this.btnRules.Text = "Rules";
-            this.btnRules.UseVisualStyleBackColor = true;
-            this.btnRules.Click += new System.EventHandler(this.btnRules_Click);
+            this.panel1.Controls.Add(this.mediaPlayer);
+            this.panel1.Controls.Add(this.trackVolume);
+            this.panel1.Controls.Add(this.pBar);
+            this.panel1.Controls.Add(this.lblVolume);
+            this.panel1.Controls.Add(this.lblTrackEnd);
+            this.panel1.Controls.Add(this.lblTrackStart);
+            this.panel1.Controls.Add(this.btnOpenDirectory);
+            this.panel1.Controls.Add(this.btnOpen);
+            this.panel1.Controls.Add(this.btnNext);
+            this.panel1.Controls.Add(this.btnStop);
+            this.panel1.Controls.Add(this.btnPause);
+            this.panel1.Controls.Add(this.btnPrev);
+            this.panel1.Controls.Add(this.btnPlay);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel1.Location = new System.Drawing.Point(0, 24);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(1160, 47);
+            this.panel1.TabIndex = 4;
             // 
-            // btnTemplates
+            // trackVolume
             // 
-            this.btnTemplates.Location = new System.Drawing.Point(0, 234);
-            this.btnTemplates.Name = "btnTemplates";
-            this.btnTemplates.Size = new System.Drawing.Size(91, 62);
-            this.btnTemplates.TabIndex = 0;
-            this.btnTemplates.Text = "Templates";
-            this.btnTemplates.UseVisualStyleBackColor = true;
-            this.btnTemplates.Click += new System.EventHandler(this.btnTemplates_Click);
+            this.trackVolume.Location = new System.Drawing.Point(868, 1);
+            this.trackVolume.Maximum = 100;
+            this.trackVolume.Name = "trackVolume";
+            this.trackVolume.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.trackVolume.Size = new System.Drawing.Size(139, 45);
+            this.trackVolume.TabIndex = 46;
+            this.trackVolume.TickFrequency = 10;
             // 
-            // btnHarmonizer
+            // pBar
             // 
-            this.btnHarmonizer.Location = new System.Drawing.Point(0, 292);
-            this.btnHarmonizer.Name = "btnHarmonizer";
-            this.btnHarmonizer.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.btnHarmonizer.Size = new System.Drawing.Size(91, 62);
-            this.btnHarmonizer.TabIndex = 0;
-            this.btnHarmonizer.Text = "HARMONIZER";
-            this.btnHarmonizer.UseVisualStyleBackColor = true;
-            this.btnHarmonizer.Click += new System.EventHandler(this.btnHarmonizer_Click);
+            this.pBar.Location = new System.Drawing.Point(411, 10);
+            this.pBar.Name = "pBar";
+            this.pBar.Size = new System.Drawing.Size(365, 23);
+            this.pBar.Step = 1;
+            this.pBar.TabIndex = 45;
+            // 
+            // lblVolume
+            // 
+            this.lblVolume.AutoSize = true;
+            this.lblVolume.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.lblVolume.Location = new System.Drawing.Point(1013, 13);
+            this.lblVolume.Name = "lblVolume";
+            this.lblVolume.Size = new System.Drawing.Size(50, 20);
+            this.lblVolume.TabIndex = 42;
+            this.lblVolume.Text = "100%";
+            // 
+            // lblTrackEnd
+            // 
+            this.lblTrackEnd.AutoSize = true;
+            this.lblTrackEnd.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.lblTrackEnd.Location = new System.Drawing.Point(782, 10);
+            this.lblTrackEnd.Name = "lblTrackEnd";
+            this.lblTrackEnd.Size = new System.Drawing.Size(80, 24);
+            this.lblTrackEnd.TabIndex = 43;
+            this.lblTrackEnd.Text = "00:00:00";
+            // 
+            // lblTrackStart
+            // 
+            this.lblTrackStart.AutoSize = true;
+            this.lblTrackStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.lblTrackStart.Location = new System.Drawing.Point(325, 10);
+            this.lblTrackStart.Name = "lblTrackStart";
+            this.lblTrackStart.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.lblTrackStart.Size = new System.Drawing.Size(80, 24);
+            this.lblTrackStart.TabIndex = 44;
+            this.lblTrackStart.Text = "00:00:00";
+            this.lblTrackStart.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // btnOpenDirectory
+            // 
+            this.btnOpenDirectory.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.btnOpenDirectory.Location = new System.Drawing.Point(279, 3);
+            this.btnOpenDirectory.Name = "btnOpenDirectory";
+            this.btnOpenDirectory.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.btnOpenDirectory.Size = new System.Drawing.Size(40, 40);
+            this.btnOpenDirectory.TabIndex = 35;
+            this.btnOpenDirectory.Text = "🗁";
+            this.btnOpenDirectory.UseVisualStyleBackColor = true;
+            // 
+            // btnOpen
+            // 
+            this.btnOpen.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.btnOpen.Location = new System.Drawing.Point(233, 3);
+            this.btnOpen.Name = "btnOpen";
+            this.btnOpen.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.btnOpen.Size = new System.Drawing.Size(40, 40);
+            this.btnOpen.TabIndex = 36;
+            this.btnOpen.Text = "⏏";
+            this.btnOpen.UseVisualStyleBackColor = true;
+            // 
+            // btnNext
+            // 
+            this.btnNext.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.btnNext.Location = new System.Drawing.Point(187, 3);
+            this.btnNext.Name = "btnNext";
+            this.btnNext.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.btnNext.Size = new System.Drawing.Size(40, 40);
+            this.btnNext.TabIndex = 37;
+            this.btnNext.Text = "⏯️";
+            this.btnNext.UseVisualStyleBackColor = true;
+            // 
+            // btnStop
+            // 
+            this.btnStop.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.btnStop.Location = new System.Drawing.Point(3, 3);
+            this.btnStop.Name = "btnStop";
+            this.btnStop.Size = new System.Drawing.Size(40, 40);
+            this.btnStop.TabIndex = 38;
+            this.btnStop.Text = "⏹️";
+            this.btnStop.UseVisualStyleBackColor = true;
+            // 
+            // btnPause
+            // 
+            this.btnPause.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.btnPause.Location = new System.Drawing.Point(49, 3);
+            this.btnPause.Name = "btnPause";
+            this.btnPause.Size = new System.Drawing.Size(40, 40);
+            this.btnPause.TabIndex = 39;
+            this.btnPause.Text = "⏸";
+            this.btnPause.UseVisualStyleBackColor = true;
+            // 
+            // btnPrev
+            // 
+            this.btnPrev.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.btnPrev.Location = new System.Drawing.Point(141, 3);
+            this.btnPrev.Name = "btnPrev";
+            this.btnPrev.Size = new System.Drawing.Size(40, 40);
+            this.btnPrev.TabIndex = 40;
+            this.btnPrev.Text = "⏮";
+            this.btnPrev.UseVisualStyleBackColor = true;
+            // 
+            // btnPlay
+            // 
+            this.btnPlay.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.btnPlay.Location = new System.Drawing.Point(95, 3);
+            this.btnPlay.Name = "btnPlay";
+            this.btnPlay.Size = new System.Drawing.Size(40, 40);
+            this.btnPlay.TabIndex = 41;
+            this.btnPlay.Text = "▶";
+            this.btnPlay.UseVisualStyleBackColor = true;
             // 
             // MainView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1160, 482);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.menuStrip1);
             this.IsMdiContainer = true;
@@ -434,6 +605,10 @@
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.mediaPlayer)).EndInit();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackVolume)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -483,6 +658,20 @@
         private System.Windows.Forms.Button btnRules;
         private System.Windows.Forms.Button btnTracks;
         private System.Windows.Forms.Button btnHarmonizer;
+        public AxWMPLib.AxWindowsMediaPlayer mediaPlayer;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.TrackBar trackVolume;
+        private System.Windows.Forms.ProgressBar pBar;
+        private System.Windows.Forms.Label lblVolume;
+        private System.Windows.Forms.Label lblTrackEnd;
+        private System.Windows.Forms.Label lblTrackStart;
+        private System.Windows.Forms.Button btnOpenDirectory;
+        private System.Windows.Forms.Button btnOpen;
+        private System.Windows.Forms.Button btnNext;
+        private System.Windows.Forms.Button btnStop;
+        private System.Windows.Forms.Button btnPause;
+        private System.Windows.Forms.Button btnPrev;
+        private System.Windows.Forms.Button btnPlay;
     }
 }
 
