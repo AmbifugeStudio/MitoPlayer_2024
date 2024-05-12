@@ -21,11 +21,13 @@ namespace MitoPlayer_2024
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            IMainView view = new MainView();
+            IMainView mainView = new MainView();
             string sqlConnectionString = ConfigurationManager.ConnectionStrings["SqlConnection"].ConnectionString;
-            new MainPresenter(view, sqlConnectionString);
 
-            Application.Run((Form)view);
+            MainPresenter mainPresenter = new MainPresenter(mainView, sqlConnectionString);
+            mainPresenter.Initialize();
+
+            Application.Run((Form)mainView);
         }
     }
 }

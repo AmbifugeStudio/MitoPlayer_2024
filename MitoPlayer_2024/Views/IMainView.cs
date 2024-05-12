@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MitoPlayer_2024.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -48,5 +49,6 @@ namespace MitoPlayer_2024.Views
         //HELP
         event EventHandler About;
 
+        event EventHandler<ListEventArgs> ScanFiles;
     }
 }

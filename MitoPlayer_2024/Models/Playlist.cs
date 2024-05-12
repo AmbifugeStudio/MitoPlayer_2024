@@ -14,6 +14,7 @@ namespace MitoPlayer_2024.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public int OrderInList { get; set; }
+        public int QuickListGroup { get; set; }
 
         private List<Track> trackList;
 
@@ -21,11 +22,12 @@ namespace MitoPlayer_2024.Models
         {
         }
 
-        public Playlist(int id, string name, int orderInList)
+        public Playlist(int id, string name, int orderInList, int quickListGroup)
         {
             this.Id = id;
             this.Name = name;
             this.OrderInList = orderInList;
+            this.QuickListGroup = quickListGroup;
         }
 
     }

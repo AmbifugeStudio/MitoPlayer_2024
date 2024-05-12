@@ -173,6 +173,7 @@
     <Compile Include="Models\Playlist.cs" />
     <Compile Include="Presenters\AboutPresenter.cs" />
     <Compile Include="Presenters\HarmonizerPresenter.cs" />
+    <Compile Include="Presenters\MediaPlayerComponent.cs" />
     <Compile Include="Presenters\PlaylistEditorPresenter.cs" />
     <Compile Include="Presenters\PlaylistPresenter.cs" />
     <Compile Include="Presenters\PreferencesPresenter.cs" />

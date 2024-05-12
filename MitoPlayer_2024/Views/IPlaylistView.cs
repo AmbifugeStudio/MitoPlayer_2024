@@ -13,13 +13,33 @@ namespace MitoPlayer_2024.Views
 {
     public interface IPlaylistView
     {
-        List<Playlist> PlaylistList { get; set; }
-        List<Track> TrackList { get; set; }
 
-        event EventHandler<ListEventArgs> ShowPlaylistEditorView;
-        event EventHandler<ListEventArgs> LoadPlaylist;
-        event EventHandler<ListEventArgs> DeletePlaylist;
-        event EventHandler<ListEventArgs> OrderByColumn;
+        //PLAYER
+        event EventHandler<ListEventArgs> SetCurrentTrackEvent;
+        event EventHandler<ListEventArgs> PlayTrackEvent;
+        event EventHandler PauseTrackEvent;
+        event EventHandler StopTrackEvent;
+        event EventHandler<ListEventArgs> PrevTrackEvent;
+        event EventHandler<ListEventArgs> NextTrackEvent;
+        event EventHandler RandomTrackEvent;
+        event EventHandler<ListEventArgs> ChangeVolumeEvent;
+        event EventHandler<ListEventArgs> ChangeProgressEvent;
+        event EventHandler GetMediaPlayerProgressStatusEvent;
+
+        //TRACKLIST
+        event EventHandler<ListEventArgs> OrderByColumnEvent;
+        event EventHandler<ListEventArgs> DeleteTracksEvent;
+
+        //PLAYLIST
+        event EventHandler<ListEventArgs> ShowPlaylistEditorViewEvent;
+        event EventHandler<ListEventArgs> LoadPlaylistEvent;
+        event EventHandler<ListEventArgs> DeletePlaylistEvent;
+        event EventHandler<ListEventArgs> SetQuickListEvent;
+
+       // event EventHandler<ListEventArgs> ScanFiles;
+        
+       // event EventHandler<ListEventArgs> PlayTrack;
+       // event EventHandler StopTrack;
 
         /*event EventHandler OpenFiles;
         event EventHandler OpenDirectory;
@@ -47,6 +67,11 @@ namespace MitoPlayer_2024.Views
         void SetPlaylistListBindingSource(BindingSource playlistList, bool[] columnVisibility, int currentPlaylistId);
         void SetTrackListBindingSource(BindingSource trackList, bool[] columnVisibility);
         void SetSelectedTrackListBindingSource(BindingSource selectedTrackList);
+        void UpdateAfterPlayTrack(int currentTrackIndex);
+        void UpdateAfterPlayTrackAfterPause();
+        void UpdateAfterStopTrack();
+        void UpdateAfterPauseTrack();
+        void UpdateMediaPlayerProgressStatus(double duration, String durationString, double currentPosition, String currentPositionString);
         void SetVolume(int volume);
         void Show();
     }

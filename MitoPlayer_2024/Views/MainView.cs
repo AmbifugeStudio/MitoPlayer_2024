@@ -1,4 +1,5 @@
-﻿using MitoPlayer_2024.Views;
+﻿using MitoPlayer_2024.Helpers;
+using MitoPlayer_2024.Views;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -20,7 +21,6 @@ namespace MitoPlayer_2024
             InitializeComponent();
         }
 
-        //OPEN VIEWS
         public event EventHandler ShowProfileEditorView;
         public event EventHandler ShowPlaylistView;
         public event EventHandler ShowTagValueEditorView;
@@ -28,9 +28,9 @@ namespace MitoPlayer_2024
         public event EventHandler ShowTrackEditorView;
         public event EventHandler ShowTemplateEditorView;
         public event EventHandler ShowHarmonizerView;
+        public event EventHandler ShowPreferencesView;
+        public event EventHandler ShowAboutView;
 
-        //MENUSTRIP
-        //FILE
         public event EventHandler OpenFiles;
         public event EventHandler OpenDirectory;
         public event EventHandler CreatePlaylist;
@@ -39,7 +39,7 @@ namespace MitoPlayer_2024
         public event EventHandler DeletePlaylist;
         public event EventHandler Preferences;
         public event EventHandler Exit;
-        //EDIT
+
         public event EventHandler RemoveMissingTracks;
         public event EventHandler RemoveDuplicatedTracks;
         public event EventHandler OrderByTitle;
@@ -48,15 +48,17 @@ namespace MitoPlayer_2024
         public event EventHandler Reverse;
         public event EventHandler Shuffle;
         public event EventHandler Clear;
-        //PLAYBACK
+
         public event EventHandler PlayTrack;
         public event EventHandler PauseTrack;
         public event EventHandler StopTrack;
         public event EventHandler PrevTrack;
         public event EventHandler NextTrack;
         public event EventHandler RandomTrack;
-        //HELP
+
         public event EventHandler About;
+
+        public event EventHandler<ListEventArgs> ScanFiles;
 
         //MENU BUTTONS
         private void btnPlaylist_Click(object sender, EventArgs e)
@@ -254,5 +256,9 @@ namespace MitoPlayer_2024
 
         }
 
+        public void OpenFilesFromDragAndDrop(String[] pathList, int index)
+        {
+            this.ScanFiles?.Invoke(this, new ListEventArgs() { DragAndDropFiles = pathList, IntegerField1 = index });
+        }
     }
 }

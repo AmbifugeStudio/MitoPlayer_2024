@@ -8,6 +8,7 @@ using NAudio.Wave;
 using Org.BouncyCastle.Tls.Crypto;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -23,9 +24,27 @@ namespace MitoPlayer_2024.Presenters
         private IPlaylistDao playlistDao { get; set; }
         private ITrackDao trackDao { get; set; }
         private ISettingDao settingDao { get; set; }
-        private AxWindowsMediaPlayer mediaPlayer { get; set; }
+        private MediaPlayerComponent mediaPlayerComponent { get; set; }
         private string sqlConnectionString { get; set; }
-        private object actualView { get; set; }
+      //  private DataTable workingTable { get; set; }
+      // private int currentPlaylistId { get; set; }
+        private object actualView { get => null; set
+        {
+            if (this.playlistView != null && this.actualView.GetType() == typeof(PlaylistView))
+            {
+                this.workingTable = this.playlistPresenter.trackListTable;
+                this.currentPlaylistId = this.playlistPresenter.currentPlaylistId;
+            }
+            else if (this.trackEditorView != null && this.actualView.GetType() == typeof(TrackEditorView)){
+                this.workingTable = this.trackEditorPresenter.trackListTable;
+                this.currentPlaylistId = this.trackEditorPresenter.currentPlaylistId;
+            }
+            else if (this.harmonizerView != null && this.actualView.GetType() == typeof(HarmonizerView))
+            {
+                this.workingTable = this.harmonizerPresenter.trackListTable;
+                this.currentPlaylistId = this.harmonizerPresenter.currentPlaylistId;
+            }
+        }}
         private IProfileEditorView profileEditorView { get; set; }
         private IPlaylistView playlistView { get; set; }
         private ITagValueEditorView tagValueEditorView { get; set; }
@@ -49,15 +68,8 @@ namespace MitoPlayer_2024.Presenters
         public MainPresenter(IMainView mainView, string sqlConnectionString)
         {
             this.mainView = mainView;
-            this.mediaPlayer = ((MainView)this.mainView).mediaPlayer;
             this.sqlConnectionString = sqlConnectionString;
-            this.actualView = null;
 
-            this.playlistDao = new PlaylistDao(sqlConnectionString);
-            this.trackDao = new TrackDao(sqlConnectionString);
-            this.settingDao = new SettingDao(sqlConnectionString);
-
-            //OPEN VIEWS
             this.mainView.ShowProfileEditorView += ShowProfileEditorView;
             this.mainView.ShowPlaylistView += ShowPlaylistView;
             this.mainView.ShowTagValueEditorView += ShowTagValueEditorView;
@@ -68,8 +80,6 @@ namespace MitoPlayer_2024.Presenters
             this.mainView.ShowPreferencesView += ShowPreferencesView;
             this.mainView.ShowAboutView += ShowAboutView;
 
-            //MENU STRIP
-            //FILE
             this.mainView.OpenFiles += OpenFiles;
             this.mainView.OpenDirectory += OpenDirectory;
             this.mainView.CreatePlaylist += CreatePlaylist;
@@ -78,7 +88,7 @@ namespace MitoPlayer_2024.Presenters
             this.mainView.DeletePlaylist += DeletePlaylist;
             this.mainView.Preferences += Preferences;
             this.mainView.Exit += Exit;
-            //EDIT
+
             this.mainView.RemoveMissingTracks += RemoveMissingTracks;
             this.mainView.RemoveDuplicatedTracks += RemoveDuplicatedTracks;
             this.mainView.OrderByTitle += OrderByTitle;
@@ -87,17 +97,28 @@ namespace MitoPlayer_2024.Presenters
             this.mainView.Reverse += Reverse;
             this.mainView.Shuffle += Shuffle;
             this.mainView.Clear += Clear;
-            //PLAYBACK
+
             this.mainView.PlayTrack += PlayTrack;
             this.mainView.PauseTrack += PauseTrack;
             this.mainView.StopTrack += StopTrack;
             this.mainView.PrevTrack += PrevTrack;
             this.mainView.NextTrack += NextTrack;
             this.mainView.RandomTrack += RandomTrack;
-            //HELP
+
             this.mainView.About += About;
 
-            //kezdooldal
+            this.mainView.ScanFiles += ScanFiles;
+        }
+
+        public void Initialize()
+        {
+            this.mediaPlayerComponent = new MediaPlayerComponent(((MainView)this.mainView).mediaPlayer);
+
+            this.actualView = null;
+            this.playlistDao = new PlaylistDao(sqlConnectionString);
+            this.trackDao = new TrackDao(sqlConnectionString);
+            this.settingDao = new SettingDao(sqlConnectionString);
+
             this.ShowPlaylistView(this, new EventArgs());
         }
 
@@ -114,7 +135,7 @@ namespace MitoPlayer_2024.Presenters
             this.playlistView = PlaylistView.GetInstance((MainView)mainView); 
             this.actualView = this.playlistView;
             ((MainView)mainView).SetMenuStripAccessibility(this.actualView);
-            this.playlistPresenter = new PlaylistPresenter(this.playlistView, this.mediaPlayer, this.playlistDao, this.trackDao, this.settingDao);
+            this.playlistPresenter = new PlaylistPresenter(this.playlistView, this.mediaPlayerComponent, this.playlistDao, this.trackDao, this.settingDao);
         }
         private void ShowTagValueEditorView(object sender, EventArgs e)
         {
@@ -128,7 +149,7 @@ namespace MitoPlayer_2024.Presenters
             this.trackEditorView = TrackEditorView.GetInstance((MainView)mainView);
             this.actualView = this.trackEditorView;
             ((MainView)mainView).SetMenuStripAccessibility(this.actualView);
-            this.trackEditorPresenter = new TrackEditorPresenter(this.trackEditorView, this.mediaPlayer, this.playlistDao, this.trackDao, this.settingDao);
+            this.trackEditorPresenter = new TrackEditorPresenter(this.trackEditorView, this.mediaPlayerComponent, this.playlistDao, this.trackDao, this.settingDao);
         }
         private void ShowRuleEditorView(object sender, EventArgs e)
         {
@@ -149,7 +170,7 @@ namespace MitoPlayer_2024.Presenters
             this.harmonizerView = HarmonizerView.GetInstance((MainView)mainView);
             this.actualView = this.harmonizerView;
             ((MainView)mainView).SetMenuStripAccessibility(this.actualView);
-            this.harmonizerPresenter = new HarmonizerPresenter(this.harmonizerView, this.mediaPlayer, this.playlistDao, this.trackDao, this.settingDao);
+            this.harmonizerPresenter = new HarmonizerPresenter(this.harmonizerView, this.mediaPlayerComponent, this.playlistDao, this.trackDao, this.settingDao);
         }
         private void ShowPreferencesView(object sender, EventArgs e)
         {
@@ -181,12 +202,12 @@ namespace MitoPlayer_2024.Presenters
 
             this.settingDao.SetIntegerSetting(Settings.LastOpenFilesFilterIndex.ToString(), ofd.FilterIndex);
 
-            if (this.playlistView != null && this.actualView.GetType() == typeof(PlaylistView))
-                this.playlistPresenter.AddTracksToTrackList(trackList);
-            else if (this.trackEditorView != null && this.actualView.GetType() == typeof(TrackEditorView))
-                this.trackEditorPresenter.AddTracksToTrackList(trackList);
-            else if (this.harmonizerView != null && this.actualView.GetType() == typeof(HarmonizerView))
-                this.harmonizerPresenter.AddTracksToTrackList(trackList);
+            this.AddTracksToTrackList(trackList);
+            
+            if (this.mediaPlayer.playState != WMPLib.WMPPlayState.wmppsPlaying)
+            {
+                this.PlayTrack();
+            }
         }
         private void OpenDirectory(object sender, EventArgs e)
         {
@@ -208,142 +229,11 @@ namespace MitoPlayer_2024.Presenters
                 this.settingDao.SetStringSetting(Settings.LastOpenDirectoryPath.ToString(), fbd.SelectedPath);
             }
 
-            if (this.playlistView != null && this.actualView.GetType() == typeof(PlaylistView))
-                this.playlistPresenter.AddTracksToTrackList(trackList);
-            else if (this.trackEditorView != null && this.actualView.GetType() == typeof(TrackEditorView))
-                this.trackEditorPresenter.AddTracksToTrackList(trackList);
-            else if (this.harmonizerView != null && this.actualView.GetType() == typeof(HarmonizerView))
-                this.harmonizerPresenter.AddTracksToTrackList(trackList);
-        }
-        private List<Track> ReadFiles(string[] fileNames)
-        {
-            List<String> filePathList = new List<String>();
-            List<Track> trackList = new List<Track>();
-            if (fileNames != null && fileNames.Length > 0)
+            this.AddTracksToTrackList(trackList);
+            
+            if (this.mediaPlayer.playState != WMPLib.WMPPlayState.wmppsPlaying)
             {
-                foreach (String path in fileNames)
-                {
-                    if (path.Contains(".mp3"))
-                    {
-                        filePathList.Add(path);
-                    }
-                    else if (path.Contains(".wav"))
-                    {
-                        filePathList.Add(path);
-                    }
-                    else if (path.Contains(".flac"))
-                    {
-                        filePathList.Add(path);
-                    }
-                    else if (path.Contains(".m3u"))
-                    {
-                        const Int32 BufferSize = 128;
-                        char[] firstThreeCharacter;
-                        using (var fileStream = System.IO.File.OpenRead(path))
-                        using (var streamReader = new StreamReader(fileStream, Encoding.UTF8, true, BufferSize))
-                        {
-                            String line;
-                            while ((line = streamReader.ReadLine()) != null)
-                            {
-                                firstThreeCharacter = line.Substring(0, 3).ToCharArray();
-
-                                if (firstThreeCharacter[1] == ':' && firstThreeCharacter[2] == '\\')
-                                {
-                                    filePathList.Add(line);
-                                }
-                            }
-                        }
-                    }
-                }
-
-                foreach (string path in filePathList)
-                {
-                    string fileName = "";
-
-                    Track track = new Track();
-                    track.Path = path;
-
-                    int extCharCount = path.EndsWith("flac") ? 5 : 4;
-                    fileName = path.Substring(path.LastIndexOf(@"\") + 1);
-                    fileName = fileName.Remove(fileName.LastIndexOf("."), extCharCount);
-
-                    track.FileName = fileName;
-
-                    if (!System.IO.File.Exists(path))
-                    {
-                        track.Artist = fileName;
-                        track.IsMissing = true;
-                    }
-                    else
-                    {
-                        Track trackFromDb = this.trackDao.GetTrackByPath(track.Path);
-                        if (trackFromDb != null)
-                            track = trackFromDb;
-
-                        if (track.Path.Contains(".mp3"))
-                        {
-                            TagLib.File file = TagLib.File.Create(track.Path);
-                            if (!String.IsNullOrEmpty(file.Tag.FirstArtist))
-                                track.Artist = file.Tag.FirstArtist;
-                            else if (!String.IsNullOrEmpty(file.Tag.FirstAlbumArtist))
-                                track.Artist = file.Tag.FirstAlbumArtist;
-                            else if (file.Tag.Artists != null && file.Tag.Artists.Count() > 0)
-                                track.Artist = file.Tag.Artists[0];
-                            track.Album = file.Tag.Album;
-                            track.Title = file.Tag.Title;
-                            track.Year = (int)file.Tag.Year;
-                            track.Length = file.Properties.Duration.TotalSeconds;
-
-                            if (String.IsNullOrEmpty(track.Artist))
-                                track.Artist = fileName;
-                        }
-                        else if (path.Contains(".wav"))
-                        {
-                            WaveFileReader wf = new WaveFileReader(path);
-                            track.Artist = fileName;
-                            track.Length = wf.TotalTime.TotalSeconds;
-                        }
-                        else if (path.Contains(".flac"))
-                        {
-                            track.Artist = fileName;
-                        }
-                    }
-
-                    if (track.Id == -1)
-                    {
-                        track.Id = this.GetNewTrackId();
-                        this.trackDao.AddTrackToDatabase(track);
-                    }
-                    trackList.Add(track);
-                }
-            }
-            return trackList;
-        }
-        private int GetNewTrackId()
-        {
-            int id = this.playlistDao.GetLastObjectId(TableName.Track.ToString());
-            if (id == -1)
-                return 0;
-            else
-                return id + 1;
-        }
-        private void ScanDirectory(string path)
-        {
-            string[] files = Directory.GetFiles(path);
-            files = files.Where(x => x.Contains(".mp3") || x.Contains(".flac") || x.Contains(".wav")).ToArray();
-
-            if (files != null && files.Length > 0)
-            {
-                if (scannedFileNames == null)
-                    scannedFileNames = files;
-                else
-                    scannedFileNames = scannedFileNames.Concat(files).ToArray();
-            }
-
-            string[] directories = Directory.GetDirectories(path);
-            foreach (String dir in directories)
-            {
-                this.ScanDirectory(dir);
+                this.PlayTrack();
             }
         }
         private void CreatePlaylist(object sender, EventArgs e)
@@ -469,62 +359,246 @@ namespace MitoPlayer_2024.Presenters
         private void PlayTrack(object sender, EventArgs e)
         {
             if (this.playlistView != null && this.actualView.GetType() == typeof(PlaylistView))
-                ((PlaylistView)this.playlistView).PlayExt();
+                ((PlaylistView)this.playlistView).CallPlayTrackEvent();
             else if (this.trackEditorView != null && this.actualView.GetType() == typeof(TrackEditorView))
-                ((TrackEditorView)this.trackEditorView).PlayExt();
+                ((TrackEditorView)this.trackEditorView).CallPlayTrackEvent();
             else if (this.harmonizerView != null && this.actualView.GetType() == typeof(HarmonizerView))
-                ((HarmonizerView)this.harmonizerView).PlayExt();
+                ((HarmonizerView)this.harmonizerView).CallPlayTrackEvent();
         }
+       
         private void PauseTrack(object sender, EventArgs e)
         {
             if (this.playlistView != null && this.actualView.GetType() == typeof(PlaylistView))
-                this.playlistPresenter.Pause();
+                ((PlaylistView)this.playlistView).CallPauseTrackEvent();
             else if (this.trackEditorView != null && this.actualView.GetType() == typeof(TrackEditorView))
-                this.trackEditorPresenter.Pause();
+                ((TrackEditorView)this.trackEditorView).CallPauseTrackEvent();
             else if (this.harmonizerView != null && this.actualView.GetType() == typeof(HarmonizerView))
-                this.harmonizerPresenter.Pause();
+                ((HarmonizerView)this.harmonizerView).CallPauseTrackEvent();
         }
+        
         private void StopTrack(object sender, EventArgs e)
         {
             if (this.playlistView != null && this.actualView.GetType() == typeof(PlaylistView))
-                this.playlistPresenter.Stop();
+                ((PlaylistView)this.playlistView).CallStopTrackEvent();
             else if (this.trackEditorView != null && this.actualView.GetType() == typeof(TrackEditorView))
-                this.trackEditorPresenter.Stop();
+                ((TrackEditorView)this.trackEditorView).CallStopTrackEvent();
             else if (this.harmonizerView != null && this.actualView.GetType() == typeof(HarmonizerView))
-                this.harmonizerPresenter.Stop();
+                ((HarmonizerView)this.harmonizerView).CallStopTrackEvent();
         }
+        
         private void PrevTrack(object sender, EventArgs e)
         {
             if (this.playlistView != null && this.actualView.GetType() == typeof(PlaylistView))
-                this.playlistPresenter.Prev();
+                ((PlaylistView)this.playlistView).CallPrevTrackEvent();
             else if (this.trackEditorView != null && this.actualView.GetType() == typeof(TrackEditorView))
-                this.trackEditorPresenter.Prev();
+                ((TrackEditorView)this.trackEditorView).CallPrevTrackEvent();
             else if (this.harmonizerView != null && this.actualView.GetType() == typeof(HarmonizerView))
-                this.harmonizerPresenter.Prev();
+                ((HarmonizerView)this.harmonizerView).CallPrevTrackEvent();
         }
         private void NextTrack(object sender, EventArgs e)
         {
             if (this.playlistView != null && this.actualView.GetType() == typeof(PlaylistView))
-                this.playlistPresenter.Next();
+                ((PlaylistView)this.playlistView).CallNextTrackEvent();
             else if (this.trackEditorView != null && this.actualView.GetType() == typeof(TrackEditorView))
-                this.trackEditorPresenter.Next();
+                ((TrackEditorView)this.trackEditorView).CallNextTrackEvent();
             else if (this.harmonizerView != null && this.actualView.GetType() == typeof(HarmonizerView))
-                this.harmonizerPresenter.Next();
+                ((HarmonizerView)this.harmonizerView).CallNextTrackEvent();
         }
         private void RandomTrack(object sender, EventArgs e)
         {
             if (this.playlistView != null && this.actualView.GetType() == typeof(PlaylistView))
-                this.playlistPresenter.Random();
+                ((PlaylistView)this.playlistView).CallRandomTrackEvent();
             else if (this.trackEditorView != null && this.actualView.GetType() == typeof(TrackEditorView))
-                this.trackEditorPresenter.Random();
+                ((TrackEditorView)this.trackEditorView).CallRandomTrackEvent();
             else if (this.harmonizerView != null && this.actualView.GetType() == typeof(HarmonizerView))
-                this.harmonizerPresenter.Random();
+                ((HarmonizerView)this.harmonizerView).CallRandomTrackEvent();
         }
 
-        //HELP
+//HELP
         private void About(object sender, EventArgs e)
         {
             this.ShowAboutView(this, new EventArgs());
+        }
+
+//ADD FILES
+        private void AddTracksToTrackList(List<Track> trackList)
+        {
+            if (trackList != null && trackList.Count > 0)
+            {
+                int orderInList = this.workingTable.Rows.Count;
+                foreach (Track track in trackList)
+                {
+                    track.OrderInList = orderInList;
+                    this.trackDao.AddTrackToPlaylist(this.GetNewPlaylistContentId(), this.currentPlaylistId, track.Id, track.OrderInList);
+                    orderInList++;
+                }
+            }
+        }
+        private int GetNewPlaylistContentId()
+        {
+            int id = this.playlistDao.GetLastObjectId(TableName.PlaylistContent.ToString());
+            if (id == -1)
+                return 0;
+            else
+                return id + 1;
+        }
+        private void ScanDirectory(string path)
+        {
+            string[] files = Directory.GetFiles(path);
+            files = files.Where(x => x.Contains(".mp3") || x.Contains(".flac") || x.Contains(".wav")).ToArray();
+
+            if (files != null && files.Length > 0)
+            {
+                if (scannedFileNames == null)
+                    scannedFileNames = files;
+                else
+                    scannedFileNames = scannedFileNames.Concat(files).ToArray();
+            }
+
+            string[] directories = Directory.GetDirectories(path);
+            foreach (String dir in directories)
+            {
+                this.ScanDirectory(dir);
+            }
+        }
+        private List<Track> ReadFiles(string[] fileNames)
+        {
+            List<String> filePathList = new List<String>();
+            List<Track> trackList = new List<Track>();
+            if (fileNames != null && fileNames.Length > 0)
+            {
+                foreach (String path in fileNames)
+                {
+                    if (path.Contains(".mp3"))
+                    {
+                        filePathList.Add(path);
+                    }
+                    else if (path.Contains(".wav"))
+                    {
+                        filePathList.Add(path);
+                    }
+                    else if (path.Contains(".flac"))
+                    {
+                        filePathList.Add(path);
+                    }
+                    else if (path.Contains(".m3u"))
+                    {
+                        const Int32 BufferSize = 128;
+                        char[] firstThreeCharacter;
+                        using (var fileStream = System.IO.File.OpenRead(path))
+                        using (var streamReader = new StreamReader(fileStream, Encoding.UTF8, true, BufferSize))
+                        {
+                            String line;
+                            while ((line = streamReader.ReadLine()) != null)
+                            {
+                                firstThreeCharacter = line.Substring(0, 3).ToCharArray();
+
+                                if (firstThreeCharacter[1] == ':' && firstThreeCharacter[2] == '\\')
+                                {
+                                    filePathList.Add(line);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                foreach (string path in filePathList)
+                {
+                    string fileName = "";
+
+                    Track track = new Track();
+                    track.Path = path;
+
+                    int extCharCount = path.EndsWith("flac") ? 5 : 4;
+                    fileName = path.Substring(path.LastIndexOf(@"\") + 1);
+                    fileName = fileName.Remove(fileName.LastIndexOf("."), extCharCount);
+
+                    track.FileName = fileName;
+
+                    if (!System.IO.File.Exists(path))
+                    {
+                        track.Artist = fileName;
+                        track.IsMissing = true;
+                    }
+                    else
+                    {
+                        Track trackFromDb = this.trackDao.GetTrackByPath(track.Path);
+                        if (trackFromDb != null)
+                            track = trackFromDb;
+
+                        if (track.Path.Contains(".mp3"))
+                        {
+                            TagLib.File file = TagLib.File.Create(track.Path);
+                            if (!String.IsNullOrEmpty(file.Tag.FirstArtist))
+                                track.Artist = file.Tag.FirstArtist;
+                            else if (!String.IsNullOrEmpty(file.Tag.FirstAlbumArtist))
+                                track.Artist = file.Tag.FirstAlbumArtist;
+                            else if (file.Tag.Artists != null && file.Tag.Artists.Count() > 0)
+                                track.Artist = file.Tag.Artists[0];
+                            track.Album = file.Tag.Album;
+                            track.Title = file.Tag.Title;
+                            track.Year = (int)file.Tag.Year;
+                            track.Length = file.Properties.Duration.TotalSeconds;
+
+                            if (String.IsNullOrEmpty(track.Artist))
+                                track.Artist = fileName;
+                        }
+                        else if (path.Contains(".wav"))
+                        {
+                            WaveFileReader wf = new WaveFileReader(path);
+                            track.Artist = fileName;
+                            track.Length = wf.TotalTime.TotalSeconds;
+                        }
+                        else if (path.Contains(".flac"))
+                        {
+                            track.Artist = fileName;
+                        }
+                    }
+
+                    if (track.Id == -1)
+                    {
+                        track.Id = this.GetNewTrackId();
+                        this.trackDao.AddTrackToDatabase(track);
+                    }
+                    trackList.Add(track);
+                }
+            }
+            return trackList;
+        }
+        private int GetNewTrackId()
+        {
+            int id = this.playlistDao.GetLastObjectId(TableName.Track.ToString());
+            if (id == -1)
+                return 0;
+            else
+                return id + 1;
+        }
+        private int dragIndex = -1;
+        private String[] scannedFiles;
+        private void ScanFiles(object sender, ListEventArgs e)
+        {
+            string[] mediaFiles;
+            string[] directories;
+            dragIndex = e.IntegerField1;
+            if (e.DragAndDropFiles != null && e.DragAndDropFiles.Length > 0)
+            {
+                mediaFiles = e.DragAndDropFiles.Where(x => x.EndsWith(".mp3") || x.EndsWith(".wav") || x.EndsWith(".flac") || x.EndsWith(".m3u")).ToArray();
+                directories = e.DragAndDropFiles.Where(x => !x.EndsWith(".mp3") && !x.EndsWith(".wav") && !x.EndsWith(".flac") && !x.EndsWith(".m3u")).ToArray();
+
+                if (mediaFiles != null && mediaFiles.Length > 0)
+                {
+                    this.ReadFiles(mediaFiles);
+                }
+                if (directories != null && directories.Length > 0)
+                {
+                    scannedFiles = null;
+                    foreach (string dir in directories)
+                    {
+                        this.ScanDirectory(dir);
+                        this.ReadFiles(scannedFiles);
+                    }
+                }
+            }
         }
 
     }

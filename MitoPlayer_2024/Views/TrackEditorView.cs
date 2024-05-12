@@ -221,5 +221,55 @@ namespace MitoPlayer_2024.Views
         {
             throw new NotImplementedException();
         }
+
+        internal void UpdateAfterPlayTrack(int currentTrackIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void UpdateAfterPlayTrackAfterPause()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void UpdateAfterPauseTrack()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void UpdateAfterStopTrack()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void CallPlayTrackEvent()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void CallPauseTrackEvent()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void CallStopTrackEvent()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void CallPrevTrackEvent()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void CallNextTrackEvent()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void CallRandomTrackEvent()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

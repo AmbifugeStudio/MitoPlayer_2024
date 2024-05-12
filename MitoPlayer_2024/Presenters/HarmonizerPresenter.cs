@@ -3,6 +3,7 @@ using MitoPlayer_2024.Models;
 using MitoPlayer_2024.Views;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,17 +12,21 @@ namespace MitoPlayer_2024.Presenters
 {
     internal class HarmonizerPresenter
     {
+        internal DataTable trackListTable;
+        internal int currentPlaylistId;
         private IHarmonizerView view;
         private IPlaylistDao playlistDao;
         private ITrackDao trackDao;
         private ISettingDao settingDao;
+        private MediaPlayerComponent mediaPLayerComponent { get; set; }
 
-        public HarmonizerPresenter(IHarmonizerView view, AxWMPLib.AxWindowsMediaPlayer mediaPlayer, IPlaylistDao playlistDao, ITrackDao trackDao, ISettingDao settingDao)
+        public HarmonizerPresenter(IHarmonizerView view, MediaPlayerComponent mediaPlayer, IPlaylistDao playlistDao, ITrackDao trackDao, ISettingDao settingDao)
         {
             this.view = view;
             this.playlistDao = playlistDao;
             this.trackDao = trackDao;
             this.settingDao = settingDao;
+            this.mediaPLayerComponent = mediaPLayerComponent;
         }
 
         internal void AddTracksToTrackList(List<Track> trackList)
@@ -40,6 +45,11 @@ namespace MitoPlayer_2024.Presenters
         }
 
         internal void Next()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void NextTrack()
         {
             throw new NotImplementedException();
         }
@@ -64,12 +74,27 @@ namespace MitoPlayer_2024.Presenters
             throw new NotImplementedException();
         }
 
+        internal void PauseTrack()
+        {
+            throw new NotImplementedException();
+        }
+
         internal void Prev()
         {
             throw new NotImplementedException();
         }
 
+        internal void PrevTrack()
+        {
+            throw new NotImplementedException();
+        }
+
         internal void Random()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void RandomTrack()
         {
             throw new NotImplementedException();
         }
@@ -95,6 +120,11 @@ namespace MitoPlayer_2024.Presenters
         }
 
         internal void Stop()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void StopTrack()
         {
             throw new NotImplementedException();
         }

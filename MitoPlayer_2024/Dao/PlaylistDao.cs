@@ -49,7 +49,6 @@ namespace MitoPlayer_2024.Dao
         }
 
         #region LOADING
-
         /*
          * az összes playlist lekérése
          */
@@ -72,6 +71,7 @@ namespace MitoPlayer_2024.Dao
                         playlist.Id = (int)reader[0];
                         playlist.Name = reader[1].ToString();
                         playlist.OrderInList = (int)reader[2];
+                        playlist.QuickListGroup = (int)reader[3];
                         playListList.Add(playlist);
                     }
                 }
@@ -91,10 +91,11 @@ namespace MitoPlayer_2024.Dao
                 connection.Open();
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = "INSERT INTO Playlist values (@Id, @Name, @OrderInList)";
+                command.CommandText = "INSERT INTO Playlist values (@Id, @Name, @OrderInList, @QuickListGroup)";
                 command.Parameters.Add("@Id", MySqlDbType.Int32).Value = playlist.Id;
                 command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = playlist.Name;
                 command.Parameters.Add("@OrderInList", MySqlDbType.Int32).Value = playlist.OrderInList;
+                command.Parameters.Add("@QuickListGroup", MySqlDbType.Int32).Value = playlist.QuickListGroup;
                 try
                 {
                     command.ExecuteNonQuery();
@@ -245,6 +246,7 @@ namespace MitoPlayer_2024.Dao
                         playlist.Id = (int)reader[0];
                         playlist.Name = reader[1].ToString();
                         playlist.OrderInList = (int)reader[2];
+                        playlist.QuickListGroup = (int)reader[3];
                         break;
                     }
                 }
@@ -255,7 +257,7 @@ namespace MitoPlayer_2024.Dao
 
         public Playlist GetPlaylistByName(String playlistName)
         {
-            Playlist playlistModel = null;
+            Playlist playlist = null;
 
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
@@ -269,15 +271,16 @@ namespace MitoPlayer_2024.Dao
                 {
                     while (reader.Read())
                     {
-                        playlistModel = new Playlist();
-                        playlistModel.Id = (int)reader[0];
-                        playlistModel.Name = reader[1].ToString();
-                        playlistModel.OrderInList = (int)reader[2];
+                        playlist = new Playlist();
+                        playlist.Id = (int)reader[0];
+                        playlist.Name = reader[1].ToString();
+                        playlist.OrderInList = (int)reader[2];
+                        playlist.QuickListGroup = (int)reader[3];
                         break;
                     }
                 }
             }
-            return playlistModel;
+            return playlist;
         }
 
         public void UpdatePlaylist(Playlist playlistModel)
@@ -289,11 +292,12 @@ namespace MitoPlayer_2024.Dao
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
                 command.CommandText = @"UPDATE Playlist 
-                                            SET Name = @Name, OrderInList = @OrderInList
+                                            SET Name = @Name, OrderInList = @OrderInList, QuickListGroup = @QuickListGroup
                                             WHERE Id = @Id";
                 command.Parameters.Add("@Id", MySqlDbType.Int32).Value = playlistModel.Id;
                 command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = playlistModel.Name;
-                command.Parameters.Add("@OrderInList", MySqlDbType.VarChar).Value = playlistModel.OrderInList;
+                command.Parameters.Add("@OrderInList", MySqlDbType.Int32).Value = playlistModel.OrderInList;
+                command.Parameters.Add("@QuickListGroup", MySqlDbType.Int32).Value = playlistModel.QuickListGroup;
                 try
                 {
                     command.ExecuteNonQuery();

@@ -20,6 +20,7 @@ namespace MitoPlayer_2024.Helpers
 
         public String StringField1 { get; set; }
         public int IntegerField1 { get; set; }
+        public int IntegerField2 { get; set; }
         public Playlist Playlist { get; set; }
     }
    
