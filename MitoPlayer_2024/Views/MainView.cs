@@ -55,6 +55,8 @@ namespace MitoPlayer_2024
         public event EventHandler PrevTrack;
         public event EventHandler NextTrack;
         public event EventHandler RandomTrack;
+        public event EventHandler<ListEventArgs> ChangeProgress;
+        public event EventHandler<ListEventArgs> ChangeVolume;
 
         public event EventHandler About;
 
@@ -164,6 +166,7 @@ namespace MitoPlayer_2024
         private void menuStripStop_Click(object sender, EventArgs e)
         {
             this.StopTrack?.Invoke(this, EventArgs.Empty);
+            this.UpdateAfterStopTrack();
         }
         private void menuStripPause_Click(object sender, EventArgs e)
         {
@@ -181,7 +184,7 @@ namespace MitoPlayer_2024
         {
             this.RandomTrack?.Invoke(this, EventArgs.Empty);
         }
-
+        
         //HELP
         private void menuStripAbout_Click(object sender, EventArgs e)
         {
@@ -256,9 +259,74 @@ namespace MitoPlayer_2024
 
         }
 
+        //PLAYER BUTTONS
+        private void btnPlay_Click(object sender, EventArgs e)
+        {
+            this.PlayTrack?.Invoke(this, EventArgs.Empty);
+        }
+        private void btnStop_Click(object sender, EventArgs e)
+        {
+            this.StopTrack?.Invoke(this, EventArgs.Empty);
+            this.UpdateAfterStopTrack();
+        }
+        private void btnPause_Click(object sender, EventArgs e)
+        {
+            this.PauseTrack?.Invoke(this, EventArgs.Empty);
+        }
+        private void btnPrev_Click(object sender, EventArgs e)
+        {
+            this.PrevTrack?.Invoke(this, EventArgs.Empty);
+        }
+        private void btnNext_Click(object sender, EventArgs e)
+        {
+            this.NextTrack?.Invoke(this, EventArgs.Empty);
+        }
+        private void pBar_MouseDown(object sender, MouseEventArgs e)
+        {
+            this.ChangeProgress?.Invoke(this, new ListEventArgs() { IntegerField1 = e.X, IntegerField2 = pBar.Width });
+        }
+        private void trackVolume_Scroll(object sender, EventArgs e)
+        {
+            this.ChangeVolume?.Invoke(this, new ListEventArgs() { IntegerField1 = this.trackVolume.Value });
+            this.UpdateAfterChangeVolume();
+        }
+        private void btnOpen_Click(object sender, EventArgs e)
+        {
+            this.OpenFiles?.Invoke(this, EventArgs.Empty);
+        }
+        private void btnOpenDirectory_Click(object sender, EventArgs e)
+        {
+            this.OpenDirectory?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void UpdateAfterStopTrack()
+        {
+            this.lblTrackStart.Text = "";
+            this.lblTrackEnd.Text = "";
+            this.pBar.Value = 0;
+        }
+        public void UpdateAfterChangeVolume()
+        {
+            this.lblVolume.Text = this.trackVolume.Value.ToString() + "%";
+        }
+        public void SetVolume(int volume)
+        {
+            trackVolume.Value = volume;
+            lblVolume.Text = volume.ToString() + "%";
+        }
+        public void UpdateMediaPlayerProgressStatus(double duration, String durationString, double currentPosition, String currentPositionString)
+        {
+            this.pBar.Maximum = (int)duration;
+            this.pBar.Value = (int)currentPosition;
+            this.lblTrackEnd.Text = durationString;
+            this.lblTrackStart.Text = currentPositionString;
+        }
+
+        //OTHER
         public void OpenFilesFromDragAndDrop(String[] pathList, int index)
         {
             this.ScanFiles?.Invoke(this, new ListEventArgs() { DragAndDropFiles = pathList, IntegerField1 = index });
         }
+
     }
 }

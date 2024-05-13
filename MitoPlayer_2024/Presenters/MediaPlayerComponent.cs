@@ -147,18 +147,12 @@ namespace MitoPlayer_2024.Presenters
             {
                 if (this.workingTable.Rows.Count > 0)
                 {
-                    if (selectedRowId != -1)
+                    for (int i = 0; i <= this.workingTable.Rows.Count - 1; i++)
                     {
-                        if (this.workingTable.Rows.Cast<DataGridViewRow>().ToList().Exists(x => Convert.ToInt32(x.Cells["OrderInList"].Value) == this.trackIdInPlaylist))
+                        int orderInList = Convert.ToInt32(this.workingTable.Rows[i]["OrderInList"]);
+                        if (orderInList == this.trackIdInPlaylist)
                         {
-                            this.lastTrackIndex = this.workingTable.Rows.Cast<DataGridViewRow>().Where(x => Convert.ToInt32(x.Cells["OrderInList"].Value) == this.trackIdInPlaylist).First().Index;
-                        }
-                    }
-                    else
-                    {
-                        if (this.workingTable.Rows.Cast<DataGridViewRow>().ToList().Exists(x => Convert.ToInt32(x.Cells["OrderInList"].Value) == this.trackIdInPlaylist))
-                        {
-                            this.lastTrackIndex = this.workingTable.Rows.Cast<DataGridViewRow>().Where(x => Convert.ToInt32(x.Cells["OrderInList"].Value) == this.trackIdInPlaylist).First().Index;
+                            this.lastTrackIndex = orderInList;
                         }
                     }
                 }

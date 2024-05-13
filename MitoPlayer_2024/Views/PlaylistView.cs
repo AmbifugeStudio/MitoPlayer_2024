@@ -48,71 +48,18 @@ namespace MitoPlayer_2024.Views
         public event EventHandler<ListEventArgs> ChangeVolumeEvent;
         public event EventHandler<ListEventArgs> ChangeProgressEvent;
         public event EventHandler GetMediaPlayerProgressStatusEvent;
+        public event EventHandler<ListEventArgs> SetCurrentTrackColorEvent;
 
         //TRACKLIST
         public event EventHandler<ListEventArgs> OrderByColumnEvent;
         public event EventHandler<ListEventArgs> DeleteTracksEvent;
+        public event EventHandler<ListEventArgs> TrackDragAndDropEvent;
 
         //PLAYLIST
         public event EventHandler<ListEventArgs> ShowPlaylistEditorViewEvent;
         public event EventHandler<ListEventArgs> LoadPlaylistEvent;
         public event EventHandler<ListEventArgs> DeletePlaylistEvent;
-        public event EventHandler<ListEventArgs> SetQuickListEvent;
-
-        /*
-        
-        public event EventHandler<ListEventArgs> PlayTrack;
-        public event EventHandler<ListEventArgs> PauseTrack;
-        public event EventHandler StopTrack;
-        public event EventHandler<ListEventArgs> PrevTrack;
-        public event EventHandler<ListEventArgs> NextTrack;*/
-
-       // 
-
-
-
-
-        //public event EventHandler<ListEventArgs> AddTracksToTrackListEvent;
-
-
-        
-        //public List<Playlist> PlaylistList { get; set; }
-        //public List<Track> TrackList { get; set; }
-        //private int lastTrackIndex { get; set; }
-        //private double currentPlayPosition { get; set; }
-        /*
-       
-
-
-
-
-
-        public event EventHandler OpenFiles;
-        public event EventHandler OpenDirectory;
-        public event EventHandler<ListEventArgs> ScanFiles;
-        public event EventHandler<ListEventArgs> OrderTableByColumn;
-        public event EventHandler OrderByArtist;
-        public event EventHandler OrderByTitle;
-        public event EventHandler OrderByFileName;
-        public event EventHandler Shuffle;
-        public event EventHandler Reverse;
-        public event EventHandler Clear;
-        public event EventHandler RemoveMissingTracks;
-        public event EventHandler RemoveDuplicatedTracks;
-        public event EventHandler<ListEventArgs> DeleteTracks;
-        
-        public event EventHandler<ListEventArgs> TrackDragAndDrop;
-
-        public event EventHandler<ListEventArgs> ChangeVolume;
-
-        public event EventHandler ReorderPlaylist;
-        public event EventHandler AddTrackToPlaylist;
-        public event EventHandler RemoveTrackFromPlaylist;
-
-        public event EventHandler ClearPlaylist;
-        */
-
-        
+        public event EventHandler<ListEventArgs> SetQuickListEvent;        
         
         public PlaylistView()
         {
@@ -190,20 +137,6 @@ namespace MitoPlayer_2024.Views
             this.selectedTrackListBindingSource = new BindingSource();
             this.selectedTrackListBindingSource.DataSource = selectedTrackList;
         }
-        public void SetVolume(int volume)
-        {
-            trackVolume.Value = volume;
-            lblVolume.Text = volume.ToString() + "%";
-        }
-        #endregion
-
-        #region MEDIA PLAYER
-
-
-        //CELL CLICK
-        // private int currentTrackIndex = -1;
-        // private int trackIdInPlaylist = -1;
-
         #endregion
 
         #region TRACKLIST
@@ -233,65 +166,7 @@ namespace MitoPlayer_2024.Views
             if (e.KeyCode == Keys.ControlKey || e.KeyCode == Keys.ShiftKey)
                 controlKey = false;
         }
-
-
-
-        //DROP FILES OR ROWS
-        private void dgvTrackList_DragDrop(object sender, DragEventArgs e)
-        {
-            Point p = this.dgvTrackList.PointToClient(new Point(e.X, e.Y));
-            int dragIndex = this.dgvTrackList.HitTest(p.X, p.Y).RowIndex;
-
-            if (e.Effect == DragDropEffects.Link)
-            {
-                var files = (string[])e.Data.GetData(DataFormats.FileDrop);
-                ((MainView)instance.parentView).OpenFilesFromDragAndDrop(files, dragIndex);
-            }
-            else if (this.dragEnabled && e.Effect == DragDropEffects.Move)
-            {
-                this.Drop(dragIndex);
-            }
-        }
-        private void Drop(int dragIndex)
-        {
-            this.InsertSelectedRows(dragIndex);
-
-            this.currentRowIndex = -1;
-
-            this.BeginInvoke(new Action(() =>
-            {
-                this.dgvTrackList.ClearSelection();
-
-                if (this.selectionIndicesAfterDragAndDrop != null && this.selectionIndicesAfterDragAndDrop.Count > 0)
-                {
-                    foreach (int i in this.selectionIndicesAfterDragAndDrop)
-                    {
-                        this.dgvTrackList.Rows[i].Selected = true;
-                    }
-                    this.initialFirstDisplayedScrollingRowIndex = this.dgvTrackList.FirstDisplayedScrollingRowIndex;
-                    this.dgvTrackList.FirstDisplayedScrollingRowIndex = this.initialFirstDisplayedScrollingRowIndex;
-                }
-                this.selectionIndicesAfterDragAndDrop = new List<int>();
-
-                this.SetCurrentTrackColor();
-            }));
-
-            //változók resetelése
-            this.dragEnabled = false;
-            this.dragOneRow = false;
-            this.mouseDown = false;
-
-            //scroll kikapcsolása
-            this.hti = null;
-
-            this.StopAutoScrolling();
-            this.Invalidate();
-
-            ListEventArgs args = new ListEventArgs();
-            args.Rows = dgvTrackList.Rows;
-            this.TrackDragAndDrop?.Invoke(this, args);
-        }
-
+        //DISPLAY SELECTED ROW COUNT AND TIME
         private void ChangeSelectedRowCountAndTime()
         {
             if (this.dgvTrackList.SelectedRows != null && this.dgvTrackList.SelectedRows.Count > 0)
@@ -347,27 +222,33 @@ namespace MitoPlayer_2024.Views
                 this.lblSelectedItemsLength.Text = "Length: " + length.ToString();
             }
         }
+        //EVENT CALLINGS
         private void CallOrderByColumnEvent(String columnName)
         {
             this.OrderByColumnEvent?.Invoke(this, new ListEventArgs() { StringField1 = columnName });
-            this.SetCurrentTrackColor();
+            this.CallSetCurrentTrackColorEvent();
         }
         private void CallDeleteTracksEvent(DataGridViewRowCollection rows)
         {
             this.DeleteTracksEvent?.Invoke(this, new ListEventArgs() { Rows = rows });
         }
 
-
-
-        
-
-        //ROW SELECTION
+        //DRAG AND DROP
         private bool mouseDown = false;
         private int currentRowIndex = -1;
-        
+
         private bool dragEnabled = false;
         private bool dragOneRow = false;
         private int initialFirstDisplayedScrollingRowIndex = -1;
+
+        private int rowCount = -1;
+        private int dropLocationRowIndex = -1;
+
+        private System.Windows.Forms.DataGridView.HitTestInfo hti = null;
+        private System.Threading.Timer scrollTimer = null;
+        private bool scrolling = false;
+
+        private List<int> selectionIndicesAfterDragAndDrop = new List<int>();
         /*
          * jobb klikk egy sorra, mouseDown flaget bekapcsoljuk
          * ha a sor nincs kijelölve, kijelöli és elmenti az indexet
@@ -377,28 +258,27 @@ namespace MitoPlayer_2024.Views
          */
         private void dgvTrackList_MouseDown(object sender, MouseEventArgs e) 
         {
-           
-            mouseDown = true;
-            HitTestInfo hitTest = dgvTrackList.HitTest(e.X, e.Y);
+            this.mouseDown = true;
+            HitTestInfo hitTest = this.dgvTrackList.HitTest(e.X, e.Y);
             if (hitTest != null && hitTest.RowIndex > -1) 
             {
-                currentRowIndex = hitTest.RowIndex;
+                this.currentRowIndex = hitTest.RowIndex;
 
-                if (dgvTrackList.Rows[hitTest.RowIndex].Selected)
+                if (this.dgvTrackList.Rows[hitTest.RowIndex].Selected)
                 {
-                    if (!controlKey)
+                    if (!this.controlKey)
                     {
-                        if(dgvTrackList.Rows.Count != dgvTrackList.SelectedRows.Count)
+                        if(this.dgvTrackList.Rows.Count != this.dgvTrackList.SelectedRows.Count)
                         {
-                            dragEnabled = true;
-                            if (dgvTrackList.SelectedRows.Count > 1)
+                            this.dragEnabled = true;
+                            if (this.dgvTrackList.SelectedRows.Count > 1)
                             {
-                                dragOneRow = false;
+                                this.dragOneRow = false;
                                 this.Drag();
                             }
                             else
                             {
-                                dragOneRow = true;
+                                this.dragOneRow = true;
                             }
                         }
                     }
@@ -412,23 +292,22 @@ namespace MitoPlayer_2024.Views
          * törli a kijelölést
          * indítja a draganddrop-ot
          */
-        int rowCount = -1;
         private void Drag()
         {
-            initialFirstDisplayedScrollingRowIndex = dgvTrackList.FirstDisplayedScrollingRowIndex;
-            rowCount = dgvTrackList.RowCount;
+            this.initialFirstDisplayedScrollingRowIndex = this.dgvTrackList.FirstDisplayedScrollingRowIndex;
+            this.rowCount = this.dgvTrackList.RowCount;
 
-            SaveSelectedRows();
-            RemoveSelectedRows();
-            
-            dgvTrackList.ClearSelection();
-            dgvTrackList.Invalidate();
+            this.SaveSelectedRows();
+            this.RemoveSelectedRows();
 
-            BindingSource dataSource = selectedTrackListBindingSource.DataSource as BindingSource;
+            this.dgvTrackList.ClearSelection();
+            this.dgvTrackList.Invalidate();
+
+            BindingSource dataSource = this.selectedTrackListBindingSource.DataSource as BindingSource;
             DataTable targetTable = dataSource.DataSource as DataTable;
-            dgvTrackList.DoDragDrop(targetTable, DragDropEffects.Move);
-
-            dgvTrackList.Capture = true;
+            
+            this.dgvTrackList.DoDragDrop(targetTable, DragDropEffects.Move);
+            this.dgvTrackList.Capture = true;
         }
         /*
          * a céltáblát törli
@@ -436,18 +315,18 @@ namespace MitoPlayer_2024.Views
          */
         private void SaveSelectedRows()
         {
-            BindingSource dataSource = trackListBindingSource.DataSource as BindingSource;
+            BindingSource dataSource = this.trackListBindingSource.DataSource as BindingSource;
             DataTable sourceTable = dataSource.DataSource as DataTable;
-            BindingSource dataSource2 = selectedTrackListBindingSource.DataSource as BindingSource;
+            BindingSource dataSource2 = this.selectedTrackListBindingSource.DataSource as BindingSource;
             DataTable targetTable = dataSource2.DataSource as DataTable;
 
             targetTable.Rows.Clear();
 
-            if (dgvTrackList.SelectedRows != null && dgvTrackList.SelectedRows.Count > 0)
+            if (this.dgvTrackList.SelectedRows != null && this.dgvTrackList.SelectedRows.Count > 0)
             {
-                for (int i = 0; i < dgvTrackList.Rows.Count; i++)
+                for (int i = 0; i < this.dgvTrackList.Rows.Count; i++)
                 {
-                    if (dgvTrackList.Rows[i].Selected)
+                    if (this.dgvTrackList.Rows[i].Selected)
                     {
                         DataRow dataRow = sourceTable.Rows[i];
                         targetTable.Rows.Add(dataRow.ItemArray);
@@ -460,18 +339,17 @@ namespace MitoPlayer_2024.Views
          */
         private void RemoveSelectedRows() 
         {
-            if (dgvTrackList.SelectedRows != null && dgvTrackList.SelectedRows.Count > 0)
+            if (this.dgvTrackList.SelectedRows != null && this.dgvTrackList.SelectedRows.Count > 0)
             {
-                for (int i = dgvTrackList.Rows.Count - 1; i >= 0; i--)
+                for (int i = this.dgvTrackList.Rows.Count - 1; i >= 0; i--)
                 {
-                    if (dgvTrackList.Rows[i].Selected)
+                    if (this.dgvTrackList.Rows[i].Selected)
                     {
-                        dgvTrackList.Rows.RemoveAt(i);
+                        this.dgvTrackList.Rows.RemoveAt(i);
                     }
                 }
             }
         }
-        private int dropLocationRowIndex = -1;
         //DRAG OVER
         /*
          * beállítja a drag ikonját (filedrop vagy szám mozgatása
@@ -491,88 +369,83 @@ namespace MitoPlayer_2024.Views
             //scrollozás - 93 a tábla magassága!! (ezt át kell állítani, ha változik a méret)
             int mousepos = PointToClient(Cursor.Position).Y;
 
-            if (mousepos > (93+dgvTrackList.Location.Y + (dgvTrackList.Height * 0.95)))
+            if (mousepos > (93 + this.dgvTrackList.Location.Y + (this.dgvTrackList.Height * 0.95)))
             {
-                if (dgvTrackList.FirstDisplayedScrollingRowIndex < dgvTrackList.RowCount - 1)
+                if (this.dgvTrackList.FirstDisplayedScrollingRowIndex < this.dgvTrackList.RowCount - 1)
                 {
-                    dgvTrackList.FirstDisplayedScrollingRowIndex = dgvTrackList.FirstDisplayedScrollingRowIndex + 1;
+                    this.dgvTrackList.FirstDisplayedScrollingRowIndex = this.dgvTrackList.FirstDisplayedScrollingRowIndex + 1;
                 }
             }
-            if (mousepos < (93+dgvTrackList.Location.Y + (dgvTrackList.Height * 0.05)))
+            if (mousepos < (93 + this.dgvTrackList.Location.Y + (this.dgvTrackList.Height * 0.05)))
             {
-                if (dgvTrackList.FirstDisplayedScrollingRowIndex > 0)
+                if (this.dgvTrackList.FirstDisplayedScrollingRowIndex > 0)
                 {
-                    dgvTrackList.FirstDisplayedScrollingRowIndex = dgvTrackList.FirstDisplayedScrollingRowIndex - 1;
+                    this.dgvTrackList.FirstDisplayedScrollingRowIndex = this.dgvTrackList.FirstDisplayedScrollingRowIndex - 1;
                 }
             }
 
-            Point clientPoint = dgvTrackList.PointToClient(new Point(e.X, e.Y));
-            dropLocationRowIndex = dgvTrackList.HitTest(clientPoint.X, clientPoint.Y).RowIndex;
-            dgvTrackList.Invalidate();
+            Point clientPoint = this.dgvTrackList.PointToClient(new Point(e.X, e.Y));
+            this.dropLocationRowIndex = this.dgvTrackList.HitTest(clientPoint.X, clientPoint.Y).RowIndex;
+            this.dgvTrackList.Invalidate();
         }
-
-        System.Windows.Forms.DataGridView.HitTestInfo hti = null;
-        System.Threading.Timer scrollTimer = null;
-
         //SCROLL
-        private bool scrolling = false;
         /*
          * ha a drag be van kapcsolva és a bal klikk le van nyomva, egy kijelölt sor esetén itt aktiválódik a drag
          * az egér mozgatásra a tábla scrollozódik
          */
         private void dgvTrackList_MouseMove(object sender, MouseEventArgs e)
         {
-            if (dragEnabled && e.Button == MouseButtons.Left)
+            if (this.dragEnabled && e.Button == MouseButtons.Left)
             {
-                Point p = dgvTrackList.PointToClient(new Point(e.X, e.Y));
-                int dragIndex = dgvTrackList.HitTest(p.X, p.Y).RowIndex;
+                Point p = this.dgvTrackList.PointToClient(new Point(e.X, e.Y));
+                int dragIndex = this.dgvTrackList.HitTest(p.X, p.Y).RowIndex;
 
-                if (dragOneRow && currentRowIndex != dragIndex)
+                if (this.dragOneRow && this.currentRowIndex != dragIndex)
                 {
                     this.Drag();
                 }
 
-                DataGridView.HitTestInfo newhti = dgvTrackList.HitTest(e.X, e.Y);
-                if (hti != null && hti.RowIndex != newhti.RowIndex)
+                DataGridView.HitTestInfo newhti = this.dgvTrackList.HitTest(e.X, e.Y);
+                if (this.hti != null && this.hti.RowIndex != newhti.RowIndex)
                 {
-                    System.Diagnostics.Debug.WriteLine("invalidating " + hti.RowIndex.ToString());
-                    Invalidate();
+                    System.Diagnostics.Debug.WriteLine("invalidating " + this.hti.RowIndex.ToString());
+                    this.Invalidate();
                 }
-                hti = newhti;
+                this.hti = newhti;
 
-                System.Diagnostics.Debug.WriteLine(string.Format("{0:000} {1}  ", hti.RowIndex, e.Location));
+                System.Diagnostics.Debug.WriteLine(string.Format("{0:000} {1}  ", this.hti.RowIndex, e.Location));
 
                 Point clientPoint = this.PointToClient(e.Location);
 
                 System.Diagnostics.Debug.WriteLine(e.Location + "  " + this.Bounds.Size);
 
-                if (scrollTimer == null && ShouldScrollDown(e.Location))
+                if (this.scrollTimer == null && this.ShouldScrollDown(e.Location))
                 {
-                    scrollTimer = new System.Threading.Timer(new System.Threading.TimerCallback(TimerScroll), 1, 0, 250);
+                    this.scrollTimer = new System.Threading.Timer(new System.Threading.TimerCallback(this.TimerScroll), 1, 0, 250);
                 }
-                if (scrollTimer == null && ShouldScrollUp(e.Location))
+                if (this.scrollTimer == null && this.ShouldScrollUp(e.Location))
                 {
-                    scrollTimer = new System.Threading.Timer(new System.Threading.TimerCallback(TimerScroll), -1, 0, 250);
+                    this.scrollTimer = new System.Threading.Timer(new System.Threading.TimerCallback(this.TimerScroll), -1, 0, 250);
                 }
             }
             else
             {
-                dragEnabled = false;
+                this.dragEnabled = false;
             }
-            if (!(ShouldScrollUp(e.Location) || ShouldScrollDown(e.Location)))
+            if (!(this.ShouldScrollUp(e.Location) || this.ShouldScrollDown(e.Location)))
             {
-                StopAutoScrolling();
-                if (scrollTimer != null)
+                this.StopAutoScrolling();
+                if (this.scrollTimer != null)
                 {
-                    scrollTimer.Dispose();
-                    scrollTimer = null;
+                    this.scrollTimer.Dispose();
+                    this.scrollTimer = null;
                 }
             }
         }
         bool ShouldScrollUp(Point location)
         {
-            return location.Y > dgvTrackList.ColumnHeadersHeight
-                && location.Y < dgvTrackList.ColumnHeadersHeight + 15
+            return location.Y > this.dgvTrackList.ColumnHeadersHeight
+                && location.Y < this.dgvTrackList.ColumnHeadersHeight + 15
                 && location.X >= 0
                 && location.X <= this.Bounds.Width;
         }
@@ -585,55 +458,54 @@ namespace MitoPlayer_2024.Views
         }
         void StopAutoScrolling()
         {
-            if (scrollTimer != null)
+            if (this.scrollTimer != null)
             {
-                scrollTimer.Change(System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite);
-                scrollTimer = null;
+                this.scrollTimer.Change(System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite);
+                this.scrollTimer = null;
             }
         }
         void TimerScroll(object state)
         {
-            SetScrollBar((int)state);
+            this.SetScrollBar((int)state);
         }
         void SetScrollBar(int direction)
         {
-            if (scrolling)
+            if (this.scrolling)
             {
                 return;
             }
             if (this.InvokeRequired)
             {
-                this.Invoke(new Action<int>(SetScrollBar), new object[] { direction });
+                this.Invoke(new Action<int>(this.SetScrollBar), new object[] { direction });
             }
             else
             {
-                scrolling = true;
+                this.scrolling = true;
 
                 if (0 < direction)
                 {
-                    if (dgvTrackList.FirstDisplayedScrollingRowIndex < dgvTrackList.Rows.Count - 1)
+                    if (this.dgvTrackList.FirstDisplayedScrollingRowIndex < this.dgvTrackList.Rows.Count - 1)
                     {
-                        dgvTrackList.FirstDisplayedScrollingRowIndex++;
+                        this.dgvTrackList.FirstDisplayedScrollingRowIndex++;
                     }
                 }
                 else
                 {
-                    if (dgvTrackList.FirstDisplayedScrollingRowIndex > 0)
+                    if (this.dgvTrackList.FirstDisplayedScrollingRowIndex > 0)
                     {
-                        dgvTrackList.FirstDisplayedScrollingRowIndex--;
+                        this.dgvTrackList.FirstDisplayedScrollingRowIndex--;
                     }
                 }
 
-                scrolling = false;
+                this.scrolling = false;
             }
-
         }
         /*
          * rajzol egy vonalat a drag and drop közben, ami jelöli, hogy hova szúrjuk be az elemeket
          */
         private void dgvTrackList_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
-            if (e.RowIndex == dropLocationRowIndex - 1)
+            if (e.RowIndex == this.dropLocationRowIndex - 1)
             {
                 e.Paint(e.ClipBounds, DataGridViewPaintParts.All);
                 var graphics = e.Graphics;
@@ -646,23 +518,71 @@ namespace MitoPlayer_2024.Views
         //MOUSE UP
         private void dgvTrackList_MouseUp(object sender, MouseEventArgs e)
         {
-            mouseDown = false;
+            this.mouseDown = false;
 
-            if(rowCount > -1 && rowCount != dgvTrackList.RowCount)
+            if(this.rowCount > -1 && this.rowCount != this.dgvTrackList.RowCount)
             {
                 if (Control.MouseButtons != MouseButtons.Left)
                 {
-                    rowCount = -1;
-                    this.Drop(currentRowIndex);
-                    dgvTrackList.Capture = false;
+                    this.rowCount = -1;
+                    this.Drop(this.currentRowIndex);
+                    this.dgvTrackList.Capture = false;
                 }
             }
         }
         //DROP
-        private List<int> selectionIndicesAfterDragAndDrop = new List<int>();
+        private void dgvTrackList_DragDrop(object sender, DragEventArgs e)
+        {
+            Point p = this.dgvTrackList.PointToClient(new Point(e.X, e.Y));
+            int dragIndex = this.dgvTrackList.HitTest(p.X, p.Y).RowIndex;
 
-        
-       
+            if (e.Effect == DragDropEffects.Link)
+            {
+                var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                ((MainView)instance.parentView).OpenFilesFromDragAndDrop(files, dragIndex);
+            }
+            else if (this.dragEnabled && e.Effect == DragDropEffects.Move)
+            {
+                this.Drop(dragIndex);
+            }
+        }
+        private void Drop(int dragIndex)
+        {
+            this.InsertSelectedRows(dragIndex);
+
+            this.currentRowIndex = -1;
+
+            this.BeginInvoke(new Action(() =>
+            {
+                this.dgvTrackList.ClearSelection();
+
+                if (this.selectionIndicesAfterDragAndDrop != null && this.selectionIndicesAfterDragAndDrop.Count > 0)
+                {
+                    foreach (int i in this.selectionIndicesAfterDragAndDrop)
+                    {
+                        this.dgvTrackList.Rows[i].Selected = true;
+                    }
+                    this.initialFirstDisplayedScrollingRowIndex = this.dgvTrackList.FirstDisplayedScrollingRowIndex;
+                    this.dgvTrackList.FirstDisplayedScrollingRowIndex = this.initialFirstDisplayedScrollingRowIndex;
+                }
+                this.selectionIndicesAfterDragAndDrop = new List<int>();
+
+                this.CallSetCurrentTrackColorEvent();
+            }));
+
+            //változók resetelése
+            this.dragEnabled = false;
+            this.dragOneRow = false;
+            this.mouseDown = false;
+
+            //scroll kikapcsolása
+            this.hti = null;
+
+            this.StopAutoScrolling();
+            this.Invalidate();
+
+            this.TrackDragAndDropEvent?.Invoke(this, new ListEventArgs() { Rows = this.dgvTrackList.Rows });
+        }
         /*
          * visszarakni a sorokat az eredeti helyükre, ha ki drop-oljuk a grid-en kívül
          */
@@ -670,12 +590,12 @@ namespace MitoPlayer_2024.Views
         {
             if (Control.MouseButtons != MouseButtons.Left)
             {
-                if (!dgvTrackList.ClientRectangle.Contains(dgvTrackList.PointToClient(new Point(Control.MousePosition.X, Control.MousePosition.Y))))
+                if (!this.dgvTrackList.ClientRectangle.Contains(this.dgvTrackList.PointToClient(new Point(Control.MousePosition.X, Control.MousePosition.Y))))
                 {
                     e.Action = DragAction.Cancel;
-                    this.Drop(currentRowIndex);
+                    this.Drop(this.currentRowIndex);
                 }
-                dgvTrackList.Capture = false;
+                this.dgvTrackList.Capture = false;
             }
         }
         /*
@@ -683,10 +603,10 @@ namespace MitoPlayer_2024.Views
          */
         private void InsertSelectedRows(int insertIndex)
         {
-            BindingSource dataSource = selectedTrackListBindingSource.DataSource as BindingSource;
+            BindingSource dataSource = this.selectedTrackListBindingSource.DataSource as BindingSource;
             DataTable sourceTable = dataSource.DataSource as DataTable;
 
-            BindingSource dataSource2 = trackListBindingSource.DataSource as BindingSource;
+            BindingSource dataSource2 = this.trackListBindingSource.DataSource as BindingSource;
             DataTable targetTable = dataSource2.DataSource as DataTable;
 
             if (insertIndex == -1)
@@ -700,20 +620,15 @@ namespace MitoPlayer_2024.Views
                 var sourceRow = sourceTable.Rows[i];
                 desRow.ItemArray = sourceRow.ItemArray.Clone() as object[];
                 targetTable.Rows.InsertAt(desRow, insertIndex);
-                selectionIndicesAfterDragAndDrop.Add(insertIndex+i);
+                this.selectionIndicesAfterDragAndDrop.Add(insertIndex+i);
             }
 
-            dropLocationRowIndex = -1;
+            this.dropLocationRowIndex = -1;
             sourceTable.Rows.Clear();
-            trackListBindingSource.ResetBindings(false);
-            dgvTrackList.Invalidate();
+            this.trackListBindingSource.ResetBindings(false);
+            this.dgvTrackList.Invalidate();
         }
-
         #endregion
-
-
-
-
 
         #region MEDIA PLAYER
         /*
@@ -733,16 +648,7 @@ namespace MitoPlayer_2024.Views
             this.CallStopTrackEvent();
             this.CallPlayTrackEvent();
         }
-        //CHANGE VOLUME
-        private void trackVolume_Scroll(object sender, EventArgs e)
-        {
-            this.CallChangeVolumeEvent();
-        }
-        //CLICK ON PROGRESS BAR
-        private void pBar_MouseDown(object sender, MouseEventArgs e)
-        {
-            this.CallChangeProgressEvent(e.X, pBar.Width);
-        }
+        
         //TIMER
         private void timer1_Tick(object sender, EventArgs e)
         {
@@ -782,28 +688,32 @@ namespace MitoPlayer_2024.Views
         public void CallNextTrackEvent()
         {
             int selectedRowIndex = -1;
-            if (dgvPlaylistList.SelectedRows.Count > 0)
-                selectedRowIndex = dgvPlaylistList.SelectedRows[0].Index;
-
-            if (this.dgvTrackList.SelectedRows.Count > 0)
+            if (this.dgvPlaylistList.SelectedRows.Count > 0)
+            {
+                for(int i = 0; i <= this.dgvPlaylistList.Rows.Count - 1; i++)
+                {
+                    if (Convert.ToInt32(this.dgvPlaylistList.Rows[i].Cells["OrderInList"].Value) ==
+                       Convert.ToInt32(this.dgvPlaylistList.SelectedRows[0].Cells["OrderInList"].Value)){
+                        selectedRowIndex = i;
+                        break;
+                    }
+                }
+               
                 this.NextTrackEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = selectedRowIndex });
+            }   
         }
         public void CallRandomTrackEvent()
         {
             if (this.dgvTrackList.SelectedRows.Count > 1)
                 this.RandomTrackEvent?.Invoke(this, EventArgs.Empty);
         }
-        public void CallChangeVolumeEvent()
-        {
-            this.ChangeVolumeEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = this.trackVolume.Value });
-        }
-        public void CallChangeProgressEvent(int position, int length)
-        {
-            this.ChangeProgressEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = position, IntegerField2 = length });
-        } 
         public void CallGetMediaPlayerStatusEvent()
         {
             this.GetMediaPlayerProgressStatusEvent?.Invoke(this, EventArgs.Empty);
+        }
+        public void CallSetCurrentTrackColorEvent(int rowIndex = -1)
+        {
+            this.SetCurrentTrackColorEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = rowIndex });
         }
 
         //UPDATE VIEW
@@ -816,7 +726,7 @@ namespace MitoPlayer_2024.Views
             }
             lblCurrentTrack.Text = title;
 
-            this.SetCurrentTrackColor(currentTrackIndex);
+            this.CallSetCurrentTrackColorEvent(currentTrackIndex);
         }
         public void UpdateAfterPlayTrackAfterPause()
         {
@@ -825,28 +735,21 @@ namespace MitoPlayer_2024.Views
         public void UpdateAfterStopTrack()
         {
             this.lblCurrentTrack.Text = "Playing: -";
-            this.lblTrackStart.Text = "";
-            this.lblTrackEnd.Text = "";
-            this.pBar.Value = 0;
-
             this.ClearCurrentTrackColor();
         }
         public void UpdateAfterPauseTrack()
         {
             this.lblCurrentTrack.Text = this.lblCurrentTrack.Text.Replace("Playing: ", "Paused: ");
         }
-        public void UpdateAfterChangeVolume()
+        public void SetVolume(int volume)
         {
-            this.lblVolume.Text = this.trackVolume.Value.ToString() + "%";
+            ((MainView)this.parentView).SetVolume(volume);
         }
         public void UpdateMediaPlayerProgressStatus(double duration, String durationString, double currentPosition, String currentPositionString)
         {
-            this.pBar.Maximum = (int)duration;
-            this.pBar.Value = (int)currentPosition;
-            this.lblTrackEnd.Text = durationString;
-            this.lblTrackStart.Text = currentPositionString;
+            ((MainView)this.parentView).UpdateMediaPlayerProgressStatus(duration, durationString, currentPosition, currentPositionString);
         }
-        public void SetCurrentTrackColor(int rowIndex = -1)
+        public void SetCurrentTrackColor(int rowIndex, int trackIdInPlaylist)
         {
             for (int i = 0; i < this.dgvTrackList.Rows.Count; i++)
             {
@@ -856,13 +759,13 @@ namespace MitoPlayer_2024.Views
                     break;
                 }
             }
-            if (this.trackIdInPlaylist != -1)
+            if (trackIdInPlaylist != -1)
             {
                 int idInPlaylist = -1;
                 for (int i = 0; i < this.dgvTrackList.Rows.Count; i++)
                 {
                     idInPlaylist = Convert.ToInt32(this.dgvTrackList.Rows[i].Cells["OrderInList"].Value);
-                    if (this.trackIdInPlaylist == idInPlaylist)
+                    if (trackIdInPlaylist == idInPlaylist)
                     {
                         this.dgvTrackList.Rows[i].DefaultCellStyle.BackColor = Color.LightSeaGreen;
                         break;
@@ -889,11 +792,6 @@ namespace MitoPlayer_2024.Views
             }
         }
         #endregion
-
-
-
-
-
 
         #region PLAYLIST LIST
         //VIEW CONTROLS

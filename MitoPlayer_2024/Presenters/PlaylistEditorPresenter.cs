@@ -23,9 +23,9 @@ namespace MitoPlayer_2024.Presenters
         public Playlist newPlaylist;
         private int lastGeneratedPlaylistId;
 
-        public PlaylistEditorPresenter(IPlaylistEditorView view, IPlaylistDao playlistDao, ISettingDao settingDao)
+        public PlaylistEditorPresenter(IPlaylistEditorView playlistEditorView, IPlaylistDao playlistDao, ISettingDao settingDao)
         {
-            this.playlistEditorView = view;
+            this.playlistEditorView = playlistEditorView;
             this.playlistDao = playlistDao;
             this.settingDao = settingDao;
             this.isEditMode = false;

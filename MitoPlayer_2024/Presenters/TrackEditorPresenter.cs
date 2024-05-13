@@ -14,119 +14,70 @@ namespace MitoPlayer_2024.Presenters
     {
         internal DataTable trackListTable;
         internal int currentPlaylistId;
-        private ITrackEditorView view;
+        private ITrackEditorView trackEditorView;
         private IPlaylistDao playlistDao;
         private ITrackDao trackDao;
         private ISettingDao settingDao;
         private MediaPlayerComponent mediaPLayerComponent { get; set; }
 
-        public TrackEditorPresenter(ITrackEditorView view, MediaPlayerComponent mediaPlayerComponent, IPlaylistDao playlistDao, ITrackDao trackDao, ISettingDao settingDao)
+        public TrackEditorPresenter(ITrackEditorView trackEditorView, MediaPlayerComponent mediaPlayerComponent, IPlaylistDao playlistDao, ITrackDao trackDao, ISettingDao settingDao)
         {
-            this.view = view;
+            this.trackEditorView = trackEditorView;
             this.playlistDao = playlistDao;
             this.trackDao = trackDao;
             this.settingDao = settingDao;
             this.mediaPLayerComponent = mediaPLayerComponent;
+
+            this.trackEditorView.Show();
         }
 
-        internal void AddTracksToTrackList(List<Track> trackList)
-        {
-            throw new NotImplementedException();
-        }
 
         internal void Clear()
         {
-            throw new NotImplementedException();
-        }
-
-        internal void CreatePlaylist()
-        {
-            throw new NotImplementedException();
-        }
-
-        internal void Next()
-        {
-            throw new NotImplementedException();
-        }
-
-        internal void NextTrack()
-        {
-            throw new NotImplementedException();
         }
 
         internal void OrderByArtist()
         {
-            throw new NotImplementedException();
         }
 
         internal void OrderByFileName()
         {
-            throw new NotImplementedException();
         }
 
         internal void OrderByTitle()
         {
-            throw new NotImplementedException();
-        }
-
-        internal void Pause()
-        {
-            throw new NotImplementedException();
-        }
-
-        internal void PauseTrack()
-        {
-            throw new NotImplementedException();
-        }
-
-        internal void Prev()
-        {
-            throw new NotImplementedException();
-        }
-
-        internal void PrevTrack()
-        {
-            throw new NotImplementedException();
-        }
-
-        internal void Random()
-        {
-            throw new NotImplementedException();
-        }
-
-        internal void RandomTrack()
-        {
-            throw new NotImplementedException();
         }
 
         internal void RemoveDuplicatedTracks()
         {
-            throw new NotImplementedException();
         }
 
         internal void RemoveMissingTracks()
         {
-            throw new NotImplementedException();
         }
 
         internal void Reverse()
         {
-            throw new NotImplementedException();
         }
 
         internal void Shuffle()
         {
-            throw new NotImplementedException();
         }
 
-        internal void Stop()
+       
+        internal void CallAddTrackToTrackListEvent(List<Track> trackList)
         {
-            throw new NotImplementedException();
+ 
         }
 
-        internal void StopTrack()
+        internal void CallChangeProgressEvent(int integerField1, int integerField2)
         {
-            throw new NotImplementedException();
+
+        }
+
+        internal void CallChangeVolumeEvent(int integerField1)
+        {
+   
         }
     }
 }

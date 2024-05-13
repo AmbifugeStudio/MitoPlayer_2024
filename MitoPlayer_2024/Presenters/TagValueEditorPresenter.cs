@@ -11,17 +11,19 @@ namespace MitoPlayer_2024.Presenters
 {
     internal class TagValueEditorPresenter
     {
-        private ITagValueEditorView view;
+        private ITagValueEditorView taValueEditorView;
         private IPlaylistDao playlistDao;
         private ITrackDao trackDao;
         private ISettingDao settingDao;
 
-        public TagValueEditorPresenter(ITagValueEditorView view, IPlaylistDao playlistDao, ITrackDao trackDao, ISettingDao settingDao)
+        public TagValueEditorPresenter(ITagValueEditorView taValueEditorView, IPlaylistDao playlistDao, ITrackDao trackDao, ISettingDao settingDao)
         {
-            this.view = view;
+            this.taValueEditorView = taValueEditorView;
             this.playlistDao = playlistDao;
             this.trackDao = trackDao;
             this.settingDao = settingDao;
+
+            this.taValueEditorView.Show();
         }
     }
 }

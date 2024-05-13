@@ -26,25 +26,7 @@ namespace MitoPlayer_2024.Presenters
         private ISettingDao settingDao { get; set; }
         private MediaPlayerComponent mediaPlayerComponent { get; set; }
         private string sqlConnectionString { get; set; }
-      //  private DataTable workingTable { get; set; }
-      // private int currentPlaylistId { get; set; }
-        private object actualView { get => null; set
-        {
-            if (this.playlistView != null && this.actualView.GetType() == typeof(PlaylistView))
-            {
-                this.workingTable = this.playlistPresenter.trackListTable;
-                this.currentPlaylistId = this.playlistPresenter.currentPlaylistId;
-            }
-            else if (this.trackEditorView != null && this.actualView.GetType() == typeof(TrackEditorView)){
-                this.workingTable = this.trackEditorPresenter.trackListTable;
-                this.currentPlaylistId = this.trackEditorPresenter.currentPlaylistId;
-            }
-            else if (this.harmonizerView != null && this.actualView.GetType() == typeof(HarmonizerView))
-            {
-                this.workingTable = this.harmonizerPresenter.trackListTable;
-                this.currentPlaylistId = this.harmonizerPresenter.currentPlaylistId;
-            }
-        }}
+        private object actualView { get; set; }
         private IProfileEditorView profileEditorView { get; set; }
         private IPlaylistView playlistView { get; set; }
         private ITagValueEditorView tagValueEditorView { get; set; }
@@ -104,6 +86,8 @@ namespace MitoPlayer_2024.Presenters
             this.mainView.PrevTrack += PrevTrack;
             this.mainView.NextTrack += NextTrack;
             this.mainView.RandomTrack += RandomTrack;
+            this.mainView.ChangeVolume += ChangeVolume;
+            this.mainView.ChangeProgress += ChangeProgress;
 
             this.mainView.About += About;
 
@@ -201,13 +185,9 @@ namespace MitoPlayer_2024.Presenters
             }
 
             this.settingDao.SetIntegerSetting(Settings.LastOpenFilesFilterIndex.ToString(), ofd.FilterIndex);
-
-            this.AddTracksToTrackList(trackList);
             
-            if (this.mediaPlayer.playState != WMPLib.WMPPlayState.wmppsPlaying)
-            {
-                this.PlayTrack();
-            }
+            this.AddTracksToTrackList(trackList);
+
         }
         private void OpenDirectory(object sender, EventArgs e)
         {
@@ -230,11 +210,7 @@ namespace MitoPlayer_2024.Presenters
             }
 
             this.AddTracksToTrackList(trackList);
-            
-            if (this.mediaPlayer.playState != WMPLib.WMPPlayState.wmppsPlaying)
-            {
-                this.PlayTrack();
-            }
+
         }
         private void CreatePlaylist(object sender, EventArgs e)
         {
@@ -365,7 +341,6 @@ namespace MitoPlayer_2024.Presenters
             else if (this.harmonizerView != null && this.actualView.GetType() == typeof(HarmonizerView))
                 ((HarmonizerView)this.harmonizerView).CallPlayTrackEvent();
         }
-       
         private void PauseTrack(object sender, EventArgs e)
         {
             if (this.playlistView != null && this.actualView.GetType() == typeof(PlaylistView))
@@ -375,7 +350,6 @@ namespace MitoPlayer_2024.Presenters
             else if (this.harmonizerView != null && this.actualView.GetType() == typeof(HarmonizerView))
                 ((HarmonizerView)this.harmonizerView).CallPauseTrackEvent();
         }
-        
         private void StopTrack(object sender, EventArgs e)
         {
             if (this.playlistView != null && this.actualView.GetType() == typeof(PlaylistView))
@@ -385,7 +359,6 @@ namespace MitoPlayer_2024.Presenters
             else if (this.harmonizerView != null && this.actualView.GetType() == typeof(HarmonizerView))
                 ((HarmonizerView)this.harmonizerView).CallStopTrackEvent();
         }
-        
         private void PrevTrack(object sender, EventArgs e)
         {
             if (this.playlistView != null && this.actualView.GetType() == typeof(PlaylistView))
@@ -413,34 +386,40 @@ namespace MitoPlayer_2024.Presenters
             else if (this.harmonizerView != null && this.actualView.GetType() == typeof(HarmonizerView))
                 ((HarmonizerView)this.harmonizerView).CallRandomTrackEvent();
         }
+        private void ChangeProgress(object sender, ListEventArgs e)
+        {
+            if (this.playlistView != null && this.actualView.GetType() == typeof(PlaylistView))
+                this.playlistPresenter.CallChangeProgressEvent(e.IntegerField1, e.IntegerField2);
+            else if (this.trackEditorView != null && this.actualView.GetType() == typeof(TrackEditorView))
+                this.trackEditorPresenter.CallChangeProgressEvent(e.IntegerField1, e.IntegerField2);
+            else if (this.harmonizerView != null && this.actualView.GetType() == typeof(HarmonizerView))
+                this.harmonizerPresenter.CallChangeProgressEvent(e.IntegerField1, e.IntegerField2);
+        }
+        private void ChangeVolume(object sender, ListEventArgs e)
+        {
+            if (this.playlistView != null && this.actualView.GetType() == typeof(PlaylistView))
+                this.playlistPresenter.CallChangeVolumeEvent(e.IntegerField1);
+            else if (this.trackEditorView != null && this.actualView.GetType() == typeof(TrackEditorView))
+                this.trackEditorPresenter.CallChangeVolumeEvent(e.IntegerField1);
+            else if (this.harmonizerView != null && this.actualView.GetType() == typeof(HarmonizerView))
+                this.harmonizerPresenter.CallChangeVolumeEvent(e.IntegerField1);
+        }
 
-//HELP
+        //HELP
         private void About(object sender, EventArgs e)
         {
             this.ShowAboutView(this, new EventArgs());
         }
 
-//ADD FILES
+        //ADD FILES
         private void AddTracksToTrackList(List<Track> trackList)
         {
-            if (trackList != null && trackList.Count > 0)
-            {
-                int orderInList = this.workingTable.Rows.Count;
-                foreach (Track track in trackList)
-                {
-                    track.OrderInList = orderInList;
-                    this.trackDao.AddTrackToPlaylist(this.GetNewPlaylistContentId(), this.currentPlaylistId, track.Id, track.OrderInList);
-                    orderInList++;
-                }
-            }
-        }
-        private int GetNewPlaylistContentId()
-        {
-            int id = this.playlistDao.GetLastObjectId(TableName.PlaylistContent.ToString());
-            if (id == -1)
-                return 0;
-            else
-                return id + 1;
+            if (this.playlistView != null && this.actualView.GetType() == typeof(PlaylistView))
+                this.playlistPresenter.CallAddTrackToTrackListEvent(trackList);
+            else if (this.trackEditorView != null && this.actualView.GetType() == typeof(TrackEditorView))
+                this.trackEditorPresenter.CallAddTrackToTrackListEvent(trackList);
+            else if (this.harmonizerView != null && this.actualView.GetType() == typeof(HarmonizerView))
+                this.harmonizerPresenter.CallAddTrackToTrackListEvent(trackList);
         }
         private void ScanDirectory(string path)
         {
@@ -573,13 +552,12 @@ namespace MitoPlayer_2024.Presenters
             else
                 return id + 1;
         }
-        private int dragIndex = -1;
+
         private String[] scannedFiles;
         private void ScanFiles(object sender, ListEventArgs e)
         {
             string[] mediaFiles;
             string[] directories;
-            dragIndex = e.IntegerField1;
             if (e.DragAndDropFiles != null && e.DragAndDropFiles.Length > 0)
             {
                 mediaFiles = e.DragAndDropFiles.Where(x => x.EndsWith(".mp3") || x.EndsWith(".wav") || x.EndsWith(".flac") || x.EndsWith(".m3u")).ToArray();

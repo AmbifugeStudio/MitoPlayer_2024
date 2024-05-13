@@ -8,6 +8,6 @@ namespace MitoPlayer_2024.Views
 {
     public interface ITrackEditorView
     {
-
+        void Show();
     }
 }

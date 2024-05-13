@@ -8,5 +8,6 @@ namespace MitoPlayer_2024.Views
 {
     public interface IHarmonizerView
     {
+        void Show();
     }
 }

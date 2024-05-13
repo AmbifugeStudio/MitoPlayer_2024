@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace MitoPlayer_2024.Views
 {
-    internal interface IAboutView
+    public interface IAboutView
     {
+        void Show();
     }
 }

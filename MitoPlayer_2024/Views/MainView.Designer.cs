@@ -369,9 +369,10 @@
             this.panel2.Controls.Add(this.btnTracks);
             this.panel2.Controls.Add(this.btnTagValues);
             this.panel2.Controls.Add(this.btnPlaylist);
-            this.panel2.Location = new System.Drawing.Point(0, 73);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Left;
+            this.panel2.Location = new System.Drawing.Point(0, 24);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(91, 409);
+            this.panel2.Size = new System.Drawing.Size(91, 458);
             this.panel2.TabIndex = 2;
             // 
             // btnHarmonizer
@@ -446,7 +447,6 @@
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.mediaPlayer);
             this.panel1.Controls.Add(this.trackVolume);
             this.panel1.Controls.Add(this.pBar);
             this.panel1.Controls.Add(this.lblVolume);
@@ -459,10 +459,11 @@
             this.panel1.Controls.Add(this.btnPause);
             this.panel1.Controls.Add(this.btnPrev);
             this.panel1.Controls.Add(this.btnPlay);
+            this.panel1.Controls.Add(this.mediaPlayer);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel1.Location = new System.Drawing.Point(0, 24);
+            this.panel1.Location = new System.Drawing.Point(91, 24);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1160, 47);
+            this.panel1.Size = new System.Drawing.Size(1069, 47);
             this.panel1.TabIndex = 4;
             // 
             // trackVolume
@@ -474,6 +475,7 @@
             this.trackVolume.Size = new System.Drawing.Size(139, 45);
             this.trackVolume.TabIndex = 46;
             this.trackVolume.TickFrequency = 10;
+            this.trackVolume.Scroll += new System.EventHandler(this.trackVolume_Scroll);
             // 
             // pBar
             // 
@@ -482,6 +484,7 @@
             this.pBar.Size = new System.Drawing.Size(365, 23);
             this.pBar.Step = 1;
             this.pBar.TabIndex = 45;
+            this.pBar.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pBar_MouseDown);
             // 
             // lblVolume
             // 
@@ -525,6 +528,7 @@
             this.btnOpenDirectory.TabIndex = 35;
             this.btnOpenDirectory.Text = "🗁";
             this.btnOpenDirectory.UseVisualStyleBackColor = true;
+            this.btnOpenDirectory.Click += new System.EventHandler(this.btnOpenDirectory_Click);
             // 
             // btnOpen
             // 
@@ -536,6 +540,7 @@
             this.btnOpen.TabIndex = 36;
             this.btnOpen.Text = "⏏";
             this.btnOpen.UseVisualStyleBackColor = true;
+            this.btnOpen.Click += new System.EventHandler(this.btnOpen_Click);
             // 
             // btnNext
             // 
@@ -547,6 +552,7 @@
             this.btnNext.TabIndex = 37;
             this.btnNext.Text = "⏯️";
             this.btnNext.UseVisualStyleBackColor = true;
+            this.btnNext.Click += new System.EventHandler(this.btnNext_Click);
             // 
             // btnStop
             // 
@@ -557,6 +563,7 @@
             this.btnStop.TabIndex = 38;
             this.btnStop.Text = "⏹️";
             this.btnStop.UseVisualStyleBackColor = true;
+            this.btnStop.Click += new System.EventHandler(this.btnStop_Click);
             // 
             // btnPause
             // 
@@ -567,6 +574,7 @@
             this.btnPause.TabIndex = 39;
             this.btnPause.Text = "⏸";
             this.btnPause.UseVisualStyleBackColor = true;
+            this.btnPause.Click += new System.EventHandler(this.btnPause_Click);
             // 
             // btnPrev
             // 
@@ -577,6 +585,7 @@
             this.btnPrev.TabIndex = 40;
             this.btnPrev.Text = "⏮";
             this.btnPrev.UseVisualStyleBackColor = true;
+            this.btnPrev.Click += new System.EventHandler(this.btnPrev_Click);
             // 
             // btnPlay
             // 
@@ -587,6 +596,7 @@
             this.btnPlay.TabIndex = 41;
             this.btnPlay.Text = "▶";
             this.btnPlay.UseVisualStyleBackColor = true;
+            this.btnPlay.Click += new System.EventHandler(this.btnPlay_Click);
             // 
             // MainView
             // 

@@ -11,7 +11,7 @@ namespace MitoPlayer_2024.Presenters
 {
     internal class ProfileEditorPresenter
     {
-        private IProfileEditorView view;
+
         private IPlaylistDao playlistDao;
         private ITrackDao trackDao;
         private ISettingDao settingDao;
@@ -23,14 +23,11 @@ namespace MitoPlayer_2024.Presenters
             this.playlistDao = playlistDao;
             this.trackDao = trackDao;
             this.settingDao = settingDao;
+            this.profileEditorView.Show();
+
+
         }
 
-        public ProfileEditorPresenter(IProfileEditorView view, AxWMPLib.AxWindowsMediaPlayer mediaPlayer, IPlaylistDao playlistDao, ITrackDao trackDao, ISettingDao settingDao)
-        {
-            this.view = view;
-            this.playlistDao = playlistDao;
-            this.trackDao = trackDao;
-            this.settingDao = settingDao;
-        }
+
     }
 }

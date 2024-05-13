@@ -22,6 +22,8 @@ namespace MitoPlayer_2024.Presenters
             this.playlistDao = playlistDao;
             this.trackDao = trackDao;
             this.settingDao = settingDao;
+
+            this.aboutView.Show();
         }
     }
 }

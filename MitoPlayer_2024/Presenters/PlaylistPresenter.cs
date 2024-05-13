@@ -17,6 +17,7 @@ using System.Drawing.Drawing2D;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Management.Instrumentation;
 using System.Numerics;
 using System.Reflection;
 using System.Runtime.ConstrainedExecution;
@@ -44,7 +45,6 @@ namespace MitoPlayer_2024.Presenters
         private IPlaylistDao playlistDao { get; set; }
         private ITrackDao trackDao { get; set; }
         private ISettingDao settingDao { get; set; }
-       // private AxWindowsMediaPlayer mediaPlayer { get; set; }
         private DataTable playlistListTable { get; set; }
         public DataTable trackListTable { get; set; }
         private DataTable selectedTrackListTable { get; set; }
@@ -55,9 +55,7 @@ namespace MitoPlayer_2024.Presenters
         public bool[] PlaylistColumnVisibilityArray { get; set; }
         public bool[] TrackColumnVisibilityArray { get; set; }
         Dictionary<string, int> columnOrderStates { get; set; }
-
         private MediaPlayerComponent mediaPLayerComponent { get; set; }
-
         public PlaylistPresenter(IPlaylistView view, MediaPlayerComponent mediaPlayer, IPlaylistDao playlistDao, ITrackDao trackDao, ISettingDao settingDao)
         {
             //INITIALIZE
@@ -66,11 +64,12 @@ namespace MitoPlayer_2024.Presenters
             this.trackDao = trackDao;
             this.settingDao = settingDao;
 
-            this.InitializeVolume();
             this.InitializeDataTables();
             this.InitializePlaylistListAndTrackList();
 
-            this.mediaPLayerComponent.Initialize(this.trackListTable);
+            this.mediaPLayerComponent = mediaPlayer;
+            this.mediaPLayerComponent.Initialize(this.trackListTable); 
+            this.InitializeVolume();
 
             //MEDIA PLAYER
             this.playlistView.SetCurrentTrackEvent += SetCurrentTrackEvent;
@@ -80,52 +79,18 @@ namespace MitoPlayer_2024.Presenters
             this.playlistView.PrevTrackEvent += PrevTrackEvent;
             this.playlistView.NextTrackEvent += NextTrackEvent;
             this.playlistView.RandomTrackEvent += RandomTrackEvent;
-            this.playlistView.ChangeVolumeEvent += ChangeVolumeEvent;
-            this.playlistView.ChangeProgressEvent += ChangeProgressEvent;
             this.playlistView.GetMediaPlayerProgressStatusEvent += GetMediaPlayerProgressStatusEvent;
+            this.playlistView.SetCurrentTrackColorEvent += SetCurrentTrackColorEvent;
 
             //TRACKLIST
             this.playlistView.OrderByColumnEvent += OrderByColumnEvent;
             this.playlistView.DeleteTracksEvent += DeleteTracksEvent;
+            this.playlistView.TrackDragAndDropEvent += TrackDragAndDropEvent;
 
             //PLAYLIST
             this.playlistView.ShowPlaylistEditorViewEvent += ShowPlaylistEditorViewEvent;
             this.playlistView.LoadPlaylistEvent += LoadPlaylistEvent;
             this.playlistView.DeletePlaylistEvent += DeletePlaylistEvent;
-
-
-            //            this.trackIdInPlaylist = -1;
-            //          this.currentTrackIndex = -1;
-            //        this.lastTrackIndex = -1;
-
-            //       this.playlistView.ScanFiles += ScanFilesEvent;
-
-
-
-            //
-
-            //TODO - ORGANIZE------------------------------------------------------------------
-            //EVENTS
-            /* this.playlistView.OpenFiles += OpenFiles;
-             this.playlistView.OpenDirectory += OpenDirectory;
-             this.playlistView.ScanFiles += ScanFiles;
-             this.playlistView.OrderTableByColumn += OrderTableByColumn;
-             this.playlistView.OrderByArtist += OrderByArtist;
-             this.playlistView.OrderByTitle += OrderByTitle;
-             this.playlistView.OrderByFileName += OrderByFileName;
-             this.playlistView.Reverse += Reverse;
-             this.playlistView.Shuffle += Shuffle;
-             this.playlistView.RemoveMissingTracks += RemoveMissingTracks;
-             this.playlistView.RemoveDuplicatedTracks += RemoveDuplicatedTracks;
-             this.playlistView.Clear += Clear;
-             this.playlistView.DeleteTracks += DeleteTracks;
-             this.playlistView.TrackDragAndDrop += TrackDragAndDrop;
-             
-
-             
-             this.playlistView.ChangeVolume += ChangeVolume;*/
-            //TODO - ORGANIZE------------------------------------------------------------------
-
 
             this.playlistView.Show();
         }
@@ -221,7 +186,7 @@ namespace MitoPlayer_2024.Presenters
             }
 
             foreach (Playlist playlist in plsList)
-                this.playlistListTable.Rows.Add(playlist.Id, playlist.Name, playlist.OrderInList);
+                this.playlistListTable.Rows.Add(playlist.Id,playlist.QuickListGroup, playlist.Name, playlist.OrderInList);
 
             this.SetPlaylistList(playlistListTable);
         }
@@ -402,8 +367,11 @@ namespace MitoPlayer_2024.Presenters
             this.SaveTrackList(trackListTable);
             this.SetTrackList(trackListTable);
         }
-
-
+        private void TrackDragAndDropEvent(object sender, ListEventArgs e)
+        {
+            this.SaveTrackList(this.trackListTable);
+            this.SetTrackList(this.trackListTable);
+        }
         private void OrderByColumn(String columnName)
         {
             DataView dv = this.trackListTable.DefaultView;
@@ -432,6 +400,23 @@ namespace MitoPlayer_2024.Presenters
 
             this.SaveTrackList(this.trackListTable);
             this.SetTrackList(this.trackListTable);
+        }
+        internal void CallAddTrackToTrackListEvent(List<Track> trackList)
+        {
+            if (trackList != null && trackList.Count > 0)
+            {
+                int orderInList = this.trackListTable.Rows.Count;
+                foreach (Track track in trackList)
+                {
+                    track.OrderInList = orderInList;
+                    this.trackDao.AddTrackToPlaylist(this.GetNewPlaylistContentId(), this.currentPlaylistId, track.Id, track.OrderInList);
+                    orderInList++;
+                }
+                if (this.mediaPLayerComponent.MediaPlayer.playState != WMPLib.WMPPlayState.wmppsPlaying)
+                {
+                    this.mediaPLayerComponent.PlayTrack();
+                }
+            }
         }
         public void RemoveMissingTracks()
         {
@@ -537,7 +522,6 @@ namespace MitoPlayer_2024.Presenters
         public void StopTrackEvent(object sender, EventArgs e)
         {
             this.mediaPLayerComponent.StopTrack();
-            this.playlistView.UpdateAfterStopTrack();
         }
         public void PrevTrackEvent(object sender, ListEventArgs e)
         {
@@ -550,16 +534,6 @@ namespace MitoPlayer_2024.Presenters
         public void RandomTrackEvent(object sender, EventArgs e)
         {
             this.mediaPLayerComponent.RandomTrack();
-        }
-        private void ChangeVolumeEvent(object sender, ListEventArgs e)
-        {
-            this.mediaPLayerComponent.ChangeVolume(e.IntegerField1);
-            this.settingDao.SetIntegerSetting(Settings.Volume.ToString(), e.IntegerField1);
-        }
-        private void ChangeProgressEvent(object sender, ListEventArgs e)
-        {
-            this.mediaPLayerComponent.ChangeProgress(e.IntegerField1, e.IntegerField2);
-            this.settingDao.SetIntegerSetting(Settings.Volume.ToString(), e.IntegerField1);
         }
         private void GetMediaPlayerProgressStatusEvent(object sender, EventArgs e)
         {
@@ -574,6 +548,19 @@ namespace MitoPlayer_2024.Presenters
             }
 
             this.playlistView.UpdateMediaPlayerProgressStatus(duration, durationString, currentPosition, currentPositionString);
+        }
+        private void SetCurrentTrackColorEvent(object sender, ListEventArgs e)
+        {
+            this.playlistView.SetCurrentTrackColor(e.IntegerField1, this.mediaPLayerComponent.GetCurrentTrackIndex());
+        }
+        internal void CallChangeProgressEvent(int currentPosX, int width)
+        {
+            this.mediaPLayerComponent.ChangeProgress(currentPosX, width);
+        }
+        internal void CallChangeVolumeEvent(int volume)
+        {
+            this.mediaPLayerComponent.ChangeVolume(volume);
+            this.settingDao.SetIntegerSetting(Settings.Volume.ToString(), volume);
         }
         #endregion
 
@@ -657,7 +644,7 @@ namespace MitoPlayer_2024.Presenters
                     {
                         if ((trackListTable.Rows[i]["Path"]).ToString().Equals(path))
                         {
-                            ((PlaylistView)this.playlistView).SetCurrentTrackColor(i);
+                            this.playlistView.SetCurrentTrackColor(i, this.mediaPLayerComponent.GetCurrentTrackIndex());
                             break;
                         }
                     }
@@ -703,6 +690,10 @@ namespace MitoPlayer_2024.Presenters
 
             }
         }
+
+        
+
+
         #endregion
 
         /*
@@ -749,155 +740,6 @@ namespace MitoPlayer_2024.Presenters
        
         */
 
-
-
-
-
-
-
-        //READ AND CREATE TRACKS
-        /*private void ReadFiles(string[] fileNames)
-        {
-            List<String> filePathList = new List<String>();
-            List<Track> trList = new List<Track>();
-            if(fileNames != null && fileNames .Length > 0)
-            {
-                foreach (String path in fileNames)
-                {
-                    if (path.Contains(".mp3"))
-                    {
-                        filePathList.Add(path);
-                    }
-                    else if (path.Contains(".wav"))
-                    {
-                        filePathList.Add(path);
-                    }
-                    else if (path.Contains(".flac"))
-                    {
-                        filePathList.Add(path);
-                    }
-                    else if (path.Contains(".m3u"))
-                    {
-                        const Int32 BufferSize = 128;
-                        char[] firstThreeCharacter;
-                        using (var fileStream = System.IO.File.OpenRead(path))
-                        using (var streamReader = new StreamReader(fileStream, Encoding.UTF8, true, BufferSize))
-                        {
-                            String line;
-                            while ((line = streamReader.ReadLine()) != null)
-                            {
-                                firstThreeCharacter = line.Substring(0, 3).ToCharArray();
-
-                                if (firstThreeCharacter[1] == ':' && firstThreeCharacter[2] == '\\')
-                                {
-                                    filePathList.Add(line);
-                                }
-                            }
-                        }
-                    }
-                }
-
-                int sortingId = trackListTable.Rows.Count;
-
-                foreach (string path in filePathList)
-                {
-                    Track track = new Track();
-                    track.Path = path;
-
-                    string fileName = "";
-
-                    if (path.EndsWith("flac"))
-                    {
-                        fileName = path.Substring(path.LastIndexOf(@"\") + 1);
-                        fileName = fileName.Remove(fileName.LastIndexOf("."), 5);
-                    }
-                    else
-                    {
-                        fileName = path.Substring(path.LastIndexOf(@"\") + 1);
-                        fileName = fileName.Remove(fileName.LastIndexOf("."), 4);
-                    }
-
-                    track.FileName = fileName;
-
-                    if (!System.IO.File.Exists(path))
-                    {
-                        track.Artist = fileName;
-                        track.IsMissing = true;
-                    }
-                    else
-                    {
-                        Track trackFromDb = this.trackDao.GetTrackByPath(track.Path);
-                        if (trackFromDb != null)
-                        {
-                            track = trackFromDb;
-                        }
-
-                        if (path.Contains(".mp3"))
-                        {
-                            TagLib.File file = TagLib.File.Create(track.Path);
-                            if (!String.IsNullOrEmpty(file.Tag.FirstArtist))
-                                track.Artist = file.Tag.FirstArtist;
-                            else if (!String.IsNullOrEmpty(file.Tag.FirstAlbumArtist))
-                                track.Artist = file.Tag.FirstAlbumArtist;
-                            else if (file.Tag.Artists != null && file.Tag.Artists.Count() > 0)
-                                track.Artist = file.Tag.Artists[0];
-                            track.Album = file.Tag.Album;
-                            track.Title = file.Tag.Title;
-                            track.Year = (int)file.Tag.Year;
-                            track.Length = file.Properties.Duration.TotalSeconds;
-
-                            if (String.IsNullOrEmpty(track.Artist))
-                            {
-                                track.Artist = fileName;
-                            }
-                        }
-                        else if (path.Contains(".wav"))
-                        {
-                            WaveFileReader wf = new WaveFileReader(path);
-                            track.Artist = fileName;
-                            track.Length = wf.TotalTime.TotalSeconds;
-                        }
-                        else if (path.Contains(".flac"))
-                        {
-                            track.Artist = fileName;
-                        }
-                    }
-
-                    if(track.Id == -1)
-                    {
-                        track.Id = this.GetNewTrackId();
-                        this.trackDao.AddTrackToDatabase(track);
-                    }
-
-                    track.OrderInList = sortingId;
-                    this.trackDao.AddTrackToPlaylist(this.GetNewPlaylistContentId(), this.currentPlaylistId, track.Id, track.OrderInList);
-                    sortingId++;
-
-                    trList.Add(track);
-
-                }
-
-                this.LoadTrackList(trList);
-            }
-        }
-       */
-
-        //ORDER TRACKLIST
-        /* 
-          
-          */
-        //REMOVE TRACKS
-        /*
-        
-        
-        
-       */
-        //DRAG AND DROP
-        /*private void TrackDragAndDrop(object sender, ListEventArgs e)
-        {
-            this.SaveTrackList(trackListTable);
-            this.SetTrackList(trackListTable);
-        }*/
 
 
     }
