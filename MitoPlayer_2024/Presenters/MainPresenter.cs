@@ -412,14 +412,14 @@ namespace MitoPlayer_2024.Presenters
         }
 
         //ADD FILES
-        private void AddTracksToTrackList(List<Track> trackList)
+        private void AddTracksToTrackList(List<Track> trackList, int dragIndex = -1)
         {
             if (this.playlistView != null && this.actualView.GetType() == typeof(PlaylistView))
-                this.playlistPresenter.CallAddTrackToTrackListEvent(trackList);
+                this.playlistPresenter.CallAddTrackToTrackListEvent(trackList, dragIndex);
             else if (this.trackEditorView != null && this.actualView.GetType() == typeof(TrackEditorView))
-                this.trackEditorPresenter.CallAddTrackToTrackListEvent(trackList);
+                this.trackEditorPresenter.CallAddTrackToTrackListEvent(trackList, dragIndex);
             else if (this.harmonizerView != null && this.actualView.GetType() == typeof(HarmonizerView))
-                this.harmonizerPresenter.CallAddTrackToTrackListEvent(trackList);
+                this.harmonizerPresenter.CallAddTrackToTrackListEvent(trackList, dragIndex);
         }
         private void ScanDirectory(string path)
         {
@@ -540,6 +540,7 @@ namespace MitoPlayer_2024.Presenters
                         this.trackDao.AddTrackToDatabase(track);
                     }
                     trackList.Add(track);
+
                 }
             }
             return trackList;
@@ -554,10 +555,12 @@ namespace MitoPlayer_2024.Presenters
         }
 
         private String[] scannedFiles;
+        private List<Track> trackList = new List<Track>();
         private void ScanFiles(object sender, ListEventArgs e)
         {
             string[] mediaFiles;
             string[] directories;
+            int dragIndex = e.IntegerField1;
             if (e.DragAndDropFiles != null && e.DragAndDropFiles.Length > 0)
             {
                 mediaFiles = e.DragAndDropFiles.Where(x => x.EndsWith(".mp3") || x.EndsWith(".wav") || x.EndsWith(".flac") || x.EndsWith(".m3u")).ToArray();
@@ -565,7 +568,7 @@ namespace MitoPlayer_2024.Presenters
 
                 if (mediaFiles != null && mediaFiles.Length > 0)
                 {
-                    this.ReadFiles(mediaFiles);
+                    trackList = this.ReadFiles(mediaFiles);
                 }
                 if (directories != null && directories.Length > 0)
                 {
@@ -573,9 +576,10 @@ namespace MitoPlayer_2024.Presenters
                     foreach (string dir in directories)
                     {
                         this.ScanDirectory(dir);
-                        this.ReadFiles(scannedFiles);
+                        trackList.AddRange(this.ReadFiles(scannedFiles));
                     }
                 }
+                this.AddTracksToTrackList(trackList, dragIndex);
             }
         }
 

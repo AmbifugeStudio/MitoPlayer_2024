@@ -99,6 +99,7 @@ namespace MitoPlayer_2024.Views
             {
                 this.dgvPlaylistList.Columns[i].Visible = columnVisibility[i];
             }
+            
             if (this.dgvPlaylistList.Rows.Count > 0)
             {
                 for (int i = 0; i < this.dgvPlaylistList.Rows.Count; i++)
@@ -111,7 +112,9 @@ namespace MitoPlayer_2024.Views
                     }
                 }
             }
-            
+            this.dgvPlaylistList.Columns["G"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            this.dgvPlaylistList.Columns["G"].Width = 20;
+
         }
         public void SetTrackListBindingSource(BindingSource trackList, bool[] columnVisibility)
         {
@@ -905,7 +908,7 @@ namespace MitoPlayer_2024.Views
         public void CallSetQuickListEvent(int group)
         {
             if (this.dgvPlaylistList.SelectedRows.Count > 0)
-                SetQuickListEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = dgvPlaylistList.SelectedRows[0].Index, IntegerField2 = group });
+                this.SetQuickListEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = dgvPlaylistList.Rows.IndexOf(dgvPlaylistList.SelectedRows[0]), IntegerField2 = group });
         }
         #endregion
 

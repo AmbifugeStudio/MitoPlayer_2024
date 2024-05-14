@@ -229,14 +229,16 @@
             // 
             this.dgvPlaylistList.AllowUserToAddRows = false;
             this.dgvPlaylistList.AllowUserToDeleteRows = false;
+            this.dgvPlaylistList.AllowUserToResizeRows = false;
             this.dgvPlaylistList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.dgvPlaylistList.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dgvPlaylistList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvPlaylistList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dgvPlaylistList.Location = new System.Drawing.Point(3, 6);
             this.dgvPlaylistList.MultiSelect = false;
             this.dgvPlaylistList.Name = "dgvPlaylistList";
             this.dgvPlaylistList.ReadOnly = true;
+            this.dgvPlaylistList.RowHeadersVisible = false;
             this.dgvPlaylistList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvPlaylistList.Size = new System.Drawing.Size(164, 401);
             this.dgvPlaylistList.TabIndex = 1;
@@ -257,6 +259,7 @@
             this.dgvTrackList.Location = new System.Drawing.Point(173, 6);
             this.dgvTrackList.Name = "dgvTrackList";
             this.dgvTrackList.ReadOnly = true;
+            this.dgvTrackList.RowHeadersVisible = false;
             this.dgvTrackList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvTrackList.Size = new System.Drawing.Size(940, 506);
             this.dgvTrackList.TabIndex = 0;

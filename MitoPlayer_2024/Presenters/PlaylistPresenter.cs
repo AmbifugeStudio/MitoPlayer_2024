@@ -91,6 +91,7 @@ namespace MitoPlayer_2024.Presenters
             this.playlistView.ShowPlaylistEditorViewEvent += ShowPlaylistEditorViewEvent;
             this.playlistView.LoadPlaylistEvent += LoadPlaylistEvent;
             this.playlistView.DeletePlaylistEvent += DeletePlaylistEvent;
+            this.playlistView.SetQuickListEvent += SetQuickListEvent;
 
             this.playlistView.Show();
         }
@@ -274,6 +275,7 @@ namespace MitoPlayer_2024.Presenters
                 playlist.Id = Convert.ToInt32(dt.Rows[i]["Id"]);
                 playlist.Name = dt.Rows[i]["Name"].ToString();
                 playlist.OrderInList = Convert.ToInt32(dt.Rows[i]["OrderInList"]);
+                playlist.QuickListGroup = Convert.ToInt32(dt.Rows[i]["G"]);
                 playlistList.Add(playlist);
             }
 
@@ -401,7 +403,7 @@ namespace MitoPlayer_2024.Presenters
             this.SaveTrackList(this.trackListTable);
             this.SetTrackList(this.trackListTable);
         }
-        internal void CallAddTrackToTrackListEvent(List<Track> trackList)
+        internal void CallAddTrackToTrackListEvent(List<Track> trackList, int dragIndex)
         {
             if (trackList != null && trackList.Count > 0)
             {
@@ -412,10 +414,44 @@ namespace MitoPlayer_2024.Presenters
                     this.trackDao.AddTrackToPlaylist(this.GetNewPlaylistContentId(), this.currentPlaylistId, track.Id, track.OrderInList);
                     orderInList++;
                 }
+                this.LoadTrackList(trackList, dragIndex);
                 if (this.mediaPLayerComponent.MediaPlayer.playState != WMPLib.WMPPlayState.wmppsPlaying)
                 {
+                    this.mediaPLayerComponent.SetCurrentTrackIndex(0);
                     this.mediaPLayerComponent.PlayTrack();
                 }
+            }
+        }
+        private void LoadTrackList(List<Track> trackList, int dragIndex)
+        {
+            if (trackList != null && trackList.Count > 0)
+            {
+                foreach (Track track in trackList)
+                {
+                    String length = this.LengthToString(track.Length);
+                    if (dragIndex > -1)
+                    {
+                        DataRow userRow = trackListTable.NewRow();
+                        userRow["Id"] = track.Id;
+                        userRow["Album"] = track.Album;
+                        userRow["Artist"] = track.Artist;
+                        userRow["Title"] = track.Title;
+                        userRow["Year"] = track.Year;
+                        userRow["Length"] = length;
+                        userRow["IsMissing"] = track.IsMissing;
+                        userRow["Path"] = track.Path;
+                        userRow["FileName"] = track.FileName;
+                        userRow["OrderInList"] = track.OrderInList;
+                        trackListTable.Rows.InsertAt(userRow, dragIndex);
+                    }
+                    else
+                    {
+                        trackListTable.Rows.Add(track.Id, track.Album, track.Artist, track.Title, track.Year.ToString(), length, track.IsMissing, track.Path, track.FileName, track.OrderInList);
+                    }
+                }
+
+                this.SetTrackList(trackListTable);
+                this.SaveTrackList(trackListTable);
             }
         }
         public void RemoveMissingTracks()
@@ -562,6 +598,7 @@ namespace MitoPlayer_2024.Presenters
             this.mediaPLayerComponent.ChangeVolume(volume);
             this.settingDao.SetIntegerSetting(Settings.Volume.ToString(), volume);
         }
+        
         #endregion
 
         #region PLAYLIST
@@ -579,7 +616,7 @@ namespace MitoPlayer_2024.Presenters
                     if (newPlaylist != null)
                     {
                         this.playlistDao.CreatePlaylist(newPlaylist);
-                        this.playlistListTable.Rows.Add(newPlaylist.Id, newPlaylist.Name, newPlaylist.OrderInList);
+                        this.playlistListTable.Rows.Add(newPlaylist.Id, newPlaylist.QuickListGroup, newPlaylist.Name, newPlaylist.OrderInList);
                     }
                     this.SavePlaylistList(playlistListTable);
                     this.SetPlaylistList(playlistListTable);
@@ -691,54 +728,27 @@ namespace MitoPlayer_2024.Presenters
             }
         }
 
-        
+        private void SetQuickListEvent(object sender, ListEventArgs e)
+        {
+            if(Convert.ToInt32(playlistListTable.Rows[e.IntegerField1]["G"]) == e.IntegerField2)
+            {
+                playlistListTable.Rows[e.IntegerField1]["G"] = 0;
+            }
+            else
+            {
+                playlistListTable.Rows[e.IntegerField1]["G"] = e.IntegerField2.ToString();
+            }
+           
+            this.SavePlaylistList(this.playlistListTable);
+            this.SetPlaylistList(this.playlistListTable);
+        }
+
 
 
         #endregion
 
-        /*
-        
-        
-        private void LoadTrackList(List<Track> trackList)
-        {
-            if (trackList != null && trackList.Count > 0)
-            {
-                foreach (Track track in trackList)
-                {
-                    String length = this.LengthToString(track.Length);
-                    if (dragIndex > -1)
-                    {
-                        DataRow userRow = trackListTable.NewRow();
-                        userRow["Id"] = track.Id;
-                        userRow["Album"] = track.Album;
-                        userRow["Artist"] = track.Artist;
-                        userRow["Title"] = track.Title;
-                        userRow["Year"] = track.Year;
-                        userRow["Length"] = length;
-                        userRow["IsMissing"] = track.IsMissing;
-                        userRow["Path"] = track.Path;
-                        userRow["FileName"] = track.FileName;
-                        userRow["OrderInList"] = track.OrderInList;
-                        trackListTable.Rows.InsertAt(userRow,dragIndex); 
-                    }
-                    else
-                    {
-                        trackListTable.Rows.Add(track.Id, track.Album, track.Artist, track.Title, track.Year.ToString(), length, track.IsMissing, track.Path, track.FileName, track.OrderInList);
-                    }
-                }
-                int sortingId = 0;
-                for(int i = 0;i <= trackListTable.Rows.Count -1;i++)
-                {
-                    trackListTable.Rows[i]["OrderInList"] = sortingId;
-                    sortingId++;
-                }
-                dragIndex = -1;
-                this.SetTrackList(trackListTable);
-                this.SaveTrackList(trackListTable);
-            }
-        }
-       
-        */
+
+
 
 
 
