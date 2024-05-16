@@ -20,6 +20,7 @@ namespace MitoPlayer_2024.Model
         public double Length { get; set; }
         public bool IsMissing { get; set; }
         public int OrderInList { get; set; }
+        public int TrackIdInPlaylist { get; set; }
 
         public Track()
         {

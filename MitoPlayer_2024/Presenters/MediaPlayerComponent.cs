@@ -1,9 +1,11 @@
 ﻿using AxWMPLib;
+using MitoPlayer_2024.Helpers;
 using MitoPlayer_2024.Views;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -14,8 +16,8 @@ namespace MitoPlayer_2024.Presenters
     {
         public AxWindowsMediaPlayer MediaPlayer { get; set; }
         private DataTable workingTable { get; set; }
-        private int trackIdInPlaylist { get; set; }
-        private int currentTrackIndex { get; set; }
+        public int CurrentTrackIdInPlaylist { get; set; }
+        private int selectedRowIndex { get; set; }
         private int lastTrackIndex { get; set; }
         private double currentPlayPosition { get; set; }
 
@@ -23,7 +25,6 @@ namespace MitoPlayer_2024.Presenters
         {
             this.MediaPlayer = mediaPLayer;
             this.Reset();
-            this.currentPlayPosition = 0;
         }
         public void Initialize(DataTable workingTable)
         {
@@ -32,59 +33,113 @@ namespace MitoPlayer_2024.Presenters
         }
         public void Reset()
         {
-            this.trackIdInPlaylist = -1;
-            this.currentTrackIndex = -1;
-            this.lastTrackIndex = -1;
+            this.CurrentTrackIdInPlaylist = -1;
+            this.selectedRowIndex = -1;
+            this.currentPlayPosition = 0;
         }
+
         public void SetCurrentTrackIndex(int index)
         {
-            this.currentTrackIndex = index;
+            this.selectedRowIndex = index;
         }
         public int GetCurrentTrackIndex()
         {
-            return this.currentTrackIndex;
+            return this.selectedRowIndex;
         }
         public void SetWorkingTable(DataTable workingTable)
         {
             this.workingTable = workingTable;
-            if(this.workingTable == null || this.workingTable.Rows.Count == 0)
+
+           // this.ValidateWorkingTable();
+
+            if (this.workingTable == null || this.workingTable.Rows.Count == 0)
             {
                 this.Reset();
+            }
+            else
+            {
+                this.UpdateRowIndex();
+            }
+        }
+        private void UpdateRowIndex()
+        {
+            for (int i = 0; i <= this.workingTable.Rows.Count - 1; i++)
+            {
+                int trackIdInPlaylist = Convert.ToInt32(this.workingTable.Rows[i]["TrackIdInPlaylist"]);
+                if (trackIdInPlaylist == this.CurrentTrackIdInPlaylist)
+                {
+                    this.selectedRowIndex = i;
+                    break;
+                }
+            }
+            if (this.selectedRowIndex >= this.workingTable.Rows.Count)
+            {
+                this.selectedRowIndex = this.workingTable.Rows.Count - 1;
             }
         }
         public DataTable GetWorkingTable()
         {
             return this.workingTable;
         }
-        public bool PlayTrack()
+        public MediaPlayerUpdateState PlayTrack()
         {
-            bool result = true;
-            if (this.trackIdInPlaylist == -1)
-            {
-                if (this.currentTrackIndex != -1 && this.workingTable.Rows.Count > 0)
-                {
-                    this.trackIdInPlaylist = Convert.ToInt32(this.workingTable.Rows[this.currentTrackIndex]["OrderInList"]);
-                    this.lastTrackIndex = this.currentTrackIndex;
+            MediaPlayerUpdateState result = MediaPlayerUpdateState.Undefined;
 
-                    String path = (string)workingTable.Rows[this.currentTrackIndex]["Path"];
+            if (this.MediaPlayer.playState == WMPLib.WMPPlayState.wmppsUndefined ||
+                this.MediaPlayer.playState == WMPLib.WMPPlayState.wmppsStopped)
+            {
+                if (this.workingTable.Rows.Count > 0)
+                {
+                    if(this.selectedRowIndex == -1)
+                    {
+                        this.selectedRowIndex = 0;
+                    }
+
+                    this.CurrentTrackIdInPlaylist = Convert.ToInt32(this.workingTable.Rows[this.selectedRowIndex]["TrackIdInPlaylist"]);
+                    
+                    String path = this.workingTable.Rows[this.selectedRowIndex]["Path"].ToString();
 
                     if (System.IO.File.Exists(path))
                     {
+                        this.currentPlayPosition = 0;
                         this.MediaPlayer.URL = path;
                         this.MediaPlayer.Ctlcontrols.currentPosition = 0;
                         this.MediaPlayer.Ctlcontrols.play();
+
+                        result = MediaPlayerUpdateState.AfterPlay;
                     }
                 }
             }
-            else
+            else if (this.MediaPlayer.playState == WMPLib.WMPPlayState.wmppsPlaying)
             {
-                if (this.MediaPlayer.playState != WMPLib.WMPPlayState.wmppsPlaying)
+                if (this.workingTable.Rows.Count > 0)
                 {
-                    this.MediaPlayer.Ctlcontrols.currentPosition = this.currentPlayPosition;
-                    this.MediaPlayer.Ctlcontrols.play();
-                    result = false;
+                    if (this.selectedRowIndex != -1)
+                    {
+                        this.CurrentTrackIdInPlaylist = Convert.ToInt32(this.workingTable.Rows[this.selectedRowIndex]["TrackIdInPlaylist"]);
+
+                        String path = this.workingTable.Rows[this.selectedRowIndex]["Path"].ToString();
+
+                        if (System.IO.File.Exists(path))
+                        {
+                            this.currentPlayPosition = 0;
+                            this.MediaPlayer.URL = path;
+                            this.MediaPlayer.Ctlcontrols.currentPosition = 0;
+                            this.MediaPlayer.Ctlcontrols.play();
+
+                            result = MediaPlayerUpdateState.AfterPlay;
+                        }
+                    }
                 }
             }
+            else if (this.MediaPlayer.playState == WMPLib.WMPPlayState.wmppsPaused)
+            {
+                this.MediaPlayer.Ctlcontrols.currentPosition = this.currentPlayPosition;
+                this.MediaPlayer.Ctlcontrols.play();
+
+                result = MediaPlayerUpdateState.AfterPlayAfterPause;
+            }
+
             return result;
         }
         public void PauseTrack()
@@ -101,19 +156,23 @@ namespace MitoPlayer_2024.Presenters
                this.MediaPlayer.playState == WMPLib.WMPPlayState.wmppsPaused)
             {
                 this.currentPlayPosition = 0;
-                this.trackIdInPlaylist = -1;
+                this.CurrentTrackIdInPlaylist = -1;
 
                 this.MediaPlayer.Ctlcontrols.stop();
                 this.MediaPlayer.Ctlcontrols.currentPosition = 0;
             }
         }
-        public void PrevTrack(int selectedRowId, int selectedRowIndex)
+        public MediaPlayerUpdateState PrevTrack()
         {
-            this.StepTrack(true, selectedRowId, selectedRowIndex);
+            MediaPlayerUpdateState result = MediaPlayerUpdateState.Undefined;
+            result = this.StepTrack(true);
+            return result;
         }
-        public void NextTrack(int selectedRowId, int selectedRowIndex)
+        public MediaPlayerUpdateState NextTrack()
         {
-            this.StepTrack(false, selectedRowId, selectedRowIndex);
+            MediaPlayerUpdateState result = MediaPlayerUpdateState.Undefined;
+            result = this.StepTrack(false);
+            return result;
         }
         /* nem szól semmi, üres a tábla: -
          * nem szól semmi, a táblába nem üres, nincs kijelölve semmi: az utoljára szólt szám indexéhez képest kell lejátszani a következőt/előzőt
@@ -130,63 +189,141 @@ namespace MitoPlayer_2024.Presenters
          * az éppen szóló szám a táblában van/nincs a táblában: dgvTrackList.Exsists(x => x.trackIdInPlaylist == trackIdInPlaylist)
          * van kijelölve valami/ninc skijelölve semmi: dgvTrackList.SelectedRows.Count == 0 / dgvTrackList.SelectedRows.Count != 0
          */
-        private void StepTrack(bool backward,int selectedRowId, int selectedRowIndex)
+        private MediaPlayerUpdateState StepTrack(bool backward)
         {
-            if (this.trackIdInPlaylist == -1)
+            MediaPlayerUpdateState result = MediaPlayerUpdateState.Undefined;
+        /* if (this.CurrentTrackIdInPlaylist == -1)
+         {
+             if (this.workingTable.Rows.Count > 0)
+             {
+                 if (this.selectedRowIndex != -1)
+                 {
+                     this.CurrentTrackIdInPlaylist = selectedRowId;
+                     this.lastTrackIndex = selectedRowIndex;
+                 }
+             }
+         }
+         else
+         {
+             if (this.workingTable.Rows.Count > 0)
+             {
+                 for (int i = 0; i <= this.workingTable.Rows.Count - 1; i++)
+                 {
+                     int orderInList = Convert.ToInt32(this.workingTable.Rows[i]["OrderInList"]);
+                     if (orderInList == this.CurrentTrackIdInPlaylist)
+                     {
+                         this.lastTrackIndex = orderInList;
+                     }
+                 }
+             }
+         }*/
+
+        if (this.workingTable.Rows.Count > 0)
             {
-                if (this.workingTable.Rows.Count > 0)
+                this.UpdateRowIndex();
+
+                if (!backward)
                 {
-                    if (selectedRowId != -1)
+                    if (this.selectedRowIndex < this.workingTable.Rows.Count - 1)
                     {
-                        this.trackIdInPlaylist = selectedRowId;
-                        this.lastTrackIndex = selectedRowIndex;
+                        this.selectedRowIndex = this.selectedRowIndex + 1;
                     }
                 }
-            }
-            else
-            {
-                if (this.workingTable.Rows.Count > 0)
+                else
                 {
-                    for (int i = 0; i <= this.workingTable.Rows.Count - 1; i++)
+                    if (this.selectedRowIndex > 0)
                     {
-                        int orderInList = Convert.ToInt32(this.workingTable.Rows[i]["OrderInList"]);
-                        if (orderInList == this.trackIdInPlaylist)
-                        {
-                            this.lastTrackIndex = orderInList;
-                        }
+                        this.selectedRowIndex = this.selectedRowIndex - 1;
                     }
                 }
+
+                this.CurrentTrackIdInPlaylist = Convert.ToInt32(this.workingTable.Rows[this.selectedRowIndex]["TrackIdInPlaylist"]);
+
+                result = this.PlayTrack();
             }
 
-            if (!backward)
-            {
-                if (this.lastTrackIndex < this.workingTable.Rows.Count - 1)
-                {
-                    this.lastTrackIndex = this.lastTrackIndex + 1;
-                }
-            }
-            else
-            {
-                if (this.lastTrackIndex > 0)
-                {
-                    this.lastTrackIndex = this.lastTrackIndex - 1;
-                }
-            }
 
-            this.currentTrackIndex = this.lastTrackIndex;
-
-            this.StopTrack();
-            this.PlayTrack();
+            return result;
         }
-        public void RandomTrack()
+        
+        private List<int> initialTrackIdInPlaylistList = new List<int>();
+        private List<int> playedTrackIdInPlaylistList = new List<int>();
+        private void ValidateWorkingTable()
         {
             if (this.workingTable.Rows.Count > 1)
             {
-                Random rand = new Random();
-                this.currentTrackIndex = rand.Next(0, this.workingTable.Rows.Count - 1);
-                this.StopTrack();
-                this.PlayTrack();
+                for (int i = 0; i <= this.workingTable.Rows.Count - 1; i++)
+                {
+                    int trackIdInPlaylist = Convert.ToInt32(this.workingTable.Rows[i]["TrackIdInPlaylist"]);
+                    if (!initialTrackIdInPlaylistList.Contains(trackIdInPlaylist))
+                    {
+                        initialTrackIdInPlaylistList.Add(trackIdInPlaylist);
+                    }
+                }
+                for (int i = initialTrackIdInPlaylistList.Count - 1; i >= 0; i--)
+                {
+                    bool isDeleted = true;
+                    for (int j = this.workingTable.Rows.Count - 1; j >= 0; j--)
+                    {
+                        if (initialTrackIdInPlaylistList[i] == Convert.ToInt32(this.workingTable.Rows[j]["TrackIdInPlaylist"]))
+                        {
+                            isDeleted = false;
+                            break;
+                        }
+                    }
+                    if (isDeleted)
+                    {
+                        int trackIdInPlaylist = initialTrackIdInPlaylistList[i];
+                        initialTrackIdInPlaylistList.Remove(trackIdInPlaylist);
+                        playedTrackIdInPlaylistList.Remove(trackIdInPlaylist);
+                    }
+                }
             }
+            else
+            {
+                initialTrackIdInPlaylistList.Clear();
+                playedTrackIdInPlaylistList.Clear();
+            }
+            
+        }
+        public MediaPlayerUpdateState RandomTrack()
+        {
+            MediaPlayerUpdateState result = MediaPlayerUpdateState.AfterPlay;
+
+            if (this.workingTable.Rows.Count > 1)
+            {
+                this.ValidateWorkingTable();
+
+                Random rand = new Random();
+
+                bool nextIndexFound = false;
+
+                if(playedTrackIdInPlaylistList.Count > 0 && initialTrackIdInPlaylistList.Count > 0
+                    && playedTrackIdInPlaylistList.Count == initialTrackIdInPlaylistList.Count)
+                {
+                    playedTrackIdInPlaylistList.Clear();
+                }
+
+                while (!nextIndexFound)
+                {
+                    int nextTrackIndex = rand.Next(0, initialTrackIdInPlaylistList.Count);
+                    if (!playedTrackIdInPlaylistList.Contains(initialTrackIdInPlaylistList[nextTrackIndex]))
+                    {
+                        nextIndexFound = true;
+                        playedTrackIdInPlaylistList.Add(initialTrackIdInPlaylistList[nextTrackIndex]);
+
+                        DataRow nextRow = this.workingTable.Select("TrackIdInPlaylist = " + nextTrackIndex).First();
+                        this.selectedRowIndex = this.workingTable.Rows.IndexOf(nextRow);
+
+                        if (this.MediaPlayer.playState == WMPLib.WMPPlayState.wmppsPlaying)
+                            this.CurrentTrackIdInPlaylist = initialTrackIdInPlaylistList[nextTrackIndex];
+                    }
+                }
+
+                this.StopTrack();
+                result = this.PlayTrack();
+            }
+            return result;
         }
 
         public void ChangeVolume(int volume)

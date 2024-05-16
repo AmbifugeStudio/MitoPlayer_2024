@@ -23,6 +23,46 @@ namespace MitoPlayer_2024.Dao
             this.connectionString = connectionString;
         }
 
+        public int GetNextLastSmallestTrackIdInPlaylist()
+        {
+            int result = 0;
+            List<int> trackIds = null;
+
+            using (var connection = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand())
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = "SELECT TrackIdInPlaylist FROM PlaylistContent ORDER BY TrackIdInPlaylist ";
+                using (var reader = command.ExecuteReader())
+                {
+                    trackIds = new List<int>();
+                    while (reader.Read())
+                    {
+                        trackIds.Add((int)reader[0]);
+                    }
+                }
+            }
+            if(trackIds == null || trackIds.Count == 0)
+            {
+                return result;
+            }
+            else
+            {
+                for(int i = 0; i<= trackIds.Count -1; i++)
+                {
+                    if(i != trackIds[i])
+                    {
+                        return i;
+                    }
+                }
+                result = trackIds.Count;
+            }
+
+            return result;
+        }
+
         /*
          * univerzális Id lekérő
          */
@@ -131,7 +171,8 @@ namespace MitoPlayer_2024.Dao
                    "tra.Album, " +
                    "tra.Year, " +
                    "tra.Length, " +
-                   "plc.OrderInList " +
+                   "plc.OrderInList, " +
+                   "plc.TrackIdInPlaylist " +
                    "FROM Playlist pll, PlaylistContent plc, Track tra " +
                    "WHERE pll.Id = plc.PlaylistId and plc.TrackId = tra.Id " +
                    "AND pll.Id = @PlaylistId " +
@@ -150,6 +191,7 @@ namespace MitoPlayer_2024.Dao
                         var trackYear = (int)reader[6];
                         var trackLength = (int)reader[7];
                         var orderInList = (int)reader[8];
+                        var trackIdInPlaylist = (int)reader[9];
 
                         Track track = new Track();
                         track.Id = trackId;
@@ -161,6 +203,7 @@ namespace MitoPlayer_2024.Dao
                         track.Year = trackYear;
                         track.Length = trackLength;
                         track.OrderInList = orderInList;
+                        track.TrackIdInPlaylist = trackIdInPlaylist;
 
                         trackList.Add(track);
                     }

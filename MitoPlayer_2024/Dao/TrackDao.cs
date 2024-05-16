@@ -81,18 +81,19 @@ namespace MitoPlayer_2024.Dao
         /*
          * szám hozzáadása playlist-hez
          */
-        public void AddTrackToPlaylist(int id, int playlistId, int trackId, int orderInList)
+        public void AddTrackToPlaylist(int id, int playlistId, int trackId, int orderInList, int trackIdInPlaylist)
         {
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
             {
                 connection.Open();
                 command.Connection = connection;
-                command.CommandText = "INSERT INTO PlaylistContent values (@Id, @PlaylistId, @TrackId, @OrderInList)";
+                command.CommandText = "INSERT INTO PlaylistContent values (@Id, @PlaylistId, @TrackId, @OrderInList, @TrackIdInPlaylist)";
                 command.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
                 command.Parameters.Add("@PlaylistId", MySqlDbType.Int32).Value = playlistId;
                 command.Parameters.Add("@TrackId", MySqlDbType.Int32).Value = trackId;
                 command.Parameters.Add("@OrderInList", MySqlDbType.Int32).Value = orderInList;
+                command.Parameters.Add("@TrackIdInPlaylist", MySqlDbType.Int32).Value = trackIdInPlaylist;
                 command.ExecuteNonQuery();
             }
         }

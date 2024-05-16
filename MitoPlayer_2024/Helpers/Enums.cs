@@ -21,5 +21,19 @@ namespace MitoPlayer_2024.Helpers
         TrackColumnTypes,
         TrackColumnVisibility
     }
+    public enum ObjectType
+    {
+        Playlist,
+        Tracklist
+    }
+
+    public enum MediaPlayerUpdateState
+    {
+        Undefined,
+        AfterPlay,
+        AfterPlayAfterPause,
+        AfterPause,
+        AfterStop
+    }
 
 }

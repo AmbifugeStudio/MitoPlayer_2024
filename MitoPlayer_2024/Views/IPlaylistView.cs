@@ -30,6 +30,7 @@ namespace MitoPlayer_2024.Views
         event EventHandler<ListEventArgs> OrderByColumnEvent;
         event EventHandler<ListEventArgs> DeleteTracksEvent;
         event EventHandler<ListEventArgs> TrackDragAndDropEvent;
+        event EventHandler<ListEventArgs> CopyTracksToPlaylistEvent;
 
         //PLAYLIST
         event EventHandler<ListEventArgs> ShowPlaylistEditorViewEvent;
@@ -45,7 +46,7 @@ namespace MitoPlayer_2024.Views
         void UpdateAfterStopTrack();
         void UpdateAfterPauseTrack();
         void UpdateMediaPlayerProgressStatus(double duration, String durationString, double currentPosition, String currentPositionString);
-        void SetCurrentTrackColor(int rowIndex, int trackIdInPlaylist);
+        void SetCurrentTrackColor(int trackIdInPlaylist);
         void SetVolume(int volume);
         void Show();
     }

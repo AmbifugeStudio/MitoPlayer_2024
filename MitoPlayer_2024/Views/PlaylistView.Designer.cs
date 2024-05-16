@@ -159,7 +159,7 @@
             // 
             this.btnNewPlaylist.Location = new System.Drawing.Point(6, 19);
             this.btnNewPlaylist.Name = "btnNewPlaylist";
-            this.btnNewPlaylist.Size = new System.Drawing.Size(70, 23);
+            this.btnNewPlaylist.Size = new System.Drawing.Size(75, 23);
             this.btnNewPlaylist.TabIndex = 6;
             this.btnNewPlaylist.Text = "New";
             this.btnNewPlaylist.UseVisualStyleBackColor = true;
@@ -169,7 +169,7 @@
             // 
             this.btnRenamePlaylist.Location = new System.Drawing.Point(6, 48);
             this.btnRenamePlaylist.Name = "btnRenamePlaylist";
-            this.btnRenamePlaylist.Size = new System.Drawing.Size(70, 23);
+            this.btnRenamePlaylist.Size = new System.Drawing.Size(75, 23);
             this.btnRenamePlaylist.TabIndex = 6;
             this.btnRenamePlaylist.Text = "Rename";
             this.btnRenamePlaylist.UseVisualStyleBackColor = true;
@@ -177,9 +177,9 @@
             // 
             // btnLoadPlaylist
             // 
-            this.btnLoadPlaylist.Location = new System.Drawing.Point(78, 19);
+            this.btnLoadPlaylist.Location = new System.Drawing.Point(83, 19);
             this.btnLoadPlaylist.Name = "btnLoadPlaylist";
-            this.btnLoadPlaylist.Size = new System.Drawing.Size(80, 23);
+            this.btnLoadPlaylist.Size = new System.Drawing.Size(75, 23);
             this.btnLoadPlaylist.TabIndex = 6;
             this.btnLoadPlaylist.Text = "Load";
             this.btnLoadPlaylist.UseVisualStyleBackColor = true;
@@ -187,9 +187,9 @@
             // 
             // btnDeletePlaylist
             // 
-            this.btnDeletePlaylist.Location = new System.Drawing.Point(78, 48);
+            this.btnDeletePlaylist.Location = new System.Drawing.Point(83, 48);
             this.btnDeletePlaylist.Name = "btnDeletePlaylist";
-            this.btnDeletePlaylist.Size = new System.Drawing.Size(80, 23);
+            this.btnDeletePlaylist.Size = new System.Drawing.Size(75, 23);
             this.btnDeletePlaylist.TabIndex = 6;
             this.btnDeletePlaylist.Text = "Delete";
             this.btnDeletePlaylist.UseVisualStyleBackColor = true;
@@ -256,6 +256,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvTrackList.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvTrackList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dgvTrackList.Location = new System.Drawing.Point(173, 6);
             this.dgvTrackList.Name = "dgvTrackList";
             this.dgvTrackList.ReadOnly = true;
