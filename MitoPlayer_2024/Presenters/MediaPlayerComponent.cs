@@ -24,16 +24,23 @@ namespace MitoPlayer_2024.Presenters
         public MediaPlayerComponent(AxWindowsMediaPlayer mediaPLayer)
         {
             this.MediaPlayer = mediaPLayer;
-            this.Reset();
+
+            this.CurrentTrackIdInPlaylist = -1;
+            this.selectedRowIndex = -1;
+            this.currentPlayPosition = 0;
         }
         public void Initialize(DataTable workingTable)
         {
             this.workingTable = workingTable;
-            this.Reset();
-        }
-        public void Reset()
-        {
+
             this.CurrentTrackIdInPlaylist = -1;
+            this.selectedRowIndex = -1;
+            this.currentPlayPosition = 0;
+        }
+        public void Initialize2(DataTable workingTable)
+        {
+            this.workingTable = workingTable;
+
             this.selectedRowIndex = -1;
             this.currentPlayPosition = 0;
         }
@@ -54,7 +61,8 @@ namespace MitoPlayer_2024.Presenters
 
             if (this.workingTable == null || this.workingTable.Rows.Count == 0)
             {
-                this.Reset();
+                this.selectedRowIndex = -1;
+                this.currentPlayPosition = 0;
             }
             else
             {

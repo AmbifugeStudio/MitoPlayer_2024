@@ -783,7 +783,8 @@ namespace MitoPlayer_2024.Presenters
 
                 this.trackListTable.Rows.Clear();
 
-                this.mediaPLayerComponent.Initialize(this.trackListTable);
+                //this.mediaPLayerComponent.Initialize(this.trackListTable);
+                this.mediaPLayerComponent.Initialize2(this.trackListTable);
 
                 this.LoadPlaylist(playlist);
 
