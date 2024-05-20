@@ -170,7 +170,9 @@ namespace MitoPlayer_2024.Views
             {
                 if(this.dgvTrackList.SelectedRows.Count > 0)
                 {
-                    this.CallSetCurrentTrackEvent();
+                    int rowIndex = this.dgvTrackList.Rows.IndexOf(this.dgvTrackList.SelectedRows[0]);
+
+                    this.CallSetCurrentTrackEvent(rowIndex);
                     this.CallStopTrackEvent();
                     this.CallPlayTrackEvent();
                 }
@@ -178,19 +180,23 @@ namespace MitoPlayer_2024.Views
 
             if(this.dgvPlaylistList.SelectedRows.Count > 0 && e.KeyCode == Keys.D1)
             {
-                this.CallCopyTracksToPlaylistEvent(this.dgvTrackList.Rows, 1);
+                this.CallCopyTracksToPlaylistEvent(this.dgvTrackList.SelectedRows, 1);
             }
             if (this.dgvPlaylistList.SelectedRows.Count > 0 && e.KeyCode == Keys.D2)
             {
-                this.CallCopyTracksToPlaylistEvent(this.dgvTrackList.Rows, 2);
+                this.CallCopyTracksToPlaylistEvent(this.dgvTrackList.SelectedRows, 2);
             }
             if (this.dgvPlaylistList.SelectedRows.Count > 0 && e.KeyCode == Keys.D3)
             {
-                this.CallCopyTracksToPlaylistEvent(this.dgvTrackList.Rows, 3);
+                this.CallCopyTracksToPlaylistEvent(this.dgvTrackList.SelectedRows, 3);
             }
             if (this.dgvPlaylistList.SelectedRows.Count > 0 && e.KeyCode == Keys.D4)
             {
-                this.CallCopyTracksToPlaylistEvent(this.dgvTrackList.Rows, 4);
+                this.CallCopyTracksToPlaylistEvent(this.dgvTrackList.SelectedRows, 4);
+            }
+            if (this.dgvPlaylistList.Rows.Count > 0 && e.KeyCode == Keys.R)
+            {
+                this.CallRandomTrackEvent();
             }
         }
         private void dgvTrackList_KeyUp(object sender, KeyEventArgs e)
@@ -258,15 +264,14 @@ namespace MitoPlayer_2024.Views
         private void CallOrderByColumnEvent(String columnName)
         {
             this.OrderByColumnEvent?.Invoke(this, new ListEventArgs() { StringField1 = columnName });
-            this.CallSetCurrentTrackColorEvent();
         }
         private void CallDeleteTracksEvent(DataGridViewRowCollection rows)
         {
             this.DeleteTracksEvent?.Invoke(this, new ListEventArgs() { Rows = rows });
         }
-        private void CallCopyTracksToPlaylistEvent(DataGridViewRowCollection rows, int group)
+        private void CallCopyTracksToPlaylistEvent(DataGridViewSelectedRowCollection selectedRows, int group)
         {
-            this.CopyTracksToPlaylistEvent?.Invoke(this, new ListEventArgs() { Rows = rows, IntegerField1 = group });
+            this.CopyTracksToPlaylistEvent?.Invoke(this, new ListEventArgs() { SelectedRows = selectedRows, IntegerField1 = group });
         }
 
         //DRAG AND DROP
@@ -713,6 +718,7 @@ namespace MitoPlayer_2024.Views
         }
         public void CallStopTrackEvent()
         {
+            this.timer1.Stop();
             this.StopTrackEvent?.Invoke(this, EventArgs.Empty);
             
         }
@@ -781,6 +787,10 @@ namespace MitoPlayer_2024.Views
         public void UpdateAfterPauseTrack()
         {
             this.lblCurrentTrack.Text = this.lblCurrentTrack.Text.Replace("Playing: ", "Paused: ");
+        }
+        public void UpdateAfterCopyTracksToPlaylist(int count, String playlistName)
+        {
+            LabelTimer.DisplayLabel(this.components, this.lblMessage, count + " track(s) copied to " + playlistName);
         }
         public void SetVolume(int volume)
         {
@@ -935,8 +945,8 @@ namespace MitoPlayer_2024.Views
             if (this.dgvPlaylistList.SelectedRows.Count > 0)
                 this.SetQuickListEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = dgvPlaylistList.Rows.IndexOf(dgvPlaylistList.SelectedRows[0]), IntegerField2 = group });
         }
+
         #endregion
 
-        
     }
 }

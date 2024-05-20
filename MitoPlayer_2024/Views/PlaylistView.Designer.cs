@@ -40,6 +40,7 @@
             this.btnRenamePlaylist = new System.Windows.Forms.Button();
             this.btnLoadPlaylist = new System.Windows.Forms.Button();
             this.btnDeletePlaylist = new System.Windows.Forms.Button();
+            this.lblMessage = new System.Windows.Forms.Label();
             this.lblSelectedItemsLength = new System.Windows.Forms.Label();
             this.lblSelectedItemsCount = new System.Windows.Forms.Label();
             this.lblCurrentTrack = new System.Windows.Forms.Label();
@@ -74,6 +75,7 @@
             // 
             this.tabPagePlaylistDetail.Controls.Add(this.groupBox2);
             this.tabPagePlaylistDetail.Controls.Add(this.groupBox1);
+            this.tabPagePlaylistDetail.Controls.Add(this.lblMessage);
             this.tabPagePlaylistDetail.Controls.Add(this.lblSelectedItemsLength);
             this.tabPagePlaylistDetail.Controls.Add(this.lblSelectedItemsCount);
             this.tabPagePlaylistDetail.Controls.Add(this.lblCurrentTrack);
@@ -194,6 +196,18 @@
             this.btnDeletePlaylist.Text = "Delete";
             this.btnDeletePlaylist.UseVisualStyleBackColor = true;
             this.btnDeletePlaylist.Click += new System.EventHandler(this.btnDeletePlaylist_Click);
+            // 
+            // lblMessage
+            // 
+            this.lblMessage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblMessage.Location = new System.Drawing.Point(866, 531);
+            this.lblMessage.Name = "lblMessage";
+            this.lblMessage.Size = new System.Drawing.Size(247, 13);
+            this.lblMessage.TabIndex = 3;
+            this.lblMessage.Text = "Temporary messages";
+            this.lblMessage.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblMessage.Visible = false;
             // 
             // lblSelectedItemsLength
             // 
@@ -451,5 +465,6 @@
         private System.Windows.Forms.ToolStripMenuItem menuStripSetQuickListGroup2;
         private System.Windows.Forms.ToolStripMenuItem menuStripSetQuickListGroup3;
         private System.Windows.Forms.ToolStripMenuItem menuStripSetQuickListGroup4;
+        private System.Windows.Forms.Label lblMessage;
     }
 }

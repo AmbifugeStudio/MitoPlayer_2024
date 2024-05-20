@@ -57,7 +57,7 @@ namespace MitoPlayer_2024.Presenters
         {
             this.workingTable = workingTable;
 
-           // this.ValidateWorkingTable();
+            this.ValidateWorkingTable();
 
             if (this.workingTable == null || this.workingTable.Rows.Count == 0)
             {
@@ -320,11 +320,18 @@ namespace MitoPlayer_2024.Presenters
                         nextIndexFound = true;
                         playedTrackIdInPlaylistList.Add(initialTrackIdInPlaylistList[nextTrackIndex]);
 
-                        DataRow nextRow = this.workingTable.Select("TrackIdInPlaylist = " + nextTrackIndex).First();
-                        this.selectedRowIndex = this.workingTable.Rows.IndexOf(nextRow);
+                        int trackIdInPlaylist = initialTrackIdInPlaylistList[nextTrackIndex];
+                        for(int i = 0; i <= this.workingTable.Rows.Count -1; i++)
+                        {
+                            if (trackIdInPlaylist == Convert.ToInt32(this.workingTable.Rows[i]["TrackIdInPlaylist"]))
+                            {
+                                this.selectedRowIndex = i;
+                                break;
+                            }
+                        }
 
-                        if (this.MediaPlayer.playState == WMPLib.WMPPlayState.wmppsPlaying)
-                            this.CurrentTrackIdInPlaylist = initialTrackIdInPlaylistList[nextTrackIndex];
+                        this.CurrentTrackIdInPlaylist = initialTrackIdInPlaylistList[nextTrackIndex];
+
                     }
                 }
 

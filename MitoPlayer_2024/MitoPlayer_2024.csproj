@@ -166,6 +166,7 @@
   <ItemGroup>
     <Compile Include="Dao\SettingDao.cs" />
     <Compile Include="Helpers\Enums.cs" />
+    <Compile Include="Helpers\LabelTimer.cs" />
     <Compile Include="Helpers\ListEventArgs.cs" />
     <Compile Include="Models\IPlaylistDao.cs" />
     <Compile Include="Models\ISettingDao.cs" />
