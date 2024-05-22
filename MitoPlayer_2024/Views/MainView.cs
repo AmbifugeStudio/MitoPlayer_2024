@@ -317,5 +317,12 @@ namespace MitoPlayer_2024
             this.ScanFiles?.Invoke(this, new ListEventArgs() { DragAndDropFiles = pathList, IntegerField1 = index });
         }
 
+        private void MainView_Load(object sender, EventArgs e)
+        {
+            String version = "";
+            if (System.Deployment.Application.ApplicationDeployment.IsNetworkDeployed)
+                version = System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion.ToString();
+            this.Text = "MitoPlayer 2024 v" + version;
+        }
     }
 }

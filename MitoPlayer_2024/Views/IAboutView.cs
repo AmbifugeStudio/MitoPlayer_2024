@@ -8,6 +8,6 @@ namespace MitoPlayer_2024.Views
 {
     public interface IAboutView
     {
-        void Show();
+        event EventHandler CloseView;
     }
 }

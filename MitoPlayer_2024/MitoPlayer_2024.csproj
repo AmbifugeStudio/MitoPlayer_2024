@@ -24,8 +24,8 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <AutorunEnabled>true</AutorunEnabled>
-    <ApplicationRevision>5</ApplicationRevision>
-    <ApplicationVersion>0.8.4.%2a</ApplicationVersion>
+    <ApplicationRevision>8</ApplicationRevision>
+    <ApplicationVersion>0.10.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -273,6 +273,12 @@
     <Compile Include="Views\TrackEditorView.Designer.cs">
       <DependentUpon>TrackEditorView.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Views\AboutView.resx">
+      <DependentUpon>AboutView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\HarmonizerView.resx">
+      <DependentUpon>HarmonizerView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\MainView.resx">
       <DependentUpon>MainView.cs</DependentUpon>
     </EmbeddedResource>
@@ -291,6 +297,24 @@
     <EmbeddedResource Include="Views\PlaylistView.resx">
       <DependentUpon>PlaylistView.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\PreferencesView.resx">
+      <DependentUpon>PreferencesView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\ProfileEditorView.resx">
+      <DependentUpon>ProfileEditorView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\RuleEditorView.resx">
+      <DependentUpon>RuleEditorView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\TagValueEditorView.resx">
+      <DependentUpon>TagValueEditorView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\TemplateEditorView.resx">
+      <DependentUpon>TemplateEditorView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\TrackEditorView.resx">
+      <DependentUpon>TrackEditorView.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="MitoPlayer_2024_TemporaryKey.pfx" />
     <None Include="packages.config" />

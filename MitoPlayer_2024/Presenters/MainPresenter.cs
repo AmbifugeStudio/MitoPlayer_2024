@@ -160,9 +160,9 @@ namespace MitoPlayer_2024.Presenters
         }
         private void ShowAboutView(object sender, EventArgs e)
         {
-            this.aboutView = AboutView.GetInstance((MainView)mainView);
-            this.actualView = this.aboutView;
-            this.aboutPresenter = new AboutPresenter(this.aboutView, this.playlistDao, this.trackDao, this.settingDao);
+            AboutView aboutView = new AboutView();
+            AboutPresenter presenter = new AboutPresenter(aboutView);
+            aboutView.ShowDialog((AboutView)this.aboutView);
         }
 
         //MENU STRIP

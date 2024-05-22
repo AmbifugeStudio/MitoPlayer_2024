@@ -443,7 +443,7 @@
             this.ClientSize = new System.Drawing.Size(1129, 576);
             this.Controls.Add(this.tabControl1);
             this.Name = "PlaylistView";
-            this.Text = "PlayerView";
+            this.Text = "Player";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.tabPagePlaylistDetail.ResumeLayout(false);
             this.tabPagePlaylistDetail.PerformLayout();

@@ -71,7 +71,6 @@
             this.btnTracks = new System.Windows.Forms.Button();
             this.btnTagValues = new System.Windows.Forms.Button();
             this.btnPlaylist = new System.Windows.Forms.Button();
-            this.mediaPlayer = new AxWMPLib.AxWindowsMediaPlayer();
             this.panel1 = new System.Windows.Forms.Panel();
             this.trackVolume = new System.Windows.Forms.TrackBar();
             this.pBar = new System.Windows.Forms.ProgressBar();
@@ -85,11 +84,12 @@
             this.btnPause = new System.Windows.Forms.Button();
             this.btnPrev = new System.Windows.Forms.Button();
             this.btnPlay = new System.Windows.Forms.Button();
+            this.mediaPlayer = new AxWMPLib.AxWindowsMediaPlayer();
             this.menuStrip1.SuspendLayout();
             this.panel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.mediaPlayer)).BeginInit();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackVolume)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.mediaPlayer)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -436,15 +436,6 @@
             this.btnPlaylist.UseVisualStyleBackColor = true;
             this.btnPlaylist.Click += new System.EventHandler(this.btnPlaylist_Click);
             // 
-            // mediaPlayer
-            // 
-            this.mediaPlayer.Enabled = true;
-            this.mediaPlayer.Location = new System.Drawing.Point(299, 23);
-            this.mediaPlayer.Name = "mediaPlayer";
-            this.mediaPlayer.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("mediaPlayer.OcxState")));
-            this.mediaPlayer.Size = new System.Drawing.Size(10, 10);
-            this.mediaPlayer.TabIndex = 1;
-            // 
             // panel1
             // 
             this.panel1.Controls.Add(this.trackVolume);
@@ -598,6 +589,15 @@
             this.btnPlay.UseVisualStyleBackColor = true;
             this.btnPlay.Click += new System.EventHandler(this.btnPlay_Click);
             // 
+            // mediaPlayer
+            // 
+            this.mediaPlayer.Enabled = true;
+            this.mediaPlayer.Location = new System.Drawing.Point(299, 23);
+            this.mediaPlayer.Name = "mediaPlayer";
+            this.mediaPlayer.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("mediaPlayer.OcxState")));
+            this.mediaPlayer.Size = new System.Drawing.Size(10, 10);
+            this.mediaPlayer.TabIndex = 1;
+            // 
             // MainView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -612,13 +612,14 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "MitoPlayer 2024 v0.1.3";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.Load += new System.EventHandler(this.MainView_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.mediaPlayer)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackVolume)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.mediaPlayer)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

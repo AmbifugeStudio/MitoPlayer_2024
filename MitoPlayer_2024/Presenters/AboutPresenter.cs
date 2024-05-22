@@ -1,29 +1,25 @@
-﻿using MitoPlayer_2024.Model;
-using MitoPlayer_2024.Models;
+﻿using MitoPlayer_2024.Models;
 using MitoPlayer_2024.Views;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace MitoPlayer_2024.Presenters
 {
-    internal class AboutPresenter
+    public class AboutPresenter
     {
         private IAboutView aboutView;
-        private IPlaylistDao playlistDao;
-        private ITrackDao trackDao;
-        private ISettingDao settingDao;
+        public Playlist newPlaylist;
 
-        public AboutPresenter(IAboutView aboutView, IPlaylistDao playlistDao, ITrackDao trackDao, ISettingDao settingDao)
+        public AboutPresenter(IAboutView aboutView)
         {
             this.aboutView = aboutView;
-            this.playlistDao = playlistDao;
-            this.trackDao = trackDao;
-            this.settingDao = settingDao;
-
-            this.aboutView.Show();
+            this.aboutView.CloseView += AboutView_CloseView;
         }
+
+        private void AboutView_CloseView(object sender, EventArgs e)
+        {
+            ((AboutView)this.aboutView).Close();
+        }
+
     }
 }
