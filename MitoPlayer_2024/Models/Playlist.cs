@@ -16,8 +16,6 @@ namespace MitoPlayer_2024.Models
         public int OrderInList { get; set; }
         public int QuickListGroup { get; set; }
 
-        private List<Track> trackList;
-
         public Playlist()
         {
         }

@@ -31,7 +31,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainView));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuStripOpenFiles = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStripOpenDirectories = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.menuStripCreatePlaylist = new System.Windows.Forms.ToolStripMenuItem();
@@ -85,6 +84,9 @@
             this.btnPrev = new System.Windows.Forms.Button();
             this.btnPlay = new System.Windows.Forms.Button();
             this.mediaPlayer = new AxWMPLib.AxWindowsMediaPlayer();
+            this.menuStripProfile = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStripOpenFiles = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.menuStrip1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -108,6 +110,8 @@
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuStripProfile,
+            this.toolStripSeparator7,
             this.menuStripOpenFiles,
             this.menuStripOpenDirectories,
             this.toolStripSeparator2,
@@ -122,69 +126,62 @@
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
-            // menuStripOpenFiles
-            // 
-            this.menuStripOpenFiles.Name = "menuStripOpenFiles";
-            this.menuStripOpenFiles.Size = new System.Drawing.Size(166, 22);
-            this.menuStripOpenFiles.Text = "Add files...";
-            this.menuStripOpenFiles.Click += new System.EventHandler(this.menuStripOpenFiles_Click);
-            // 
             // menuStripOpenDirectories
             // 
             this.menuStripOpenDirectories.Name = "menuStripOpenDirectories";
-            this.menuStripOpenDirectories.Size = new System.Drawing.Size(166, 22);
+            this.menuStripOpenDirectories.Size = new System.Drawing.Size(180, 22);
             this.menuStripOpenDirectories.Text = "Add folder...";
             this.menuStripOpenDirectories.Click += new System.EventHandler(this.menuStripOpenDirectory_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(163, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
             // 
             // menuStripCreatePlaylist
             // 
             this.menuStripCreatePlaylist.Name = "menuStripCreatePlaylist";
-            this.menuStripCreatePlaylist.Size = new System.Drawing.Size(166, 22);
+            this.menuStripCreatePlaylist.Size = new System.Drawing.Size(180, 22);
             this.menuStripCreatePlaylist.Text = "New playlist";
             this.menuStripCreatePlaylist.Click += new System.EventHandler(this.menuStripCreatePlaylist_Click);
             // 
             // menuStripLoadPlaylist
             // 
             this.menuStripLoadPlaylist.Name = "menuStripLoadPlaylist";
-            this.menuStripLoadPlaylist.Size = new System.Drawing.Size(166, 22);
+            this.menuStripLoadPlaylist.Size = new System.Drawing.Size(180, 22);
             this.menuStripLoadPlaylist.Text = "Load playlist...";
             this.menuStripLoadPlaylist.Click += new System.EventHandler(this.menuStripLoadPlaylist_Click);
             // 
             // menuStripRenamePlaylist
             // 
             this.menuStripRenamePlaylist.Name = "menuStripRenamePlaylist";
-            this.menuStripRenamePlaylist.Size = new System.Drawing.Size(166, 22);
+            this.menuStripRenamePlaylist.Size = new System.Drawing.Size(180, 22);
             this.menuStripRenamePlaylist.Text = "Rename playlist...";
             this.menuStripRenamePlaylist.Click += new System.EventHandler(this.menuStripRenamePlaylist_Click);
             // 
             // menuStripDeletePlaylist
             // 
             this.menuStripDeletePlaylist.Name = "menuStripDeletePlaylist";
-            this.menuStripDeletePlaylist.Size = new System.Drawing.Size(166, 22);
+            this.menuStripDeletePlaylist.Size = new System.Drawing.Size(180, 22);
             this.menuStripDeletePlaylist.Text = "Delete playlist...";
             this.menuStripDeletePlaylist.Click += new System.EventHandler(this.menuStripDeletePlaylist_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(163, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(177, 6);
             // 
             // menuStripPreferences
             // 
             this.menuStripPreferences.Name = "menuStripPreferences";
-            this.menuStripPreferences.Size = new System.Drawing.Size(166, 22);
+            this.menuStripPreferences.Size = new System.Drawing.Size(180, 22);
             this.menuStripPreferences.Text = "Preferences";
             this.menuStripPreferences.Click += new System.EventHandler(this.menuStripPreferences_Click);
             // 
             // menuStripExit
             // 
             this.menuStripExit.Name = "menuStripExit";
-            this.menuStripExit.Size = new System.Drawing.Size(166, 22);
+            this.menuStripExit.Size = new System.Drawing.Size(180, 22);
             this.menuStripExit.Text = "Exit";
             this.menuStripExit.Click += new System.EventHandler(this.menuStripExit_Click);
             // 
@@ -598,6 +595,25 @@
             this.mediaPlayer.Size = new System.Drawing.Size(10, 10);
             this.mediaPlayer.TabIndex = 1;
             // 
+            // menuStripProfile
+            // 
+            this.menuStripProfile.Name = "menuStripProfile";
+            this.menuStripProfile.Size = new System.Drawing.Size(180, 22);
+            this.menuStripProfile.Text = "Select profile";
+            this.menuStripProfile.Click += new System.EventHandler(this.menuStripProfile_Click);
+            // 
+            // menuStripOpenFiles
+            // 
+            this.menuStripOpenFiles.Name = "menuStripOpenFiles";
+            this.menuStripOpenFiles.Size = new System.Drawing.Size(180, 22);
+            this.menuStripOpenFiles.Text = "Add files...";
+            this.menuStripOpenFiles.Click += new System.EventHandler(this.menuStripOpenFiles_Click);
+            // 
+            // toolStripSeparator7
+            // 
+            this.toolStripSeparator7.Name = "toolStripSeparator7";
+            this.toolStripSeparator7.Size = new System.Drawing.Size(177, 6);
+            // 
             // MainView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -629,7 +645,6 @@
 
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem menuStripOpenFiles;
         private System.Windows.Forms.ToolStripMenuItem menuStripOpenDirectories;
         private System.Windows.Forms.ToolStripMenuItem menuStripCreatePlaylist;
         private System.Windows.Forms.ToolStripMenuItem menuStripLoadPlaylist;
@@ -683,6 +698,9 @@
         private System.Windows.Forms.Button btnPause;
         private System.Windows.Forms.Button btnPrev;
         private System.Windows.Forms.Button btnPlay;
+        private System.Windows.Forms.ToolStripMenuItem menuStripProfile;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
+        private System.Windows.Forms.ToolStripMenuItem menuStripOpenFiles;
     }
 }
 

@@ -9,11 +9,11 @@ namespace MitoPlayer_2024.Models
     public interface ISettingDao
     {
         void CreateStringSetting(String name, String value);
-        void CreateIntegerSetting(String name, Int32 value);
+        void CreateIntegerSetting(String name, Int32 value, bool notRelatedToProfile = false);
         void CreateDecimalSetting(String name, Decimal value);
         void CreateBooleanSetting(String name, Boolean value);
         String GetStringSettingByName(string name, bool external);
-        int GetIntegerSettingByName(string name, bool external);
+        int GetIntegerSettingByName(string name, bool external, bool notRelatedToProfile = false);
         decimal GetDecimalSettingByName(string name, bool external);
         bool? GetBooleanSettingByName(string name, bool external);
         void SetStringSetting(String name, String value);

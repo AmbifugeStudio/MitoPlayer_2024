@@ -15,6 +15,7 @@ namespace MitoPlayer_2024.Dao
 {
     public class SettingDao : BaseDao, ISettingDao
     {
+        public int ProfileId = -1;
         public SettingDao(string connectionString)
         {
             this.connectionString = connectionString;
@@ -27,9 +28,10 @@ namespace MitoPlayer_2024.Dao
                 connection.Open();
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = "INSERT INTO Setting (Name, StringValue) VALUES (@Name, @StringValue)";
+                command.CommandText = "INSERT INTO Setting (Name, StringValue) VALUES (@Name, @StringValue, @ProfileId)";
                 command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = name;
                 command.Parameters.Add("@StringValue", MySqlDbType.VarChar).Value = value;
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.ProfileId;
                 try
                 {
                     command.ExecuteNonQuery();
@@ -41,7 +43,7 @@ namespace MitoPlayer_2024.Dao
                 connection.Close();
             }
         }
-        public void CreateIntegerSetting(String name, Int32 value)
+        public void CreateIntegerSetting(String name, Int32 value, bool notRelatedToProfile = false)
         {
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
@@ -49,9 +51,22 @@ namespace MitoPlayer_2024.Dao
                 connection.Open();
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = "INSERT INTO Setting (Name, IntegerValue) VALUES (@Name, @IntegerValue)";
-                command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = name;
-                command.Parameters.Add("@IntegerValue", MySqlDbType.Int32).Value = value;
+                
+                if (notRelatedToProfile)
+                {
+                    command.CommandText = "INSERT INTO Setting (Name, IntegerValue, ProfileId) VALUES (@Name, @IntegerValue, @ProfileId)";
+                    command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = name;
+                    command.Parameters.Add("@IntegerValue", MySqlDbType.Int32).Value = value;
+                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = -1;
+                }
+                else
+                {
+                    command.CommandText = "INSERT INTO Setting (Name, IntegerValue, ProfileId) VALUES (@Name, @IntegerValue, @ProfileId)";
+                    command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = name;
+                    command.Parameters.Add("@IntegerValue", MySqlDbType.Int32).Value = value;
+                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.ProfileId;
+                }
+
                 try
                 {
                     command.ExecuteNonQuery();
@@ -71,9 +86,10 @@ namespace MitoPlayer_2024.Dao
                 connection.Open();
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = "INSERT INTO Setting (Name, DecimalValue) VALUES (@Name, @DecimalValue)";
+                command.CommandText = "INSERT INTO Setting (Name, DecimalValue) VALUES (@Name, @DecimalValue, @ProfileId)";
                 command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = name;
                 command.Parameters.Add("@DecimalValue", MySqlDbType.Decimal).Value = value;
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.ProfileId;
                 try
                 {
                     command.ExecuteNonQuery();
@@ -93,9 +109,10 @@ namespace MitoPlayer_2024.Dao
                 connection.Open();
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = "INSERT INTO Setting (Name, BooleanValue) VALUES (@Name, @BooleanValue)";
+                command.CommandText = "INSERT INTO Setting (Name, BooleanValue) VALUES (@Name, @BooleanValue, @ProfileId)";
                 command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = name;
                 command.Parameters.Add("@BooleanValue", MySqlDbType.Bit).Value = value;
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.ProfileId;
                 try
                 {
                     command.ExecuteNonQuery();
@@ -117,8 +134,9 @@ namespace MitoPlayer_2024.Dao
                 connection.Open();
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = "SELECT StringValue FROM Setting WHERE Name = @Name";
+                command.CommandText = "SELECT StringValue FROM Setting WHERE Name = @Name AND ProfileId = @ProfileId";
                 command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = name;
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.ProfileId;
                 using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())
@@ -135,7 +153,7 @@ namespace MitoPlayer_2024.Dao
 
             return result;
         }
-        public int GetIntegerSettingByName(string name, bool external)
+        public int GetIntegerSettingByName(string name, bool external, bool notRelatedToProfile = false)
         {
             int result = -1;
 
@@ -145,8 +163,20 @@ namespace MitoPlayer_2024.Dao
                 connection.Open();
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = "SELECT IntegerValue FROM Setting WHERE Name = @Name";
-                command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = name;
+
+                if (notRelatedToProfile)
+                {
+                    command.CommandText = "SELECT IntegerValue FROM Setting WHERE Name = @Name AND ProfileId = @ProfileId ";
+                    command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = name;
+                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = -1;
+                }
+                else
+                {
+                    command.CommandText = "SELECT IntegerValue FROM Setting WHERE Name = @Name AND ProfileId = @ProfileId ";
+                    command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = name;
+                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.ProfileId;
+                }
+                
                 using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())
@@ -173,8 +203,9 @@ namespace MitoPlayer_2024.Dao
                 connection.Open();
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = "SELECT DecimalValue FROM Setting WHERE Name = @Name";
+                command.CommandText = "SELECT DecimalValue FROM Setting WHERE Name = @Name AND ProfileId = @ProfileId ";
                 command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = name;
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.ProfileId;
                 using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())
@@ -201,8 +232,10 @@ namespace MitoPlayer_2024.Dao
                 connection.Open();
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = "SELECT BooleanValue FROM Setting WHERE Name = @Name";
+                command.CommandText = "SELECT BooleanValue FROM Setting WHERE Name = @Name AND ProfileId = @ProfileId ";
                 command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = name;
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.ProfileId;
+
                 using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())
@@ -236,9 +269,10 @@ namespace MitoPlayer_2024.Dao
                     command.CommandType = CommandType.Text;
                     command.CommandText = @"UPDATE Setting 
                                             SET StringValue = @StringValue
-                                            WHERE Name = @Name";
+                                            WHERE Name = @Name AND ProfileId = @ProfileId ";
                     command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = name;
                     command.Parameters.Add("@StringValue", MySqlDbType.VarChar).Value = value;
+                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.ProfileId;
 
                     try
                     {
@@ -271,9 +305,10 @@ namespace MitoPlayer_2024.Dao
                     command.CommandType = CommandType.Text;
                     command.CommandText = @"UPDATE Setting 
                                             SET IntegerValue = @IntegerValue
-                                            WHERE Name = @Name";
+                                            WHERE Name = @Name AND ProfileId = @ProfileId ";
                     command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = name;
                     command.Parameters.Add("@IntegerValue", MySqlDbType.Int32).Value = value;
+                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.ProfileId;
 
                     try
                     {
@@ -305,9 +340,10 @@ namespace MitoPlayer_2024.Dao
                     command.CommandType = CommandType.Text;
                     command.CommandText = @"UPDATE Setting 
                                             SET DecimalValue = @DecimalValue
-                                            WHERE Name = @Name";
+                                            WHERE Name = @Name AND ProfileId = @ProfileId ";
                     command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = name;
                     command.Parameters.Add("@DecimalValue", MySqlDbType.Decimal).Value = value;
+                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.ProfileId;
 
                     try
                     {
@@ -339,9 +375,10 @@ namespace MitoPlayer_2024.Dao
                     command.CommandType = CommandType.Text;
                     command.CommandText = @"UPDATE Setting 
                                             SET BooleanValue = @BooleanValue
-                                            WHERE Name = @Name";
+                                            WHERE Name = @Name AND ProfileId = @ProfileId ";
                     command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = name;
                     command.Parameters.Add("@BooleanValue", MySqlDbType.Bit).Value = value;
+                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.ProfileId;
 
                     try
                     {

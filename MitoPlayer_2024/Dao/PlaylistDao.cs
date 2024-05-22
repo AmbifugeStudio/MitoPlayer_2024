@@ -1,26 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MitoPlayer_2024.Model;
 using MitoPlayer_2024.Models;
-using MitoPlayer_2024.Model;
 using MySql.Data.MySqlClient;
+using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Windows.Forms;
-using System.Drawing;
-using System.Windows.Input;
-using MitoPlayer_2024.Presenters;
-using System.Xml.Linq;
 
 namespace MitoPlayer_2024.Dao
 {
     public class PlaylistDao : BaseDao, IPlaylistDao
     {
-        public PlaylistDao(string connectionString)
+        public int ProfileId = -1;
+        public PlaylistDao(string connectionString, int profileId)
         {
             this.connectionString = connectionString;
+            this.ProfileId = profileId;
         }
 
         public int GetNextLastSmallestTrackIdInPlaylist()
@@ -34,7 +28,8 @@ namespace MitoPlayer_2024.Dao
                 connection.Open();
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = "SELECT TrackIdInPlaylist FROM PlaylistContent ORDER BY TrackIdInPlaylist ";
+                command.CommandText = "SELECT TrackIdInPlaylist FROM PlaylistContent WHERE ProfileId = @ProfileId ORDER BY TrackIdInPlaylist ";
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.ProfileId;
                 using (var reader = command.ExecuteReader())
                 {
                     trackIds = new List<int>();
@@ -76,7 +71,8 @@ namespace MitoPlayer_2024.Dao
                 connection.Open();
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = "SELECT Id FROM " + tableName + " ORDER BY Id desc LIMIT 1";
+                command.CommandText = "SELECT Id FROM " + tableName + " WHERE ProfileId = @ProfileId ORDER BY Id desc LIMIT 1";
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.ProfileId;
                 using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())
@@ -102,7 +98,8 @@ namespace MitoPlayer_2024.Dao
                 connection.Open();
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = "SELECT * FROM Playlist ORDER BY OrderInList";
+                command.CommandText = "SELECT * FROM Playlist WHERE ProfileId = @ProfileId ORDER BY OrderInList";
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.ProfileId;
                 using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())
@@ -131,11 +128,12 @@ namespace MitoPlayer_2024.Dao
                 connection.Open();
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = "INSERT INTO Playlist values (@Id, @Name, @OrderInList, @QuickListGroup)";
+                command.CommandText = "INSERT INTO Playlist values (@Id, @Name, @OrderInList, @QuickListGroup, @ProfileId)";
                 command.Parameters.Add("@Id", MySqlDbType.Int32).Value = playlist.Id;
                 command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = playlist.Name;
                 command.Parameters.Add("@OrderInList", MySqlDbType.Int32).Value = playlist.OrderInList;
                 command.Parameters.Add("@QuickListGroup", MySqlDbType.Int32).Value = playlist.QuickListGroup;
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.ProfileId;
                 try
                 {
                     command.ExecuteNonQuery();
@@ -176,8 +174,12 @@ namespace MitoPlayer_2024.Dao
                    "FROM Playlist pll, PlaylistContent plc, Track tra " +
                    "WHERE pll.Id = plc.PlaylistId and plc.TrackId = tra.Id " +
                    "AND pll.Id = @PlaylistId " +
+                   "AND plc.ProfileId = @ProfileId " +
+                   "AND pll.ProfileId = @ProfileId " +
+                   "AND tra.ProfileId = @ProfileId " +
                    "ORDER BY plc.OrderInList ";
                 command.Parameters.Add("@PlaylistId", MySqlDbType.Int32).Value = id;
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.ProfileId;
                 using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())
@@ -224,8 +226,9 @@ namespace MitoPlayer_2024.Dao
                 connection.Open();
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = "DELETE FROM PlaylistContent WHERE PlaylistId = @PlaylistId ";
+                command.CommandText = "DELETE FROM PlaylistContent WHERE PlaylistId = @PlaylistId AND ProfileId = @ProfileId ";
                 command.Parameters.Add("@PlaylistId", MySqlDbType.Int32).Value = playlistId;
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.ProfileId;
                 try
                 {
                     command.ExecuteNonQuery();
@@ -250,8 +253,9 @@ namespace MitoPlayer_2024.Dao
                 connection.Open();
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = "SELECT * FROM Playlist WHERE Name = @Name ";
+                command.CommandText = "SELECT * FROM Playlist WHERE Name = @Name AND ProfileId = @ProfileId";
                 command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = playlistName;
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.ProfileId;
                 using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())
@@ -279,8 +283,9 @@ namespace MitoPlayer_2024.Dao
                 connection.Open();
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = "SELECT * FROM Playlist WHERE Id = @Id ";
+                command.CommandText = "SELECT * FROM Playlist WHERE Id = @Id AND  ProfileId = @ProfileId ";
                 command.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.ProfileId;
                 using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())
@@ -308,8 +313,9 @@ namespace MitoPlayer_2024.Dao
                 connection.Open();
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = "SELECT * FROM Playlist WHERE Name = @Name ";
+                command.CommandText = "SELECT * FROM Playlist WHERE Name = @Name AND ProfileId = @ProfileId";
                 command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = playlistName;
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.ProfileId;
                 using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())
@@ -336,11 +342,12 @@ namespace MitoPlayer_2024.Dao
                 command.CommandType = CommandType.Text;
                 command.CommandText = @"UPDATE Playlist 
                                             SET Name = @Name, OrderInList = @OrderInList, QuickListGroup = @QuickListGroup
-                                            WHERE Id = @Id";
+                                            WHERE Id = @Id AND ProfileId = @ProfileId";
                 command.Parameters.Add("@Id", MySqlDbType.Int32).Value = playlistModel.Id;
                 command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = playlistModel.Name;
                 command.Parameters.Add("@OrderInList", MySqlDbType.Int32).Value = playlistModel.OrderInList;
                 command.Parameters.Add("@QuickListGroup", MySqlDbType.Int32).Value = playlistModel.QuickListGroup;
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.ProfileId;
                 try
                 {
                     command.ExecuteNonQuery();
@@ -361,8 +368,9 @@ namespace MitoPlayer_2024.Dao
                 connection.Open();
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = "DELETE FROM Playlist WHERE Id = @Id";
+                command.CommandText = "DELETE FROM Playlist WHERE Id = @Id AND ProfileId = @ProfileId";
                 command.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.ProfileId;
                 try
                 {
                     command.ExecuteNonQuery();
@@ -385,7 +393,8 @@ namespace MitoPlayer_2024.Dao
                 connection.Open();
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = "DELETE FROM Playlist";
+                command.CommandText = "DELETE FROM Playlist WHERE ProfileId = @ProfileId ";
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.ProfileId;
                 try
                 {
                     command.ExecuteNonQuery();
@@ -406,8 +415,9 @@ namespace MitoPlayer_2024.Dao
                 connection.Open();
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = "DELETE FROM PlaylistContent WHERE PlaylistId = @PlaylistId";
+                command.CommandText = "DELETE FROM PlaylistContent WHERE PlaylistId = @PlaylistId AND ProfileId = @ProfileId";
                 command.Parameters.Add("@PlaylistId", MySqlDbType.Int32).Value = id;
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.ProfileId;
                 try
                 {
                     command.ExecuteNonQuery();

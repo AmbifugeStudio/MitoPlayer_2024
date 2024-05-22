@@ -11,12 +11,14 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace MitoPlayer_2024.Presenters
 {
     public class MainPresenter
     {
         private IMainView mainView { get; set; }
+        private IProfileDao profileDao { get; set; }
         private IPlaylistDao playlistDao { get; set; }
         private ITrackDao trackDao { get; set; }
         private ISettingDao settingDao { get; set; }
@@ -42,6 +44,7 @@ namespace MitoPlayer_2024.Presenters
         private PreferencesPresenter preferencesPresenter { get; set; }
         private AboutPresenter aboutPresenter { get; set; }
         private string[] scannedFileNames { get; set; }
+        private Profile profile { get; set; }
 
         public MainPresenter(IMainView mainView, string sqlConnectionString)
         {
@@ -95,9 +98,33 @@ namespace MitoPlayer_2024.Presenters
             this.mediaPlayerComponent = new MediaPlayerComponent(((MainView)this.mainView).mediaPlayer);
 
             this.actualView = null;
-            this.playlistDao = new PlaylistDao(sqlConnectionString);
-            this.trackDao = new TrackDao(sqlConnectionString);
+
             this.settingDao = new SettingDao(sqlConnectionString);
+            this.profileDao = new ProfileDao(sqlConnectionString);
+
+            int currentProfileId = this.settingDao.GetIntegerSettingByName(Settings.CurrentProfileId.ToString(), true, true);
+
+            if (currentProfileId == -1)
+            {
+                this.settingDao.CreateIntegerSetting(Settings.CurrentProfileId.ToString(), 0, true);
+
+                String defaultProfileName = System.Configuration.ConfigurationManager.AppSettings[Settings.DefaultProfileName.ToString()];
+                this.profile = new Profile(0, defaultProfileName);
+                this.profileDao.CreateProfile(this.profile);
+            }
+            else
+            {
+                Profile profile = this.profileDao.GetProfile(currentProfileId);
+                if(profile != null)
+                {
+                    this.profile = profile;
+                }
+            }
+
+            this.playlistDao = new PlaylistDao(sqlConnectionString, this.profile.Id);
+            this.trackDao = new TrackDao(sqlConnectionString, this.profile.Id);
+            ((SettingDao)this.settingDao).ProfileId = this.profile.Id;
+            
 
             this.ShowPlaylistView(this, new EventArgs());
         }
@@ -109,6 +136,10 @@ namespace MitoPlayer_2024.Presenters
             this.actualView = this.profileEditorView;
             ((MainView)mainView).SetMenuStripAccessibility(this.actualView);
             this.profileEditorPresenter = new ProfileEditorPresenter(this.profileEditorView, this.playlistDao, this.trackDao, this.settingDao);
+
+           // ProfileView profileView = new ProfileView();
+           // ProfilePresenter presenter = new ProfilePresenter(profileView);
+           // profileView.ShowDialog((ProfileView)this.profileView);
         }
         private void ShowPlaylistView(object sender, EventArgs e)
         {
