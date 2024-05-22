@@ -14,25 +14,27 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace MitoPlayer_2024.Presenters
 {
-    public class PlaylistEditorPresenter
+    public class GenericEditorPresenter<T>
     {
-        private IPlaylistEditorView playlistEditorView;
+        private T editorView { get; set; }
+
         private IPlaylistDao playlistDao;
         private ISettingDao settingDao;
+
         private bool isEditMode = false;
         public Playlist newPlaylist;
         private int lastGeneratedPlaylistId;
 
-        public PlaylistEditorPresenter(IPlaylistEditorView playlistEditorView, IPlaylistDao playlistDao, ISettingDao settingDao)
+        public GenericEditorPresenter<T>
         {
-            this.playlistEditorView = playlistEditorView;
+            this.editorView = editorView;
             this.playlistDao = playlistDao;
             this.settingDao = settingDao;
             this.isEditMode = false;
 
             this.lastGeneratedPlaylistId = this.settingDao.GetIntegerSettingByName(Settings.LastGeneratedPlaylistId.ToString(), true);
             this.lastGeneratedPlaylistId = this.lastGeneratedPlaylistId + 1;
-            ((PlaylistEditorView)this.playlistEditorView).SetPlaylistName("New Playlist "+ this.lastGeneratedPlaylistId.ToString());
+            ((PlaylistEditorView)this.playlistEditorView).SetPlaylistName("New Playlist " + this.lastGeneratedPlaylistId.ToString());
 
             this.settingDao.SetIntegerSetting(Settings.LastGeneratedPlaylistId.ToString(), this.lastGeneratedPlaylistId);
 
@@ -48,7 +50,7 @@ namespace MitoPlayer_2024.Presenters
             this.isEditMode = true;
 
             ((PlaylistEditorView)this.playlistEditorView).SetPlaylistName(playlist.Name, true);
-            
+
             this.playlistEditorView.CreateOrEditPlaylist += CreateOrEditPlaylist;
             this.playlistEditorView.ClosePlaylistEditor += ClosePlaylistEditor;
         }
@@ -65,13 +67,14 @@ namespace MitoPlayer_2024.Presenters
             {
                 if (!String.IsNullOrEmpty(e.StringField1))
                 {
-                    if (e.StringField1.Equals(this.newPlaylist.Name)){
+                    if (e.StringField1.Equals(this.newPlaylist.Name))
+                    {
                         ((PlaylistEditorView)this.playlistEditorView).DialogResult = DialogResult.OK;
                     }
                     else
                     {
                         Playlist playlist = this.playlistDao.GetPlaylistByName(e.StringField1);
-                        if(playlist != null)
+                        if (playlist != null)
                         {
                             MessageBox.Show("Playlist name already exists!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
@@ -148,8 +151,8 @@ namespace MitoPlayer_2024.Presenters
                 }
             }
 
-            
-            
+
+
         }
         private int GetNewPlaylistId()
         {

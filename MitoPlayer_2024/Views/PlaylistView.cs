@@ -193,7 +193,7 @@ namespace MitoPlayer_2024.Views
         }
         #endregion
 
-        #region TRACKLIST - CONTROLL BUTTONS
+        #region TRACKLIST - CONTROL BUTTONS
         private void dgvTrackList_KeyDown(object sender, KeyEventArgs e)
         {
             if (this.dgvTrackList.Rows.Count > 0 && e.KeyCode == Keys.Delete)
@@ -649,9 +649,6 @@ namespace MitoPlayer_2024.Views
         {
             this.CallSetCurrentTrackEvent((int)e.RowIndex);
         }
-        /*
-         * szám lejátszása
-         */
         private void dgvTrackList_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             if(e.RowIndex > -1)
@@ -728,7 +725,15 @@ namespace MitoPlayer_2024.Views
         }
         public void UpdateAfterCopyTracksToPlaylist(int count, String playlistName)
         {
-            LabelTimer.DisplayLabel(this.components, this.lblMessage, count + " track(s) copied to " + playlistName);
+            if(count == 1)
+            {
+                LabelTimer.DisplayLabel(this.components, this.lblMessage, count + " track copied to [" + playlistName + "]");
+            }
+            else
+            {
+                LabelTimer.DisplayLabel(this.components, this.lblMessage, count + " tracks copied to [" + playlistName + "]");
+            }
+           
         }
         public void SetCurrentTrackColor(int trackIdInPlaylist)
         {

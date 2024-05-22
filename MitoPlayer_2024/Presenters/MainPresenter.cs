@@ -549,7 +549,6 @@ namespace MitoPlayer_2024.Presenters
             else
                 return id + 1;
         }
-
         private String[] scannedFiles;
         private List<Track> trackList = new List<Track>();
         private void ScanFiles(object sender, ListEventArgs e)

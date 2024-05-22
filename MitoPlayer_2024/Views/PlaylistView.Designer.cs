@@ -40,6 +40,8 @@
             this.btnRenamePlaylist = new System.Windows.Forms.Button();
             this.btnLoadPlaylist = new System.Windows.Forms.Button();
             this.btnDeletePlaylist = new System.Windows.Forms.Button();
+            this.lblTrackSumLength = new System.Windows.Forms.Label();
+            this.lblTrackCount = new System.Windows.Forms.Label();
             this.lblMessage = new System.Windows.Forms.Label();
             this.lblSelectedItemsLength = new System.Windows.Forms.Label();
             this.lblSelectedItemsCount = new System.Windows.Forms.Label();
@@ -62,8 +64,6 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.exportToM3uToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportToTxtToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.lblTrackCount = new System.Windows.Forms.Label();
-            this.lblTrackSumLength = new System.Windows.Forms.Label();
             this.tabPagePlaylistDetail.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -201,16 +201,37 @@
             this.btnDeletePlaylist.UseVisualStyleBackColor = true;
             this.btnDeletePlaylist.Click += new System.EventHandler(this.btnDeletePlaylist_Click);
             // 
+            // lblTrackSumLength
+            // 
+            this.lblTrackSumLength.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblTrackSumLength.Location = new System.Drawing.Point(994, 531);
+            this.lblTrackSumLength.Name = "lblTrackSumLength";
+            this.lblTrackSumLength.Size = new System.Drawing.Size(119, 13);
+            this.lblTrackSumLength.TabIndex = 3;
+            this.lblTrackSumLength.Text = "Length: 00:00:00";
+            this.lblTrackSumLength.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblTrackCount
+            // 
+            this.lblTrackCount.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblTrackCount.Location = new System.Drawing.Point(997, 515);
+            this.lblTrackCount.Name = "lblTrackCount";
+            this.lblTrackCount.Size = new System.Drawing.Size(116, 13);
+            this.lblTrackCount.TabIndex = 3;
+            this.lblTrackCount.Text = "1000 item(s) in [Playlist]";
+            this.lblTrackCount.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // lblMessage
             // 
             this.lblMessage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblMessage.Location = new System.Drawing.Point(768, 531);
+            this.lblMessage.Location = new System.Drawing.Point(599, 524);
             this.lblMessage.Name = "lblMessage";
-            this.lblMessage.Size = new System.Drawing.Size(220, 13);
+            this.lblMessage.Size = new System.Drawing.Size(301, 13);
             this.lblMessage.TabIndex = 3;
-            this.lblMessage.Text = "Temporary messages";
-            this.lblMessage.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblMessage.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lblMessage.Visible = false;
             // 
             // lblSelectedItemsLength
@@ -229,9 +250,9 @@
             this.lblSelectedItemsCount.AutoSize = true;
             this.lblSelectedItemsCount.Location = new System.Drawing.Point(173, 515);
             this.lblSelectedItemsCount.Name = "lblSelectedItemsCount";
-            this.lblSelectedItemsCount.Size = new System.Drawing.Size(101, 13);
+            this.lblSelectedItemsCount.Size = new System.Drawing.Size(78, 13);
             this.lblSelectedItemsCount.TabIndex = 3;
-            this.lblSelectedItemsCount.Text = "1000 items selected";
+            this.lblSelectedItemsCount.Text = "0 item selected";
             // 
             // lblCurrentTrack
             // 
@@ -414,28 +435,6 @@
             this.exportToTxtToolStripMenuItem.Name = "exportToTxtToolStripMenuItem";
             this.exportToTxtToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.exportToTxtToolStripMenuItem.Text = "Export to txt";
-            // 
-            // lblTrackCount
-            // 
-            this.lblTrackCount.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblTrackCount.Location = new System.Drawing.Point(997, 515);
-            this.lblTrackCount.Name = "lblTrackCount";
-            this.lblTrackCount.Size = new System.Drawing.Size(116, 13);
-            this.lblTrackCount.TabIndex = 3;
-            this.lblTrackCount.Text = "1000 item(s) in [Playlist]";
-            this.lblTrackCount.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lblTrackSumLength
-            // 
-            this.lblTrackSumLength.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblTrackSumLength.Location = new System.Drawing.Point(994, 531);
-            this.lblTrackSumLength.Name = "lblTrackSumLength";
-            this.lblTrackSumLength.Size = new System.Drawing.Size(119, 13);
-            this.lblTrackSumLength.TabIndex = 3;
-            this.lblTrackSumLength.Text = "Length: 00:00:00";
-            this.lblTrackSumLength.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // PlaylistView
             // 
