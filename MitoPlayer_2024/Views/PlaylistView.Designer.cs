@@ -62,6 +62,8 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.exportToM3uToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportToTxtToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.lblTrackCount = new System.Windows.Forms.Label();
+            this.lblTrackSumLength = new System.Windows.Forms.Label();
             this.tabPagePlaylistDetail.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -75,6 +77,8 @@
             // 
             this.tabPagePlaylistDetail.Controls.Add(this.groupBox2);
             this.tabPagePlaylistDetail.Controls.Add(this.groupBox1);
+            this.tabPagePlaylistDetail.Controls.Add(this.lblTrackSumLength);
+            this.tabPagePlaylistDetail.Controls.Add(this.lblTrackCount);
             this.tabPagePlaylistDetail.Controls.Add(this.lblMessage);
             this.tabPagePlaylistDetail.Controls.Add(this.lblSelectedItemsLength);
             this.tabPagePlaylistDetail.Controls.Add(this.lblSelectedItemsCount);
@@ -201,9 +205,9 @@
             // 
             this.lblMessage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblMessage.Location = new System.Drawing.Point(866, 531);
+            this.lblMessage.Location = new System.Drawing.Point(768, 531);
             this.lblMessage.Name = "lblMessage";
-            this.lblMessage.Size = new System.Drawing.Size(247, 13);
+            this.lblMessage.Size = new System.Drawing.Size(220, 13);
             this.lblMessage.TabIndex = 3;
             this.lblMessage.Text = "Temporary messages";
             this.lblMessage.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -215,9 +219,9 @@
             this.lblSelectedItemsLength.AutoSize = true;
             this.lblSelectedItemsLength.Location = new System.Drawing.Point(173, 531);
             this.lblSelectedItemsLength.Name = "lblSelectedItemsLength";
-            this.lblSelectedItemsLength.Size = new System.Drawing.Size(43, 13);
+            this.lblSelectedItemsLength.Size = new System.Drawing.Size(88, 13);
             this.lblSelectedItemsLength.TabIndex = 3;
-            this.lblSelectedItemsLength.Text = "Length:";
+            this.lblSelectedItemsLength.Text = "Length: 00:00:00";
             // 
             // lblSelectedItemsCount
             // 
@@ -225,15 +229,15 @@
             this.lblSelectedItemsCount.AutoSize = true;
             this.lblSelectedItemsCount.Location = new System.Drawing.Point(173, 515);
             this.lblSelectedItemsCount.Name = "lblSelectedItemsCount";
-            this.lblSelectedItemsCount.Size = new System.Drawing.Size(80, 13);
+            this.lblSelectedItemsCount.Size = new System.Drawing.Size(101, 13);
             this.lblSelectedItemsCount.TabIndex = 3;
-            this.lblSelectedItemsCount.Text = "- items selected";
+            this.lblSelectedItemsCount.Text = "1000 items selected";
             // 
             // lblCurrentTrack
             // 
             this.lblCurrentTrack.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblCurrentTrack.AutoSize = true;
-            this.lblCurrentTrack.Location = new System.Drawing.Point(276, 515);
+            this.lblCurrentTrack.Location = new System.Drawing.Point(280, 515);
             this.lblCurrentTrack.Name = "lblCurrentTrack";
             this.lblCurrentTrack.Size = new System.Drawing.Size(50, 13);
             this.lblCurrentTrack.TabIndex = 2;
@@ -411,6 +415,28 @@
             this.exportToTxtToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.exportToTxtToolStripMenuItem.Text = "Export to txt";
             // 
+            // lblTrackCount
+            // 
+            this.lblTrackCount.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblTrackCount.Location = new System.Drawing.Point(997, 515);
+            this.lblTrackCount.Name = "lblTrackCount";
+            this.lblTrackCount.Size = new System.Drawing.Size(116, 13);
+            this.lblTrackCount.TabIndex = 3;
+            this.lblTrackCount.Text = "1000 item(s) in [Playlist]";
+            this.lblTrackCount.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblTrackSumLength
+            // 
+            this.lblTrackSumLength.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblTrackSumLength.Location = new System.Drawing.Point(994, 531);
+            this.lblTrackSumLength.Name = "lblTrackSumLength";
+            this.lblTrackSumLength.Size = new System.Drawing.Size(119, 13);
+            this.lblTrackSumLength.TabIndex = 3;
+            this.lblTrackSumLength.Text = "Length: 00:00:00";
+            this.lblTrackSumLength.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // PlaylistView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -466,5 +492,7 @@
         private System.Windows.Forms.ToolStripMenuItem menuStripSetQuickListGroup3;
         private System.Windows.Forms.ToolStripMenuItem menuStripSetQuickListGroup4;
         private System.Windows.Forms.Label lblMessage;
+        private System.Windows.Forms.Label lblTrackCount;
+        private System.Windows.Forms.Label lblTrackSumLength;
     }
 }

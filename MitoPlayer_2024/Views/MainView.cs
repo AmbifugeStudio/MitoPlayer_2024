@@ -1,15 +1,6 @@
 ﻿using MitoPlayer_2024.Helpers;
 using MitoPlayer_2024.Views;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Management.Instrumentation;
-using System.Runtime.ConstrainedExecution;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace MitoPlayer_2024
@@ -166,7 +157,9 @@ namespace MitoPlayer_2024
         private void menuStripStop_Click(object sender, EventArgs e)
         {
             this.StopTrack?.Invoke(this, EventArgs.Empty);
-            this.UpdateAfterStopTrack();
+            this.lblTrackStart.Text = "";
+            this.lblTrackEnd.Text = "";
+            this.pBar.Value = 0;
         }
         private void menuStripPause_Click(object sender, EventArgs e)
         {
@@ -267,7 +260,9 @@ namespace MitoPlayer_2024
         private void btnStop_Click(object sender, EventArgs e)
         {
             this.StopTrack?.Invoke(this, EventArgs.Empty);
-            this.UpdateAfterStopTrack();
+            this.lblTrackStart.Text = "";
+            this.lblTrackEnd.Text = "";
+            this.pBar.Value = 0;
         }
         private void btnPause_Click(object sender, EventArgs e)
         {
@@ -288,7 +283,7 @@ namespace MitoPlayer_2024
         private void trackVolume_Scroll(object sender, EventArgs e)
         {
             this.ChangeVolume?.Invoke(this, new ListEventArgs() { IntegerField1 = this.trackVolume.Value });
-            this.UpdateAfterChangeVolume();
+            this.lblVolume.Text = this.trackVolume.Value.ToString() + "%";
         }
         private void btnOpen_Click(object sender, EventArgs e)
         {
@@ -299,21 +294,15 @@ namespace MitoPlayer_2024
             this.OpenDirectory?.Invoke(this, EventArgs.Empty);
         }
 
-        public void UpdateAfterStopTrack()
-        {
-            this.lblTrackStart.Text = "";
-            this.lblTrackEnd.Text = "";
-            this.pBar.Value = 0;
-        }
-        public void UpdateAfterChangeVolume()
-        {
-            this.lblVolume.Text = this.trackVolume.Value.ToString() + "%";
-        }
+        //CALL FROM PLAYLIST VIEW 
+        //SETVOLUME - INIT VOLUME FROM SETTING
         public void SetVolume(int volume)
         {
             trackVolume.Value = volume;
             lblVolume.Text = volume.ToString() + "%";
         }
+        //CALL FROM PLAYLIST VIEW 
+        //UPDATE ELAPSED DATE, DURATION AND PROGRESS BAR VIA TIMER
         public void UpdateMediaPlayerProgressStatus(double duration, String durationString, double currentPosition, String currentPositionString)
         {
             this.pBar.Maximum = (int)duration;
