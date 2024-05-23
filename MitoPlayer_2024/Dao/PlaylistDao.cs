@@ -28,8 +28,7 @@ namespace MitoPlayer_2024.Dao
                 connection.Open();
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = "SELECT TrackIdInPlaylist FROM PlaylistContent WHERE ProfileId = @ProfileId ORDER BY TrackIdInPlaylist ";
-                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.ProfileId;
+                command.CommandText = "SELECT TrackIdInPlaylist FROM PlaylistContent ORDER BY TrackIdInPlaylist ";
                 using (var reader = command.ExecuteReader())
                 {
                     trackIds = new List<int>();
@@ -71,8 +70,7 @@ namespace MitoPlayer_2024.Dao
                 connection.Open();
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = "SELECT Id FROM " + tableName + " WHERE ProfileId = @ProfileId ORDER BY Id desc LIMIT 1";
-                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.ProfileId;
+                command.CommandText = "SELECT Id FROM " + tableName + " ORDER BY Id desc LIMIT 1";
                 using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())
@@ -99,6 +97,36 @@ namespace MitoPlayer_2024.Dao
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
                 command.CommandText = "SELECT * FROM Playlist WHERE ProfileId = @ProfileId ORDER BY OrderInList";
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.ProfileId;
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var playlist = new Playlist();
+                        playlist.Id = (int)reader[0];
+                        playlist.Name = reader[1].ToString();
+                        playlist.OrderInList = (int)reader[2];
+                        playlist.QuickListGroup = (int)reader[3];
+                        playListList.Add(playlist);
+                    }
+                }
+                connection.Close();
+            }
+            return playListList;
+        }
+
+        public List<Playlist> GetDefaultPlaylist(String defaultPlaylistName)
+        {
+            List<Playlist> playListList = new List<Playlist>();
+
+            using (var connection = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand())
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = "SELECT * FROM Playlist WHERE Name = @Name AND ProfileId = @ProfileId ORDER BY OrderInList";
+                command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = defaultPlaylistName;
                 command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.ProfileId;
                 using (var reader = command.ExecuteReader())
                 {

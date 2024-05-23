@@ -1,17 +1,6 @@
-﻿using MitoPlayer_2024.Dao;
-using MitoPlayer_2024.Helpers;
+﻿using MitoPlayer_2024.Helpers;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Configuration;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml;
-using System.Xml.Linq;
 
 namespace MitoPlayer_2024.Views
 {
@@ -44,7 +33,7 @@ namespace MitoPlayer_2024.Views
         {
             ListEventArgs args = new ListEventArgs();
             args.StringField1 = txtPlaylistName.Text;
-            CreateOrEditPlaylist?.Invoke(this, args);
+            this.CreateOrEditPlaylist?.Invoke(this, args);
         }
 
         private void txtPlaylistName_KeyDown(object sender, KeyEventArgs e)
@@ -53,11 +42,11 @@ namespace MitoPlayer_2024.Views
             {
                 ListEventArgs args = new ListEventArgs();
                 args.StringField1 = txtPlaylistName.Text;
-                CreateOrEditPlaylist?.Invoke(this, args);
+                this.CreateOrEditPlaylist?.Invoke(this, args);
             }
             else if(e.KeyCode == Keys.Escape)
             {
-                ClosePlaylistEditor?.Invoke(this,new EventArgs());
+                this.ClosePlaylistEditor?.Invoke(this,new EventArgs());
             }
         }
     }

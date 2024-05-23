@@ -14,7 +14,8 @@ namespace MitoPlayer_2024.Presenters
     public enum TableName {
         Playlist,
         Track,
-        PlaylistContent
+        PlaylistContent,
+        Profile
     }
     public class PlaylistPresenter
     {
@@ -77,7 +78,7 @@ namespace MitoPlayer_2024.Presenters
         #region INITIALIZE
         private void InitializeVolume()
         {
-            int volume = this.settingDao.GetIntegerSettingByName(Settings.Volume.ToString(), true);
+            int volume = this.settingDao.GetIntegerSetting(Settings.Volume.ToString());
             if (volume == -1)
                 volume = 50;
             this.playlistView.SetVolume(volume);
@@ -86,9 +87,9 @@ namespace MitoPlayer_2024.Presenters
         private void InitializeDataTables()
         {
             //PLAYLIST GRID
-            String colNames = this.settingDao.GetStringSettingByName(Settings.PlaylistColumnNames.ToString(), true);
-            String colTypes = this.settingDao.GetStringSettingByName(Settings.PlaylistColumnTypes.ToString(), true);
-            String colVisibility = this.settingDao.GetStringSettingByName(Settings.PlaylistColumnVisibility.ToString(), true);
+            String colNames = this.settingDao.GetStringSetting(Settings.PlaylistColumnNames.ToString(), true);
+            String colTypes = this.settingDao.GetStringSetting(Settings.PlaylistColumnTypes.ToString(), true);
+            String colVisibility = this.settingDao.GetStringSetting(Settings.PlaylistColumnVisibility.ToString(), true);
             String[] playlistColumnNames = Array.ConvertAll(colNames.Split(','), s => s);
             String[] playlistColumnTypes = Array.ConvertAll(colTypes.Split(','), s => s);
             this.PlaylistColumnVisibilityArray = Array.ConvertAll(colVisibility.Split(','), s => Boolean.Parse(s));
@@ -101,9 +102,9 @@ namespace MitoPlayer_2024.Presenters
             this.SetPlaylistList(this.playlistListTable);
 
             //TRACKLIST GRID
-            colNames = this.settingDao.GetStringSettingByName(Settings.TrackColumnNames.ToString(), true);
-            colTypes = this.settingDao.GetStringSettingByName(Settings.TrackColumnTypes.ToString(), true);
-            colVisibility = this.settingDao.GetStringSettingByName(Settings.TrackColumnVisibility.ToString(), true);
+            colNames = this.settingDao.GetStringSetting(Settings.TrackColumnNames.ToString(), true);
+            colTypes = this.settingDao.GetStringSetting(Settings.TrackColumnTypes.ToString(), true);
+            colVisibility = this.settingDao.GetStringSetting(Settings.TrackColumnVisibility.ToString(), true);
             String[] trackColumnNames = Array.ConvertAll(colNames.Split(','), s => s);
             String[] trackColumnTypes = Array.ConvertAll(colTypes.Split(','), s => s);
             this.TrackColumnVisibilityArray = Array.ConvertAll(colVisibility.Split(','), s => Boolean.Parse(s));
@@ -136,29 +137,43 @@ namespace MitoPlayer_2024.Presenters
             //csak clear mert az oszlopok kellenek
             this.playlistListTable.Clear();
 
-            List<Playlist> plsList = this.playlistDao.GetAllPlaylist();
+            String defaultPlaylistName = this.settingDao.GetStringSetting(Settings.DefaultPlaylistName.ToString(), true);
+
+            List<Playlist> plsList = this.playlistDao.GetDefaultPlaylist(defaultPlaylistName);
 
             if (plsList == null || plsList.Count() <= 0)
             {
                 Playlist playlist = new Playlist();
                 playlist.Id = this.GetNewPlaylistId();
-                playlist.Name = this.settingDao.GetStringSettingByName(Settings.DefaultPlaylistName.ToString(), true);
+                playlist.Name = defaultPlaylistName;
                 playlist.OrderInList = 0;
 
                 plsList.Add(playlist);
 
                 this.playlistDao.CreatePlaylist(playlist);
                 this.currentPlaylistId = playlist.Id;
-                this.settingDao.SetIntegerSetting(Settings.CurrentPlaylistId.ToString(), this.currentPlaylistId);
+
+                this.settingDao.SetIntegerSetting(Settings.CurrentPlaylistId.ToString(), this.currentPlaylistId,true);
 
                 this.LoadPlaylist(playlist);
             }
             else
             {
-                this.currentPlaylistId = this.settingDao.GetIntegerSettingByName(Settings.CurrentPlaylistId.ToString(), true);
-                if (this.currentPlaylistId == -1)
-                    this.currentPlaylistId = 0;
+                if (plsList != null && plsList.Count() > 0)
+                {
+                    List<Playlist> list = this.playlistDao.GetAllPlaylist();
+                    list.RemoveAll(x => x.Name.Equals(defaultPlaylistName));
+                    plsList.AddRange(list);
+                } 
             }
+
+            //TODO CSEKKOLNI? HA TÖRÖPJÜK
+            this.currentPlaylistId = this.settingDao.GetIntegerSetting(Settings.CurrentPlaylistId.ToString(), true);
+
+            if (this.currentPlaylistId == -1)
+                this.currentPlaylistId = 0;
+
+            this.settingDao.SetIntegerSetting(Settings.CurrentPlaylistId.ToString(), this.currentPlaylistId, true);
 
             foreach (Playlist playlist in plsList)
                 this.playlistListTable.Rows.Add(playlist.Id,playlist.QuickListGroup, playlist.Name, playlist.OrderInList);
@@ -813,7 +828,8 @@ namespace MitoPlayer_2024.Presenters
                 playlist.Name = this.playlistListTable.Rows[e.IntegerField1]["Name"].ToString();
                 playlist.OrderInList = Convert.ToInt32(this.playlistListTable.Rows[e.IntegerField1]["OrderInList"]);
 
-                String defaultPlaylistName = this.settingDao.GetStringSettingByName(Settings.DefaultPlaylistName.ToString(), true);
+                String defaultPlaylistName = this.settingDao.GetStringSetting(Settings.DefaultPlaylistName.ToString(), true);
+
                 if (playlist.Name.Equals(defaultPlaylistName))
                 {
                     MessageBox.Show("Default playlist cannot be renamed!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -853,7 +869,8 @@ namespace MitoPlayer_2024.Presenters
                 playlist.OrderInList = Convert.ToInt32(this.playlistListTable.Rows[playlistIndex]["OrderInList"]);
 
                 this.currentPlaylistId = playlist.Id;
-                this.settingDao.SetIntegerSetting(Settings.CurrentPlaylistId.ToString(), this.currentPlaylistId);
+
+                this.settingDao.SetIntegerSetting(Settings.CurrentPlaylistId.ToString(), this.currentPlaylistId, true);
 
                 this.trackListTable.Rows.Clear();
 
@@ -889,7 +906,8 @@ namespace MitoPlayer_2024.Presenters
                 String playlistName = this.playlistListTable.Rows[e.IntegerField1]["Name"].ToString();
                 int playlistId = Convert.ToInt32(this.playlistListTable.Rows[e.IntegerField1]["Id"]);
 
-                String defaultPlaylistName = this.settingDao.GetStringSettingByName(Settings.DefaultPlaylistName.ToString(), true);
+                String defaultPlaylistName = this.settingDao.GetStringSetting(Settings.DefaultPlaylistName.ToString(), true);
+
                 if (playlistName.Equals(defaultPlaylistName))
                 {
                     MessageBox.Show("Default playlist cannot be deleted!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -913,7 +931,7 @@ namespace MitoPlayer_2024.Presenters
                             this.SetTrackList(this.trackListTable);
 
                             this.currentPlaylistId = Convert.ToInt32(this.playlistListTable.Rows[0]["Id"]);
-                            this.settingDao.SetIntegerSetting(Settings.CurrentPlaylistId.ToString(), this.currentPlaylistId);
+                            this.settingDao.SetIntegerSetting(Settings.CurrentPlaylistId.ToString(), this.currentPlaylistId, true);
 
                             ((PlaylistView)this.playlistView).UpdateTrackCountAndLength(this.currentPlaylistId);
 

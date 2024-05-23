@@ -9,15 +9,16 @@ namespace MitoPlayer_2024.Models
     public class Profile
     {
         public int Id { get; set; }
+        public bool IsActive { get; set; }
         public string Name { get; set; }
-
         public Profile()
         {
         }
 
-        public Profile(int id, string name)
+        public Profile(int id, string name, bool isActive)
         {
             this.Id = id;
+            this.IsActive = isActive;
             this.Name = name;
         }
     }

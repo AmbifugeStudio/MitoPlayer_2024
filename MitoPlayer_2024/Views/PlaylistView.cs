@@ -51,7 +51,7 @@ namespace MitoPlayer_2024.Views
 
         #region SINGLETON
 
-        private static PlaylistView instance;
+        public static PlaylistView instance;
         public static PlaylistView GetInstance(Form parentView)
         {
             if (instance == null || instance.IsDisposed)
@@ -701,12 +701,16 @@ namespace MitoPlayer_2024.Views
         public void UpdateAfterPlayTrack(int currentTrackIndex)
         {
             this.timer1.Start();
-            String title = "Playing: " + (string)dgvTrackList.Rows[currentTrackIndex].Cells["Artist"].Value;
-            if (!String.IsNullOrEmpty((string)dgvTrackList.Rows[currentTrackIndex].Cells["Title"].Value))
+            String artist = "Playing: " + (string)dgvTrackList.Rows[currentTrackIndex].Cells["Artist"].Value;
+            String title = "";
+            if (dgvTrackList.Rows[currentTrackIndex].Cells["Title"] != null)
+                title = dgvTrackList.Rows[currentTrackIndex].Cells["Title"].Value.ToString();
+
+            if (!String.IsNullOrEmpty(title))
             {
-                title += " - " + (string)dgvTrackList.Rows[currentTrackIndex].Cells["Title"].Value;
+                artist += " - " + title;
             }
-            this.lblCurrentTrack.Text = title;
+            this.lblCurrentTrack.Text = artist;
             this.CallSetCurrentTrackColorEvent(currentTrackIndex);
         }
         public void UpdateAfterPlayTrackAfterPause()

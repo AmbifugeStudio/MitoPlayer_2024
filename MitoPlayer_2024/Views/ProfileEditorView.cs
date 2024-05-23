@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MitoPlayer_2024.Helpers;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -10,36 +11,47 @@ using System.Windows.Forms;
 
 namespace MitoPlayer_2024.Views
 {
-    public partial class ProfileEditorView : Form,IProfileEditorView
+    public partial class ProfileEditorView : Form, IProfileEditorView
     {
+        public event EventHandler<ListEventArgs> CreateOrEditProfile;
+        public event EventHandler CloseProfileEditor;
         public ProfileEditorView()
         {
             InitializeComponent();
+            this.CenterToScreen();
         }
-
-        #region SINGLETON
-
-        private static ProfileEditorView
-            instance;
-
-        //MDI nélkül kiveszed a containert a pm-ből
-        public static ProfileEditorView GetInstance(Form mainView)
+        public void SetProfileName(String profileName, bool edit = false)
         {
-            if (instance == null || instance.IsDisposed)
+            this.txtProfileName.Text = profileName;
+            if (edit)
             {
-                instance = new ProfileEditorView();
-                instance.MdiParent = mainView;
-                instance.FormBorderStyle = FormBorderStyle.None;
-                instance.Dock = DockStyle.Fill;
+                this.Text = "Edit profile";
             }
             else
             {
-                if (instance.WindowState == FormWindowState.Minimized)
-                    instance.WindowState = FormWindowState.Normal;
-                instance.BringToFront();
+                this.Text = "Create profile";
             }
-            return instance;
         }
-        #endregion
+        private void btnOk_Click(object sender, EventArgs e)
+        {
+            ListEventArgs args = new ListEventArgs();
+            args.StringField1 = txtProfileName.Text;
+            this.CreateOrEditProfile?.Invoke(this, args);
+        }
+        private void txtPlaylistName_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                ListEventArgs args = new ListEventArgs();
+                args.StringField1 = txtProfileName.Text;
+                this.CreateOrEditProfile?.Invoke(this, args);
+            }
+            else if (e.KeyCode == Keys.Escape)
+            {
+                this.CloseProfileEditor?.Invoke(this, new EventArgs());
+            }
+        }
+
+       
     }
 }

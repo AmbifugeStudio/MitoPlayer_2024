@@ -30,7 +30,8 @@ namespace MitoPlayer_2024.Presenters
             this.settingDao = settingDao;
             this.isEditMode = false;
 
-            this.lastGeneratedPlaylistId = this.settingDao.GetIntegerSettingByName(Settings.LastGeneratedPlaylistId.ToString(), true);
+            this.lastGeneratedPlaylistId = this.settingDao.GetIntegerSetting(Settings.LastGeneratedPlaylistId.ToString());
+
             this.lastGeneratedPlaylistId = this.lastGeneratedPlaylistId + 1;
             ((PlaylistEditorView)this.playlistEditorView).SetPlaylistName("New Playlist "+ this.lastGeneratedPlaylistId.ToString());
 

@@ -21,7 +21,8 @@ namespace MitoPlayer_2024.Helpers
         TrackColumnTypes,
         TrackColumnVisibility,
         DefaultProfileName,
-        CurrentProfileId
+        CurrentProfileId,
+        LastGeneratedProfileId
     }
     public enum ObjectType
     {

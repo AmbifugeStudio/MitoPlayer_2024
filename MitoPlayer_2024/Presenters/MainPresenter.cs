@@ -25,6 +25,7 @@ namespace MitoPlayer_2024.Presenters
         private MediaPlayerComponent mediaPlayerComponent { get; set; }
         private string sqlConnectionString { get; set; }
         private object actualView { get; set; }
+        private IProfileView profileView { get; set; }
         private IProfileEditorView profileEditorView { get; set; }
         private IPlaylistView playlistView { get; set; }
         private ITagValueEditorView tagValueEditorView { get; set; }
@@ -102,15 +103,16 @@ namespace MitoPlayer_2024.Presenters
             this.settingDao = new SettingDao(sqlConnectionString);
             this.profileDao = new ProfileDao(sqlConnectionString);
 
-            int currentProfileId = this.settingDao.GetIntegerSettingByName(Settings.CurrentProfileId.ToString(), true, true);
+            int currentProfileId = this.settingDao.GetIntegerSetting(Settings.CurrentProfileId.ToString(), true);
 
             if (currentProfileId == -1)
             {
-                this.settingDao.CreateIntegerSetting(Settings.CurrentProfileId.ToString(), 0, true);
-
                 String defaultProfileName = System.Configuration.ConfigurationManager.AppSettings[Settings.DefaultProfileName.ToString()];
-                this.profile = new Profile(0, defaultProfileName);
+                
+                this.profile = new Profile(0, defaultProfileName, true);
                 this.profileDao.CreateProfile(this.profile);
+
+                this.settingDao.SetIntegerSetting(Settings.CurrentProfileId.ToString(), 0, true);
             }
             else
             {
@@ -132,14 +134,24 @@ namespace MitoPlayer_2024.Presenters
         //VIEWS
         private void ShowProfileEditorView(object sender, EventArgs e)
         {
-            this.profileEditorView = ProfileEditorView.GetInstance((MainView)mainView);
-            this.actualView = this.profileEditorView;
-            ((MainView)mainView).SetMenuStripAccessibility(this.actualView);
-            this.profileEditorPresenter = new ProfileEditorPresenter(this.profileEditorView, this.playlistDao, this.trackDao, this.settingDao);
+            ProfileView profileView = new ProfileView();
+            ProfilePresenter presenter = new ProfilePresenter(profileView, this.profileDao, this.settingDao);
+            if(profileView.ShowDialog((MainView)this.mainView) == DialogResult.OK)
+            {
+                PlaylistView.instance = null;
+                this.playlistView = null;
+                this.playlistPresenter = null;
+                int currentProfileId = this.settingDao.GetIntegerSetting(Settings.CurrentProfileId.ToString(), true);
+                ((PlaylistDao)this.playlistDao).ProfileId = currentProfileId;
+                ((TrackDao)this.trackDao).ProfileId = currentProfileId;
+                ((SettingDao)this.settingDao).ProfileId = currentProfileId;
 
-           // ProfileView profileView = new ProfileView();
-           // ProfilePresenter presenter = new ProfilePresenter(profileView);
-           // profileView.ShowDialog((ProfileView)this.profileView);
+                this.playlistView = PlaylistView.GetInstance((MainView)mainView);
+                this.actualView = this.playlistView;
+                ((MainView)mainView).SetMenuStripAccessibility(this.actualView);
+                this.playlistPresenter = new PlaylistPresenter(this.playlistView, this.mediaPlayerComponent, this.playlistDao, this.trackDao, this.settingDao);
+
+            }
         }
         private void ShowPlaylistView(object sender, EventArgs e)
         {
@@ -204,7 +216,8 @@ namespace MitoPlayer_2024.Presenters
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Multiselect = true;
             ofd.Filter = "Audio files (*.mp3,*.wav,*.flac)|*.mp3;*.wav;*.flac|Playlist files (*.m3u)|*.m3u";
-            ofd.FilterIndex = this.settingDao.GetIntegerSettingByName(Settings.LastOpenFilesFilterIndex.ToString(), true);
+
+            ofd.FilterIndex = this.settingDao.GetIntegerSetting(Settings.LastOpenFilesFilterIndex.ToString());
 
             if (ofd.ShowDialog() == DialogResult.OK)
             {
@@ -223,7 +236,8 @@ namespace MitoPlayer_2024.Presenters
 
             using (var fbd = new FolderBrowserDialog())
             {
-                String lastDirectoryPath = this.settingDao.GetStringSettingByName(Settings.LastOpenDirectoryPath.ToString(), true);
+                String lastDirectoryPath = this.settingDao.GetStringSetting(Settings.LastOpenDirectoryPath.ToString());
+
                 if (Directory.Exists(lastDirectoryPath))
                     fbd.SelectedPath = lastDirectoryPath;
 
@@ -233,6 +247,7 @@ namespace MitoPlayer_2024.Presenters
                     this.ScanDirectory(fbd.SelectedPath);
                     trackList = this.ReadFiles(scannedFileNames);
                 }
+
                 this.settingDao.SetStringSetting(Settings.LastOpenDirectoryPath.ToString(), fbd.SelectedPath);
             }
 

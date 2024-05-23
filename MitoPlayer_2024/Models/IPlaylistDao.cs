@@ -24,6 +24,7 @@ namespace MitoPlayer_2024.Models
         void DeleteTracksFromPlaylist(int id);
         void DeleteAllPlaylist();
         int GetNextLastSmallestTrackIdInPlaylist();
+        List<Playlist> GetDefaultPlaylist(String defaultPlaylistName);
 
     }
 }
