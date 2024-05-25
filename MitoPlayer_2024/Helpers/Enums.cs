@@ -8,9 +8,7 @@ namespace MitoPlayer_2024.Helpers
 {
     public enum Settings
     {
-        Volume,
-        DefaultPlaylistName,
-        CurrentPlaylistId,
+        Volume,       
         LastOpenFilesFilterIndex,
         LastOpenDirectoryPath,
         LastGeneratedPlaylistId,
@@ -20,8 +18,6 @@ namespace MitoPlayer_2024.Helpers
         TrackColumnNames,
         TrackColumnTypes,
         TrackColumnVisibility,
-        DefaultProfileName,
-        CurrentProfileId,
         LastGeneratedProfileId
     }
     public enum ObjectType

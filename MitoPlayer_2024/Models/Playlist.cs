@@ -15,17 +15,21 @@ namespace MitoPlayer_2024.Models
         public string Name { get; set; }
         public int OrderInList { get; set; }
         public int QuickListGroup { get; set; }
+        public int ProfileId { get; set; }
+        public bool IsActive { get; set; }
 
         public Playlist()
         {
         }
 
-        public Playlist(int id, string name, int orderInList, int quickListGroup)
+        public Playlist(int id, string name, int orderInList, int quickListGroup,int profileId, bool isActive)
         {
             this.Id = id;
             this.Name = name;
             this.OrderInList = orderInList;
             this.QuickListGroup = quickListGroup;
+            this.ProfileId = profileId;
+            this.IsActive = isActive;
         }
 
     }

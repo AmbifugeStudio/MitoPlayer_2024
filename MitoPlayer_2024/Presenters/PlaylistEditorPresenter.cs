@@ -30,12 +30,12 @@ namespace MitoPlayer_2024.Presenters
             this.settingDao = settingDao;
             this.isEditMode = false;
 
-            this.lastGeneratedPlaylistId = this.settingDao.GetIntegerSetting(Settings.LastGeneratedPlaylistId.ToString());
+            this.lastGeneratedPlaylistId = this.settingDao.GetIntegerSetting(Settings.LastGeneratedPlaylistId.ToString(),true);
 
             this.lastGeneratedPlaylistId = this.lastGeneratedPlaylistId + 1;
             ((PlaylistEditorView)this.playlistEditorView).SetPlaylistName("New Playlist "+ this.lastGeneratedPlaylistId.ToString());
 
-            this.settingDao.SetIntegerSetting(Settings.LastGeneratedPlaylistId.ToString(), this.lastGeneratedPlaylistId);
+            this.settingDao.SetIntegerSetting(Settings.LastGeneratedPlaylistId.ToString(), this.lastGeneratedPlaylistId, true);
 
             this.playlistEditorView.CreateOrEditPlaylist += CreateOrEditPlaylist;
             this.playlistEditorView.ClosePlaylistEditor += ClosePlaylistEditor;
@@ -115,6 +115,7 @@ namespace MitoPlayer_2024.Presenters
                                 playlist.Id = this.GetNewPlaylistId();
                                 playlist.Name = e.StringField1;
                                 playlist.OrderInList = playlistList.Count;
+                                playlist.IsActive = false;
                                 this.newPlaylist = playlist;
                                 ((PlaylistEditorView)this.playlistEditorView).DialogResult = DialogResult.OK;
                             }
@@ -133,6 +134,7 @@ namespace MitoPlayer_2024.Presenters
                             playlist.Id = this.GetNewPlaylistId();
                             playlist.Name = e.StringField1;
                             playlist.OrderInList = 0;
+                            playlist.IsActive = false;
                             this.playlistDao.CreatePlaylist(playlist);
                             this.newPlaylist = playlist;
                             ((PlaylistEditorView)this.playlistEditorView).DialogResult = DialogResult.OK;

@@ -10,12 +10,36 @@ namespace MitoPlayer_2024.Dao
 {
     public class ProfileDao : BaseDao, IProfileDao
     {
-        public int ProfileId = -1;
+
         public ProfileDao(string connectionString)
         {
             this.connectionString = connectionString;
         }
+        public Profile GetActiveProfile()
+        {
+            Profile profile = null;
 
+            using (var connection = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand())
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = "SELECT * FROM Profile WHERE IsActive = true ";
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        profile = new Profile();
+                        profile.Id = (int)reader[0];
+                        profile.Name = reader[1].ToString();
+                        profile.IsActive = true;
+                        break;
+                    }
+                }
+            }
+            return profile;
+        }
         public int GetLastObjectId(String tableName)
         {
             int lastId = -1;
@@ -45,9 +69,10 @@ namespace MitoPlayer_2024.Dao
                 connection.Open();
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = "INSERT INTO Profile values (@Id, @Name)";
+                command.CommandText = "INSERT INTO Profile values (@Id, @Name, @IsActive)";
                 command.Parameters.Add("@Id", MySqlDbType.Int32).Value = profile.Id;
                 command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = profile.Name;
+                command.Parameters.Add("@IsActive", MySqlDbType.Bit).Value = profile.IsActive;
                 try
                 {
                     command.ExecuteNonQuery();
@@ -59,53 +84,6 @@ namespace MitoPlayer_2024.Dao
                 connection.Close();
             }
         }
-
-        public void UpdateProfile(Profile profile)
-        {
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
-            {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"UPDATE Profile SET Name = @Name WHERE Id = @Id ";
-                command.Parameters.Add("@Id", MySqlDbType.Int32).Value = profile.Id;
-                command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = profile.Name;
-                try
-                {
-                    command.ExecuteNonQuery();
-                }
-                catch (MySqlException ex)
-                {
-                    MessageBox.Show("Profile is not updated. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                connection.Close();
-            }
-        }
-
-        public void DeleteProfile(int id)
-        {
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
-            {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = "DELETE FROM Profile WHERE Id = @Id ";
-                command.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
-                try
-                {
-                    command.ExecuteNonQuery();
-                }
-                catch (MySqlException ex)
-                {
-                    MessageBox.Show("Object is not deleted. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                connection.Close();
-            }
-
-        }
-
         public Profile GetProfile(int id)
         {
             Profile profile = null;
@@ -130,7 +108,6 @@ namespace MitoPlayer_2024.Dao
             }
             return profile;
         }
-
         public Profile GetProfileByName(String name)
         {
             Profile profile = null;
@@ -155,7 +132,6 @@ namespace MitoPlayer_2024.Dao
             }
             return profile;
         }
-
         public List<Profile> GetAllProfile()
         {
             List<Profile> profileList = null;
@@ -175,11 +151,81 @@ namespace MitoPlayer_2024.Dao
                         Profile profile = new Profile();
                         profile.Id = (int)reader[0];
                         profile.Name = reader[1].ToString();
+                        profile.IsActive = Convert.ToBoolean(reader[2]);
                         profileList.Add(profile);
                     }
                 }
             }
             return profileList;
+        }
+        public void UpdateProfile(Profile profile)
+        {
+            using (var connection = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand())
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"UPDATE Profile SET Name = @Name, IsActive = @IsActive WHERE Id = @Id ";
+                command.Parameters.Add("@Id", MySqlDbType.Int32).Value = profile.Id;
+                command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = profile.Name;
+                command.Parameters.Add("@IsActive", MySqlDbType.Bit).Value = profile.IsActive;
+                try
+                {
+                    command.ExecuteNonQuery();
+                }
+                catch (MySqlException ex)
+                {
+                    MessageBox.Show("Profile is not updated. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                connection.Close();
+            }
+        }
+        public void DeleteProfile(int id)
+        {
+            using (var connection = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand())
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = "DELETE FROM Profile WHERE Id = @Id ";
+                command.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
+                try
+                {
+                    command.ExecuteNonQuery();
+                }
+                catch (MySqlException ex)
+                {
+                    MessageBox.Show("Object is not deleted. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                connection.Close();
+            }
+
+        }
+
+       
+
+        public void ClearProfileTable()
+        {
+            using (var connection = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand())
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = "DELETE FROM Profile ";
+                try
+                {
+                    command.ExecuteNonQuery();
+                    //MessageBox.Show("Track deleted succesfully.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (MySqlException ex)
+                {
+                    MessageBox.Show("Profile is not deleted. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                connection.Close();
+            }
         }
 
 

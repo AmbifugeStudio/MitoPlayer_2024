@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Windows.Forms;
+using System.Xml.Linq;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using Type = System.Type;
 
 namespace MitoPlayer_2024.Presenters
@@ -84,6 +86,7 @@ namespace MitoPlayer_2024.Presenters
             this.playlistView.SetVolume(volume);
             this.mediaPLayerComponent.MediaPlayer.settings.volume = volume;
         }
+
         private void InitializeDataTables()
         {
             //PLAYLIST GRID
@@ -137,61 +140,17 @@ namespace MitoPlayer_2024.Presenters
             //csak clear mert az oszlopok kellenek
             this.playlistListTable.Clear();
 
-            String defaultPlaylistName = this.settingDao.GetStringSetting(Settings.DefaultPlaylistName.ToString(), true);
-
-            List<Playlist> plsList = this.playlistDao.GetDefaultPlaylist(defaultPlaylistName);
-
-            if (plsList == null || plsList.Count() <= 0)
-            {
-                Playlist playlist = new Playlist();
-                playlist.Id = this.GetNewPlaylistId();
-                playlist.Name = defaultPlaylistName;
-                playlist.OrderInList = 0;
-
-                plsList.Add(playlist);
-
-                this.playlistDao.CreatePlaylist(playlist);
-                this.currentPlaylistId = playlist.Id;
-
-                this.settingDao.SetIntegerSetting(Settings.CurrentPlaylistId.ToString(), this.currentPlaylistId,true);
-
-                this.LoadPlaylist(playlist);
-            }
-            else
-            {
-                if (plsList != null && plsList.Count() > 0)
-                {
-                    List<Playlist> list = this.playlistDao.GetAllPlaylist();
-                    list.RemoveAll(x => x.Name.Equals(defaultPlaylistName));
-                    plsList.AddRange(list);
-                } 
-            }
-
-            //TODO CSEKKOLNI? HA TÖRÖPJÜK
-            this.currentPlaylistId = this.settingDao.GetIntegerSetting(Settings.CurrentPlaylistId.ToString(), true);
-
-            if (this.currentPlaylistId == -1)
-                this.currentPlaylistId = 0;
-
-            this.settingDao.SetIntegerSetting(Settings.CurrentPlaylistId.ToString(), this.currentPlaylistId, true);
-
+            List<Playlist> plsList = this.playlistDao.GetAllPlaylist();
             foreach (Playlist playlist in plsList)
-                this.playlistListTable.Rows.Add(playlist.Id,playlist.QuickListGroup, playlist.Name, playlist.OrderInList);
+                this.playlistListTable.Rows.Add(playlist.Id,playlist.QuickListGroup, playlist.Name, playlist.OrderInList, playlist.ProfileId, playlist.IsActive);
 
-            Playlist pls = plsList.Find(x => x.Id == this.currentPlaylistId);
-            if (pls != null)
-                this.LoadPlaylist(pls);
+            Playlist activePlaylist = this.playlistDao.GetActivePlaylist();
+            this.currentPlaylistId = activePlaylist.Id;
+            this.LoadPlaylist(activePlaylist);
 
             this.SetPlaylistList(playlistListTable);
         }
-        private int GetNewPlaylistId()
-        {
-            int id = this.playlistDao.GetLastObjectId(TableName.Playlist.ToString());
-            if (id == -1)
-                return 0;
-            else
-                return id + 1;
-        }
+
         private void LoadPlaylist(Playlist pls)
         {
             List<Track> trackList = this.playlistDao.LoadPlaylist(pls.Id);
@@ -249,7 +208,7 @@ namespace MitoPlayer_2024.Presenters
         }
         private void SavePlaylistList(DataTable playlistListTable)
         {
-            this.playlistDao.DeleteAllPlaylist();
+            this.playlistDao.DeleteAllPlaylistFromProfile();
             List<Playlist> playlistlist = this.ConvertPlaylistDataTableToList(playlistListTable);
             int orderInList = 0;
             foreach (Playlist playlist in playlistlist)
@@ -270,6 +229,8 @@ namespace MitoPlayer_2024.Presenters
                 playlist.Name = dt.Rows[i]["Name"].ToString();
                 playlist.OrderInList = Convert.ToInt32(dt.Rows[i]["OrderInList"]);
                 playlist.QuickListGroup = Convert.ToInt32(dt.Rows[i]["G"]);
+                playlist.ProfileId = Convert.ToInt32(dt.Rows[i]["ProfileId"]);
+                playlist.IsActive = Convert.ToBoolean(dt.Rows[i]["IsActive"]);
                 playlistList.Add(playlist);
             }
 
@@ -814,7 +775,7 @@ namespace MitoPlayer_2024.Presenters
                     if (newPlaylist != null)
                     {
                         this.playlistDao.CreatePlaylist(newPlaylist);
-                        this.playlistListTable.Rows.Add(newPlaylist.Id, newPlaylist.QuickListGroup, newPlaylist.Name, newPlaylist.OrderInList);
+                        this.playlistListTable.Rows.Add(newPlaylist.Id, newPlaylist.QuickListGroup, newPlaylist.Name, newPlaylist.OrderInList, newPlaylist.ProfileId, newPlaylist.IsActive);
                     }
                     this.SavePlaylistList(playlistListTable);
                     this.SetPlaylistList(playlistListTable);
@@ -827,10 +788,10 @@ namespace MitoPlayer_2024.Presenters
                 playlist.Id = Convert.ToInt32(this.playlistListTable.Rows[e.IntegerField1]["Id"]);
                 playlist.Name = this.playlistListTable.Rows[e.IntegerField1]["Name"].ToString();
                 playlist.OrderInList = Convert.ToInt32(this.playlistListTable.Rows[e.IntegerField1]["OrderInList"]);
+                playlist.ProfileId = Convert.ToInt32(this.playlistListTable.Rows[e.IntegerField1]["ProfileId"]);
+                playlist.IsActive = Convert.ToBoolean(this.playlistListTable.Rows[e.IntegerField1]["IsActive"]);
 
-                String defaultPlaylistName = this.settingDao.GetStringSetting(Settings.DefaultPlaylistName.ToString(), true);
-
-                if (playlist.Name.Equals(defaultPlaylistName))
+                if (playlist.Name.Equals("Default Playlist"))
                 {
                     MessageBox.Show("Default playlist cannot be renamed!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
@@ -863,20 +824,28 @@ namespace MitoPlayer_2024.Presenters
         {
             if(playlistIndex != -1)
             {
-                Playlist playlist = new Playlist();
-                playlist.Id = Convert.ToInt32(this.playlistListTable.Rows[playlistIndex]["Id"]);
-                playlist.Name = this.playlistListTable.Rows[playlistIndex]["Name"].ToString();
-                playlist.OrderInList = Convert.ToInt32(this.playlistListTable.Rows[playlistIndex]["OrderInList"]);
+                this.currentPlaylistId = Convert.ToInt32(this.playlistListTable.Rows[playlistIndex]["Id"]);
+                this.playlistDao.SetActivePlaylist(this.currentPlaylistId);
 
-                this.currentPlaylistId = playlist.Id;
-
-                this.settingDao.SetIntegerSetting(Settings.CurrentPlaylistId.ToString(), this.currentPlaylistId, true);
+                for (int i = 0; i <= this.playlistListTable.Rows.Count - 1; i++)
+                {
+                    if (Convert.ToInt32(this.playlistListTable.Rows[i]["Id"]) == this.currentPlaylistId)
+                    {
+                        this.playlistListTable.Rows[i]["IsActive"] = true;
+                    }
+                    else
+                    {
+                        this.playlistListTable.Rows[i]["IsActive"] = false;
+                    }
+                    
+                }
 
                 this.trackListTable.Rows.Clear();
 
                 //this.mediaPLayerComponent.Initialize(this.trackListTable);
                 this.mediaPLayerComponent.Initialize2(this.trackListTable);
 
+                Playlist playlist = this.playlistDao.GetActivePlaylist();
                 this.LoadPlaylist(playlist);
 
                 //ha a szám ebben a listából szól a lejátszóban, ki kellene szinezni
@@ -906,9 +875,7 @@ namespace MitoPlayer_2024.Presenters
                 String playlistName = this.playlistListTable.Rows[e.IntegerField1]["Name"].ToString();
                 int playlistId = Convert.ToInt32(this.playlistListTable.Rows[e.IntegerField1]["Id"]);
 
-                String defaultPlaylistName = this.settingDao.GetStringSetting(Settings.DefaultPlaylistName.ToString(), true);
-
-                if (playlistName.Equals(defaultPlaylistName))
+                if (playlistName.Equals("Default Playlist"))
                 {
                     MessageBox.Show("Default playlist cannot be deleted!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
@@ -926,12 +893,10 @@ namespace MitoPlayer_2024.Presenters
                         if (playlistId == this.currentPlaylistId)
                         {
                             this.trackListTable.Rows.Clear();
-
+                            this.currentPlaylistId = Convert.ToInt32(this.playlistListTable.Rows[0]["Id"]);
                             this.SaveTrackList(this.trackListTable, this.currentPlaylistId);
                             this.SetTrackList(this.trackListTable);
-
-                            this.currentPlaylistId = Convert.ToInt32(this.playlistListTable.Rows[0]["Id"]);
-                            this.settingDao.SetIntegerSetting(Settings.CurrentPlaylistId.ToString(), this.currentPlaylistId, true);
+                            this.SetPlaylistAsCurrent(this.currentPlaylistId);
 
                             ((PlaylistView)this.playlistView).UpdateTrackCountAndLength(this.currentPlaylistId);
 
@@ -941,6 +906,24 @@ namespace MitoPlayer_2024.Presenters
 
             }
         }
+
+        private void SetPlaylistAsCurrent(int playlistId)
+        {
+            for(int i = 0; i<= this.playlistListTable.Rows.Count - 1; i++)
+            {
+                if(Convert.ToInt32(this.playlistListTable.Rows[i]["Id"]) != playlistId)
+                {
+                    this.playlistListTable.Rows[i]["IsActive"] = false;
+                    
+                }
+                else
+                {
+                    this.playlistListTable.Rows[i]["IsActive"] = true;
+                }
+            }
+            this.playlistDao.SetActivePlaylist(playlistId);
+        }
+
         private void SetQuickListEvent(object sender, ListEventArgs e)
         {
             for(int i = 0; i <= this.playlistListTable.Rows.Count - 1; i++)

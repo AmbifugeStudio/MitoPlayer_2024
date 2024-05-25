@@ -8,6 +8,8 @@ namespace MitoPlayer_2024.Views
 {
     public interface IPreferencesView
     {
-        void Show();
+        event EventHandler CloseViewWithOkEvent;
+        event EventHandler CloseViewWithCancelEvent;
+        event EventHandler ClearDatabaseEvent;
     }
 }

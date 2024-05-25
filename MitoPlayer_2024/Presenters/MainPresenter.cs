@@ -3,6 +3,7 @@ using MitoPlayer_2024.Helpers;
 using MitoPlayer_2024.Model;
 using MitoPlayer_2024.Models;
 using MitoPlayer_2024.Views;
+using MySqlX.XDevAPI.Common;
 using NAudio.Wave;
 using System;
 using System.Collections.Generic;
@@ -45,7 +46,6 @@ namespace MitoPlayer_2024.Presenters
         private PreferencesPresenter preferencesPresenter { get; set; }
         private AboutPresenter aboutPresenter { get; set; }
         private string[] scannedFileNames { get; set; }
-        private Profile profile { get; set; }
 
         public MainPresenter(IMainView mainView, string sqlConnectionString)
         {
@@ -92,65 +92,79 @@ namespace MitoPlayer_2024.Presenters
             this.mainView.About += About;
 
             this.mainView.ScanFiles += ScanFiles;
+
+            this.profileDao = new ProfileDao(sqlConnectionString);
+            this.settingDao = new SettingDao(sqlConnectionString);
+            this.playlistDao = new PlaylistDao(sqlConnectionString);
+            this.trackDao = new TrackDao(sqlConnectionString);
+
+            this.InitializeProfileAndPlaylist();
+
         }
 
-        public void Initialize()
+        public void InitializeProfileAndPlaylist()
         {
+            this.actualView = null;
+            this.mediaPlayerComponent = null;
             this.mediaPlayerComponent = new MediaPlayerComponent(((MainView)this.mainView).mediaPlayer);
 
-            this.actualView = null;
-
-            this.settingDao = new SettingDao(sqlConnectionString);
-            this.profileDao = new ProfileDao(sqlConnectionString);
-
-            int currentProfileId = this.settingDao.GetIntegerSetting(Settings.CurrentProfileId.ToString(), true);
-
-            if (currentProfileId == -1)
+            Profile profile = this.profileDao.GetActiveProfile();
+            if (profile == null)
             {
-                String defaultProfileName = System.Configuration.ConfigurationManager.AppSettings[Settings.DefaultProfileName.ToString()];
-                
-                this.profile = new Profile(0, defaultProfileName, true);
-                this.profileDao.CreateProfile(this.profile);
-
-                this.settingDao.SetIntegerSetting(Settings.CurrentProfileId.ToString(), 0, true);
-            }
-            else
-            {
-                Profile profile = this.profileDao.GetProfile(currentProfileId);
-                if(profile != null)
-                {
-                    this.profile = profile;
-                }
+                profile = new Profile(0, "Default Profile", true);
+                this.profileDao.CreateProfile(profile);
+                this.settingDao.InitializeGlobalSettings();
             }
 
-            this.playlistDao = new PlaylistDao(sqlConnectionString, this.profile.Id);
-            this.trackDao = new TrackDao(sqlConnectionString, this.profile.Id);
-            ((SettingDao)this.settingDao).ProfileId = this.profile.Id;
-            
+            this.settingDao.SetProfileId(profile.Id);
+            this.playlistDao.SetProfileId(profile.Id);
+            this.trackDao.SetProfileId(profile.Id);
 
+            this.settingDao.InitializeProfileSettings();
+
+            Playlist playlist = this.playlistDao.GetActivePlaylist();
+            if (playlist == null)
+            {
+                int id = GetNextPlaylistId();
+                playlist = new Playlist(id, "Default Playlist", 0, 0, profile.Id, true);
+                this.playlistDao.CreatePlaylist(playlist);
+            }
             this.ShowPlaylistView(this, new EventArgs());
+        }
+        private int GetNextPlaylistId()
+        {
+            int result = 0;
+            result = this.playlistDao.GetLastObjectId(ObjectType.Playlist.ToString());
+            result = result + 1;
+            return result;
+        }
+
+        private void ReloadMainView()
+        {
+
+            if (this.playlistView != null && this.actualView.GetType() == typeof(PlaylistView))
+                ((PlaylistView)this.playlistView).CallStopTrackEvent();
+            else if (this.trackEditorView != null && this.actualView.GetType() == typeof(TrackEditorView))
+                ((TrackEditorView)this.trackEditorView).CallStopTrackEvent();
+            else if (this.harmonizerView != null && this.actualView.GetType() == typeof(HarmonizerView))
+                ((HarmonizerView)this.harmonizerView).CallStopTrackEvent();
+
+
+            PlaylistView.instance = null;
+            this.playlistView = null;
+            this.playlistPresenter = null;
+
+            this.InitializeProfileAndPlaylist();
         }
 
         //VIEWS
         private void ShowProfileEditorView(object sender, EventArgs e)
         {
             ProfileView profileView = new ProfileView();
-            ProfilePresenter presenter = new ProfilePresenter(profileView, this.profileDao, this.settingDao);
+            ProfilePresenter presenter = new ProfilePresenter(profileView, this.profileDao, this.settingDao, this.playlistDao,this.trackDao);
             if(profileView.ShowDialog((MainView)this.mainView) == DialogResult.OK)
             {
-                PlaylistView.instance = null;
-                this.playlistView = null;
-                this.playlistPresenter = null;
-                int currentProfileId = this.settingDao.GetIntegerSetting(Settings.CurrentProfileId.ToString(), true);
-                ((PlaylistDao)this.playlistDao).ProfileId = currentProfileId;
-                ((TrackDao)this.trackDao).ProfileId = currentProfileId;
-                ((SettingDao)this.settingDao).ProfileId = currentProfileId;
-
-                this.playlistView = PlaylistView.GetInstance((MainView)mainView);
-                this.actualView = this.playlistView;
-                ((MainView)mainView).SetMenuStripAccessibility(this.actualView);
-                this.playlistPresenter = new PlaylistPresenter(this.playlistView, this.mediaPlayerComponent, this.playlistDao, this.trackDao, this.settingDao);
-
+                this.ReloadMainView();
             }
         }
         private void ShowPlaylistView(object sender, EventArgs e)
@@ -197,9 +211,14 @@ namespace MitoPlayer_2024.Presenters
         }
         private void ShowPreferencesView(object sender, EventArgs e)
         {
-            this.preferencesView = PreferencesView.GetInstance((MainView)mainView);
-            this.actualView = this.preferencesView;
-            this.preferencesPresenter = new PreferencesPresenter(this.preferencesView,  this.playlistDao, this.trackDao, this.settingDao);
+            PreferencesView preferencesView = new PreferencesView();
+            PreferencesPresenter presenter = new PreferencesPresenter(preferencesView,this.playlistDao, this.trackDao, this.profileDao, this.settingDao);
+            preferencesView.ShowDialog((PreferencesView)this.preferencesView);
+            if (presenter.databaseCleared)
+            {
+                presenter.databaseCleared = false;
+                this.ReloadMainView();
+            }
         }
         private void ShowAboutView(object sender, EventArgs e)
         {

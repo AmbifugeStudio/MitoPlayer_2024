@@ -2,16 +2,20 @@
 using MySql.Data.MySqlClient;
 using System;
 using System.Data;
+using System.Windows.Forms;
 
 namespace MitoPlayer_2024.Dao
 {
     public class TrackDao: BaseDao, ITrackDao
     {
-        public int ProfileId = -1;
-        public TrackDao(string connectionString, int profileId)
+        private int profileId = -1;
+        public TrackDao(string connectionString)
         {
             this.connectionString = connectionString;
-            this.ProfileId = profileId;
+        }
+        public void SetProfileId(int profileId)
+        {
+            this.profileId = profileId;
         }
 
         #region OPEN FILES
@@ -31,7 +35,7 @@ namespace MitoPlayer_2024.Dao
                 command.CommandType = CommandType.Text;
                 command.CommandText = "SELECT * FROM Track WHERE Path = @Path AND ProfileId = @ProfileId ";
                 command.Parameters.Add("@Path", MySqlDbType.VarChar).Value = path;
-                command.Parameters.Add("@ProfileId", MySqlDbType.VarChar).Value = this.ProfileId;
+                command.Parameters.Add("@ProfileId", MySqlDbType.VarChar).Value = this.profileId;
                 using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())
@@ -69,7 +73,7 @@ namespace MitoPlayer_2024.Dao
                 command.Parameters.Add("@Album", MySqlDbType.VarChar).Value = track.Album;
                 command.Parameters.Add("@Year", MySqlDbType.Int32).Value = track.Year;
                 command.Parameters.Add("@Length", MySqlDbType.Int32).Value = track.Length;
-                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.ProfileId;
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
                 command.ExecuteNonQuery();
             }
         }
@@ -89,12 +93,56 @@ namespace MitoPlayer_2024.Dao
                 command.Parameters.Add("@TrackId", MySqlDbType.Int32).Value = trackId;
                 command.Parameters.Add("@OrderInList", MySqlDbType.Int32).Value = orderInList;
                 command.Parameters.Add("@TrackIdInPlaylist", MySqlDbType.Int32).Value = trackIdInPlaylist;
-                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.ProfileId;
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
                 command.ExecuteNonQuery();
             }
         }
 
         #endregion
+
+        public void ClearTrackTable()
+        {
+            using (var connection = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand())
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = "DELETE FROM Track ";
+                try
+                {
+                    command.ExecuteNonQuery();
+                    //MessageBox.Show("Track deleted succesfully.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (MySqlException ex)
+                {
+                    MessageBox.Show("Track is not deleted. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                connection.Close();
+            }
+        }
+
+        public void DeleteAllTrackFromProfile(int profileId)
+        {
+            using (var connection = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand())
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = "DELETE FROM Track WHERE ProfileId = @ProfileId ";
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = profileId;
+                try
+                {
+                    command.ExecuteNonQuery();
+                }
+                catch (MySqlException ex)
+                {
+                    MessageBox.Show("Object is not deleted. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                connection.Close();
+            }
+        }
 
     }
 }

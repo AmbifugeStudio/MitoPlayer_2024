@@ -25,7 +25,6 @@ namespace MitoPlayer_2024
             string sqlConnectionString = ConfigurationManager.ConnectionStrings["SqlConnection"].ConnectionString;
 
             MainPresenter mainPresenter = new MainPresenter(mainView, sqlConnectionString);
-            mainPresenter.Initialize();
 
             Application.Run((Form)mainView);
         }
