@@ -31,6 +31,7 @@ namespace MitoPlayer_2024.Views
         event EventHandler<ListEventArgs> DeleteTracksEvent;
         event EventHandler<ListEventArgs> TrackDragAndDropEvent;
         event EventHandler<ListEventArgs> CopyTracksToPlaylistEvent;
+        event EventHandler ShowColumnVisibilityEditorEvent;
 
         //PLAYLIST
         event EventHandler<ListEventArgs> ShowPlaylistEditorViewEvent;

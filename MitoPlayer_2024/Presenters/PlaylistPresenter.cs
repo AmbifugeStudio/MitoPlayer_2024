@@ -67,6 +67,7 @@ namespace MitoPlayer_2024.Presenters
             this.playlistView.DeleteTracksEvent += DeleteTracksEvent;
             this.playlistView.TrackDragAndDropEvent += TrackDragAndDropEvent;
             this.playlistView.CopyTracksToPlaylistEvent += CopyTracksToPlaylistEvent;
+            this.playlistView.ShowColumnVisibilityEditorEvent += ShowColumnVisibilityEditorEvent;
 
             //PLAYLIST
             this.playlistView.ShowPlaylistEditorViewEvent += ShowPlaylistEditorViewEvent;
@@ -947,5 +948,17 @@ namespace MitoPlayer_2024.Presenters
             this.SetPlaylistList(this.playlistListTable);
         }
         #endregion
+
+        private void ShowColumnVisibilityEditorEvent(object sender, EventArgs e)
+        {
+            ColumnVisibilityEditorView columnVisibilityEditorView = new ColumnVisibilityEditorView();
+            ColumnVisibilityEditorPresenter presenter = new ColumnVisibilityEditorPresenter(columnVisibilityEditorView, this.settingDao);
+            if (columnVisibilityEditorView.ShowDialog((PlaylistView)this.playlistView) == DialogResult.OK)
+            {
+                this.TrackColumnVisibilityArray = presenter.ColumnVisibilityArray;
+                this.SetTrackList(this.trackListTable);
+            }
+        }
+
     }
 }

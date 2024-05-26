@@ -37,6 +37,7 @@ namespace MitoPlayer_2024.Views
         public event EventHandler<ListEventArgs> DeleteTracksEvent;
         public event EventHandler<ListEventArgs> TrackDragAndDropEvent;
         public event EventHandler<ListEventArgs> CopyTracksToPlaylistEvent;
+        public event EventHandler ShowColumnVisibilityEditorEvent;
 
         //PLAYLIST
         public event EventHandler<ListEventArgs> ShowPlaylistEditorViewEvent;
@@ -978,7 +979,12 @@ namespace MitoPlayer_2024.Views
                 this.SetQuickListEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = dgvPlaylistList.Rows.IndexOf(dgvPlaylistList.SelectedRows[0]), IntegerField2 = group });
         }
 
+
         #endregion
 
+        private void btnColumnVisibility_Click(object sender, EventArgs e)
+        {
+            this.ShowColumnVisibilityEditorEvent?.Invoke(this, new EventArgs());
+        }
     }
 }

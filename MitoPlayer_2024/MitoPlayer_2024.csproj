@@ -181,6 +181,7 @@
     <Compile Include="Presenters\PlaylistEditorPresenter.cs" />
     <Compile Include="Presenters\PlaylistPresenter.cs" />
     <Compile Include="Presenters\PreferencesPresenter.cs" />
+    <Compile Include="Presenters\ColumnVisibilityEditorPresenter.cs" />
     <Compile Include="Presenters\ProfileEditorPresenter.cs" />
     <Compile Include="Presenters\ProfilePresenter.cs" />
     <Compile Include="Presenters\RuleEditorPresenter.cs" />
@@ -210,6 +211,7 @@
     <Compile Include="Views\IPlaylistEditorView.cs" />
     <Compile Include="Views\IPlaylistView.cs" />
     <Compile Include="Views\IPreferencesView.cs" />
+    <Compile Include="Views\IColumnVisibilityEditorView.cs" />
     <Compile Include="Views\IProfileEditorView.cs" />
     <Compile Include="Views\IProfileView.cs" />
     <Compile Include="Views\IRuleEditorView.cs" />
@@ -287,6 +289,9 @@
     <EmbeddedResource Include="Views\AboutView.resx">
       <DependentUpon>AboutView.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Views\ColumnVisibilityEditorView.resx">
+      <DependentUpon>ColumnVisibilityEditorView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\HarmonizerView.resx">
       <DependentUpon>HarmonizerView.cs</DependentUpon>
     </EmbeddedResource>
@@ -301,6 +306,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <EmbeddedResource Include="Views\PlaylistEditorView.resx">
       <DependentUpon>PlaylistEditorView.cs</DependentUpon>
@@ -378,6 +384,9 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Screenshot_1.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

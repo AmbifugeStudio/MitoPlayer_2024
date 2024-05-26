@@ -29,7 +29,9 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PlaylistView));
             this.tabPagePlaylistDetail = new System.Windows.Forms.TabPage();
+            this.btnColumnVisibility = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.btnSetQuickListGroup1 = new System.Windows.Forms.Button();
             this.btnSetQuickListGroup2 = new System.Windows.Forms.Button();
@@ -75,6 +77,7 @@
             // 
             // tabPagePlaylistDetail
             // 
+            this.tabPagePlaylistDetail.Controls.Add(this.btnColumnVisibility);
             this.tabPagePlaylistDetail.Controls.Add(this.groupBox2);
             this.tabPagePlaylistDetail.Controls.Add(this.groupBox1);
             this.tabPagePlaylistDetail.Controls.Add(this.lblTrackSumLength);
@@ -92,6 +95,17 @@
             this.tabPagePlaylistDetail.TabIndex = 1;
             this.tabPagePlaylistDetail.Text = "Player";
             this.tabPagePlaylistDetail.UseVisualStyleBackColor = true;
+            // 
+            // btnColumnVisibility
+            // 
+            this.btnColumnVisibility.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnColumnVisibility.Image = ((System.Drawing.Image)(resources.GetObject("btnColumnVisibility.Image")));
+            this.btnColumnVisibility.Location = new System.Drawing.Point(1082, 6);
+            this.btnColumnVisibility.Name = "btnColumnVisibility";
+            this.btnColumnVisibility.Size = new System.Drawing.Size(31, 23);
+            this.btnColumnVisibility.TabIndex = 9;
+            this.btnColumnVisibility.UseVisualStyleBackColor = true;
+            this.btnColumnVisibility.Click += new System.EventHandler(this.btnColumnVisibility_Click);
             // 
             // groupBox2
             // 
@@ -296,12 +310,12 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvTrackList.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvTrackList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            this.dgvTrackList.Location = new System.Drawing.Point(173, 6);
+            this.dgvTrackList.Location = new System.Drawing.Point(173, 35);
             this.dgvTrackList.Name = "dgvTrackList";
             this.dgvTrackList.ReadOnly = true;
             this.dgvTrackList.RowHeadersVisible = false;
             this.dgvTrackList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvTrackList.Size = new System.Drawing.Size(940, 506);
+            this.dgvTrackList.Size = new System.Drawing.Size(940, 477);
             this.dgvTrackList.TabIndex = 0;
             this.dgvTrackList.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTrackList_CellClick);
             this.dgvTrackList.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTrackList_CellDoubleClick);
@@ -493,5 +507,6 @@
         private System.Windows.Forms.Label lblMessage;
         private System.Windows.Forms.Label lblTrackCount;
         private System.Windows.Forms.Label lblTrackSumLength;
+        private System.Windows.Forms.Button btnColumnVisibility;
     }
 }
