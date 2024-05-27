@@ -17,7 +17,9 @@ namespace MitoPlayer_2024.Presenters
         Playlist,
         Track,
         PlaylistContent,
-        Profile
+        Profile,
+        Tag,
+        TagValue
     }
     public class PlaylistPresenter
     {

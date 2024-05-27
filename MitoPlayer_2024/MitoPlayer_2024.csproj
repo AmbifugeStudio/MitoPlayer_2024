@@ -166,15 +166,19 @@
   <ItemGroup>
     <Compile Include="Dao\ProfileDao.cs" />
     <Compile Include="Dao\SettingDao.cs" />
+    <Compile Include="Dao\TagValueDao.cs" />
     <Compile Include="Helpers\Enums.cs" />
     <Compile Include="Helpers\LabelTimer.cs" />
     <Compile Include="Helpers\ListEventArgs.cs" />
     <Compile Include="Models\IPlaylistDao.cs" />
     <Compile Include="Models\IProfileDao.cs" />
     <Compile Include="Models\ISettingDao.cs" />
+    <Compile Include="Models\ITagValueDao.cs" />
     <Compile Include="Models\ITrackDao.cs" />
     <Compile Include="Models\Playlist.cs" />
     <Compile Include="Models\Profile.cs" />
+    <Compile Include="Models\Tag.cs" />
+    <Compile Include="Models\TagValue.cs" />
     <Compile Include="Presenters\AboutPresenter.cs" />
     <Compile Include="Presenters\HarmonizerPresenter.cs" />
     <Compile Include="Presenters\MediaPlayerComponent.cs" />
@@ -186,6 +190,8 @@
     <Compile Include="Presenters\ProfilePresenter.cs" />
     <Compile Include="Presenters\RuleEditorPresenter.cs" />
     <Compile Include="Presenters\TagValueEditorPresenter.cs" />
+    <Compile Include="Presenters\TagEditorPresenter.cs" />
+    <Compile Include="Presenters\TagValuePresenter.cs" />
     <Compile Include="Presenters\TemplateEditorPresenter.cs" />
     <Compile Include="Presenters\TrackEditorPresenter.cs" />
     <Compile Include="Views\AboutView.cs">
@@ -216,6 +222,8 @@
     <Compile Include="Views\IProfileView.cs" />
     <Compile Include="Views\IRuleEditorView.cs" />
     <Compile Include="Views\ITagValueEditorView.cs" />
+    <Compile Include="Views\ITagEditorView.cs" />
+    <Compile Include="Views\ITagValueView.cs" />
     <Compile Include="Views\ITemplateEditorView.cs" />
     <Compile Include="Views\ITrackEditorView.cs" />
     <Compile Include="Views\MainView.cs">
@@ -268,11 +276,23 @@
     <Compile Include="Views\RuleEditorView.Designer.cs">
       <DependentUpon>RuleEditorView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\TagEditorView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\TagEditorView.Designer.cs">
+      <DependentUpon>TagEditorView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\TagValueEditorView.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Views\TagValueEditorView.Designer.cs">
       <DependentUpon>TagValueEditorView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TagValueView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\TagValueView.Designer.cs">
+      <DependentUpon>TagValueView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\TemplateEditorView.cs">
       <SubType>Form</SubType>
@@ -327,8 +347,14 @@
     <EmbeddedResource Include="Views\RuleEditorView.resx">
       <DependentUpon>RuleEditorView.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Views\TagEditorView.resx">
+      <DependentUpon>TagEditorView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\TagValueEditorView.resx">
       <DependentUpon>TagValueEditorView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\TagValueView.resx">
+      <DependentUpon>TagValueView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\TemplateEditorView.resx">
       <DependentUpon>TemplateEditorView.cs</DependentUpon>

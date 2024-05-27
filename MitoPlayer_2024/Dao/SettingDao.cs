@@ -63,6 +63,8 @@ namespace MitoPlayer_2024.Dao
 
             this.InitializeGlobalIntegerSetting(Settings.LastGeneratedPlaylistId.ToString());
             this.InitializeGlobalIntegerSetting(Settings.LastGeneratedProfileId.ToString());
+            this.InitializeGlobalIntegerSetting(Settings.LastGeneratedTagId.ToString());
+            this.InitializeGlobalIntegerSetting(Settings.LastGeneratedTagValueId.ToString());
         }
         private void InitializeGlobalStringSetting(String settingName)
         {

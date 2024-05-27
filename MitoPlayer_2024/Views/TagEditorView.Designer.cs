@@ -1,6 +1,6 @@
 ﻿namespace MitoPlayer_2024.Views
 {
-    partial class TagValueEditorView
+    partial class TagEditorView
     {
         /// <summary>
         /// Required designer variable.
@@ -29,29 +29,29 @@
         private void InitializeComponent()
         {
             this.btnOk = new System.Windows.Forms.Button();
-            this.txtTagValueName = new System.Windows.Forms.TextBox();
+            this.txtTagName = new System.Windows.Forms.TextBox();
             this.lblName = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btnOk
             // 
             this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOk.Location = new System.Drawing.Point(323, 10);
+            this.btnOk.Location = new System.Drawing.Point(323, 11);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(75, 23);
-            this.btnOk.TabIndex = 8;
+            this.btnOk.TabIndex = 5;
             this.btnOk.Text = "Ok";
             this.btnOk.UseVisualStyleBackColor = true;
             this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
             // 
-            // txtTagValueName
+            // txtTagName
             // 
-            this.txtTagValueName.Location = new System.Drawing.Point(79, 12);
-            this.txtTagValueName.Name = "txtTagValueName";
-            this.txtTagValueName.Size = new System.Drawing.Size(238, 20);
-            this.txtTagValueName.TabIndex = 7;
-            this.txtTagValueName.Text = "New TagValue";
-            this.txtTagValueName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtTagValueName_KeyDown);
+            this.txtTagName.Location = new System.Drawing.Point(79, 13);
+            this.txtTagName.Name = "txtTagName";
+            this.txtTagName.Size = new System.Drawing.Size(238, 20);
+            this.txtTagName.TabIndex = 4;
+            this.txtTagName.Text = "New Tag";
+            this.txtTagName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtTagName_KeyDown);
             // 
             // lblName
             // 
@@ -59,19 +59,19 @@
             this.lblName.Location = new System.Drawing.Point(12, 15);
             this.lblName.Name = "lblName";
             this.lblName.Size = new System.Drawing.Size(61, 13);
-            this.lblName.TabIndex = 6;
+            this.lblName.TabIndex = 3;
             this.lblName.Text = "Enter name";
             // 
-            // TagValueEditorView
+            // TagEditorView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(414, 44);
+            this.ClientSize = new System.Drawing.Size(407, 43);
             this.Controls.Add(this.btnOk);
-            this.Controls.Add(this.txtTagValueName);
+            this.Controls.Add(this.txtTagName);
             this.Controls.Add(this.lblName);
-            this.Name = "TagValueEditorView";
-            this.Text = "TagValueEditorView";
+            this.Name = "TagEditorView";
+            this.Text = "TagEditorView";
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -80,7 +80,7 @@
         #endregion
 
         private System.Windows.Forms.Button btnOk;
-        private System.Windows.Forms.TextBox txtTagValueName;
+        private System.Windows.Forms.TextBox txtTagName;
         private System.Windows.Forms.Label lblName;
     }
 }

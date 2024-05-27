@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace MitoPlayer_2024.Views
 {
-    public interface ITagValueEditorView
+    public interface ITagEditorView
     {
-        event EventHandler<ListEventArgs> CreateOrEditTagValue;
+        event EventHandler<ListEventArgs> CreateOrEditTag;
         event EventHandler CloseEditor;
         void Show();
     }

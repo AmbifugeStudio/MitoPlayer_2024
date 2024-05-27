@@ -11,40 +11,41 @@ using System.Windows.Forms;
 
 namespace MitoPlayer_2024.Views
 {
-    public partial class TagValueEditorView : Form, ITagValueEditorView
+    public partial class TagEditorView : Form, ITagEditorView
     {
-        public TagValueEditorView()
+        public TagEditorView()
         {
             InitializeComponent();
-            this.txtTagValueName.Focus();
+            this.txtTagName.Focus();
             this.CenterToScreen();
         }
 
-        public event EventHandler<ListEventArgs> CreateOrEditTagValue;
+        public event EventHandler<ListEventArgs> CreateOrEditTag;
         public event EventHandler CloseEditor;
 
-        public void SetTagValueName(String name, bool edit = false)
+        public void SetTagName(String name, bool edit = false)
         {
-            this.txtTagValueName.Text = name;
+            this.txtTagName.Text = name;
             if (edit)
             {
-                this.Text = "Edit tag value";
+                this.Text = "Edit tag";
             }
             else
             {
-                this.Text = "Create tag value";
+                this.Text = "Create tag";
             }
         }
+
         private void btnOk_Click(object sender, EventArgs e)
         {
-            this.CreateOrEditTagValue?.Invoke(this, new ListEventArgs() { StringField1 = txtTagValueName.Text });
+            this.CreateOrEditTag?.Invoke(this, new ListEventArgs() { StringField1 = txtTagName.Text });
         }
 
-        private void txtTagValueName_KeyDown(object sender, KeyEventArgs e)
+        private void txtTagName_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
             {
-                this.CreateOrEditTagValue?.Invoke(this, new ListEventArgs() { StringField1 = txtTagValueName.Text });
+                this.CreateOrEditTag?.Invoke(this, new ListEventArgs() { StringField1 = txtTagName.Text });
             }
             else if (e.KeyCode == Keys.Escape)
             {

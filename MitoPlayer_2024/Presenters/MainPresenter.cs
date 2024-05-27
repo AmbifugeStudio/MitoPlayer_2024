@@ -22,6 +22,7 @@ namespace MitoPlayer_2024.Presenters
         private IProfileDao profileDao { get; set; }
         private IPlaylistDao playlistDao { get; set; }
         private ITrackDao trackDao { get; set; }
+        private ITagValueDao tagValueDao { get; set; }
         private ISettingDao settingDao { get; set; }
         private MediaPlayerComponent mediaPlayerComponent { get; set; }
         private string sqlConnectionString { get; set; }
@@ -29,7 +30,7 @@ namespace MitoPlayer_2024.Presenters
         private IProfileView profileView { get; set; }
         private IProfileEditorView profileEditorView { get; set; }
         private IPlaylistView playlistView { get; set; }
-        private ITagValueEditorView tagValueEditorView { get; set; }
+        private ITagValueView tagValueEditorView { get; set; }
         private IRuleEditorView ruleEditorView { get; set; }
         private ITrackEditorView trackEditorView { get; set; }
         private ITemplateEditorView templateEditorView { get; set; }
@@ -38,7 +39,7 @@ namespace MitoPlayer_2024.Presenters
         private IAboutView aboutView { get; set; }
         private ProfileEditorPresenter profileEditorPresenter { get; set; }
         private PlaylistPresenter playlistPresenter { get; set; }
-        private TagValueEditorPresenter tagValueEditorPresenter { get; set; }
+        private TagValuePresenter tagValueEditorPresenter { get; set; }
         private RuleEditorPresenter ruleEditorPresenter { get; set; }
         private TrackEditorPresenter trackEditorPresenter { get; set; }
         private TemplateEditorPresenter templateEditorPresenter { get; set; }
@@ -97,6 +98,7 @@ namespace MitoPlayer_2024.Presenters
             this.settingDao = new SettingDao(sqlConnectionString);
             this.playlistDao = new PlaylistDao(sqlConnectionString);
             this.trackDao = new TrackDao(sqlConnectionString);
+            this.tagValueDao = new TagValueDao(sqlConnectionString);
 
             this.InitializeProfileAndPlaylist();
 
@@ -113,12 +115,16 @@ namespace MitoPlayer_2024.Presenters
             {
                 profile = new Profile(0, "Default Profile", true);
                 this.profileDao.CreateProfile(profile);
+
+
+                //TODOOOO ez csak egyszr fut le, de mi van a tag values izémmel, amit ezután csnáltam
                 this.settingDao.InitializeGlobalSettings();
             }
 
             this.settingDao.SetProfileId(profile.Id);
             this.playlistDao.SetProfileId(profile.Id);
             this.trackDao.SetProfileId(profile.Id);
+            this.tagValueDao.SetProfileId(profile.Id);
 
             this.settingDao.InitializeProfileSettings();
 
@@ -176,10 +182,12 @@ namespace MitoPlayer_2024.Presenters
         }
         private void ShowTagValueEditorView(object sender, EventArgs e)
         {
-            this.tagValueEditorView = TagValueEditorView.GetInstance((MainView)mainView);
-            this.actualView = this.tagValueEditorView;
-            ((MainView)mainView).SetMenuStripAccessibility(this.actualView);
-            this.tagValueEditorPresenter = new TagValueEditorPresenter(this.tagValueEditorView, this.playlistDao, this.trackDao, this.settingDao);
+            TagValueView tagValueView = new TagValueView();
+            TagValuePresenter presenter = new TagValuePresenter(tagValueView,this.tagValueDao, this.settingDao);
+            if (tagValueView.ShowDialog((MainView)this.mainView) == DialogResult.OK)
+            {
+               //TOFO
+            }
         }
         private void ShowTrackEditorView(object sender, EventArgs e)
         {
