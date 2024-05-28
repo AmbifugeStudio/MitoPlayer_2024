@@ -13,13 +13,14 @@ namespace MitoPlayer_2024.Views
 {
     public partial class TagValueView : Form, ITagValueView
     {
+        private Form parentView { get; set; }
         private BindingSource tagListBindingSource { get; set; }
         private BindingSource tagValueListBindingSource { get; set; }
 
         public event EventHandler CreateTag;
         public event EventHandler<ListEventArgs> EditTag;
         public event EventHandler<ListEventArgs> DeleteTag;
-        public event EventHandler CreateTagValue;
+        public event EventHandler<ListEventArgs> CreateTagValue;
         public event EventHandler<ListEventArgs> EditTagValue;
         public event EventHandler<ListEventArgs> DeleteTagValue;
         public event EventHandler CloseWithOk;
@@ -32,6 +33,29 @@ namespace MitoPlayer_2024.Views
             InitializeComponent();
             this.CenterToScreen();
         }
+
+        #region SINGLETON
+
+        public static TagValueView instance;
+        public static TagValueView GetInstance(Form parentView)
+        {
+            if (instance == null || instance.IsDisposed)
+            {
+                instance = new TagValueView();
+                instance.parentView = parentView;
+                instance.MdiParent = parentView;
+                instance.FormBorderStyle = FormBorderStyle.None;
+                instance.Dock = DockStyle.Fill;
+            }
+            else
+            {
+                if (instance.WindowState == FormWindowState.Minimized)
+                    instance.WindowState = FormWindowState.Normal;
+                instance.BringToFront();
+            }
+            return instance;
+        }
+        #endregion
 
         public void SetTagListBindingSource(BindingSource tagList)
         {
@@ -57,7 +81,7 @@ namespace MitoPlayer_2024.Views
         {
             if(this.dgvTagList.SelectedRows.Count > 0)
             {
-                this.EditTag?.Invoke(this, new ListEventArgs() { IntegerField1 = Convert.ToInt32(this.dgvTagList.SelectedRows[0].Cells["Id"]) });
+                this.EditTag?.Invoke(this, new ListEventArgs() { IntegerField1 = Convert.ToInt32(this.dgvTagList.SelectedRows[0].Index) });
             }
         }
 
@@ -65,20 +89,21 @@ namespace MitoPlayer_2024.Views
         {
             if (this.dgvTagList.SelectedRows.Count > 0)
             {
-                this.DeleteTag?.Invoke(this, new ListEventArgs() { IntegerField1 = Convert.ToInt32(this.dgvTagList.SelectedRows[0].Cells["Id"]) });
+                this.DeleteTag?.Invoke(this, new ListEventArgs() { IntegerField1 = Convert.ToInt32(this.dgvTagList.SelectedRows[0].Index) });
             }
         }
 
         private void btnAddTagValue_Click(object sender, EventArgs e)
         {
-            this.CreateTagValue?.Invoke(this, EventArgs.Empty);
+            if (this.dgvTagList.SelectedRows.Count > 0)
+                this.CreateTagValue?.Invoke(this, new ListEventArgs() { IntegerField1 = Convert.ToInt32(this.dgvTagList.SelectedRows[0].Index) });
         }
 
         private void btnEditTagValue_Click(object sender, EventArgs e)
         {
             if (this.dgvTagValueList.SelectedRows.Count > 0)
             {
-                this.EditTagValue?.Invoke(this, new ListEventArgs() { IntegerField1 = Convert.ToInt32(this.dgvTagValueList.SelectedRows[0].Cells["Id"]) });
+                this.EditTagValue?.Invoke(this, new ListEventArgs() { IntegerField1 = Convert.ToInt32(this.dgvTagValueList.SelectedRows[0].Index) });
             }
         }
 
@@ -86,7 +111,7 @@ namespace MitoPlayer_2024.Views
         {
             if (this.dgvTagValueList.SelectedRows.Count > 0)
             {
-                this.DeleteTagValue?.Invoke(this, new ListEventArgs() { IntegerField1 = Convert.ToInt32(this.dgvTagValueList.SelectedRows[0].Cells["Id"]) });
+                this.DeleteTagValue?.Invoke(this, new ListEventArgs() { IntegerField1 = Convert.ToInt32(this.dgvTagValueList.SelectedRows[0].Index) });
             }
         }
 
@@ -102,18 +127,67 @@ namespace MitoPlayer_2024.Views
 
         private void dgvTagList_SelectionChanged(object sender, EventArgs e)
         {
-            if (this.dgvTagList.SelectedRows.Count > 0)
-            {
-                this.SetCurrentTagId?.Invoke(this, new ListEventArgs() { IntegerField1 = Convert.ToInt32(this.dgvTagList.SelectedRows[0].Cells["Id"].Value) });
-            }
+            
         }
 
         private void dgvTagValueList_SelectionChanged(object sender, EventArgs e)
         {
-            if (this.dgvTagValueList.SelectedRows.Count > 0)
+           
+        }
+        private void dgvTagList_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (this.dgvTagList.SelectedRows.Count > 0)
             {
-                this.SetCurrentTagValueId?.Invoke(this, new ListEventArgs() { IntegerField1 = Convert.ToInt32(this.dgvTagValueList.SelectedRows[0].Cells["Id"].Value) });
+                this.SetCurrentTagId?.Invoke(this, new ListEventArgs() { IntegerField1 = Convert.ToInt32(this.dgvTagList.SelectedRows[0].Index) });
             }
         }
+        private void dgvTagValueList_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (this.dgvTagValueList.SelectedRows.Count > 0)
+            {
+                this.SetCurrentTagValueId?.Invoke(this, new ListEventArgs() { IntegerField1 = Convert.ToInt32(this.dgvTagValueList.SelectedRows[0].Index) });
+            }
+        }
+
+        private void dgvTagList_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                if (this.dgvTagList.SelectedRows.Count > 0)
+                {
+                    this.DeleteTag?.Invoke(this, new ListEventArgs() { IntegerField1 = Convert.ToInt32(this.dgvTagList.SelectedRows[0].Index) });
+                }
+            }
+            if(e.KeyCode == Keys.Enter)
+            {
+                if (this.dgvTagList.SelectedRows.Count > 0)
+                {
+                    this.EditTag?.Invoke(this, new ListEventArgs() { IntegerField1 = Convert.ToInt32(this.dgvTagList.SelectedRows[0].Index) });
+                }
+            }
+        }
+
+        private void dgvTagValueList_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.KeyCode == Keys.Delete)
+            {
+                if (this.dgvTagValueList.SelectedRows.Count > 0)
+                {
+                    this.DeleteTagValue?.Invoke(this, new ListEventArgs() { IntegerField1 = Convert.ToInt32(this.dgvTagValueList.SelectedRows[0].Index) });
+                }
+
+            }
+            if (e.KeyCode == Keys.Enter)
+            {
+                if (this.dgvTagValueList.SelectedRows.Count > 0)
+                {
+                    this.EditTagValue?.Invoke(this, new ListEventArgs() { IntegerField1 = Convert.ToInt32(this.dgvTagValueList.SelectedRows[0].Index) });
+                }
+            }
+        }
+
+       
+
+        
     }
 }

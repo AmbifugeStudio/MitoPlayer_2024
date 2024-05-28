@@ -16,7 +16,7 @@ namespace MitoPlayer_2024.Views
         event EventHandler CreateTag;
         event EventHandler<ListEventArgs> EditTag;
         event EventHandler<ListEventArgs> DeleteTag;
-        event EventHandler CreateTagValue;
+        event EventHandler<ListEventArgs> CreateTagValue;
         event EventHandler<ListEventArgs> EditTagValue;
         event EventHandler<ListEventArgs> DeleteTagValue;
         event EventHandler CloseWithOk;

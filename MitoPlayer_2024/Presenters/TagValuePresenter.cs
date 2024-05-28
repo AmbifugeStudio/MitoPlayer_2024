@@ -42,7 +42,7 @@ namespace MitoPlayer_2024.Presenters
             this.tagValueEditorView.SetCurrentTagValueId += SetCurrentTagValueId;
 
             this.InitializeDataTables();
-
+            this.tagValueEditorView.Show();
         }
         private void InitializeDataTables()
         {
@@ -72,24 +72,32 @@ namespace MitoPlayer_2024.Presenters
         }
         private void SetCurrentTagId(object sender, ListEventArgs e)
         {
-            this.currentTag = this.tagValueDao.GetTag(e.IntegerField1);
-            if (this.currentTag != null)
+            tagValueListTable.Rows.Clear();
+
+            this.currentTag = this.tagValueDao.GetTag(Convert.ToInt32(this.tagListTable.Rows[e.IntegerField1]["Id"]));
+            List<TagValue> tagValueList = this.tagValueDao.GetTagValuesByTagId(this.currentTag.Id);
+            
+            if (tagValueList != null && tagValueList.Count > 0)
             {
-                List<TagValue> tagValueList = this.tagValueDao.GetTagValuesByTagId(this.currentTag.Id);
-                if (tagValueList != null && tagValueList.Count > 0)
+               
+                foreach (TagValue tag in tagValueList)
                 {
-                    foreach (TagValue tag in tagValueList)
-                    {
-                        tagValueListTable.Rows.Add(tag.Id, tag.Name);
-                    }
+                    tagValueListTable.Rows.Add(tag.Id, tag.Name);
                 }
-                this.tagValueListBindingSource.DataSource = tagValueListTable;
-                this.tagValueEditorView.SetTagValueListBindingSource(this.tagValueListBindingSource);
             }
+  
+            this.tagValueListBindingSource.DataSource = tagValueListTable;
+            this.tagValueEditorView.SetTagValueListBindingSource(this.tagValueListBindingSource);
         }
         private void SetCurrentTagValueId(object sender, ListEventArgs e)
         {
-            this.currentTagValue = this.tagValueDao.GetTagValueByTagIdAndTagValueId(this.currentTag.Id, e.IntegerField1);
+            if (this.currentTag != null)
+            {
+                int tagId = this.currentTag.Id;
+                int tagValueId = Convert.ToInt32(this.tagValueListTable.Rows[e.IntegerField1]["Id"]);
+                this.currentTagValue = this.tagValueDao.GetTagValueByTagIdAndTagValueId(tagId, tagValueId);
+            }
+           
         }
         private void CreateTag(object sender, EventArgs e)
         {
@@ -103,7 +111,7 @@ namespace MitoPlayer_2024.Presenters
         }
         private void EditTag(object sender, ListEventArgs e)
         {
-            DataRow tagRow = this.tagListTable.Select("Id = " + e.IntegerField1).First();
+            DataRow tagRow = this.tagListTable.Select("Id = " + Convert.ToInt32(this.tagListTable.Rows[e.IntegerField1]["Id"])).First();
             if(tagRow != null)
             {
                 Tag tag = new Tag();
@@ -130,10 +138,13 @@ namespace MitoPlayer_2024.Presenters
             {
                 this.tagValueDao.DeleteTag(e.IntegerField1);
 
-                DataRow tagRow = this.tagListTable.Select("Id = " + e.IntegerField1).First();
+                DataRow tagRow = this.tagListTable.Select("Id = " + Convert.ToInt32(this.tagListTable.Rows[e.IntegerField1]["Id"])).First();
                 this.tagListTable.Rows.Remove(tagRow);
                 this.tagListBindingSource.DataSource = tagListTable;
                 this.tagValueEditorView.SetTagListBindingSource(this.tagListBindingSource);
+                this.tagValueListTable.Rows.Clear();
+                this.tagValueListBindingSource.DataSource = tagValueListTable;
+                this.tagValueEditorView.SetTagValueListBindingSource(this.tagValueListBindingSource);
             }
         }
         private void CreateTagValue(object sender, EventArgs e)
@@ -148,7 +159,7 @@ namespace MitoPlayer_2024.Presenters
         }
         private void EditTagValue(object sender, ListEventArgs e)
         {
-            DataRow tagValueRow = this.tagValueListTable.Select("Id = " + e.IntegerField1).First();
+            DataRow tagValueRow = this.tagValueListTable.Select("Id = " + Convert.ToInt32(this.tagValueListTable.Rows[e.IntegerField1]["Id"])).First();
             if (tagValueRow != null)
             {
                 TagValue tagValue = new TagValue();
@@ -158,7 +169,7 @@ namespace MitoPlayer_2024.Presenters
                 int tagValueIndex = this.tagValueListTable.Rows.IndexOf(tagValueRow);
 
                 TagValueEditorView tagValueEditorView = new TagValueEditorView();
-                TagValueEditorPresenter presenter = new TagValueEditorPresenter(tagValueEditorView, this.currentTag.Id, this.tagValueDao, this.settingDao);
+                TagValueEditorPresenter presenter = new TagValueEditorPresenter(tagValueEditorView, this.currentTag.Id, this.tagValueDao, this.settingDao, tagValue);
                 if (tagValueEditorView.ShowDialog((TagValueView)this.tagValueEditorView) == DialogResult.OK)
                 {
                     this.tagValueDao.UpdateTagValue(presenter.newTagValue);
@@ -173,10 +184,14 @@ namespace MitoPlayer_2024.Presenters
         {
             if(MessageBox.Show("Do you really want to delete the tag value? All metadata of all track related to this tag value will be deleted!", "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK)
             {
-                this.tagValueDao.DeleteTagValue(e.IntegerField1);
+                
 
-                DataRow tagValueRow = this.tagValueListTable.Select("Id = " + e.IntegerField1).First();
+                DataRow tagValueRow = this.tagValueListTable.Select("Id = " + Convert.ToInt32(this.tagValueListTable.Rows[e.IntegerField1]["Id"])).First();
+                
+
+                this.tagValueDao.DeleteTagValue(Convert.ToInt32(this.tagValueListTable.Rows[e.IntegerField1]["Id"]));
                 this.tagValueListTable.Rows.Remove(tagValueRow);
+
                 this.tagValueListBindingSource.DataSource = tagValueListTable;
                 this.tagValueEditorView.SetTagValueListBindingSource(this.tagValueListBindingSource);
             }
@@ -191,5 +206,7 @@ namespace MitoPlayer_2024.Presenters
             ((TagValueView)this.tagValueEditorView).DialogResult = DialogResult.Cancel;
             ((TagValueView)this.tagValueEditorView).Close();
         }
+
+ 
     }
 }

@@ -38,8 +38,6 @@
             this.dgvTagValueList = new System.Windows.Forms.DataGridView();
             this.btnEditTagValue = new System.Windows.Forms.Button();
             this.btnAddTagValue = new System.Windows.Forms.Button();
-            this.btnCancel = new System.Windows.Forms.Button();
-            this.btnOk = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTagList)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -55,16 +53,20 @@
             this.dgvTagList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgvTagList.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvTagList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dgvTagList.Location = new System.Drawing.Point(6, 19);
             this.dgvTagList.MultiSelect = false;
             this.dgvTagList.Name = "dgvTagList";
             this.dgvTagList.ReadOnly = true;
+            this.dgvTagList.RowHeadersVisible = false;
             this.dgvTagList.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.dgvTagList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvTagList.Size = new System.Drawing.Size(670, 150);
+            this.dgvTagList.Size = new System.Drawing.Size(668, 163);
             this.dgvTagList.TabIndex = 1;
+            this.dgvTagList.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvTagList_CellMouseClick);
             this.dgvTagList.SelectionChanged += new System.EventHandler(this.dgvTagList_SelectionChanged);
+            this.dgvTagList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvTagList_KeyDown);
             // 
             // groupBox1
             // 
@@ -74,9 +76,9 @@
             this.groupBox1.Controls.Add(this.dgvTagList);
             this.groupBox1.Controls.Add(this.btnEditTag);
             this.groupBox1.Controls.Add(this.btnAddTag);
-            this.groupBox1.Location = new System.Drawing.Point(12, 12);
+            this.groupBox1.Location = new System.Drawing.Point(18, 47);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(776, 177);
+            this.groupBox1.Size = new System.Drawing.Size(774, 190);
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Tags";
@@ -84,7 +86,7 @@
             // btnDeleteTag
             // 
             this.btnDeleteTag.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDeleteTag.Location = new System.Drawing.Point(682, 77);
+            this.btnDeleteTag.Location = new System.Drawing.Point(680, 77);
             this.btnDeleteTag.Name = "btnDeleteTag";
             this.btnDeleteTag.Size = new System.Drawing.Size(88, 23);
             this.btnDeleteTag.TabIndex = 2;
@@ -95,7 +97,7 @@
             // btnEditTag
             // 
             this.btnEditTag.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnEditTag.Location = new System.Drawing.Point(682, 48);
+            this.btnEditTag.Location = new System.Drawing.Point(680, 48);
             this.btnEditTag.Name = "btnEditTag";
             this.btnEditTag.Size = new System.Drawing.Size(88, 23);
             this.btnEditTag.TabIndex = 2;
@@ -106,7 +108,7 @@
             // btnAddTag
             // 
             this.btnAddTag.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnAddTag.Location = new System.Drawing.Point(682, 19);
+            this.btnAddTag.Location = new System.Drawing.Point(680, 19);
             this.btnAddTag.Name = "btnAddTag";
             this.btnAddTag.Size = new System.Drawing.Size(88, 23);
             this.btnAddTag.TabIndex = 2;
@@ -123,17 +125,17 @@
             this.groupBox2.Controls.Add(this.dgvTagValueList);
             this.groupBox2.Controls.Add(this.btnEditTagValue);
             this.groupBox2.Controls.Add(this.btnAddTagValue);
-            this.groupBox2.Location = new System.Drawing.Point(12, 195);
+            this.groupBox2.Location = new System.Drawing.Point(18, 243);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(776, 176);
+            this.groupBox2.Size = new System.Drawing.Size(774, 254);
             this.groupBox2.TabIndex = 3;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Tag Value";
+            this.groupBox2.Text = "Tag Values";
             // 
             // btnDeleteTagValue
             // 
             this.btnDeleteTagValue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDeleteTagValue.Location = new System.Drawing.Point(682, 77);
+            this.btnDeleteTagValue.Location = new System.Drawing.Point(680, 77);
             this.btnDeleteTagValue.Name = "btnDeleteTagValue";
             this.btnDeleteTagValue.Size = new System.Drawing.Size(88, 23);
             this.btnDeleteTagValue.TabIndex = 3;
@@ -150,21 +152,25 @@
             this.dgvTagValueList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgvTagValueList.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvTagValueList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dgvTagValueList.Location = new System.Drawing.Point(6, 19);
             this.dgvTagValueList.MultiSelect = false;
             this.dgvTagValueList.Name = "dgvTagValueList";
             this.dgvTagValueList.ReadOnly = true;
+            this.dgvTagValueList.RowHeadersVisible = false;
             this.dgvTagValueList.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.dgvTagValueList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvTagValueList.Size = new System.Drawing.Size(670, 150);
+            this.dgvTagValueList.Size = new System.Drawing.Size(668, 220);
             this.dgvTagValueList.TabIndex = 0;
+            this.dgvTagValueList.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvTagValueList_CellMouseClick);
             this.dgvTagValueList.SelectionChanged += new System.EventHandler(this.dgvTagValueList_SelectionChanged);
+            this.dgvTagValueList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvTagValueList_KeyDown);
             // 
             // btnEditTagValue
             // 
             this.btnEditTagValue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnEditTagValue.Location = new System.Drawing.Point(682, 48);
+            this.btnEditTagValue.Location = new System.Drawing.Point(680, 48);
             this.btnEditTagValue.Name = "btnEditTagValue";
             this.btnEditTagValue.Size = new System.Drawing.Size(88, 23);
             this.btnEditTagValue.TabIndex = 4;
@@ -175,7 +181,7 @@
             // btnAddTagValue
             // 
             this.btnAddTagValue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnAddTagValue.Location = new System.Drawing.Point(682, 19);
+            this.btnAddTagValue.Location = new System.Drawing.Point(680, 19);
             this.btnAddTagValue.Name = "btnAddTagValue";
             this.btnAddTagValue.Size = new System.Drawing.Size(88, 23);
             this.btnAddTagValue.TabIndex = 5;
@@ -183,39 +189,16 @@
             this.btnAddTagValue.UseVisualStyleBackColor = true;
             this.btnAddTagValue.Click += new System.EventHandler(this.btnAddTagValue_Click);
             // 
-            // btnCancel
-            // 
-            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCancel.Location = new System.Drawing.Point(713, 377);
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 4;
-            this.btnCancel.Text = "Cancel";
-            this.btnCancel.UseVisualStyleBackColor = true;
-            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-            // 
-            // btnOk
-            // 
-            this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOk.Location = new System.Drawing.Point(632, 377);
-            this.btnOk.Name = "btnOk";
-            this.btnOk.Size = new System.Drawing.Size(75, 23);
-            this.btnOk.TabIndex = 4;
-            this.btnOk.Text = "Ok";
-            this.btnOk.UseVisualStyleBackColor = true;
-            this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
-            // 
             // TagValueView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 413);
-            this.Controls.Add(this.btnOk);
-            this.Controls.Add(this.btnCancel);
+            this.ClientSize = new System.Drawing.Size(810, 509);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Name = "TagValueView";
             this.Text = "Tag Values ";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             ((System.ComponentModel.ISupportInitialize)(this.dgvTagList)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
@@ -233,8 +216,6 @@
         private System.Windows.Forms.Button btnAddTag;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.DataGridView dgvTagValueList;
-        private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.Button btnOk;
         private System.Windows.Forms.Button btnDeleteTagValue;
         private System.Windows.Forms.Button btnEditTagValue;
         private System.Windows.Forms.Button btnAddTagValue;
