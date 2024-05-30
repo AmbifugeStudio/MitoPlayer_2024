@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MitoPlayer_2024.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,5 +15,7 @@ namespace MitoPlayer_2024.Model
         void AddTrackToPlaylist(int id, int playlistId, int trackId, int orderInList, int trackIdInPlaylist);
         void ClearTrackTable();
         void DeleteAllTrackFromProfile(int profileId);
+        List<TrackProperty> GetTrackPropertyListByColumnGroup(String columnGroup);
+        void UpdateTrackProperty(TrackProperty trackProperty);
     }
 }

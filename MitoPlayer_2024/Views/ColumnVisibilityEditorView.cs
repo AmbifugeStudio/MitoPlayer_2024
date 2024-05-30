@@ -13,44 +13,53 @@ namespace MitoPlayer_2024.Views
 {
     public partial class ColumnVisibilityEditorView : Form, IColumnVisibilityEditorView
     {
-        public event EventHandler<ListEventArgs> AddColumn;
-        public event EventHandler<ListEventArgs> RemoveColumn;
+        public event EventHandler<ListEventArgs> ChangeVisibility;
+        public event EventHandler<ListEventArgs> MoveUp;
+        public event EventHandler<ListEventArgs> MoveDown;
         public event EventHandler CloseViewWithOk;
         public event EventHandler CloseViewWithCancel;
-
+        private BindingSource columnListBindingSource { get; set; }
         public ColumnVisibilityEditorView()
         {
             InitializeComponent();
             this.CenterToScreen();
         }
-        private void btnAdd_Click(object sender, EventArgs e)
-        {
-            if(this.listColumns.SelectedItem != null)
-                this.AddColumn?.Invoke(this, new ListEventArgs() { StringField1 = this.listColumns.SelectedItem.ToString() });
-        }
 
-        private void btnRemove_Click(object sender, EventArgs e)
+        public void SetColumnListBindingSource(BindingSource columnList, int selectedIndex = 0)
         {
-            if (this.listVisibleColumns.SelectedItem != null)
-                this.RemoveColumn?.Invoke(this, new ListEventArgs() { StringField1 = this.listVisibleColumns.SelectedItem.ToString() });
-        }
+            this.columnListBindingSource = new BindingSource();
+            this.columnListBindingSource.DataSource = columnList;
+            this.dgvColumnList.DataSource = this.columnListBindingSource.DataSource;
+            this.dgvColumnList.Columns["Id"].Visible = false;
 
-        public void SetAllColumnList(List<string> allColumnList)
-        {
-            this.listColumns.Items.Clear();
-            foreach(String element in allColumnList)
+            if(selectedIndex > 0)
             {
-                this.listColumns.Items.Add(element);
+                this.dgvColumnList.Rows[selectedIndex].Selected = true;
             }
         }
 
-        public void SetVisibleColumnList(List<string> visibleColumnList)
+        private void dgvColumnList_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            this.listVisibleColumns.Items.Clear();
-            foreach (String element in visibleColumnList)
-            {
-                this.listVisibleColumns.Items.Add(element);
-            }
+            if (this.dgvColumnList.SelectedRows != null && this.dgvColumnList.SelectedRows.Count > 0)
+                this.ChangeVisibility?.Invoke(this, new ListEventArgs() { IntegerField1 = Convert.ToInt32(this.dgvColumnList.SelectedRows[0].Cells["Id"].Value) });
+        }
+        private void btnChangeVisibility_Click(object sender, EventArgs e)
+        {
+            if (this.dgvColumnList.SelectedRows != null && this.dgvColumnList.SelectedRows.Count > 0)
+                this.ChangeVisibility?.Invoke(this, new ListEventArgs() { IntegerField1 = Convert.ToInt32(this.dgvColumnList.SelectedRows[0].Cells["Id"].Value) });
+        }
+       
+
+        private void btnMoveUp_Click(object sender, EventArgs e)
+        {
+            if (this.dgvColumnList.SelectedRows != null && this.dgvColumnList.SelectedRows.Count > 0)
+                this.MoveUp?.Invoke(this, new ListEventArgs() { IntegerField1 = Convert.ToInt32(this.dgvColumnList.SelectedRows[0].Cells["Id"].Value) });
+        }
+
+        private void btnMoveDown_Click(object sender, EventArgs e)
+        {
+            if (this.dgvColumnList.SelectedRows != null && this.dgvColumnList.SelectedRows.Count > 0)
+                this.MoveDown?.Invoke(this, new ListEventArgs() { IntegerField1 = Convert.ToInt32(this.dgvColumnList.SelectedRows[0].Cells["Id"].Value) });
         }
 
         private void btnOk_Click(object sender, EventArgs e)
@@ -74,5 +83,7 @@ namespace MitoPlayer_2024.Views
                 this.CloseViewWithCancel?.Invoke(this, new EventArgs());
             }
         }
+
+       
     }
 }

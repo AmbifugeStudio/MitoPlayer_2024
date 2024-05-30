@@ -1,9 +1,12 @@
-﻿using MitoPlayer_2024.Helpers;
+﻿using Google.Protobuf.WellKnownTypes;
+using MitoPlayer_2024.Helpers;
 using MitoPlayer_2024.Models;
 using MySql.Data.MySqlClient;
 using Mysqlx.Crud;
+using MySqlX.XDevAPI.Common;
 using Org.BouncyCastle.Asn1.Mozilla;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
@@ -12,24 +15,82 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
+using static System.Net.WebRequestMethods;
 
 namespace MitoPlayer_2024.Dao
 {
     public class SettingDao : BaseDao, ISettingDao
     {
         private int profileId = -1;
+        private DataBaseBuilderDao databaseBuilderDao { get; set; }
         public SettingDao(string connectionString)
         {
             this.connectionString = connectionString;
+            this.databaseBuilderDao = new DataBaseBuilderDao(connectionString);
         }
-
         public void SetProfileId(int profileId)
         {
             this.profileId = profileId;
         }
+        public void InitializeFirstRun()
+        {
+            if (!this.databaseBuilderDao.TableIsExists("Setting"))
+            {
+                if (this.databaseBuilderDao.BuildDatabase())
+                {
+                    this.CreateBooleanSetting(this.GetNextSettingId(), Settings.FirstRun.ToString(), true, true);
 
+                    this.InitializeGlobalSettings();
 
+                    String colNames = System.Configuration.ConfigurationManager.AppSettings[Settings.PlaylistColumnNames.ToString()];
+                    String colTypes = System.Configuration.ConfigurationManager.AppSettings[Settings.PlaylistColumnTypes.ToString()];
+                    String colVisibility = System.Configuration.ConfigurationManager.AppSettings[Settings.PlaylistColumnVisibility.ToString()];
+                    String[] colNameArray = Array.ConvertAll(colNames.Split(','), s => s);
+                    String[] colTypeArray = Array.ConvertAll(colTypes.Split(','), s => s);
+                    bool[] colVisibilityArray = Array.ConvertAll(colVisibility.Split(','), s => Boolean.Parse(s));
+                    this.InitializeColumns(colNameArray, colTypeArray, colVisibilityArray, "PlaylistColumns");
 
+                    colNames = System.Configuration.ConfigurationManager.AppSettings[Settings.TrackColumnNames.ToString()];
+                    colTypes = System.Configuration.ConfigurationManager.AppSettings[Settings.TrackColumnTypes.ToString()];
+                    colVisibility = System.Configuration.ConfigurationManager.AppSettings[Settings.TrackColumnVisibility.ToString()];
+                    colNameArray = Array.ConvertAll(colNames.Split(','), s => s);
+                    colTypeArray = Array.ConvertAll(colTypes.Split(','), s => s);
+                    colVisibilityArray = Array.ConvertAll(colVisibility.Split(','), s => Boolean.Parse(s));
+                    this.InitializeColumns(colNameArray, colTypeArray, colVisibilityArray, "TracklistColumns");
+                }
+            }
+        }
+        
+        public bool SettingExists(string name, bool withoutProfile = false)
+        {
+            bool result = false;
+
+            using (var connection = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand())
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = "SELECT COUNT(*) FROM Setting WHERE Name = @Name AND ProfileId = @ProfileId";
+                command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = name;
+                if (!withoutProfile)
+                {
+
+                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
+                }
+                else
+                {
+                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = -1;
+                }
+
+                if (Convert.ToInt32(command.ExecuteScalar()) > 0)
+                {
+                    result = true;
+                }
+            }
+
+            return result;
+        }
         public int GetNextSettingId()
         {
             int lastId = -1;
@@ -51,16 +112,8 @@ namespace MitoPlayer_2024.Dao
             }
             return lastId + 1;
         }
-
         public void InitializeGlobalSettings()
         {
-            this.InitializeGlobalStringSetting(Settings.PlaylistColumnNames.ToString());
-            this.InitializeGlobalStringSetting(Settings.PlaylistColumnTypes.ToString());
-            this.InitializeGlobalStringSetting(Settings.PlaylistColumnVisibility.ToString());
-            this.InitializeGlobalStringSetting(Settings.TrackColumnNames.ToString());
-            this.InitializeGlobalStringSetting(Settings.TrackColumnTypes.ToString());
-            this.InitializeGlobalStringSetting(Settings.TrackColumnVisibility.ToString());
-
             this.InitializeGlobalIntegerSetting(Settings.LastGeneratedPlaylistId.ToString());
             this.InitializeGlobalIntegerSetting(Settings.LastGeneratedProfileId.ToString());
             this.InitializeGlobalIntegerSetting(Settings.LastGeneratedTagId.ToString());
@@ -71,7 +124,7 @@ namespace MitoPlayer_2024.Dao
             String stringData = String.Empty;
             stringData = System.Configuration.ConfigurationManager.AppSettings[settingName];
 
-            if (!this.StringSettingExists(settingName,true))
+            if (!this.SettingExists(settingName,true))
             {
                 this.CreateStringSetting(this.GetNextSettingId(),settingName, stringData, true);
             }
@@ -85,7 +138,7 @@ namespace MitoPlayer_2024.Dao
             int integerData = -1;
             integerData = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings[settingName]);
 
-            if (!this.IntegerSettingExists(settingName,true))
+            if (!this.SettingExists(settingName,true))
             {
                 this.CreateIntegerSetting(this.GetNextSettingId(),settingName, integerData, true);
             }
@@ -94,7 +147,20 @@ namespace MitoPlayer_2024.Dao
                 this.SetIntegerSetting(settingName, integerData, true);
             }
         }
+        private void InitializeGlobalBooleanSetting(String settingName)
+        {
+            Boolean boolData = false;
+            boolData = Convert.ToBoolean(System.Configuration.ConfigurationManager.AppSettings[settingName]);
 
+            if (!this.SettingExists(settingName, true))
+            {
+                this.CreateBooleanSetting(this.GetNextSettingId(), settingName, boolData, true);
+            }
+            else
+            {
+                this.SetBooleanSetting(settingName, boolData, true);
+            }
+        }
         public void InitializeProfileSettings()
         {
             this.InitializeStringSetting(Settings.LastOpenDirectoryPath.ToString());
@@ -109,7 +175,7 @@ namespace MitoPlayer_2024.Dao
             String stringData = String.Empty;
             stringData = System.Configuration.ConfigurationManager.AppSettings[settingName];
 
-            if (!this.StringSettingExists(settingName))
+            if (!this.SettingExists(settingName))
             {
                 this.CreateStringSetting(this.GetNextSettingId(),settingName, stringData);
             }
@@ -123,7 +189,7 @@ namespace MitoPlayer_2024.Dao
             int integerData = -1;
             integerData = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings[settingName]);
 
-            if (!this.IntegerSettingExists(settingName))
+            if (!this.SettingExists(settingName))
             {
                 this.CreateIntegerSetting(this.GetNextSettingId(), settingName, integerData);
             }
@@ -132,68 +198,6 @@ namespace MitoPlayer_2024.Dao
                 this.SetIntegerSetting(settingName, integerData);
             }
         }
-
-        public bool StringSettingExists(string name, bool withoutProfile = false)
-        {
-            bool result = false;
-
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
-            {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = "SELECT COUNT(*) FROM Setting WHERE Name = @Name AND ProfileId = @ProfileId";
-                command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = name;
-                if (!withoutProfile)
-                {
-                    
-                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
-                }
-                else
-                {
-                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = -1;
-                }
-
-                if (Convert.ToInt32(command.ExecuteScalar()) > 0)
-                {
-                    result = true;
-                }
-            }
-
-            return result;
-        }
-        public bool IntegerSettingExists(string name, bool withoutProfile = false)
-        {
-            bool result = false;
-
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
-            {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = "SELECT COUNT(*) FROM Setting WHERE Name = @Name AND ProfileId = @ProfileId";
-                command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = name;
-                if (!withoutProfile)
-                {
-                    
-                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
-                }
-                else
-                {
-                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = -1;
-                }
-
-                if (Convert.ToInt32(command.ExecuteScalar()) > 0)
-                {
-                    result = true;
-                }
-            }
-
-            return result;
-        }
-
         public void CreateStringSetting(int id, String name, String value, bool withoutProfile = false)
         {
             using (var connection = new MySqlConnection(connectionString))
@@ -604,6 +608,211 @@ namespace MitoPlayer_2024.Dao
                 catch (MySqlException ex)
                 {
                     MessageBox.Show("Setting is not deleted. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                connection.Close();
+            }
+        }
+
+        public void InitializeColumns(string[] colNames, string[] colTypes, bool[] colVisibility, string columnGroup)
+        {
+            for (int i = 0; i <= colNames.Length - 1; i++)
+            {
+                TrackProperty tp = new TrackProperty();
+                tp.Id = this.GetNextTrackPropertyId();
+                tp.ColumnGroup = columnGroup;
+                tp.Name = colNames[i];
+                tp.Type = colTypes[i];
+                tp.IsEnabled = colVisibility[i];
+                tp.SortingId = i;
+                tp.ProfileId = -1;
+
+                this.CreateTrackProperty(tp);
+            }
+        }
+        public int GetNextTrackPropertyId()
+        {
+            int lastId = -1;
+
+            using (var connection = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand())
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = "SELECT Id FROM TrackProperty ORDER BY Id desc LIMIT 1";
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        lastId = (int)reader[0];
+                    }
+                }
+            }
+            return lastId + 1;
+        }
+        public int GetNextSortingIdInColumnGroup()
+        {
+            int lastId = -1;
+
+            using (var connection = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand())
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = "SELECT SortingId FROM TrackProperty WHERE ColumnGroup = @ColumnGroup ORDER BY SortingId desc LIMIT 1";
+                command.Parameters.Add("@ColumnGroup", MySqlDbType.VarChar).Value = ColumnGroup.TracklistColumns.ToString();
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        lastId = (int)reader[0];
+                    }
+                }
+            }
+            return lastId + 1;
+        }
+        public void CreateTrackProperty(TrackProperty tp)
+        {
+            using (var connection = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand())
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = "INSERT INTO TrackProperty (Id, ColumnGroup, Name, Type, IsEnabled, SortingId, ProfileId) " +
+                    "VALUES (@Id, @ColumnGroup, @Name, @Type, @IsEnabled, @SortingId, @ProfileId)";
+                command.Parameters.Add("@Id", MySqlDbType.Int32).Value = tp.Id;
+                command.Parameters.Add("@ColumnGroup", MySqlDbType.VarChar).Value = tp.ColumnGroup;
+                command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = tp.Name;
+                command.Parameters.Add("@Type", MySqlDbType.VarChar).Value = tp.Type;
+                command.Parameters.Add("@IsEnabled", MySqlDbType.Bit).Value = tp.IsEnabled;
+                command.Parameters.Add("@SortingId", MySqlDbType.Int32).Value = tp.SortingId;
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = tp.ProfileId;
+
+                try
+                {
+                    command.ExecuteNonQuery();
+                }
+                catch (MySqlException ex)
+                {
+                    MessageBox.Show("TrackProperty is not inserted. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                connection.Close();
+            }
+        }
+        public void AddColumn(String name, String type, bool isEnable, string columnGroup, bool withoutProfile = false)
+        {
+            TrackProperty tp = new TrackProperty();
+            tp.Id = this.GetNextTrackPropertyId();
+            tp.ColumnGroup = columnGroup;
+            tp.Name = name;
+            tp.Type = type;
+            tp.IsEnabled = isEnable;
+            tp.SortingId = this.GetNextSortingIdInColumnGroup();
+            if (withoutProfile)
+            {
+                tp.ProfileId = -1;
+            }
+            else
+            {
+                tp.ProfileId = this.profileId;
+            }
+            this.CreateTrackProperty(tp);
+        }
+        
+        public TrackProperty GetTrackPropertyByNameAndGroup(string name, string group)
+        {
+            TrackProperty tp = null;
+
+            using (var connection = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand())
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = "SELECT * FROM TrackProperty WHERE Name = @Name AND ColumnGroup = @ColumnGroup ";
+                using (var reader = command.ExecuteReader())
+                {
+                    tp = new TrackProperty();
+                    while (reader.Read())
+                    {
+                        tp.Id = (int)reader[0];
+                        tp.ColumnGroup = (string)reader[1];
+                        tp.Name = (string)reader[2];
+                        tp.Type = (string)reader[3];
+                        tp.IsEnabled = (bool)reader[4];
+                        tp.SortingId = (int)reader[5];
+                        tp.ProfileId = (int)reader[6];
+                    }
+                }
+            }
+            return tp;
+        }
+
+        public void UpdateColumn(TrackProperty tp, bool withoutProfile = false)
+        {
+            using (var connection = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand())
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"UPDATE TrackProperty SET ColumnGroup = @ColumnGroup, Name = @Name, Type = @Type,
+                                        IsEnable = @IsEnable, SortingId = @SortingId WHERE Id = @Id AND ProfileId = @ProfileId ";
+                command.Parameters.Add("@Id", MySqlDbType.Int32).Value = tp.Id;
+                command.Parameters.Add("@ColumnGroup", MySqlDbType.VarChar).Value = tp.ColumnGroup;
+                command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = tp.Name;
+                command.Parameters.Add("@Type", MySqlDbType.VarChar).Value = tp.Type;
+                command.Parameters.Add("@IsEnabled", MySqlDbType.Bit).Value = tp.IsEnabled;
+                command.Parameters.Add("@SortingId", MySqlDbType.Int32).Value = tp.SortingId;
+
+                if (!withoutProfile)
+                {
+                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
+                }
+                else
+                {
+                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = -1;
+                }
+
+                try
+                {
+                    command.ExecuteNonQuery();
+                }
+                catch (MySqlException ex)
+                {
+                    MessageBox.Show("TrackProperty is not updated. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                connection.Close();
+            }
+        }
+        public void DeleteColumn(int id, bool withoutProfile = false)
+        {
+            using (var connection = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand())
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"DELETE FROM TrackProperty WHERE Id = @Id AND ProfileId = @ProfileId  ";
+                command.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
+                if (!withoutProfile)
+                {
+                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
+                }
+                else
+                {
+                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = -1;
+                }
+
+                try
+                {
+                    command.ExecuteNonQuery();
+                }
+                catch (MySqlException ex)
+                {
+                    MessageBox.Show("TrackProperty is not updated. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 connection.Close();
             }

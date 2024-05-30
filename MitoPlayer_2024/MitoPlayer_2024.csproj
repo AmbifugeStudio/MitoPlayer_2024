@@ -167,9 +167,11 @@
     <Compile Include="Dao\ProfileDao.cs" />
     <Compile Include="Dao\SettingDao.cs" />
     <Compile Include="Dao\TagValueDao.cs" />
+    <Compile Include="Dao\DataBaseBuilderDao.cs" />
     <Compile Include="Helpers\Enums.cs" />
     <Compile Include="Helpers\LabelTimer.cs" />
     <Compile Include="Helpers\ListEventArgs.cs" />
+    <Compile Include="Models\IDataBaseBuilderDao.cs" />
     <Compile Include="Models\IPlaylistDao.cs" />
     <Compile Include="Models\IProfileDao.cs" />
     <Compile Include="Models\ISettingDao.cs" />
@@ -179,6 +181,7 @@
     <Compile Include="Models\Profile.cs" />
     <Compile Include="Models\Tag.cs" />
     <Compile Include="Models\TagValue.cs" />
+    <Compile Include="Models\TrackProperty.cs" />
     <Compile Include="Presenters\AboutPresenter.cs" />
     <Compile Include="Presenters\HarmonizerPresenter.cs" />
     <Compile Include="Presenters\MediaPlayerComponent.cs" />

@@ -24,5 +24,6 @@ namespace MitoPlayer_2024.Models
         void UpdateTagValue(TagValue tag);
         void DeleteTagValue(int id);
         int GetLastObjectId(String tableName);
+
     }
 }

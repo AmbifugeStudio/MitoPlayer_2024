@@ -16,6 +16,7 @@ namespace MitoPlayer_2024.Presenters
     {
         private ITagValueView tagValueEditorView;
         private ITagValueDao tagValueDao;
+
         private ISettingDao settingDao;
         private BindingSource tagListBindingSource { get; set; }
         private BindingSource tagValueListBindingSource { get; set; }
@@ -106,6 +107,7 @@ namespace MitoPlayer_2024.Presenters
             if (tagEditorView.ShowDialog((TagValueView)this.tagValueEditorView) == DialogResult.OK)
             {
                 this.tagValueDao.CreateTag(presenter.newTag);
+                this.settingDao.AddColumn(presenter.newTag.Name, "System.String", true, ColumnGroup.TracklistColumns.ToString());
                 this.tagListTable.Rows.Add(presenter.newTag.Id, presenter.newTag.Name);
             }
         }
@@ -125,8 +127,15 @@ namespace MitoPlayer_2024.Presenters
                 if (tagEditorView.ShowDialog((TagValueView)this.tagValueEditorView) == DialogResult.OK)
                 {
                     this.tagValueDao.UpdateTag(presenter.newTag);
-                    this.tagListTable.Rows[tagIndex]["Name"] = presenter.newTag?.Name;
+                    
+                    TrackProperty tp = this.settingDao.GetTrackPropertyByNameAndGroup((string)tagRow["Name"], ColumnGroup.TracklistColumns.ToString());
+                    if(tp != null)
+                    {
+                        tp.Name = presenter.newTag.Name;
+                        this.settingDao.UpdateColumn(tp);
+                    }
 
+                    this.tagListTable.Rows[tagIndex]["Name"] = presenter.newTag?.Name;
                     this.tagListBindingSource.DataSource = tagListTable;
                     this.tagValueEditorView.SetTagListBindingSource(this.tagListBindingSource);
                 }
@@ -139,6 +148,12 @@ namespace MitoPlayer_2024.Presenters
                 this.tagValueDao.DeleteTag(e.IntegerField1);
 
                 DataRow tagRow = this.tagListTable.Select("Id = " + Convert.ToInt32(this.tagListTable.Rows[e.IntegerField1]["Id"])).First();
+                TrackProperty tp = this.settingDao.GetTrackPropertyByNameAndGroup((string)tagRow["Name"], ColumnGroup.TracklistColumns.ToString());
+                if (tp != null)
+                {
+                    this.settingDao.DeleteColumn(tp.Id);
+                }
+
                 this.tagListTable.Rows.Remove(tagRow);
                 this.tagListBindingSource.DataSource = tagListTable;
                 this.tagValueEditorView.SetTagListBindingSource(this.tagListBindingSource);

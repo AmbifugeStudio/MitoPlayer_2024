@@ -4,13 +4,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace MitoPlayer_2024.Views
 {
     public interface IColumnVisibilityEditorView
     {
-        event EventHandler<ListEventArgs> AddColumn;
-        event EventHandler<ListEventArgs> RemoveColumn;
+        void SetColumnListBindingSource(BindingSource columnList, int selectedIndex = 0);
+        event EventHandler<ListEventArgs> ChangeVisibility;
+        event EventHandler<ListEventArgs> MoveUp;
+        event EventHandler<ListEventArgs> MoveDown;
         event EventHandler CloseViewWithOk;
         event EventHandler CloseViewWithCancel;
 

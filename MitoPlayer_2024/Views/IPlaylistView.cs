@@ -40,7 +40,7 @@ namespace MitoPlayer_2024.Views
         event EventHandler<ListEventArgs> SetQuickListEvent;
 
         void SetPlaylistListBindingSource(BindingSource playlistList, bool[] columnVisibility, int currentPlaylistId);
-        void SetTrackListBindingSource(BindingSource trackList, bool[] columnVisibility);
+        void SetTrackListBindingSource(BindingSource trackList, bool[] columnVisibility, int[] columnSortingId);
         void SetSelectedTrackListBindingSource(BindingSource selectedTrackList);
         void UpdateAfterPlayTrack(int currentTrackIndex);
         void UpdateAfterPlayTrackAfterPause();

@@ -36,6 +36,7 @@ namespace MitoPlayer_2024.Presenters
         public int currentPlaylistId { get; set; }
         public bool[] PlaylistColumnVisibilityArray { get; set; }
         public bool[] TrackColumnVisibilityArray { get; set; }
+        public int[] TrackColumnSortingIdArray { get; set; }
         Dictionary<string, int> columnOrderStates { get; set; }
         private MediaPlayerComponent mediaPLayerComponent { get; set; }
         public PlaylistPresenter(IPlaylistView view, MediaPlayerComponent mediaPlayer, IPlaylistDao playlistDao, ITrackDao trackDao, ISettingDao settingDao)
@@ -47,7 +48,6 @@ namespace MitoPlayer_2024.Presenters
             this.settingDao = settingDao;
 
             this.InitializeDataTables();
-            this.InitializePlaylistListAndTrackList();
 
             this.mediaPLayerComponent = mediaPlayer;
             this.mediaPLayerComponent.Initialize(this.trackListTable); 
@@ -92,44 +92,57 @@ namespace MitoPlayer_2024.Presenters
 
         private void InitializeDataTables()
         {
+            this.InitializePlaylistDataTable();
+            this.InitializeTracklistDataTable();
+            this.InitializePlaylistListAndTrackList();
+        }
+        private void InitializePlaylistDataTable()
+        {
             //PLAYLIST GRID
-            String colNames = this.settingDao.GetStringSetting(Settings.PlaylistColumnNames.ToString(), true);
-            String colTypes = this.settingDao.GetStringSetting(Settings.PlaylistColumnTypes.ToString(), true);
-            String colVisibility = this.settingDao.GetStringSetting(Settings.PlaylistColumnVisibility.ToString(), true);
-            String[] playlistColumnNames = Array.ConvertAll(colNames.Split(','), s => s);
-            String[] playlistColumnTypes = Array.ConvertAll(colTypes.Split(','), s => s);
-            this.PlaylistColumnVisibilityArray = Array.ConvertAll(colVisibility.Split(','), s => Boolean.Parse(s));
-
             this.playlistListBindingSource = new BindingSource();
             this.playlistListTable = new DataTable();
-            for (int i = 0; i <= playlistColumnTypes.Length - 1; i++)
-                this.playlistListTable.Columns.Add(playlistColumnNames[i], Type.GetType(playlistColumnTypes[i]));
+            List<TrackProperty> tpList = new List<TrackProperty>();
+            tpList = this.trackDao.GetTrackPropertyListByColumnGroup(ColumnGroup.PlaylistColumns.ToString());
+            if (tpList != null && tpList.Count > 0)
+            {
+                foreach (TrackProperty tp in tpList)
+                {
+                    this.playlistListTable.Columns.Add(tp.Name, Type.GetType(tp.Type));
+                }
+                this.PlaylistColumnVisibilityArray = tpList.Select(x => x.IsEnabled).ToArray();
+            }
 
             this.SetPlaylistList(this.playlistListTable);
-
+        }
+        private void InitializeTracklistDataTable() { 
             //TRACKLIST GRID
-            colNames = this.settingDao.GetStringSetting(Settings.TrackColumnNames.ToString(), true);
-            colTypes = this.settingDao.GetStringSetting(Settings.TrackColumnTypes.ToString(), true);
-            colVisibility = this.settingDao.GetStringSetting(Settings.TrackColumnVisibility.ToString(), true);
-            String[] trackColumnNames = Array.ConvertAll(colNames.Split(','), s => s);
-            String[] trackColumnTypes = Array.ConvertAll(colTypes.Split(','), s => s);
-            this.TrackColumnVisibilityArray = Array.ConvertAll(colVisibility.Split(','), s => Boolean.Parse(s));
-
             this.trackListBindingSource = new BindingSource();
             this.trackListTable = new DataTable();
             this.columnOrderStates = new Dictionary<string, int>();
-            for (int i = 0; i <= trackColumnNames.Count() - 1; i++)
+            List<TrackProperty> tpList = new List<TrackProperty>();
+            tpList = this.trackDao.GetTrackPropertyListByColumnGroup(ColumnGroup.TracklistColumns.ToString());
+            if (tpList != null && tpList.Count > 0)
             {
-                this.columnOrderStates.Add(trackColumnNames[i], -1);
-                this.trackListTable.Columns.Add(trackColumnNames[i], Type.GetType((trackColumnTypes[i])));
+                foreach (TrackProperty tp in tpList)
+                {
+                    this.columnOrderStates.Add(tp.Name, -1);
+                    this.trackListTable.Columns.Add(tp.Name, Type.GetType(tp.Type));
+                }
+                this.TrackColumnVisibilityArray = tpList.Select(x => x.IsEnabled).ToArray();
+                this.TrackColumnSortingIdArray = tpList.Select(x => x.SortingId).ToArray();
             }
 
             this.SetTrackList(this.trackListTable);
 
             this.selectedTrackListBindingSource = new BindingSource();
             this.selectedTrackListTable = new DataTable();
-            for (int i = 0; i <= trackColumnNames.Count() - 1; i++)
-                this.selectedTrackListTable.Columns.Add(trackColumnNames[i], Type.GetType((trackColumnTypes[i])));
+            if (tpList != null && tpList.Count > 0)
+            {
+                foreach (TrackProperty tp in tpList)
+                {
+                    this.selectedTrackListTable.Columns.Add(tp.Name, Type.GetType(tp.Type));
+                }
+            }
 
             this.SetSelectedTrackList(this.selectedTrackListTable);
         }
@@ -202,7 +215,7 @@ namespace MitoPlayer_2024.Presenters
         private void SetTrackList(DataTable trackListTable)
         {
             this.trackListBindingSource.DataSource = trackListTable;
-            this.playlistView.SetTrackListBindingSource(this.trackListBindingSource, this.TrackColumnVisibilityArray);
+            this.playlistView.SetTrackListBindingSource(this.trackListBindingSource, this.TrackColumnVisibilityArray, this.TrackColumnSortingIdArray);
         }
         private void SetSelectedTrackList(DataTable trackListTable)
         {
@@ -954,11 +967,12 @@ namespace MitoPlayer_2024.Presenters
         private void ShowColumnVisibilityEditorEvent(object sender, EventArgs e)
         {
             ColumnVisibilityEditorView columnVisibilityEditorView = new ColumnVisibilityEditorView();
-            ColumnVisibilityEditorPresenter presenter = new ColumnVisibilityEditorPresenter(columnVisibilityEditorView, this.settingDao);
+            ColumnVisibilityEditorPresenter presenter = new ColumnVisibilityEditorPresenter(columnVisibilityEditorView,this.trackDao, this.settingDao);
             if (columnVisibilityEditorView.ShowDialog((PlaylistView)this.playlistView) == DialogResult.OK)
             {
-                this.TrackColumnVisibilityArray = presenter.ColumnVisibilityArray;
-                this.SetTrackList(this.trackListTable);
+                this.TrackColumnVisibilityArray = presenter.TrackPropertyList.Select(x => x.IsEnabled).ToArray();
+
+                InitializeDataTables();
             }
         }
 

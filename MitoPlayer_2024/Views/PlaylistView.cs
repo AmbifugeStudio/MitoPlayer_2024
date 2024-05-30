@@ -102,7 +102,7 @@ namespace MitoPlayer_2024.Views
             this.dgvPlaylistList.Columns["G"].Width = 20;
 
         }
-        public void SetTrackListBindingSource(BindingSource trackList, bool[] columnVisibility)
+        public void SetTrackListBindingSource(BindingSource trackList, bool[] columnVisibility, int[] columnSortingId)
         {
             this.trackListBindingSource = new BindingSource();
             this.trackListBindingSource.DataSource = trackList;
@@ -110,6 +110,8 @@ namespace MitoPlayer_2024.Views
             for (int i = 0; i <= this.dgvTrackList.Columns.Count - 1; i++)
             {
                 this.dgvTrackList.Columns[i].Visible = columnVisibility[i];
+                this.dgvTrackList.Columns[i].DisplayIndex = columnSortingId[i];
+
             }
 
             int isMissingColumnIndex = this.dgvTrackList.Columns["IsMissing"].Index;

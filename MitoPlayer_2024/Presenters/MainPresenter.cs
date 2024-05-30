@@ -71,7 +71,6 @@ namespace MitoPlayer_2024.Presenters
             this.mainView.DeletePlaylist += DeletePlaylist;
             this.mainView.Preferences += Preferences;
             this.mainView.Exit += Exit;
-
             this.mainView.RemoveMissingTracks += RemoveMissingTracks;
             this.mainView.RemoveDuplicatedTracks += RemoveDuplicatedTracks;
             this.mainView.OrderByTitle += OrderByTitle;
@@ -80,7 +79,6 @@ namespace MitoPlayer_2024.Presenters
             this.mainView.Reverse += Reverse;
             this.mainView.Shuffle += Shuffle;
             this.mainView.Clear += Clear;
-
             this.mainView.PlayTrack += PlayTrack;
             this.mainView.PauseTrack += PauseTrack;
             this.mainView.StopTrack += StopTrack;
@@ -89,9 +87,7 @@ namespace MitoPlayer_2024.Presenters
             this.mainView.RandomTrack += RandomTrack;
             this.mainView.ChangeVolume += ChangeVolume;
             this.mainView.ChangeProgress += ChangeProgress;
-
             this.mainView.About += About;
-
             this.mainView.ScanFiles += ScanFiles;
 
             this.profileDao = new ProfileDao(sqlConnectionString);
@@ -99,6 +95,8 @@ namespace MitoPlayer_2024.Presenters
             this.playlistDao = new PlaylistDao(sqlConnectionString);
             this.trackDao = new TrackDao(sqlConnectionString);
             this.tagValueDao = new TagValueDao(sqlConnectionString);
+
+            this.settingDao.InitializeFirstRun();
 
             this.InitializeProfileAndPlaylist();
 
@@ -153,15 +151,6 @@ namespace MitoPlayer_2024.Presenters
             else if (this.harmonizerView != null && this.actualView.GetType() == typeof(HarmonizerView))
                 ((HarmonizerView)this.harmonizerView).CallStopTrackEvent();
 
-
-            PlaylistView.instance = null;
-            this.playlistView = null;
-            this.playlistPresenter = null;
-
-            TagValueView.instance = null;
-            this.tagValueEditorView = null;
-            this.tagValueEditorPresenter = null;
-
             this.InitializeProfileAndPlaylist();
         }
 
@@ -177,13 +166,23 @@ namespace MitoPlayer_2024.Presenters
         }
         private void ShowPlaylistView(object sender, EventArgs e)
         {
+            PlaylistView.instance = null;
+            this.playlistView = null;
+            this.playlistPresenter = null;
+
             this.playlistView = PlaylistView.GetInstance((MainView)mainView); 
             this.actualView = this.playlistView;
             ((MainView)mainView).SetMenuStripAccessibility(this.actualView);
             this.playlistPresenter = new PlaylistPresenter(this.playlistView, this.mediaPlayerComponent, this.playlistDao, this.trackDao, this.settingDao);
+        
+        
         }
         private void ShowTagValueEditorView(object sender, EventArgs e)
         {
+            TagValueView.instance = null;
+            this.tagValueEditorView = null;
+            this.tagValueEditorPresenter = null;
+
             this.tagValueEditorView = TagValueView.GetInstance((MainView)mainView);
             this.actualView = this.tagValueEditorView;
             ((MainView)mainView).SetMenuStripAccessibility(this.actualView);

@@ -8,6 +8,7 @@ namespace MitoPlayer_2024.Models
 {
     public interface ISettingDao
     {
+        void InitializeFirstRun();
         void SetProfileId(int profileId);
         void InitializeGlobalSettings();
         void InitializeProfileSettings();
@@ -27,6 +28,10 @@ namespace MitoPlayer_2024.Models
         void SetDecimalSetting(String name, Decimal value, bool withoutProfile = false);
         void SetBooleanSetting(String name, Boolean value, bool withoutProfile = false);
 
+        void AddColumn(String name, String type, bool isEnable, string columnGroup, bool withoutProfile = false);
+        void UpdateColumn(TrackProperty tp, bool withoutProfile = false);
+        void DeleteColumn(int id, bool withoutProfile = false);
+        TrackProperty GetTrackPropertyByNameAndGroup(string name, string group);
 
         void ClearSettingTable();
 

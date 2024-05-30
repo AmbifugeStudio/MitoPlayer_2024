@@ -1,6 +1,8 @@
 ﻿using MitoPlayer_2024.Model;
+using MitoPlayer_2024.Models;
 using MySql.Data.MySqlClient;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Windows.Forms;
 
@@ -20,9 +22,6 @@ namespace MitoPlayer_2024.Dao
 
         #region OPEN FILES
 
-        /*
-         * szám lekérése a path alapján
-         */
         public Track GetTrackByPath(String path)
         {
             Track track = null;
@@ -144,5 +143,68 @@ namespace MitoPlayer_2024.Dao
             }
         }
 
+
+
+        public List<TrackProperty> GetTrackPropertyListByColumnGroup(String columnGroup)
+        {
+            List<TrackProperty> tpList = null;
+
+            using (var connection = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand())
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = "SELECT * FROM TrackProperty WHERE ColumnGroup = @ColumnGroup ";
+                command.Parameters.Add("@ColumnGroup", MySqlDbType.VarChar).Value = columnGroup;
+                using (var reader = command.ExecuteReader())
+                {
+                    tpList = new List<TrackProperty>();
+                    while (reader.Read())
+                    {
+                        TrackProperty tp = new TrackProperty();
+                        tp.Id = (int)reader[0];
+                        tp.ColumnGroup = (string)reader[1];
+                        tp.Name = (string)reader[2];
+                        tp.Type = (string)reader[3];
+                        tp.IsEnabled = Convert.ToBoolean(reader[4]);
+                        tp.SortingId =(int)reader[5];
+                        tp.ProfileId = (int)reader[6];
+                        tpList.Add(tp);
+                    }
+                }
+            }
+            return tpList;
+        }
+        public void UpdateTrackProperty(TrackProperty trackProperty)
+        {
+            using (var connection = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand())
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"UPDATE TrackProperty 
+                                            SET ColumnGroup = @ColumnGroup, Name = @Name, Type = @Type, IsEnabled = @IsEnabled, 
+                                            SortingId = @SortingId, ProfileId = @ProfileId 
+                                            WHERE Id = @Id";
+                command.Parameters.Add("@Id", MySqlDbType.Int32).Value = trackProperty.Id;
+                command.Parameters.Add("@ColumnGroup", MySqlDbType.VarChar).Value = trackProperty.ColumnGroup;
+                command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = trackProperty.Name;
+                command.Parameters.Add("@Type", MySqlDbType.VarChar).Value = trackProperty.Type;
+                command.Parameters.Add("@IsEnabled", MySqlDbType.Bit).Value = trackProperty.IsEnabled;
+                command.Parameters.Add("@SortingId", MySqlDbType.Int32).Value = trackProperty.SortingId;
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = -1;
+                try
+                {
+                    command.ExecuteNonQuery();
+                }
+                catch (MySqlException ex)
+                {
+                    MessageBox.Show("TrackProperty is not updated. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                connection.Close();
+            }
+        }
     }
 }

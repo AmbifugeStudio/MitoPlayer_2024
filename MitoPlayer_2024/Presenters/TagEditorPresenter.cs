@@ -21,7 +21,7 @@ namespace MitoPlayer_2024.Presenters
         public Tag newTag;
         private int lastGeneratedTagId;
 
-        public TagEditorPresenter(ITagEditorView tagEditorView, ITagValueDao tagValueDao, ISettingDao settingDao)
+        public TagEditorPresenter(ITagEditorView tagEditorView, ITagValueDao tagValueDao,ISettingDao settingDao)
         {
             this.tagEditorView = tagEditorView;
             this.tagValueDao = tagValueDao;

@@ -6,8 +6,25 @@ using System.Threading.Tasks;
 
 namespace MitoPlayer_2024.Helpers
 {
+    public enum ColumnGroup
+    {
+        PlaylistColumns,
+        TracklistColumns
+    }
+    public enum TableName
+    {
+        Playlist,
+        Track,
+        PlaylistContent,
+        Tag,
+        TagValue,
+        Profile,
+        Setting,
+        TrackProperty
+    }
     public enum Settings
     {
+        FirstRun,
         Volume,       
         LastOpenFilesFilterIndex,
         LastOpenDirectoryPath,
