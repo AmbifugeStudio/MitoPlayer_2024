@@ -12,48 +12,51 @@ namespace MitoPlayer_2024.Presenters
 {
     internal class PreferencesPresenter
     {
-        private IPreferencesView preferencesView;
-        private IPlaylistDao playlistDao;
+        private IPreferencesView view;
         private ITrackDao trackDao;
+        private ITagDao tagDao;
         private IProfileDao profileDao;
         private ISettingDao settingDao;
 
         public bool databaseCleared = false;
-        public PreferencesPresenter(IPreferencesView preferencesView, IPlaylistDao playlistDao, ITrackDao trackDao,IProfileDao profileDao, ISettingDao settingDao)
+        public PreferencesPresenter(IPreferencesView view, ITrackDao trackDao,ITagDao tagDao, IProfileDao profileDao, ISettingDao settingDao)
         {
-            this.preferencesView = preferencesView;
-            this.playlistDao = playlistDao;
+            this.view = view;
             this.trackDao = trackDao;
+            this.tagDao = tagDao;
             this.profileDao = profileDao;
             this.settingDao = settingDao;
 
-            this.preferencesView.CloseViewWithOkEvent += CloseViewWithOkEvent;
-            this.preferencesView.CloseViewWithCancelEvent += CloseViewWithCancelEvent;
-            this.preferencesView.ClearDatabaseEvent += ClearDatabaseEvent;
+            this.view.CloseViewWithOkEvent += CloseViewWithOkEvent;
+            this.view.CloseViewWithCancelEvent += CloseViewWithCancelEvent;
+            this.view.ClearDatabaseEvent += ClearDatabaseEvent;
         }
 
         private void ClearDatabaseEvent(object sender, EventArgs e)
         {
             if (MessageBox.Show("Do you really want delete the content of the database? All data will be lost!", "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK)
             {
-                this.playlistDao.ClearPlaylistTable();
-                this.playlistDao.ClearPlaylistContentTable();
+                this.settingDao.ClearTrackPropertyTable();
+
+                this.tagDao.ClearTagTable();
                 this.trackDao.ClearTrackTable();
-                this.profileDao.ClearProfileTable();
+                this.trackDao.ClearPlaylistTable();
                 this.settingDao.ClearSettingTable();
+                this.profileDao.ClearProfileTable();
+                
                 this.databaseCleared = true;
             }
                 
         }
         private void CloseViewWithOkEvent(object sender, EventArgs e)
         {
-            ((PreferencesView)this.preferencesView).DialogResult = DialogResult.OK;
-            ((PreferencesView)this.preferencesView).Close();
+            ((PreferencesView)this.view).DialogResult = DialogResult.OK;
+            ((PreferencesView)this.view).Close();
         }
         private void CloseViewWithCancelEvent(object sender, EventArgs e)
         {
-            ((PreferencesView)this.preferencesView).DialogResult = DialogResult.Cancel;
-            ((PreferencesView)this.preferencesView).Close();
+            ((PreferencesView)this.view).DialogResult = DialogResult.Cancel;
+            ((PreferencesView)this.view).Close();
         }
     }
 }

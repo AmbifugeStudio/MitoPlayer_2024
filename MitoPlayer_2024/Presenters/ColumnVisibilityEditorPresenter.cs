@@ -12,7 +12,7 @@ namespace MitoPlayer_2024.Presenters
 {
     public class ColumnVisibilityEditorPresenter
     {
-        private IColumnVisibilityEditorView columnVisibilityEditorView;
+        private IColumnVisibilityEditorView view;
         private ITrackDao trackDao;
         private ISettingDao settingDao;
         private List<String> allColumnList;
@@ -22,17 +22,17 @@ namespace MitoPlayer_2024.Presenters
         private BindingSource trackPropertyListBindingSource { get; set; }
         public List<TrackProperty> TrackPropertyList { get; set; }
 
-        public ColumnVisibilityEditorPresenter(IColumnVisibilityEditorView columnVisibilityEditorView,ITrackDao trackDao, ISettingDao settingDao)
+        public ColumnVisibilityEditorPresenter(IColumnVisibilityEditorView view, ITrackDao trackDao, ISettingDao settingDao)
         {
-            this.columnVisibilityEditorView = columnVisibilityEditorView;
+            this.view = view;
             this.trackDao = trackDao;
             this.settingDao = settingDao;
 
-            this.columnVisibilityEditorView.ChangeVisibility += ChangeVisibility;
-            this.columnVisibilityEditorView.MoveUp += MoveUp;
-            this.columnVisibilityEditorView.MoveDown += MoveDown;
-            this.columnVisibilityEditorView.CloseViewWithCancel += CloseViewWithCancel;
-            this.columnVisibilityEditorView.CloseViewWithOk += CloseViewWithOk;
+            this.view.ChangeVisibility += ChangeVisibility;
+            this.view.MoveUp += MoveUp;
+            this.view.MoveDown += MoveDown;
+            this.view.CloseViewWithCancel += CloseViewWithCancel;
+            this.view.CloseViewWithOk += CloseViewWithOk;
 
             this.InitializeDataTables();
         }
@@ -40,42 +40,43 @@ namespace MitoPlayer_2024.Presenters
         private void InitializeDataTables()
         {
             this.trackPropertyListBindingSource = new BindingSource();
-            trackPropertyTable = new DataTable();
-            trackPropertyTable.Columns.Add("Id", typeof(int));
-            trackPropertyTable.Columns.Add("Name", typeof(string));
-            trackPropertyTable.Columns.Add("IsEnabled", typeof(bool));
+            this.trackPropertyTable = new DataTable();
+            this.trackPropertyTable.Columns.Add("Id", typeof(int));
+            this.trackPropertyTable.Columns.Add("Name", typeof(string));
+            this.trackPropertyTable.Columns.Add("IsEnabled", typeof(bool));
 
-            this.TrackPropertyList = this.trackDao.GetTrackPropertyListByColumnGroup(ColumnGroup.TracklistColumns.ToString());
+            this.TrackPropertyList = this.settingDao.GetTrackPropertyListByColumnGroup(ColumnGroup.TracklistColumns.ToString(),false,true);
 
             if(this.TrackPropertyList != null && this.TrackPropertyList.Count > 0)
             {
                 this.TrackPropertyList = this.TrackPropertyList.OrderBy(x => x.SortingId).ToList();
                 foreach (TrackProperty tp in this.TrackPropertyList)
                 {
-                    trackPropertyTable.Rows.Add(tp.Id, tp.Name, tp.IsEnabled);
+                    this.trackPropertyTable.Rows.Add(tp.Id, tp.Name, tp.IsEnabled);
                 }
             }
 
-            this.trackPropertyListBindingSource.DataSource = trackPropertyTable;
-            this.columnVisibilityEditorView.SetColumnListBindingSource(this.trackPropertyListBindingSource);
+            this.trackPropertyListBindingSource.DataSource = this.trackPropertyTable;
+            this.view.SetColumnListBindingSource(this.trackPropertyListBindingSource);
         }
 
         private void ChangeVisibility(object sender, Helpers.ListEventArgs e)
         {
             int selectedIndex = 0;
-            trackPropertyTable.Rows.Clear();
-            for(int i = 0;i<=this.TrackPropertyList.Count-1;i++)
+            this.trackPropertyTable.Rows.Clear();
+            for(int i = 0; i <= this.TrackPropertyList.Count - 1; i++)
             {
                 if (this.TrackPropertyList[i].Id == e.IntegerField1)
                 {
                     this.TrackPropertyList[i].IsEnabled = !this.TrackPropertyList[i].IsEnabled;
                     selectedIndex = i;
+                    break;
                 }
-                trackPropertyTable.Rows.Add(this.TrackPropertyList[i].Id, this.TrackPropertyList[i].Name, this.TrackPropertyList[i].IsEnabled);
+                this.trackPropertyTable.Rows.Add(this.TrackPropertyList[i].Id, this.TrackPropertyList[i].Name, this.TrackPropertyList[i].IsEnabled);
             }
 
             this.trackPropertyListBindingSource.DataSource = trackPropertyTable;
-            this.columnVisibilityEditorView.SetColumnListBindingSource(this.trackPropertyListBindingSource, selectedIndex);
+            this.view.SetColumnListBindingSource(this.trackPropertyListBindingSource, selectedIndex);
         }
 
         private void MoveUp(object sender, Helpers.ListEventArgs e)
@@ -102,7 +103,7 @@ namespace MitoPlayer_2024.Presenters
             }
 
             this.trackPropertyListBindingSource.DataSource = trackPropertyTable;
-            this.columnVisibilityEditorView.SetColumnListBindingSource(this.trackPropertyListBindingSource, selectedIndex);
+            this.view.SetColumnListBindingSource(this.trackPropertyListBindingSource, selectedIndex);
         } 
         private void MoveDown(object sender, Helpers.ListEventArgs e)
         {
@@ -128,7 +129,7 @@ namespace MitoPlayer_2024.Presenters
             }
 
             this.trackPropertyListBindingSource.DataSource = trackPropertyTable;
-            this.columnVisibilityEditorView.SetColumnListBindingSource(this.trackPropertyListBindingSource, selectedIndex);
+            this.view.SetColumnListBindingSource(this.trackPropertyListBindingSource, selectedIndex);
         }
         private void CloseViewWithOk(object sender, EventArgs e)
         {
@@ -139,17 +140,17 @@ namespace MitoPlayer_2024.Presenters
                 {
                     tp.SortingId = sortingId;
                     sortingId++;
-                    this.trackDao.UpdateTrackProperty(tp);
+                    this.settingDao.UpdateTrackProperty(tp);
                 }
             }
 
-            ((ColumnVisibilityEditorView)this.columnVisibilityEditorView).DialogResult = DialogResult.OK;
-            ((ColumnVisibilityEditorView)this.columnVisibilityEditorView).Close();
+            ((ColumnVisibilityEditorView)this.view).DialogResult = DialogResult.OK;
+            ((ColumnVisibilityEditorView)this.view).Close();
         }
         private void CloseViewWithCancel(object sender, EventArgs e)
         {
-            ((ColumnVisibilityEditorView)this.columnVisibilityEditorView).DialogResult = DialogResult.Cancel;
-            ((ColumnVisibilityEditorView)this.columnVisibilityEditorView).Close();
+            ((ColumnVisibilityEditorView)this.view).DialogResult = DialogResult.Cancel;
+            ((ColumnVisibilityEditorView)this.view).Close();
         }
     }
 }

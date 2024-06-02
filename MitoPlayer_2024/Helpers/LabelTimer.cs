@@ -27,7 +27,6 @@ namespace MitoPlayer_2024.Helpers
                 t.Stop();
                 t.Dispose();
             };
-           
         }
 
     }

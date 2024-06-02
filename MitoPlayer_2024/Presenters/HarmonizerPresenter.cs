@@ -1,4 +1,5 @@
-﻿using MitoPlayer_2024.Model;
+﻿using MitoPlayer_2024.Helpers;
+using MitoPlayer_2024.Model;
 using MitoPlayer_2024.Models;
 using MitoPlayer_2024.Views;
 using System;
@@ -12,80 +13,64 @@ namespace MitoPlayer_2024.Presenters
 {
     internal class HarmonizerPresenter
     {
-        internal DataTable trackListTable;
-        internal int currentPlaylistId;
-        private IHarmonizerView harmonizerView;
-        private IPlaylistDao playlistDao;
-        private ITrackDao trackDao;
-        private ISettingDao settingDao;
+        public DataTable trackListTable { get; set; }
+        private IHarmonizerView view { get; set; }
+        private ITrackDao trackDao { get; set; }
+        private ISettingDao settingDao { get; set; }
         private MediaPlayerComponent mediaPLayerComponent { get; set; }
 
-        public HarmonizerPresenter(IHarmonizerView harmonizerView, MediaPlayerComponent mediaPlayer, IPlaylistDao playlistDao, ITrackDao trackDao, ISettingDao settingDao)
+        public HarmonizerPresenter(IHarmonizerView view, MediaPlayerComponent mediaPlayer, ITrackDao trackDao, ISettingDao settingDao)
         {
-            this.harmonizerView = harmonizerView;
-            this.playlistDao = playlistDao;
+            this.view = view;
             this.trackDao = trackDao;
             this.settingDao = settingDao;
-            this.mediaPLayerComponent = mediaPLayerComponent;
+            this.mediaPLayerComponent = mediaPlayer;
+            this.mediaPLayerComponent.Initialize(this.trackListTable);
+            this.InitializeVolume();
 
-            this.harmonizerView.Show();
+            this.view.Show();
         }
-
-        internal void AddTracksToTrackList(List<Track> trackList)
+        private void InitializeVolume()
+        {
+            int volume = this.settingDao.GetIntegerSetting(Settings.Volume.ToString());
+            if (volume == -1)
+                volume = 50;
+            this.view.SetVolume(volume);
+            this.mediaPLayerComponent.MediaPlayer.settings.volume = volume;
+        }
+        public void CallAddTrackToTrackListEvent(List<Track> trackList, int dragIndex)
         {
         }
-
-        internal void Clear()
+        public void CallChangeProgressEvent(int integerField1, int integerField2)
         {
         }
-
-
-        internal void OrderByArtist()
+        public void CallChangeVolumeEvent(int integerField1)
         {
         }
-
-        internal void OrderByFileName()
+        public void OrderByArtist()
         {
         }
-
-        internal void OrderByTitle()
+        public void OrderByFileName()
         {
         }
-
-
-      
-
-        internal void RemoveDuplicatedTracks()
+        public void OrderByTitle()
         {
         }
-
-        internal void RemoveMissingTracks()
+        public void Reverse()
         {
         }
-
-        internal void Reverse()
+        public void Shuffle()
         {
         }
-
-        internal void Shuffle()
+        public void RemoveDuplicatedTracks()
         {
         }
-
-      
-
-        internal void CallAddTrackToTrackListEvent(List<Track> trackList, int dragIndex)
+        public void RemoveMissingTracks()
         {
-  
         }
-
-        internal void CallChangeProgressEvent(int integerField1, int integerField2)
+        public void Clear()
         {
-            
         }
-
-        internal void CallChangeVolumeEvent(int integerField1)
-        {
-           
-        }
+       
     }
 }

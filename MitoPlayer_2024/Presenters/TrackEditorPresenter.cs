@@ -20,7 +20,7 @@ namespace MitoPlayer_2024.Presenters
         private ISettingDao settingDao;
         private MediaPlayerComponent mediaPLayerComponent { get; set; }
 
-        public TrackEditorPresenter(ITrackEditorView trackEditorView, MediaPlayerComponent mediaPlayerComponent, IPlaylistDao playlistDao, ITrackDao trackDao, ISettingDao settingDao)
+        public TrackEditorPresenter(ITrackEditorView trackEditorView, MediaPlayerComponent mediaPlayerComponent, ITrackDao trackDao, ISettingDao settingDao)
         {
             this.trackEditorView = trackEditorView;
             this.playlistDao = playlistDao;

@@ -16,10 +16,6 @@ namespace MitoPlayer_2024.Models
         public int SortingId { get; set; }
         public int ProfileId { get; set; }
 
-        public TrackProperty()
-        {
-
-
-        }
+        public TrackProperty(){ }
     }
 }

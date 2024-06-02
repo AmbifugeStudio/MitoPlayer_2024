@@ -20,9 +20,7 @@ namespace MitoPlayer_2024.Views
 
         #region SINGLETON
 
-        private static TrackEditorView instance;
-
-        //MDI nélkül kiveszed a containert a pm-ből
+        public static TrackEditorView instance;
         public static TrackEditorView GetInstance(Form mainView)
         {
             if (instance == null || instance.IsDisposed)

@@ -10,37 +10,11 @@ namespace MitoPlayer_2024.Dao
 {
     public class ProfileDao : BaseDao, IProfileDao
     {
-
         public ProfileDao(string connectionString)
         {
             this.connectionString = connectionString;
         }
-        public Profile GetActiveProfile()
-        {
-            Profile profile = null;
-
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
-            {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = "SELECT * FROM Profile WHERE IsActive = true ";
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        profile = new Profile();
-                        profile.Id = (int)reader[0];
-                        profile.Name = reader[1].ToString();
-                        profile.IsActive = true;
-                        break;
-                    }
-                }
-            }
-            return profile;
-        }
-        public int GetLastObjectId(String tableName)
+        public override int GetNextId(String tableName)
         {
             int lastId = -1;
 
@@ -50,7 +24,11 @@ namespace MitoPlayer_2024.Dao
                 connection.Open();
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = "SELECT Id FROM " + tableName + " ORDER BY Id desc LIMIT 1";
+                command.CommandText = @"SELECT Id 
+                                        FROM " + tableName + " " +
+                                        "ORDER BY Id " +
+                                        "desc LIMIT 1";
+
                 using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())
@@ -58,8 +36,9 @@ namespace MitoPlayer_2024.Dao
                         lastId = (int)reader[0];
                     }
                 }
+                connection.Close();
             }
-            return lastId;
+            return lastId + 1;
         }
         public void CreateProfile(Profile profile)
         {
@@ -69,7 +48,12 @@ namespace MitoPlayer_2024.Dao
                 connection.Open();
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = "INSERT INTO Profile values (@Id, @Name, @IsActive)";
+                command.CommandText = @"INSERT INTO Profile 
+                                        values ( 
+                                        @Id, 
+                                        @Name, 
+                                        @IsActive)";
+
                 command.Parameters.Add("@Id", MySqlDbType.Int32).Value = profile.Id;
                 command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = profile.Name;
                 command.Parameters.Add("@IsActive", MySqlDbType.Bit).Value = profile.IsActive;
@@ -84,6 +68,36 @@ namespace MitoPlayer_2024.Dao
                 connection.Close();
             }
         }
+
+        public Profile GetActiveProfile()
+        {
+            Profile profile = null;
+
+            using (var connection = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand())
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"SELECT * 
+                                        FROM Profile 
+                                        WHERE IsActive = true ";
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        profile = new Profile();
+                        profile.Id = (int)reader[0];
+                        profile.Name = (string)reader[1];
+                        profile.IsActive = true;
+                        break;
+                    }
+                }
+                connection.Close();
+            }
+            return profile;
+        }
         public Profile GetProfile(int id)
         {
             Profile profile = null;
@@ -94,17 +108,22 @@ namespace MitoPlayer_2024.Dao
                 connection.Open();
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = "SELECT * FROM Profile WHERE Id = @Id ";
-                command.Parameters.Add("@Id", MySqlDbType.VarChar).Value = id;
+                command.CommandText = @"SELECT * 
+                                        FROM Profile 
+                                        WHERE Id = @Id ";
+
+                command.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
                 using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())
                     {
                         profile = new Profile();
                         profile.Id = (int)reader[0];
-                        profile.Name = reader[1].ToString();
+                        profile.Name = (string)reader[1];
+                        profile.IsActive = Convert.ToBoolean(reader[2]);
                     }
                 }
+                connection.Close();
             }
             return profile;
         }
@@ -118,7 +137,10 @@ namespace MitoPlayer_2024.Dao
                 connection.Open();
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = "SELECT * FROM Profile WHERE Name = @Name ";
+                command.CommandText = @"SELECT * 
+                                        FROM Profile 
+                                        WHERE Name = @Name ";
+
                 command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = name;
                 using (var reader = command.ExecuteReader())
                 {
@@ -126,9 +148,11 @@ namespace MitoPlayer_2024.Dao
                     {
                         profile = new Profile();
                         profile.Id = (int)reader[0];
-                        profile.Name = reader[1].ToString();
+                        profile.Name = (string)reader[1];
+                        profile.IsActive = Convert.ToBoolean(reader[2]);
                     }
                 }
+                connection.Close();
             }
             return profile;
         }
@@ -142,7 +166,9 @@ namespace MitoPlayer_2024.Dao
                 connection.Open();
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = "SELECT * FROM Profile ";
+                command.CommandText = @"SELECT * 
+                                        FROM Profile ";
+
                 using (var reader = command.ExecuteReader())
                 {
                     profileList = new List<Profile>();
@@ -150,14 +176,16 @@ namespace MitoPlayer_2024.Dao
                     {
                         Profile profile = new Profile();
                         profile.Id = (int)reader[0];
-                        profile.Name = reader[1].ToString();
+                        profile.Name = (string)reader[1];
                         profile.IsActive = Convert.ToBoolean(reader[2]);
                         profileList.Add(profile);
                     }
                 }
+                connection.Close();
             }
             return profileList;
         }
+
         public void UpdateProfile(Profile profile)
         {
             using (var connection = new MySqlConnection(connectionString))
@@ -166,7 +194,12 @@ namespace MitoPlayer_2024.Dao
                 connection.Open();
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = @"UPDATE Profile SET Name = @Name, IsActive = @IsActive WHERE Id = @Id ";
+                command.CommandText = @"UPDATE Profile 
+                                        SET 
+                                        Name = @Name, 
+                                        IsActive = @IsActive 
+                                        WHERE Id = @Id ";
+
                 command.Parameters.Add("@Id", MySqlDbType.Int32).Value = profile.Id;
                 command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = profile.Name;
                 command.Parameters.Add("@IsActive", MySqlDbType.Bit).Value = profile.IsActive;
@@ -181,6 +214,8 @@ namespace MitoPlayer_2024.Dao
                 connection.Close();
             }
         }
+
+
         public void DeleteProfile(int id)
         {
             using (var connection = new MySqlConnection(connectionString))
@@ -189,7 +224,9 @@ namespace MitoPlayer_2024.Dao
                 connection.Open();
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = "DELETE FROM Profile WHERE Id = @Id ";
+                command.CommandText = @"DELETE FROM Profile 
+                                        WHERE Id = @Id ";
+
                 command.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
                 try
                 {
@@ -197,15 +234,11 @@ namespace MitoPlayer_2024.Dao
                 }
                 catch (MySqlException ex)
                 {
-                    MessageBox.Show("Object is not deleted. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Profile is not deleted. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 connection.Close();
             }
-
         }
-
-       
-
         public void ClearProfileTable()
         {
             using (var connection = new MySqlConnection(connectionString))
@@ -215,10 +248,10 @@ namespace MitoPlayer_2024.Dao
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
                 command.CommandText = "DELETE FROM Profile ";
+
                 try
                 {
                     command.ExecuteNonQuery();
-                    //MessageBox.Show("Track deleted succesfully.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (MySqlException ex)
                 {

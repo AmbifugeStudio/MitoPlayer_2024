@@ -16,78 +16,70 @@ namespace MitoPlayer_2024.Presenters
 {
     public class PlaylistEditorPresenter
     {
-        private IPlaylistEditorView playlistEditorView;
-        private IPlaylistDao playlistDao;
+        private IPlaylistEditorView view;
+        private ITrackDao trackDao;
         private ISettingDao settingDao;
         private bool isEditMode = false;
         public Playlist newPlaylist;
         private int lastGeneratedPlaylistId;
 
-        public PlaylistEditorPresenter(IPlaylistEditorView playlistEditorView, IPlaylistDao playlistDao, ISettingDao settingDao)
+        public PlaylistEditorPresenter(IPlaylistEditorView view, ITrackDao trackDao, ISettingDao settingDao)
         {
-            this.playlistEditorView = playlistEditorView;
-            this.playlistDao = playlistDao;
+            this.view = view;
+            this.trackDao = trackDao;
             this.settingDao = settingDao;
             this.isEditMode = false;
 
             this.lastGeneratedPlaylistId = this.settingDao.GetIntegerSetting(Settings.LastGeneratedPlaylistId.ToString(),true);
 
             this.lastGeneratedPlaylistId = this.lastGeneratedPlaylistId + 1;
-            ((PlaylistEditorView)this.playlistEditorView).SetPlaylistName("New Playlist "+ this.lastGeneratedPlaylistId.ToString());
+            ((PlaylistEditorView)this.view).SetPlaylistName("New Playlist " + this.lastGeneratedPlaylistId.ToString());
 
             this.settingDao.SetIntegerSetting(Settings.LastGeneratedPlaylistId.ToString(), this.lastGeneratedPlaylistId, true);
 
-            this.playlistEditorView.CreateOrEditPlaylist += CreateOrEditPlaylist;
-            this.playlistEditorView.ClosePlaylistEditor += ClosePlaylistEditor;
+            this.view.CreateOrEditPlaylist += CreateOrEditPlaylist;
+            this.view.ClosePlaylistEditor += ClosePlaylistEditor;
         }
 
-        public PlaylistEditorPresenter(IPlaylistEditorView view, IPlaylistDao playlistDao, Playlist playlist)
+        public PlaylistEditorPresenter(IPlaylistEditorView view, ITrackDao trackDao, Playlist playlist)
         {
-            this.playlistEditorView = view;
-            this.playlistDao = playlistDao;
+            this.view = view;
+            this.trackDao = trackDao;
             this.newPlaylist = playlist;
             this.isEditMode = true;
 
-            ((PlaylistEditorView)this.playlistEditorView).SetPlaylistName(playlist.Name, true);
+            ((PlaylistEditorView)this.view).SetPlaylistName(playlist.Name, true);
             
-            this.playlistEditorView.CreateOrEditPlaylist += CreateOrEditPlaylist;
-            this.playlistEditorView.ClosePlaylistEditor += ClosePlaylistEditor;
+            this.view.CreateOrEditPlaylist += CreateOrEditPlaylist;
+            this.view.ClosePlaylistEditor += ClosePlaylistEditor;
         }
         private void ClosePlaylistEditor(object sender, EventArgs e)
         {
-            ((PlaylistEditorView)this.playlistEditorView).DialogResult = DialogResult.Cancel;
-            ((PlaylistEditorView)this.playlistEditorView).Close();
+            ((PlaylistEditorView)this.view).DialogResult = DialogResult.Cancel;
+            ((PlaylistEditorView)this.view).Close();
         }
         private void CreateOrEditPlaylist(object sender, Helpers.ListEventArgs e)
         {
-            ((PlaylistEditorView)this.playlistEditorView).DialogResult = DialogResult.None;
+            ((PlaylistEditorView)this.view).DialogResult = DialogResult.None;
 
             if (this.isEditMode)
             {
                 if (!String.IsNullOrEmpty(e.StringField1))
                 {
                     if (e.StringField1.Equals(this.newPlaylist.Name)){
-                        ((PlaylistEditorView)this.playlistEditorView).DialogResult = DialogResult.OK;
+                        ((PlaylistEditorView)this.view).DialogResult = DialogResult.OK;
                     }
                     else
                     {
-                        Playlist playlist = this.playlistDao.GetPlaylistByName(e.StringField1);
+                        Playlist playlist = this.trackDao.GetPlaylistByName(e.StringField1);
                         if(playlist != null)
                         {
                             MessageBox.Show("Playlist name already exists!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
                         {
-                            try
-                            {
-                                this.newPlaylist.Name = e.StringField1;
-                                ((PlaylistEditorView)this.playlistEditorView).DialogResult = DialogResult.OK;
-                            }
-                            catch (Exception ex)
-                            {
-                                MessageBox.Show("Playlist hasn't been updated!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            }
-
+                            this.newPlaylist.Name = e.StringField1;
+                            ((PlaylistEditorView)this.view).DialogResult = DialogResult.OK;
                         }
                     }
                 }
@@ -100,7 +92,7 @@ namespace MitoPlayer_2024.Presenters
             {
                 if (!String.IsNullOrEmpty(e.StringField1))
                 {
-                    List<Playlist> playlistList = this.playlistDao.GetAllPlaylist();
+                    List<Playlist> playlistList = this.trackDao.GetAllPlaylist();
                     if (playlistList != null && playlistList.Count > 0)
                     {
                         if (playlistList.Exists(x => x.Name.Equals(e.StringField1)))
@@ -109,39 +101,14 @@ namespace MitoPlayer_2024.Presenters
                         }
                         else
                         {
-                            try
-                            {
-                                Playlist playlist = new Playlist();
-                                playlist.Id = this.GetNewPlaylistId();
-                                playlist.Name = e.StringField1;
-                                playlist.OrderInList = playlistList.Count;
-                                playlist.IsActive = false;
-                                this.newPlaylist = playlist;
-                                ((PlaylistEditorView)this.playlistEditorView).DialogResult = DialogResult.OK;
-                            }
-                            catch (Exception ex)
-                            {
-                                MessageBox.Show("Playlist hasn't been created!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            }
-
-                        }
-                    }
-                    else
-                    {
-                        try
-                        {
                             Playlist playlist = new Playlist();
-                            playlist.Id = this.GetNewPlaylistId();
+                            playlist.Id = this.trackDao.GetNextId(TableName.Playlist.ToString());
                             playlist.Name = e.StringField1;
-                            playlist.OrderInList = 0;
+                            playlist.OrderInList = playlistList.Count;
+                            playlist.QuickListGroup = 0;
                             playlist.IsActive = false;
-                            this.playlistDao.CreatePlaylist(playlist);
                             this.newPlaylist = playlist;
-                            ((PlaylistEditorView)this.playlistEditorView).DialogResult = DialogResult.OK;
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show("Playlist hasn't been created!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            ((PlaylistEditorView)this.view).DialogResult = DialogResult.OK;
                         }
                     }
                 }
@@ -149,18 +116,8 @@ namespace MitoPlayer_2024.Presenters
                 {
                     MessageBox.Show("Playlist name must be entered!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
-            }
+            }            
+        }
 
-            
-            
-        }
-        private int GetNewPlaylistId()
-        {
-            int id = this.playlistDao.GetLastObjectId(TableName.Playlist.ToString());
-            if (id == -1)
-                return 0;
-            else
-                return id + 1;
-        }
     }
 }

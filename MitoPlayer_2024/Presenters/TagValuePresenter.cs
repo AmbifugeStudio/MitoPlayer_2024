@@ -15,7 +15,8 @@ namespace MitoPlayer_2024.Presenters
     public class TagValuePresenter
     {
         private ITagValueView tagValueEditorView;
-        private ITagValueDao tagValueDao;
+        private ITagDao tagValueDao;
+        private ITrackDao trackDao;
 
         private ISettingDao settingDao;
         private BindingSource tagListBindingSource { get; set; }
@@ -25,10 +26,11 @@ namespace MitoPlayer_2024.Presenters
         private Tag currentTag { get; set; }
         private TagValue currentTagValue { get; set; }
 
-        public TagValuePresenter(ITagValueView tagValueEditorView, ITagValueDao tagValueDao, ISettingDao settingDao)
+        public TagValuePresenter(ITagValueView tagValueEditorView, ITagDao tagValueDao,ITrackDao trackDao, ISettingDao settingDao)
         {
             this.tagValueEditorView = tagValueEditorView;
             this.tagValueDao = tagValueDao;
+            this.trackDao = trackDao;
             this.settingDao = settingDao;
 
             this.tagValueEditorView.CreateTag += CreateTag;
@@ -64,7 +66,10 @@ namespace MitoPlayer_2024.Presenters
                 {
                     tagListTable.Rows.Add(tag.Id, tag.Name);
                 }
+                this.currentTag = tagList[0];
             }
+
+            
 
             this.tagListBindingSource.DataSource = tagListTable;
             this.tagValueEditorView.SetTagListBindingSource(this.tagListBindingSource);
@@ -80,7 +85,6 @@ namespace MitoPlayer_2024.Presenters
             
             if (tagValueList != null && tagValueList.Count > 0)
             {
-               
                 foreach (TagValue tag in tagValueList)
                 {
                     tagValueListTable.Rows.Add(tag.Id, tag.Name);
@@ -107,8 +111,33 @@ namespace MitoPlayer_2024.Presenters
             if (tagEditorView.ShowDialog((TagValueView)this.tagValueEditorView) == DialogResult.OK)
             {
                 this.tagValueDao.CreateTag(presenter.newTag);
-                this.settingDao.AddColumn(presenter.newTag.Name, "System.String", true, ColumnGroup.TracklistColumns.ToString());
+
+                List<int> trackIdList = this.trackDao.GetAllTrackIdList();
+                if(trackIdList != null && trackIdList.Count > 0)
+                {
+                    foreach(int trackId in trackIdList)
+                    {
+                        if(!this.trackDao.TrackTagValueIsExists(trackId, presenter.newTag.Id))
+                        {
+                            TrackTagValue ttv = new TrackTagValue();
+                            ttv.Id = this.trackDao.GetLastObjectId(TableName.TrackTagValue.ToString());
+                            ttv.TrackId = trackId;
+                            ttv.TagId = presenter.newTag.Id;
+                            ttv.TagName = presenter.newTag.Name;
+                            ttv.TagValueId = -1;
+                            ttv.TagValueName = String.Empty;
+                            this.trackDao.InsertTrackTagValue(ttv);
+                        }
+                    }
+                }
+
+                this.settingDao.CreateTrackProperty(presenter.newTag.Name, "System.String", true, ColumnGroup.TracklistColumns.ToString());
+
+
+                this.currentTag = presenter.newTag;
                 this.tagListTable.Rows.Add(presenter.newTag.Id, presenter.newTag.Name);
+                this.tagListBindingSource.DataSource = tagListTable;
+                this.tagValueEditorView.SetTagListBindingSource(this.tagListBindingSource);
             }
         }
         private void EditTag(object sender, ListEventArgs e)
@@ -146,6 +175,8 @@ namespace MitoPlayer_2024.Presenters
             if (MessageBox.Show("Do you really want to delete the tag? All metadata of all track related to this Tag will be deleted!", "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK)
             {
                 this.tagValueDao.DeleteTag(e.IntegerField1);
+
+                this.trackDao.DeleteTrackTagValue(e.IntegerField1);
 
                 DataRow tagRow = this.tagListTable.Select("Id = " + Convert.ToInt32(this.tagListTable.Rows[e.IntegerField1]["Id"])).First();
                 TrackProperty tp = this.settingDao.GetTrackPropertyByNameAndGroup((string)tagRow["Name"], ColumnGroup.TracklistColumns.ToString());

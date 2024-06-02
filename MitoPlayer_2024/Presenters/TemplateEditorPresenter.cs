@@ -11,18 +11,16 @@ namespace MitoPlayer_2024.Presenters
 {
     internal class TemplateEditorPresenter
     {
-        private ITemplateEditorView templateEditorView;
-        private IPlaylistDao playlistDao;
+        private ITemplateEditorView view;
         private ITrackDao trackDao;
         private ISettingDao settingDao;
 
-        public TemplateEditorPresenter(ITemplateEditorView templateEditorView, IPlaylistDao playlistDao, ITrackDao trackDao, ISettingDao settingDao)
+        public TemplateEditorPresenter(ITemplateEditorView view, ITrackDao trackDao, ISettingDao settingDao)
         {
-            this.templateEditorView = templateEditorView;
-            this.playlistDao = playlistDao;
+            this.view = view;
             this.trackDao = trackDao;
             this.settingDao = settingDao;
-            this.templateEditorView.Show();
+            this.view.Show();
         }
     }
 }

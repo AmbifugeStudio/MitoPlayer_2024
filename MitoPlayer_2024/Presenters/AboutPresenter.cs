@@ -7,18 +7,18 @@ namespace MitoPlayer_2024.Presenters
 {
     public class AboutPresenter
     {
-        private IAboutView aboutView;
+        private IAboutView view;
         public Playlist newPlaylist;
 
-        public AboutPresenter(IAboutView aboutView)
+        public AboutPresenter(IAboutView view)
         {
-            this.aboutView = aboutView;
-            this.aboutView.CloseView += AboutView_CloseView;
+            this.view = view;
+            this.view.CloseView += AboutView_CloseView;
         }
 
         private void AboutView_CloseView(object sender, EventArgs e)
         {
-            ((AboutView)this.aboutView).Close();
+            ((AboutView)this.view).Close();
         }
 
     }

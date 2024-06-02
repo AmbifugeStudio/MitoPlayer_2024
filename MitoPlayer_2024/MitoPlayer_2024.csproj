@@ -166,22 +166,23 @@
   <ItemGroup>
     <Compile Include="Dao\ProfileDao.cs" />
     <Compile Include="Dao\SettingDao.cs" />
-    <Compile Include="Dao\TagValueDao.cs" />
+    <Compile Include="Dao\TagDao.cs" />
     <Compile Include="Dao\DataBaseBuilderDao.cs" />
     <Compile Include="Helpers\Enums.cs" />
     <Compile Include="Helpers\LabelTimer.cs" />
     <Compile Include="Helpers\ListEventArgs.cs" />
     <Compile Include="Models\IDataBaseBuilderDao.cs" />
-    <Compile Include="Models\IPlaylistDao.cs" />
     <Compile Include="Models\IProfileDao.cs" />
     <Compile Include="Models\ISettingDao.cs" />
-    <Compile Include="Models\ITagValueDao.cs" />
+    <Compile Include="Models\ITagDao.cs" />
     <Compile Include="Models\ITrackDao.cs" />
     <Compile Include="Models\Playlist.cs" />
+    <Compile Include="Models\PlaylistContent.cs" />
     <Compile Include="Models\Profile.cs" />
     <Compile Include="Models\Tag.cs" />
     <Compile Include="Models\TagValue.cs" />
     <Compile Include="Models\TrackProperty.cs" />
+    <Compile Include="Models\TrackTagValue.cs" />
     <Compile Include="Presenters\AboutPresenter.cs" />
     <Compile Include="Presenters\HarmonizerPresenter.cs" />
     <Compile Include="Presenters\MediaPlayerComponent.cs" />
@@ -253,7 +254,6 @@
       <DependentUpon>PlaylistView.cs</DependentUpon>
     </Compile>
     <Compile Include="Dao\BaseDao.cs" />
-    <Compile Include="Dao\PlaylistDao.cs" />
     <Compile Include="Dao\TrackDao.cs" />
     <Compile Include="Views\PreferencesView.cs">
       <SubType>Form</SubType>

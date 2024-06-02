@@ -19,9 +19,7 @@ namespace MitoPlayer_2024.Views
         }
         #region SINGLETON
 
-        private static HarmonizerView instance;
-
-        //MDI nélkül kiveszed a containert a pm-ből
+        public static HarmonizerView instance;
         public static HarmonizerView GetInstance(Form mainView)
         {
             if (instance == null || instance.IsDisposed)

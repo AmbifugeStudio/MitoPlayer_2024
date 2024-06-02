@@ -6,6 +6,11 @@ using System.Threading.Tasks;
 
 namespace MitoPlayer_2024.Helpers
 {
+    public enum DefaultName
+    {
+        Profile,
+        Playlist
+    }
     public enum ColumnGroup
     {
         PlaylistColumns,
@@ -20,7 +25,8 @@ namespace MitoPlayer_2024.Helpers
         TagValue,
         Profile,
         Setting,
-        TrackProperty
+        TrackProperty,
+        TrackTagValue
     }
     public enum Settings
     {
@@ -38,11 +44,6 @@ namespace MitoPlayer_2024.Helpers
         LastGeneratedProfileId,
         LastGeneratedTagId,
         LastGeneratedTagValueId
-    }
-    public enum ObjectType
-    {
-        Playlist,
-        Tracklist
     }
 
     public enum MediaPlayerUpdateState

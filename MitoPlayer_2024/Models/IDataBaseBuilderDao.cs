@@ -9,6 +9,5 @@ namespace MitoPlayer_2024.Models
     public interface IDataBaseBuilderDao
     {
         bool BuildDatabase();
-
     }
 }

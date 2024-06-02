@@ -6,14 +6,16 @@ using System.Threading.Tasks;
 
 namespace MitoPlayer_2024.Models
 {
-    public class TagValue
+    public class TrackTagValue
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-        public string TagName { get; set; }
+        public int TrackId { get; set; }
         public int TagId { get; set; }
+        public string TagName { get; set; }
+        public int TagValueId { get; set; }
+        public string TagValueName { get; set; }
         public int ProfileId { get; set; }
-        public TagValue() { }
 
+        public TrackTagValue() { }
     }
 }

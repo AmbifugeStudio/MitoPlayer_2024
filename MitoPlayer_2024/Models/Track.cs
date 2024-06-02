@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MitoPlayer_2024.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -21,11 +22,11 @@ namespace MitoPlayer_2024.Model
         public bool IsMissing { get; set; }
         public int OrderInList { get; set; }
         public int TrackIdInPlaylist { get; set; }
+        public int ProfileId { get; set; }
+        public List<TrackTagValue> TrackTagValues { get; set; }
 
-        public Track()
-        {
+        public Track() {
             this.Id = -1;
-            this.IsMissing = false;
         }
 
     }

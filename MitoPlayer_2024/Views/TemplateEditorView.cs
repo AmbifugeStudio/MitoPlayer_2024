@@ -19,9 +19,7 @@ namespace MitoPlayer_2024.Views
 
         #region SINGLETON
 
-        private static TemplateEditorView instance;
-
-        //MDI nélkül kiveszed a containert a pm-ből
+        public static TemplateEditorView instance;
         public static TemplateEditorView GetInstance(Form mainView)
         {
             if (instance == null || instance.IsDisposed)

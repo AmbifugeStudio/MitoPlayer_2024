@@ -19,10 +19,7 @@ namespace MitoPlayer_2024.Views
 
         #region SINGLETON
 
-        private static RuleEditorView
-            instance;
-
-        //MDI nélkül kiveszed a containert a pm-ből
+        public static RuleEditorView instance;
         public static RuleEditorView GetInstance(Form mainView)
         {
             if (instance == null || instance.IsDisposed)

@@ -12,11 +12,7 @@ namespace MitoPlayer_2024.Models
         public string Name { get; set; }
         public int ProfileId { get; set; }
 
-        public Tag()
-        {
-            this.Id = -1;
-
-        }
+        public Tag(){ }
 
     }
 }

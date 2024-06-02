@@ -16,7 +16,7 @@ namespace MitoPlayer_2024.Presenters
 {
     public class ProfileEditorPresenter
     {
-        private IProfileEditorView profileEditorView;
+        private IProfileEditorView view;
         private IProfileDao profileDao;
         private ISettingDao settingDao;
 
@@ -24,9 +24,9 @@ namespace MitoPlayer_2024.Presenters
         public Profile newProfile;
         private int lastGeneratedProfileId;
 
-        public ProfileEditorPresenter(IProfileEditorView profileEditorView, IProfileDao profileDao, ISettingDao settingDao)
+        public ProfileEditorPresenter(IProfileEditorView view, IProfileDao profileDao, ISettingDao settingDao)
         {
-            this.profileEditorView = profileEditorView;
+            this.view = view;
             this.profileDao = profileDao;
             this.settingDao = settingDao;
             this.isEditMode = false;
@@ -34,31 +34,31 @@ namespace MitoPlayer_2024.Presenters
             this.lastGeneratedProfileId = this.settingDao.GetIntegerSetting(Settings.LastGeneratedProfileId.ToString(),true);
            
             this.lastGeneratedProfileId = this.lastGeneratedProfileId + 1;
-            ((ProfileEditorView)this.profileEditorView).SetProfileName("New Profile " + this.lastGeneratedProfileId.ToString());
+            ((ProfileEditorView)this.view).SetProfileName("New Profile " + this.lastGeneratedProfileId.ToString());
 
             this.settingDao.SetIntegerSetting(Settings.LastGeneratedProfileId.ToString(), this.lastGeneratedProfileId, true);
 
-            this.profileEditorView.CreateOrEditProfile += CreateOrEditProfile;
-            this.profileEditorView.CloseProfileEditor += CloseProfileEditor;
+            this.view.CreateOrEditProfile += CreateOrEditProfile;
+            this.view.CloseProfileEditor += CloseProfileEditor;
         }
 
-        public ProfileEditorPresenter(IProfileEditorView profileEditorView, IProfileDao profileDao, ISettingDao settingDao, Profile profile)
+        public ProfileEditorPresenter(IProfileEditorView view, IProfileDao profileDao, ISettingDao settingDao, Profile profile)
         {
-            this.profileEditorView = profileEditorView;
+            this.view = view;
             this.profileDao = profileDao;
             this.settingDao = settingDao;
             this.newProfile = profile;
             this.isEditMode = true;
 
-            ((ProfileEditorView)this.profileEditorView).SetProfileName(profile.Name, true);
+            ((ProfileEditorView)this.view).SetProfileName(profile.Name, true);
 
-            this.profileEditorView.CreateOrEditProfile += CreateOrEditProfile;
-            this.profileEditorView.CloseProfileEditor += CloseProfileEditor;
+            this.view.CreateOrEditProfile += CreateOrEditProfile;
+            this.view.CloseProfileEditor += CloseProfileEditor;
         }
         
         private void CreateOrEditProfile(object sender, Helpers.ListEventArgs e)
         {
-            ((ProfileEditorView)this.profileEditorView).DialogResult = DialogResult.None;
+            ((ProfileEditorView)this.view).DialogResult = DialogResult.None;
 
             if (this.isEditMode)
             {
@@ -66,7 +66,7 @@ namespace MitoPlayer_2024.Presenters
                 {
                     if (e.StringField1.Equals(this.newProfile.Name))
                     {
-                        ((ProfileEditorView)this.profileEditorView).DialogResult = DialogResult.OK;
+                        ((ProfileEditorView)this.view).DialogResult = DialogResult.OK;
                     }
                     else
                     {
@@ -77,15 +77,8 @@ namespace MitoPlayer_2024.Presenters
                         }
                         else
                         {
-                            try
-                            {
-                                this.newProfile.Name = e.StringField1;
-                                ((ProfileEditorView)this.profileEditorView).DialogResult = DialogResult.OK;
-                            }
-                            catch (Exception ex)
-                            {
-                                MessageBox.Show("Playlist hasn't been updated!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            }
+                            this.newProfile.Name = e.StringField1;
+                            ((ProfileEditorView)this.view).DialogResult = DialogResult.OK;
                         }
                     }
                 }
@@ -107,34 +100,11 @@ namespace MitoPlayer_2024.Presenters
                         }
                         else
                         {
-                            try
-                            {
-                                Profile profile = new Profile();
-                                profile.Id = this.GetNewProfileId();
-                                profile.Name = e.StringField1;
-                                this.newProfile = profile;
-                                ((ProfileEditorView)this.profileEditorView).DialogResult = DialogResult.OK;
-                            }
-                            catch (Exception ex)
-                            {
-                                MessageBox.Show("Profile hasn't been created!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            }
-
-                        }
-                    }
-                    else
-                    {
-                        try
-                        {
                             Profile profile = new Profile();
-                            profile.Id = this.GetNewProfileId();
+                            profile.Id = this.profileDao.GetNextId(TableName.Profile.ToString());
                             profile.Name = e.StringField1;
                             this.newProfile = profile;
-                            ((ProfileEditorView)this.profileEditorView).DialogResult = DialogResult.OK;
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show("Profile hasn't been created!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            ((ProfileEditorView)this.view).DialogResult = DialogResult.OK;
                         }
                     }
                 }
@@ -143,22 +113,12 @@ namespace MitoPlayer_2024.Presenters
                     MessageBox.Show("Profile name must be entered!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
-
-
-
         }
-        private int GetNewProfileId()
-        {
-            int id = this.profileDao.GetLastObjectId(TableName.Profile.ToString());
-            if (id == -1)
-                return 0;
-            else
-                return id + 1;
-        }
+
         private void CloseProfileEditor(object sender, EventArgs e)
         {
-            ((ProfileEditorView)this.profileEditorView).DialogResult = DialogResult.Cancel;
-            ((ProfileEditorView)this.profileEditorView).Close();
+            ((ProfileEditorView)this.view).DialogResult = DialogResult.Cancel;
+            ((ProfileEditorView)this.view).Close();
         }
     }
 }

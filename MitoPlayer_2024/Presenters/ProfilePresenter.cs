@@ -17,30 +17,30 @@ namespace MitoPlayer_2024.Presenters
 {
     public class ProfilePresenter
     {
-        private IProfileView profileView;
+        private IProfileView view;
         private IProfileDao profileDao;
         private ISettingDao settingDao;
-        private IPlaylistDao playlistDao;
         private ITrackDao trackDao;
+        private ITagDao tagDao;
         private BindingSource profileListBindingSource { get; set; }
         private DataTable profileListTable { get; set; }
         private Profile activeProfile { get; set; }
 
-        public ProfilePresenter(IProfileView profileView, IProfileDao profileDao, ISettingDao settingDao, IPlaylistDao playlistDao, ITrackDao trackDao)
+        public ProfilePresenter(IProfileView view, IProfileDao profileDao, ISettingDao settingDao, ITrackDao trackDao, ITagDao tagDao)
         {
-            this.profileView = profileView;
+            this.view = view;
             this.profileDao = profileDao;
             this.settingDao = settingDao;
-            this.playlistDao = playlistDao;
             this.trackDao = trackDao;
+            this.tagDao = tagDao;
 
             this.InitializeDataTable();
 
-            this.profileView.CreateProfileEvent += CreateProfileEvent;
-            this.profileView.SetProfileAsActiveEvent += SetProfileAsActiveEvent;
-            this.profileView.RenameProfileEvent += RenameProfileEvent;
-            this.profileView.DeleteProfileEvent += DeleteProfileEvent;
-            this.profileView.CloseProfileViewEvent += CloseProfileViewEvent;
+            this.view.CreateProfileEvent += CreateProfileEvent;
+            this.view.SetProfileAsActiveEvent += SetProfileAsActiveEvent;
+            this.view.RenameProfileEvent += RenameProfileEvent;
+            this.view.DeleteProfileEvent += DeleteProfileEvent;
+            this.view.CloseProfileViewEvent += CloseProfileViewEvent;
         }
 
         private void InitializeDataTable()
@@ -58,19 +58,19 @@ namespace MitoPlayer_2024.Presenters
             {
                 foreach(Profile profile in profileList)
                 {
-                    profileListTable.Rows.Add(profile.Id, profile.IsActive, profile.Name);
+                    this.profileListTable.Rows.Add(profile.Id, profile.IsActive, profile.Name);
                 }
             }
 
-            this.profileListBindingSource.DataSource = profileListTable;
-            this.profileView.SetProfileListBindingSource(this.profileListBindingSource);
+            this.profileListBindingSource.DataSource = this.profileListTable;
+            this.view.SetProfileListBindingSource(this.profileListBindingSource);
         }
 
         private void CreateProfileEvent(object sender, EventArgs e)
         {
             ProfileEditorView profileEditorView = new ProfileEditorView();
             ProfileEditorPresenter presenter = new ProfileEditorPresenter(profileEditorView, this.profileDao, this.settingDao);
-            if (profileEditorView.ShowDialog((ProfileView)this.profileView) == DialogResult.OK)
+            if (profileEditorView.ShowDialog((ProfileView)this.view) == DialogResult.OK)
             {
                 this.profileDao.CreateProfile(presenter.newProfile);
                 this.profileListTable.Rows.Add(presenter.newProfile.Id, presenter.newProfile.IsActive, presenter.newProfile.Name);
@@ -98,13 +98,13 @@ namespace MitoPlayer_2024.Presenters
                         this.profileListTable.Rows[i]["Active"] = false;
                     }
 
-                    Profile profile = this.profileDao.GetProfile(Convert.ToInt32(this.profileListTable.Rows[profileIndex]["Id"]));
+                    Profile profile = this.profileDao.GetProfile((int)profileRow["Id"]);
                     profile.IsActive = true;
                     this.profileDao.UpdateProfile(profile);
 
                     this.profileListTable.Rows[profileIndex]["Active"] = true;
 
-                    ((ProfileView)this.profileView).DialogResult = DialogResult.OK;
+                    ((ProfileView)this.view).DialogResult = DialogResult.OK;
                 }
             }
         }
@@ -124,23 +124,19 @@ namespace MitoPlayer_2024.Presenters
                 }
                 else
                 {
-                    Profile profile = new Profile();
-                    profile.Id = (int)profileRow["Id"];
-                    profile.Name = (string)profileRow["Name"];
-                    profile.IsActive = (bool)profileRow["Active"];
-
+                    Profile profile = this.profileDao.GetProfile((int)profileRow["Id"]);
                     int profileIndex = this.profileListTable.Rows.IndexOf(profileRow);
 
                     ProfileEditorView profileEditorView = new ProfileEditorView();
                     ProfileEditorPresenter presenter = new ProfileEditorPresenter(profileEditorView, this.profileDao, this.settingDao, profile);
                    
-                    if (profileEditorView.ShowDialog((ProfileView)this.profileView) == DialogResult.OK)
+                    if (profileEditorView.ShowDialog((ProfileView)this.view) == DialogResult.OK)
                     {
                         this.profileDao.UpdateProfile(presenter.newProfile);
                         this.profileListTable.Rows[profileIndex]["Name"] = presenter.newProfile?.Name;
 
-                        this.profileListBindingSource.DataSource = profileListTable;
-                        this.profileView.SetProfileListBindingSource(this.profileListBindingSource);
+                        this.profileListBindingSource.DataSource = this.profileListTable;
+                        this.view.SetProfileListBindingSource(this.profileListBindingSource);
                     }
                 }
             }
@@ -156,23 +152,29 @@ namespace MitoPlayer_2024.Presenters
             {
                 if (MessageBox.Show("Do you really want to delete the profile? All playlist, track and metadata related to this profile will be deleted!", "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK)
                 {
-                    this.playlistDao.DeleteAllPlaylistFromProfile(e.IntegerField1);
+                    this.tagDao.Del();
+
+
+                    this.trackDao.DeleteAllPlaylist();
+
                     this.playlistDao.DeleteAllPlaylistContentFromProfile(e.IntegerField1);
-                    this.trackDao.DeleteAllTrackFromProfile(e.IntegerField1);
+                    
+                    this.trackDao.DeleteAllTrack();
+                    this.settingDao.De
                     this.profileDao.DeleteProfile(e.IntegerField1);
 
                     DataRow profileRow = this.profileListTable.Select("Id = " + e.IntegerField1).First();
                     this.profileListTable.Rows.Remove(profileRow);
-                    this.profileListBindingSource.DataSource = profileListTable;
-                    this.profileView.SetProfileListBindingSource(this.profileListBindingSource);
+                    this.profileListBindingSource.DataSource = this.profileListTable;
+                    this.view.SetProfileListBindingSource(this.profileListBindingSource);
                 }
             }
         }
 
         private void CloseProfileViewEvent(object sender, EventArgs e)
         {
-            ((ProfileView)this.profileView).DialogResult = DialogResult.Cancel;
-            ((ProfileView)this.profileView).Close();
+            ((ProfileView)this.view).DialogResult = DialogResult.Cancel;
+            ((ProfileView)this.view).Close();
         }
 
  

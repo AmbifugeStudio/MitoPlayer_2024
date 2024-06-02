@@ -16,13 +16,13 @@ namespace MitoPlayer_2024.Presenters
     public class TagValueEditorPresenter
     {
         private ITagValueEditorView tagValueEditorView;
-        private ITagValueDao tagValueDao;
+        private ITagDao tagValueDao;
         private ISettingDao settingDao;
         private int tagId;
         private bool isEditMode = false;
         public TagValue newTagValue;
         private int lastGeneratedTagValueId;
-        public TagValueEditorPresenter(ITagValueEditorView tagValueEditorView,int tagId, ITagValueDao tagValueDao, ISettingDao settingDao)
+        public TagValueEditorPresenter(ITagValueEditorView tagValueEditorView,int tagId, ITagDao tagValueDao, ISettingDao settingDao)
         {
             this.tagValueEditorView = tagValueEditorView;
             this.tagValueDao = tagValueDao;
@@ -41,7 +41,7 @@ namespace MitoPlayer_2024.Presenters
             this.tagValueEditorView.CloseEditor += CloseEditor;
         }
 
-        public TagValueEditorPresenter(ITagValueEditorView tagValueEditorView, int tagId, ITagValueDao tagValueDao, ISettingDao settingDao, TagValue tagValue)
+        public TagValueEditorPresenter(ITagValueEditorView tagValueEditorView, int tagId, ITagDao tagValueDao, ISettingDao settingDao, TagValue tagValue)
         {
             this.tagValueEditorView = tagValueEditorView;
             this.tagValueDao = tagValueDao;

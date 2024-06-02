@@ -18,7 +18,6 @@ namespace MitoPlayer_2024.Presenters
         private DataTable workingTable { get; set; }
         public int CurrentTrackIdInPlaylist { get; set; }
         private int selectedRowIndex { get; set; }
-        private int lastTrackIndex { get; set; }
         private double currentPlayPosition { get; set; }
 
         public MediaPlayerComponent(AxWindowsMediaPlayer mediaPLayer)
@@ -182,51 +181,12 @@ namespace MitoPlayer_2024.Presenters
             result = this.StepTrack(false);
             return result;
         }
-        /* nem szól semmi, üres a tábla: -
-         * nem szól semmi, a táblába nem üres, nincs kijelölve semmi: az utoljára szólt szám indexéhez képest kell lejátszani a következőt/előzőt
-         * nem szól semmi, a táblába nem üres, ki van jelölve egy vagy több sor: a kijelölések közül a legelső számot el kell indítani
-         *
-         * szól egy szám, üres a tábla: -
-         * szól egy szám, a tábla nem üres, az éppen szóló szám nincs a táblában, nincs kijelölve semmi:  az utoljára szólt szám indexéhez képest kell lejátszani a következőt/előzőt
-         * szól egy szám, a tábla nem üres, az éppen szóló szám nincs a táblában, ki van jelölve egy vagy több sor: a kijelölések közül a legelső számot el kell indítani
-         * szól egy szám, a tábla nem üres, az éppen szóló szám a táblában van, nincs kijelölve semmi: az utoljára szólt szám indexéhez képest kell lejátszani a következőt/előzőt
-         * szól egy szám, a tábla nem üres, az éppen szóló szám a táblában van, ki van jelölve valami: az utoljára szólt szám indexéhez képest kell lejátszani a következőt/előzőt
-         *
-         * szól valami/nem szól semmi: trackIdInPlaylist != -1 / trackIdInPlaylist == -1
-         * a tábla üres/nem üres: dgvTrackList.Rows.Count == 0 / dgvTrackList.Rows.Count != 0
-         * az éppen szóló szám a táblában van/nincs a táblában: dgvTrackList.Exsists(x => x.trackIdInPlaylist == trackIdInPlaylist)
-         * van kijelölve valami/ninc skijelölve semmi: dgvTrackList.SelectedRows.Count == 0 / dgvTrackList.SelectedRows.Count != 0
-         */
+
         private MediaPlayerUpdateState StepTrack(bool backward)
         {
             MediaPlayerUpdateState result = MediaPlayerUpdateState.Undefined;
-        /* if (this.CurrentTrackIdInPlaylist == -1)
-         {
-             if (this.workingTable.Rows.Count > 0)
-             {
-                 if (this.selectedRowIndex != -1)
-                 {
-                     this.CurrentTrackIdInPlaylist = selectedRowId;
-                     this.lastTrackIndex = selectedRowIndex;
-                 }
-             }
-         }
-         else
-         {
-             if (this.workingTable.Rows.Count > 0)
-             {
-                 for (int i = 0; i <= this.workingTable.Rows.Count - 1; i++)
-                 {
-                     int orderInList = Convert.ToInt32(this.workingTable.Rows[i]["OrderInList"]);
-                     if (orderInList == this.CurrentTrackIdInPlaylist)
-                     {
-                         this.lastTrackIndex = orderInList;
-                     }
-                 }
-             }
-         }*/
 
-        if (this.workingTable.Rows.Count > 0)
+            if (this.workingTable.Rows.Count > 0)
             {
                 this.UpdateRowIndex();
 
@@ -249,8 +209,6 @@ namespace MitoPlayer_2024.Presenters
 
                 result = this.PlayTrack();
             }
-
-
             return result;
         }
         
@@ -263,17 +221,17 @@ namespace MitoPlayer_2024.Presenters
                 for (int i = 0; i <= this.workingTable.Rows.Count - 1; i++)
                 {
                     int trackIdInPlaylist = Convert.ToInt32(this.workingTable.Rows[i]["TrackIdInPlaylist"]);
-                    if (!initialTrackIdInPlaylistList.Contains(trackIdInPlaylist))
+                    if (!this.initialTrackIdInPlaylistList.Contains(trackIdInPlaylist))
                     {
-                        initialTrackIdInPlaylistList.Add(trackIdInPlaylist);
+                        this.initialTrackIdInPlaylistList.Add(trackIdInPlaylist);
                     }
                 }
-                for (int i = initialTrackIdInPlaylistList.Count - 1; i >= 0; i--)
+                for (int i = this.initialTrackIdInPlaylistList.Count - 1; i >= 0; i--)
                 {
                     bool isDeleted = true;
                     for (int j = this.workingTable.Rows.Count - 1; j >= 0; j--)
                     {
-                        if (initialTrackIdInPlaylistList[i] == Convert.ToInt32(this.workingTable.Rows[j]["TrackIdInPlaylist"]))
+                        if (this.initialTrackIdInPlaylistList[i] == Convert.ToInt32(this.workingTable.Rows[j]["TrackIdInPlaylist"]))
                         {
                             isDeleted = false;
                             break;
@@ -282,17 +240,16 @@ namespace MitoPlayer_2024.Presenters
                     if (isDeleted)
                     {
                         int trackIdInPlaylist = initialTrackIdInPlaylistList[i];
-                        initialTrackIdInPlaylistList.Remove(trackIdInPlaylist);
-                        playedTrackIdInPlaylistList.Remove(trackIdInPlaylist);
+                        this.initialTrackIdInPlaylistList.Remove(trackIdInPlaylist);
+                        this.playedTrackIdInPlaylistList.Remove(trackIdInPlaylist);
                     }
                 }
             }
             else
             {
-                initialTrackIdInPlaylistList.Clear();
-                playedTrackIdInPlaylistList.Clear();
+                this.initialTrackIdInPlaylistList.Clear();
+                this.playedTrackIdInPlaylistList.Clear();
             }
-            
         }
         public MediaPlayerUpdateState RandomTrack()
         {
@@ -306,21 +263,21 @@ namespace MitoPlayer_2024.Presenters
 
                 bool nextIndexFound = false;
 
-                if(playedTrackIdInPlaylistList.Count > 0 && initialTrackIdInPlaylistList.Count > 0
-                    && playedTrackIdInPlaylistList.Count == initialTrackIdInPlaylistList.Count)
+                if(this.playedTrackIdInPlaylistList.Count > 0 && this.initialTrackIdInPlaylistList.Count > 0
+                    && this.playedTrackIdInPlaylistList.Count == this.initialTrackIdInPlaylistList.Count)
                 {
-                    playedTrackIdInPlaylistList.Clear();
+                    this.playedTrackIdInPlaylistList.Clear();
                 }
 
                 while (!nextIndexFound)
                 {
-                    int nextTrackIndex = rand.Next(0, initialTrackIdInPlaylistList.Count);
-                    if (!playedTrackIdInPlaylistList.Contains(initialTrackIdInPlaylistList[nextTrackIndex]))
+                    int nextTrackIndex = rand.Next(0, this.initialTrackIdInPlaylistList.Count);
+                    if (!this.playedTrackIdInPlaylistList.Contains(this.initialTrackIdInPlaylistList[nextTrackIndex]))
                     {
                         nextIndexFound = true;
-                        playedTrackIdInPlaylistList.Add(initialTrackIdInPlaylistList[nextTrackIndex]);
+                        this.playedTrackIdInPlaylistList.Add(this.initialTrackIdInPlaylistList[nextTrackIndex]);
 
-                        int trackIdInPlaylist = initialTrackIdInPlaylistList[nextTrackIndex];
+                        int trackIdInPlaylist = this.initialTrackIdInPlaylistList[nextTrackIndex];
                         for(int i = 0; i <= this.workingTable.Rows.Count -1; i++)
                         {
                             if (trackIdInPlaylist == Convert.ToInt32(this.workingTable.Rows[i]["TrackIdInPlaylist"]))
@@ -330,7 +287,7 @@ namespace MitoPlayer_2024.Presenters
                             }
                         }
 
-                        this.CurrentTrackIdInPlaylist = initialTrackIdInPlaylistList[nextTrackIndex];
+                        this.CurrentTrackIdInPlaylist = this.initialTrackIdInPlaylistList[nextTrackIndex];
 
                     }
                 }
