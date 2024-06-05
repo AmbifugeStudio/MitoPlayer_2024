@@ -226,8 +226,31 @@ namespace MitoPlayer_2024.Dao
                 }
                 connection.Close();
             }
+        }
+        public void DeleteAllTag()
+        {
+            using (var connection = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand())
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"DELETE FROM Tag 
+                                        WHERE ProfileId = @ProfileId";
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
 
-            this.DeleteTagValuesByTagId(id);
+                try
+                {
+                    command.ExecuteNonQuery();
+                }
+                catch (MySqlException ex)
+                {
+                    MessageBox.Show("Tag is not deleted. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                connection.Close();
+            }
+
+            this.DeleteAllTagValue();
         }
         public void ClearTagTable()
         {
@@ -315,7 +338,38 @@ namespace MitoPlayer_2024.Dao
             }
             return tagValueList;
         }
-        public TagValue GetTagValue(int tagId, int id)
+        public TagValue GetTagValue(int id)
+        {
+            TagValue tagValue = null;
+            using (var connection = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand())
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"SELECT * FROM TagValue 
+                                        WHERE Id = @Id 
+                                        AND ProfileId = @ProfileId ";
+
+                command.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        tagValue = new TagValue();
+                        tagValue.Id = (int)reader[0];
+                        tagValue.Name = reader[1].ToString();
+                        tagValue.ProfileId = (int)reader[2];
+                        break;
+                    }
+                }
+                connection.Close();
+            }
+            return tagValue;
+        }
+        public TagValue GetTagValueByTagId(int id, int tagId)
         {
             TagValue tagValue = null;
             using (var connection = new MySqlConnection(connectionString))
@@ -331,6 +385,39 @@ namespace MitoPlayer_2024.Dao
 
                 command.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
                 command.Parameters.Add("@TagId", MySqlDbType.Int32).Value = tagId;
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        tagValue = new TagValue();
+                        tagValue.Id = (int)reader[0];
+                        tagValue.Name = reader[1].ToString();
+                        tagValue.ProfileId = (int)reader[2];
+                        break;
+                    }
+                }
+                connection.Close();
+            }
+            return tagValue;
+        }
+        public TagValue GetTagValueByName(int tagId, String name)
+        {
+            TagValue tagValue = null;
+            using (var connection = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand())
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"SELECT * FROM TagValue 
+                                        WHERE Name = @Name 
+                                        AND TagId = @TagId 
+                                        AND ProfileId = @ProfileId ";
+
+                command.Parameters.Add("@TagId", MySqlDbType.Int32).Value = tagId;
+                command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = name;
                 command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
 
                 using (var reader = command.ExecuteReader())
@@ -416,6 +503,29 @@ namespace MitoPlayer_2024.Dao
                                         AND ProfileId = @ProfileId";
 
                 command.Parameters.Add("@TagId", MySqlDbType.Int32).Value = tagId;
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
+
+                try
+                {
+                    command.ExecuteNonQuery();
+                }
+                catch (MySqlException ex)
+                {
+                    MessageBox.Show("TagValue is not deleted. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                connection.Close();
+            }
+        }
+        public void DeleteAllTagValue()
+        {
+            using (var connection = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand())
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"DELETE FROM TagValue 
+                                        WHERE ProfileId = @ProfileId";
                 command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
 
                 try

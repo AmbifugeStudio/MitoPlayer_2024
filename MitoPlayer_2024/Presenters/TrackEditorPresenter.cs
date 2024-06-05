@@ -14,21 +14,19 @@ namespace MitoPlayer_2024.Presenters
     {
         internal DataTable trackListTable;
         internal int currentPlaylistId;
-        private ITrackEditorView trackEditorView;
-        private IPlaylistDao playlistDao;
+        private ITrackEditorView view;
         private ITrackDao trackDao;
         private ISettingDao settingDao;
         private MediaPlayerComponent mediaPLayerComponent { get; set; }
 
-        public TrackEditorPresenter(ITrackEditorView trackEditorView, MediaPlayerComponent mediaPlayerComponent, ITrackDao trackDao, ISettingDao settingDao)
+        public TrackEditorPresenter(ITrackEditorView view, MediaPlayerComponent mediaPlayerComponent, ITrackDao trackDao, ISettingDao settingDao)
         {
-            this.trackEditorView = trackEditorView;
-            this.playlistDao = playlistDao;
+            this.view = view;
             this.trackDao = trackDao;
             this.settingDao = settingDao;
             this.mediaPLayerComponent = mediaPLayerComponent;
 
-            this.trackEditorView.Show();
+            this.view.Show();
         }
 
 

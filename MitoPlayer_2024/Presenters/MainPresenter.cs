@@ -154,7 +154,7 @@ namespace MitoPlayer_2024.Presenters
         private void ShowProfileEditorView(object sender, EventArgs e)
         {
             ProfileView profileView = new ProfileView();
-            ProfilePresenter presenter = new ProfilePresenter(profileView, this.profileDao, this.settingDao, this.trackDao);
+            ProfilePresenter presenter = new ProfilePresenter(profileView, this.profileDao, this.settingDao, this.trackDao, this.tagDao);
             if(profileView.ShowDialog((MainView)this.mainView) == DialogResult.OK)
             {
                 this.ReloadMainView();

@@ -18,16 +18,20 @@ namespace MitoPlayer_2024.Models
         List<Tag> GetAllTag();
         void UpdateTag(Tag tag);
         void DeleteTag(int id);
+        void DeleteAllTag();
         void ClearTagTable();
         #endregion
 
         #region TAGVALUE
         void CreateTagValue(TagValue tagValue);
         List<TagValue> GetTagValuesByTagId(int id);
-        TagValue GetTagValue(int tagId, int id);
+        TagValue GetTagValue(int id);
+        TagValue GetTagValueByTagId(int id, int tagId);
+        TagValue GetTagValueByName(int tagId, String name);
         void UpdateTagValue(TagValue tag);
         void DeleteTagValue(int id);
         void DeleteTagValuesByTagId(int tagId);
+        void DeleteAllTagValue();
         void ClearTagValueTable();
         #endregion
     }

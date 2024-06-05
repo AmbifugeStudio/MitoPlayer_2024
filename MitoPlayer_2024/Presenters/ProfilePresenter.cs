@@ -152,15 +152,15 @@ namespace MitoPlayer_2024.Presenters
             {
                 if (MessageBox.Show("Do you really want to delete the profile? All playlist, track and metadata related to this profile will be deleted!", "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK)
                 {
-                    this.tagDao.Del();
-
-
-                    this.trackDao.DeleteAllPlaylist();
-
-                    this.playlistDao.DeleteAllPlaylistContentFromProfile(e.IntegerField1);
-                    
+                    this.settingDao.DeleteAllTrackProperty();
+                    this.tagDao.DeleteAllTagValue();
+                    this.tagDao.DeleteAllTag();
+                    this.trackDao.DeleteAllPlaylistContent();
+                    this.trackDao.DeleteAllTrackTagValue();
                     this.trackDao.DeleteAllTrack();
-                    this.settingDao.De
+                    this.trackDao.DeleteAllPlaylist();
+                    this.settingDao.DeleteSettings();
+
                     this.profileDao.DeleteProfile(e.IntegerField1);
 
                     DataRow profileRow = this.profileListTable.Select("Id = " + e.IntegerField1).First();

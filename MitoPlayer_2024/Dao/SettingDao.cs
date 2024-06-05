@@ -613,6 +613,29 @@ namespace MitoPlayer_2024.Dao
                 connection.Close();
             }
         }
+        public void DeleteSettings()
+        {
+            using (var connection = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand())
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"DELETE FROM Setting 
+                                        WHERE ProfileId = @ProfileId  ";
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
+
+                try
+                {
+                    command.ExecuteNonQuery();
+                }
+                catch (MySqlException ex)
+                {
+                    MessageBox.Show("Setting is not deleted. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                connection.Close();
+            }
+        }
 
         private void InitializeColumns(string[] colNames, string[] colTypes, bool[] colVisibility, string columnGroup)
         {
@@ -829,6 +852,29 @@ namespace MitoPlayer_2024.Dao
                 catch (MySqlException ex)
                 {
                     MessageBox.Show("TrackProperty is not updated. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                connection.Close();
+            }
+        }
+        public void DeleteAllTrackProperty()
+        {
+            using (var connection = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand())
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"DELETE FROM TrackProperty 
+                                        WHERE ProfileId = @ProfileId  ";
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
+
+                try
+                {
+                    command.ExecuteNonQuery();
+                }
+                catch (MySqlException ex)
+                {
+                    MessageBox.Show("TrackProperty is not deleted. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 connection.Close();
             }

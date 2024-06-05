@@ -23,7 +23,7 @@ namespace MitoPlayer_2024.Model
         void SetActivePlaylist(int id);
         void UpdatePlaylist(Playlist playlist);
         void DeletePlaylist(int id);
-        void DeleteAllPlaylist(bool withoutProfile = false);
+        void DeleteAllPlaylist();
         void ClearPlaylistTable();
         #endregion
 
@@ -32,7 +32,7 @@ namespace MitoPlayer_2024.Model
         Track GetTrackByPath(string path, List<Tag> tagList);
         List<Track> GetTracklistByPlaylistId(int playlistId, List<Tag> tagList);
         List<int> GetAllTrackIdInList();
-        void DeleteAllTrack(bool withoutProfile = false);
+        void DeleteAllTrack();
         void ClearTrackTable();
         #endregion
 
@@ -40,7 +40,7 @@ namespace MitoPlayer_2024.Model
         void CreatePlaylistContent(PlaylistContent plc);
         void UpdatePlaylistContent(PlaylistContent plc);
         void DeletePlaylistContentByPlaylistId(int playlistId);
-        void DeleteAllPlaylistContent(bool withoutProfile = false);
+        void DeleteAllPlaylistContent();
         void ClearPlaylistContentTable();
         #endregion
 
@@ -51,7 +51,7 @@ namespace MitoPlayer_2024.Model
         void UpdateTrackTagValues(List<TrackTagValue> trackTagValueList);
         void DeleteTrackTagValueByTagId(int tagId);
         void DeleteTrackTagValueByTrackId(int trackId);
-        void DeleteAllTrackTagValue(bool withoutProfile = false);
+        void DeleteAllTrackTagValue();
         void ClearTrackTagValueTable();
         #endregion
     }

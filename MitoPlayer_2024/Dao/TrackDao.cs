@@ -351,7 +351,7 @@ namespace MitoPlayer_2024.Dao
                 connection.Close();
             }
         }
-        public void DeleteAllPlaylist(bool withoutProfile = false)
+        public void DeleteAllPlaylist()
         {
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
@@ -361,11 +361,7 @@ namespace MitoPlayer_2024.Dao
                 command.CommandType = CommandType.Text;
                 command.CommandText = @"DELETE FROM Playlist 
                                         WHERE ProfileId = @ProfileId ";
-
-                if (!withoutProfile)
-                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
-                else
-                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = -1;
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
 
                 try
                 {
@@ -584,11 +580,8 @@ namespace MitoPlayer_2024.Dao
             }
             return trackIdList;
         }
-        public void DeleteAllTrack(bool withoutProfile = false)
+        public void DeleteAllTrack()
         {
-            this.DeleteAllPlaylistContent(withoutProfile);
-            this.DeleteAllTrackTagValue(withoutProfile);
-
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
             {
@@ -597,11 +590,7 @@ namespace MitoPlayer_2024.Dao
                 command.CommandType = CommandType.Text;
                 command.CommandText = @"DELETE FROM Track 
                                         WHERE ProfileId = @ProfileId ";
-
-                if (!withoutProfile)
-                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
-                else
-                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = -1;
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
 
                 try
                 {
@@ -732,7 +721,7 @@ namespace MitoPlayer_2024.Dao
                 connection.Close();
             }
         }
-        public void DeleteAllPlaylistContent(bool withoutProfile = false)
+        public void DeleteAllPlaylistContent()
         {
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
@@ -742,11 +731,7 @@ namespace MitoPlayer_2024.Dao
                 command.CommandType = CommandType.Text;
                 command.CommandText = @"DELETE FROM PlaylistContent 
                                         WHERE ProfileId = @ProfileId ";
-
-                if (!withoutProfile)
-                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
-                else
-                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = -1;
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
 
                 try
                 {
@@ -987,7 +972,7 @@ namespace MitoPlayer_2024.Dao
                 connection.Close();
             }
         }
-        public void DeleteAllTrackTagValue(bool withoutProfile = false)
+        public void DeleteAllTrackTagValue()
         {
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
@@ -997,11 +982,7 @@ namespace MitoPlayer_2024.Dao
                 command.CommandType = CommandType.Text;
                 command.CommandText = @"DELETE FROM TrackTagValue 
                                         WHERE ProfileId = @ProfileId ";
-
-                if (!withoutProfile)
-                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
-                else
-                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = -1;
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
 
                 try
                 {

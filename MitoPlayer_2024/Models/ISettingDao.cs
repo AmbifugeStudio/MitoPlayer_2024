@@ -29,6 +29,7 @@ namespace MitoPlayer_2024.Models
         void SetIntegerSetting(String name, Int32 value, bool withoutProfile = false);
         void SetDecimalSetting(String name, Decimal value, bool withoutProfile = false);
         void SetBooleanSetting(String name, Boolean value, bool withoutProfile = false);
+        void DeleteSettings();
         #endregion
 
         #region COLUMNS
@@ -37,6 +38,7 @@ namespace MitoPlayer_2024.Models
         List<TrackProperty> GetTrackPropertyListByColumnGroup(String columnGroup, bool withoutProfile = false, bool withAndWithoutProfile = false);
         void UpdateTrackProperty(TrackProperty tp, bool withoutProfile = false);
         void DeleteTrackProperty(int id, bool withoutProfile = false);
+        void DeleteAllTrackProperty();
         void ClearSettingTable();
         void ClearTrackPropertyTable();
         #endregion

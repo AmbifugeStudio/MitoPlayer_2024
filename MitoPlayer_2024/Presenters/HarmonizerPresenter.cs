@@ -35,7 +35,7 @@ namespace MitoPlayer_2024.Presenters
             int volume = this.settingDao.GetIntegerSetting(Settings.Volume.ToString());
             if (volume == -1)
                 volume = 50;
-            this.view.SetVolume(volume);
+           // this.view.SetVolume(volume);
             this.mediaPLayerComponent.MediaPlayer.settings.volume = volume;
         }
         public void CallAddTrackToTrackListEvent(List<Track> trackList, int dragIndex)

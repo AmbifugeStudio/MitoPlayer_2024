@@ -10,24 +10,25 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TagLib.NonContainer;
+using Tag = MitoPlayer_2024.Models.Tag;
 
 namespace MitoPlayer_2024.Presenters
 {
     public class TagValueEditorPresenter
     {
         private ITagValueEditorView tagValueEditorView;
-        private ITagDao tagValueDao;
+        private ITagDao tagDao;
         private ISettingDao settingDao;
-        private int tagId;
+        private Tag currentTag;
         private bool isEditMode = false;
         public TagValue newTagValue;
         private int lastGeneratedTagValueId;
-        public TagValueEditorPresenter(ITagValueEditorView tagValueEditorView,int tagId, ITagDao tagValueDao, ISettingDao settingDao)
+        public TagValueEditorPresenter(ITagValueEditorView tagValueEditorView,Tag tag, ITagDao tagDao, ISettingDao settingDao)
         {
             this.tagValueEditorView = tagValueEditorView;
-            this.tagValueDao = tagValueDao;
+            this.tagDao = tagDao;
             this.settingDao = settingDao;
-            this.tagId = tagId;
+            this.currentTag = tag;
             this.isEditMode = false;
 
             this.lastGeneratedTagValueId = this.settingDao.GetIntegerSetting(Settings.LastGeneratedTagValueId.ToString(), true);
@@ -41,12 +42,12 @@ namespace MitoPlayer_2024.Presenters
             this.tagValueEditorView.CloseEditor += CloseEditor;
         }
 
-        public TagValueEditorPresenter(ITagValueEditorView tagValueEditorView, int tagId, ITagDao tagValueDao, ISettingDao settingDao, TagValue tagValue)
+        public TagValueEditorPresenter(ITagValueEditorView tagValueEditorView, Tag tag, ITagDao tagDao, ISettingDao settingDao, TagValue tagValue)
         {
             this.tagValueEditorView = tagValueEditorView;
-            this.tagValueDao = tagValueDao;
+            this.tagDao = tagDao;
             this.settingDao = settingDao;
-            this.tagId = tagId;
+            this.currentTag = tag;
             this.newTagValue = tagValue;
             this.isEditMode = true;
 
@@ -70,23 +71,15 @@ namespace MitoPlayer_2024.Presenters
                     }
                     else
                     {
-                        TagValue TagValue = this.tagValueDao.GetTagValueByNameAndTagId(this.tagId, e.StringField1);
+                        TagValue TagValue = this.tagDao.GetTagValueByName(this.currentTag.Id, e.StringField1);
                         if (TagValue != null)
                         {
                             MessageBox.Show("TagValue name already exists!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
                         {
-                            try
-                            {
-                                this.newTagValue.Name = e.StringField1;
-                                ((TagValueEditorView)this.tagValueEditorView).DialogResult = DialogResult.OK;
-                            }
-                            catch (Exception ex)
-                            {
-                                MessageBox.Show("TagValue hasn't been updated!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            }
-
+                            this.newTagValue.Name = e.StringField1;
+                            ((TagValueEditorView)this.tagValueEditorView).DialogResult = DialogResult.OK;
                         }
                     }
                 }
@@ -99,7 +92,7 @@ namespace MitoPlayer_2024.Presenters
             {
                 if (!String.IsNullOrEmpty(e.StringField1))
                 {
-                    List<TagValue> tagValueList = this.tagValueDao.GetTagValuesByTagId(this.tagId);
+                    List<TagValue> tagValueList = this.tagDao.GetTagValuesByTagId(this.currentTag.Id);
                     if (tagValueList != null && tagValueList.Count > 0)
                     {
                         if (tagValueList.Exists(x => x.Name.Equals(e.StringField1)))
@@ -108,35 +101,24 @@ namespace MitoPlayer_2024.Presenters
                         }
                         else
                         {
-                            try
-                            {
-                                TagValue tagValue = new TagValue();
-                                tagValue.Id = this.GetNewTagValueId();
-                                tagValue.Name = e.StringField1;
-                                this.newTagValue = tagValue;
-                                ((TagValueEditorView)this.tagValueEditorView).DialogResult = DialogResult.OK;
-                            }
-                            catch (Exception ex)
-                            {
-                                MessageBox.Show("TagValue hasn't been created!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            }
-
+                            TagValue tagValue = new TagValue();
+                            tagValue.Id = this.tagDao.GetNextId(TableName.TagValue.ToString());
+                            tagValue.Name = e.StringField1;
+                            tagValue.TagId = this.currentTag.Id;
+                            tagValue.TagName = this.currentTag.Name;
+                            this.newTagValue = tagValue;
+                            ((TagValueEditorView)this.tagValueEditorView).DialogResult = DialogResult.OK;
                         }
                     }
                     else
                     {
-                        try
-                        {
-                            TagValue tagValue = new TagValue();
-                            tagValue.Id = this.GetNewTagValueId();
-                            tagValue.Name = e.StringField1;
-                            this.newTagValue = tagValue;
-                            ((TagValueEditorView)this.tagValueEditorView).DialogResult = DialogResult.OK;
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show("TagValue hasn't been created!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
+                        TagValue tagValue = new TagValue();
+                        tagValue.Id = this.tagDao.GetNextId(TableName.TagValue.ToString());
+                        tagValue.Name = e.StringField1;
+                        tagValue.TagId = this.currentTag.Id;
+                        tagValue.TagName = this.currentTag.Name;
+                        this.newTagValue = tagValue;
+                        ((TagValueEditorView)this.tagValueEditorView).DialogResult = DialogResult.OK;
                     }
                 }
                 else
@@ -144,14 +126,6 @@ namespace MitoPlayer_2024.Presenters
                     MessageBox.Show("TagValue name must be entered!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
-        }
-        private int GetNewTagValueId()
-        {
-            int id = this.tagValueDao.GetLastObjectId(TableName.TagValue.ToString());
-            if (id == -1)
-                return 0;
-            else
-                return id + 1;
         }
 
         private void CloseEditor(object sender, EventArgs e)

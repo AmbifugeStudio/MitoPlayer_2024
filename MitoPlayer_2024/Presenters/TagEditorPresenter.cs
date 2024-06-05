@@ -15,16 +15,16 @@ namespace MitoPlayer_2024.Presenters
     public class TagEditorPresenter
     {
         private ITagEditorView tagEditorView;
-        private ITagDao tagValueDao;
+        private ITagDao tagDao;
         private ISettingDao settingDao;
         private bool isEditMode = false;
         public Tag newTag;
         private int lastGeneratedTagId;
 
-        public TagEditorPresenter(ITagEditorView tagEditorView, ITagDao tagValueDao,ISettingDao settingDao)
+        public TagEditorPresenter(ITagEditorView tagEditorView, ITagDao tagDao, ISettingDao settingDao)
         {
             this.tagEditorView = tagEditorView;
-            this.tagValueDao = tagValueDao;
+            this.tagDao = tagDao;
             this.settingDao = settingDao;
             this.isEditMode = false;
 
@@ -38,10 +38,10 @@ namespace MitoPlayer_2024.Presenters
             this.tagEditorView.CreateOrEditTag += CreateOrEditTag;
             this.tagEditorView.CloseEditor += CloseEditor;
         }
-        public TagEditorPresenter(ITagEditorView tagEditorView, ITagDao tagValueDao, ISettingDao settingDao, Tag tag)
+        public TagEditorPresenter(ITagEditorView tagEditorView, ITagDao tagDao, ISettingDao settingDao, Tag tag)
         {
             this.tagEditorView = tagEditorView;
-            this.tagValueDao = tagValueDao;
+            this.tagDao = tagDao;
             this.settingDao = settingDao;
             this.newTag = tag;
             this.isEditMode = true;
@@ -66,23 +66,15 @@ namespace MitoPlayer_2024.Presenters
                     }
                     else
                     {
-                        Tag tag = this.tagValueDao.GetTagByName(e.StringField1);
+                        Tag tag = this.tagDao.GetTagByName(e.StringField1);
                         if (tag != null)
                         {
                             MessageBox.Show("Tag name already exists!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
                         {
-                            try
-                            {
-                                this.newTag.Name = e.StringField1;
-                                ((TagEditorView)this.tagEditorView).DialogResult = DialogResult.OK;
-                            }
-                            catch (Exception ex)
-                            {
-                                MessageBox.Show("Tag hasn't been updated!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            }
-
+                            this.newTag.Name = e.StringField1;
+                            ((TagEditorView)this.tagEditorView).DialogResult = DialogResult.OK;
                         }
                     }
                 }
@@ -95,7 +87,7 @@ namespace MitoPlayer_2024.Presenters
             {
                 if (!String.IsNullOrEmpty(e.StringField1))
                 {
-                    List<Tag> tagList = this.tagValueDao.GetAllTag();
+                    List<Tag> tagList = this.tagDao.GetAllTag();
                     if (tagList != null && tagList.Count > 0)
                     {
                         if (tagList.Exists(x => x.Name.Equals(e.StringField1)))
@@ -104,35 +96,20 @@ namespace MitoPlayer_2024.Presenters
                         }
                         else
                         {
-                            try
-                            {
-                                Tag tag = new Tag();
-                                tag.Id = this.GetNewTagId();
-                                tag.Name = e.StringField1;
-                                this.newTag = tag;
-                                ((TagEditorView)this.tagEditorView).DialogResult = DialogResult.OK;
-                            }
-                            catch (Exception ex)
-                            {
-                                MessageBox.Show("Tag hasn't been created!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            }
-
-                        }
-                    }
-                    else
-                    {
-                        try
-                        {
                             Tag tag = new Tag();
-                            tag.Id = this.GetNewTagId();
+                            tag.Id = this.tagDao.GetNextId(TableName.Tag.ToString());
                             tag.Name = e.StringField1;
                             this.newTag = tag;
                             ((TagEditorView)this.tagEditorView).DialogResult = DialogResult.OK;
                         }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show("Tag hasn't been created!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
+                    }
+                    else
+                    {
+                        Tag tag = new Tag();
+                        tag.Id = this.tagDao.GetNextId(TableName.Tag.ToString());
+                        tag.Name = e.StringField1;
+                        this.newTag = tag;
+                        ((TagEditorView)this.tagEditorView).DialogResult = DialogResult.OK;
                     }
                 }
                 else
@@ -140,14 +117,6 @@ namespace MitoPlayer_2024.Presenters
                     MessageBox.Show("Tag name must be entered!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
-        }
-        private int GetNewTagId()
-        {
-            int id = this.tagValueDao.GetLastObjectId(TableName.Tag.ToString());
-            if (id == -1)
-                return 0;
-            else
-                return id + 1;
         }
 
         private void CloseEditor(object sender, EventArgs e)
