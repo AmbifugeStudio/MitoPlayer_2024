@@ -5,6 +5,7 @@ using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -74,27 +75,34 @@ namespace MitoPlayer_2024.Helpers
         }
         public bool TableIsExists(string tableName)
         {
-            bool result = false;
+            long count = 0;
+
+            MySqlConnectionStringBuilder builder = new MySqlConnectionStringBuilder(connectionString);
+            string database = builder.Database;
+
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
             {
                 connection.Open();
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = @"(SELECT CASE THEN EXISTS 
-                                        (SELECT * FROM information_schema.tables 
-                                        WHERE table_name = @TableName) 
-                                        THEN 1 
-                                        ELSE 0 
-                                        END)";
+                command.CommandText = @"SELECT count(*) FROM information_schema.tables WHERE table_schema = @Database AND table_name = @TableName ";
                 command.Parameters.Add("@TableName", MySqlDbType.VarChar).Value = tableName;
-                
-                if((int)command.ExecuteScalar() == 1)
-                    result = true;
+                command.Parameters.Add("@Database", MySqlDbType.VarChar).Value = database;
+
+                using (var reader = command.ExecuteReader())
+                {
+                    
+                    while (reader.Read())
+                    {
+                        count = (long)reader[0];
+                        break;
+                    }
+                }
 
                 connection.Close();
             }
-            return result;
+            return count > 0;
         }
         private void BuildProfileTable()
         {

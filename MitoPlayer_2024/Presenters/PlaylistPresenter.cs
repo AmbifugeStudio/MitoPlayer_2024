@@ -574,15 +574,27 @@ namespace MitoPlayer_2024.Presenters
                         userRow["FileName"] = track.FileName;
                         userRow["OrderInList"] = track.OrderInList;
                         userRow["TrackIdInPlaylist"] = track.TrackIdInPlaylist;
-                        foreach (TrackTagValue ttv in track.TrackTagValues)
+                        if (track.TrackTagValues != null)
                         {
-                            userRow[ttv.TagName] = ttv.TagValueName;
+                            foreach (TrackTagValue ttv in track.TrackTagValues)
+                            {
+                                userRow[ttv.TagName] = ttv.TagValueName;
+                            }
                         }
                         this.trackListTable.Rows.InsertAt(userRow, dragIndex);
                     }
                     else
                     {
-                        object[] args = new object[11 + track.TrackTagValues.Count];
+                        object[] args = null;
+                        if (track.TrackTagValues != null)
+                        {
+                            args = new object[11 + track.TrackTagValues.Count];
+                        }
+                        else
+                        {
+                            args = new object[11];
+                        }
+                        
                         args[0] = track.Id;
                         args[1] = track.Album;
                         args[2] = track.Artist;
@@ -595,10 +607,15 @@ namespace MitoPlayer_2024.Presenters
                         args[9] = track.OrderInList;
                         args[10] = track.TrackIdInPlaylist;
                         int i = 11;
-                        foreach (TrackTagValue ttv in track.TrackTagValues)
+
+                        if (track.TrackTagValues != null)
                         {
-                            args[i] = ttv.TagValueName;
+                            foreach (TrackTagValue ttv in track.TrackTagValues)
+                            {
+                                args[i] = ttv.TagValueName;
+                            }
                         }
+                        
                         this.trackListTable.Rows.Add(args);
                     }
                 }
@@ -660,7 +677,7 @@ namespace MitoPlayer_2024.Presenters
                 {
                     if (!trackIds.Contains(Convert.ToInt32(this.trackListTable.Rows[i]["Id"])))
                     {
-                        trackIdInPlaylist = Convert.ToInt32(this.trackListTable.Rows[i]["TrackIdInPlaylist"]);
+                        trackIdInPlaylist = Convert.ToInt32(this.trackListTable.Rows[i]["OrderInList"]);
                         if (this.mediaPLayerComponent.CurrentTrackIdInPlaylist != trackIdInPlaylist)
                         {
                             trackIds.Add(Convert.ToInt32(this.trackListTable.Rows[i]["Id"]));
@@ -851,7 +868,7 @@ namespace MitoPlayer_2024.Presenters
                 playlist.Id = Convert.ToInt32(this.playlistListTable.Rows[e.IntegerField1]["Id"]);
                 playlist.Name = this.playlistListTable.Rows[e.IntegerField1]["Name"].ToString();
                 playlist.OrderInList = Convert.ToInt32(this.playlistListTable.Rows[e.IntegerField1]["OrderInList"]);
-                playlist.QuickListGroup = Convert.ToInt32(this.playlistListTable.Rows[e.IntegerField1]["QuickListGroup"]);
+                playlist.QuickListGroup = Convert.ToInt32(this.playlistListTable.Rows[e.IntegerField1]["G"]);
                 playlist.IsActive = Convert.ToBoolean(this.playlistListTable.Rows[e.IntegerField1]["IsActive"]);
                 playlist.ProfileId = Convert.ToInt32(this.playlistListTable.Rows[e.IntegerField1]["ProfileId"]);
 
@@ -920,7 +937,7 @@ namespace MitoPlayer_2024.Presenters
                     int trackIdInPlaylist = -1;
                     for (int i = 0; i <= this.trackListTable.Rows.Count - 1; i++)
                     {
-                        trackIdInPlaylist = Convert.ToInt32(trackListTable.Rows[i]["TrackIdInPlaylist"]);
+                        trackIdInPlaylist = Convert.ToInt32(trackListTable.Rows[i]["OrderInList"]);
                         if (trackIdInPlaylist == currentTrackIdInPlaylist)
                         {
                             this.view.SetCurrentTrackColor(currentTrackIdInPlaylist);

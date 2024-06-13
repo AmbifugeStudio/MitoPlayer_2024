@@ -72,7 +72,7 @@ namespace MitoPlayer_2024.Presenters
         {
             for (int i = 0; i <= this.workingTable.Rows.Count - 1; i++)
             {
-                int trackIdInPlaylist = Convert.ToInt32(this.workingTable.Rows[i]["TrackIdInPlaylist"]);
+                int trackIdInPlaylist = Convert.ToInt32(this.workingTable.Rows[i]["OrderInList"]);
                 if (trackIdInPlaylist == this.CurrentTrackIdInPlaylist)
                 {
                     this.selectedRowIndex = i;
@@ -102,7 +102,7 @@ namespace MitoPlayer_2024.Presenters
                         this.selectedRowIndex = 0;
                     }
 
-                    this.CurrentTrackIdInPlaylist = Convert.ToInt32(this.workingTable.Rows[this.selectedRowIndex]["TrackIdInPlaylist"]);
+                    this.CurrentTrackIdInPlaylist = Convert.ToInt32(this.workingTable.Rows[this.selectedRowIndex]["OrderInList"]);
                     
                     String path = this.workingTable.Rows[this.selectedRowIndex]["Path"].ToString();
 
@@ -123,7 +123,7 @@ namespace MitoPlayer_2024.Presenters
                 {
                     if (this.selectedRowIndex != -1)
                     {
-                        this.CurrentTrackIdInPlaylist = Convert.ToInt32(this.workingTable.Rows[this.selectedRowIndex]["TrackIdInPlaylist"]);
+                        this.CurrentTrackIdInPlaylist = Convert.ToInt32(this.workingTable.Rows[this.selectedRowIndex]["OrderInList"]);
 
                         String path = this.workingTable.Rows[this.selectedRowIndex]["Path"].ToString();
 
@@ -205,7 +205,7 @@ namespace MitoPlayer_2024.Presenters
                     }
                 }
 
-                this.CurrentTrackIdInPlaylist = Convert.ToInt32(this.workingTable.Rows[this.selectedRowIndex]["TrackIdInPlaylist"]);
+                this.CurrentTrackIdInPlaylist = Convert.ToInt32(this.workingTable.Rows[this.selectedRowIndex]["OrderInList"]);
 
                 result = this.PlayTrack();
             }
@@ -220,7 +220,7 @@ namespace MitoPlayer_2024.Presenters
             {
                 for (int i = 0; i <= this.workingTable.Rows.Count - 1; i++)
                 {
-                    int trackIdInPlaylist = Convert.ToInt32(this.workingTable.Rows[i]["TrackIdInPlaylist"]);
+                    int trackIdInPlaylist = Convert.ToInt32(this.workingTable.Rows[i]["OrderInList"]);
                     if (!this.initialTrackIdInPlaylistList.Contains(trackIdInPlaylist))
                     {
                         this.initialTrackIdInPlaylistList.Add(trackIdInPlaylist);
@@ -231,7 +231,7 @@ namespace MitoPlayer_2024.Presenters
                     bool isDeleted = true;
                     for (int j = this.workingTable.Rows.Count - 1; j >= 0; j--)
                     {
-                        if (this.initialTrackIdInPlaylistList[i] == Convert.ToInt32(this.workingTable.Rows[j]["TrackIdInPlaylist"]))
+                        if (this.initialTrackIdInPlaylistList[i] == Convert.ToInt32(this.workingTable.Rows[j]["OrderInList"]))
                         {
                             isDeleted = false;
                             break;
@@ -280,7 +280,7 @@ namespace MitoPlayer_2024.Presenters
                         int trackIdInPlaylist = this.initialTrackIdInPlaylistList[nextTrackIndex];
                         for(int i = 0; i <= this.workingTable.Rows.Count -1; i++)
                         {
-                            if (trackIdInPlaylist == Convert.ToInt32(this.workingTable.Rows[i]["TrackIdInPlaylist"]))
+                            if (trackIdInPlaylist == Convert.ToInt32(this.workingTable.Rows[i]["OrderInList"]))
                             {
                                 this.selectedRowIndex = i;
                                 break;

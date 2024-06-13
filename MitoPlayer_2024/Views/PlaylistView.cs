@@ -751,7 +751,7 @@ namespace MitoPlayer_2024.Views
                 int idInPlaylist = -1;
                 for (int i = 0; i <= this.dgvTrackList.Rows.Count - 1; i++)
                 {
-                    idInPlaylist = Convert.ToInt32(this.dgvTrackList.Rows[i].Cells["TrackIdInPlaylist"].Value);
+                    idInPlaylist = Convert.ToInt32(this.dgvTrackList.Rows[i].Cells["OrderInList"].Value);
                     if (trackIdInPlaylist == idInPlaylist)
                     {
                         this.dgvTrackList.Rows[i].DefaultCellStyle.BackColor = Color.LightSeaGreen;

@@ -120,6 +120,7 @@ namespace MitoPlayer_2024.Presenters
             this.trackDao.SetProfileId(profile.Id);
             this.tagDao.SetProfileId(profile.Id);
 
+            //lehet, hog yitt majd profilváltáskor lesz teendő
             this.settingDao.InitializeProfileSettings();
 
             Playlist pls = this.trackDao.GetActivePlaylist();
@@ -572,6 +573,8 @@ namespace MitoPlayer_2024.Presenters
                     fileName = fileName.Remove(fileName.LastIndexOf("."), extCharCount);
 
                     track.FileName = fileName;
+                    track.Album = "";
+                    track.Title = "";
 
                     if (!System.IO.File.Exists(path))
                     {

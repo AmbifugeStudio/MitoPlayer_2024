@@ -107,14 +107,14 @@ namespace MitoPlayer_2024.Dao
             string stringData = String.Empty;
             stringData = System.Configuration.ConfigurationManager.AppSettings[settingName];
 
-            if (!this.SettingExists(settingName,true))
+            if (!this.SettingExists(settingName, withoutProfile))
             {
                 this.CreateStringSetting(this.GetNextId(TableName.Setting.ToString()),settingName, stringData, withoutProfile);
             }
-            else
-            {
-                this.SetStringSetting(settingName, stringData, withoutProfile);
-            }
+            //else
+            //{
+            //    this.SetStringSetting(settingName, stringData, withoutProfile);
+            //}
         }
         private void InitializeIntegerSetting(String settingName, bool withoutProfile = false)
         {
@@ -125,10 +125,10 @@ namespace MitoPlayer_2024.Dao
             {
                 this.CreateIntegerSetting(this.GetNextId(TableName.Setting.ToString()),settingName, integerData, withoutProfile);
             }
-            else
-            {
-                this.SetIntegerSetting(settingName, integerData, withoutProfile);
-            }
+            //else
+            //{
+            //    this.SetIntegerSetting(settingName, integerData, withoutProfile);
+            //}
         }
         private void InitializeBooleanSetting(String settingName, bool withoutProfile = false)
         {
@@ -139,10 +139,10 @@ namespace MitoPlayer_2024.Dao
             {
                 this.CreateBooleanSetting(this.GetNextId(TableName.Setting.ToString()), settingName, boolData, withoutProfile);
             }
-            else
-            {
-                this.SetBooleanSetting(settingName, boolData, withoutProfile);
-            }
+            //else
+            //{
+            //    this.SetBooleanSetting(settingName, boolData, withoutProfile);
+            //}
         }
         private void InitializeDecimalSetting(String settingName, bool withoutProfile = false)
         {
@@ -153,10 +153,10 @@ namespace MitoPlayer_2024.Dao
             {
                 this.CreateDecimalSetting(this.GetNextId(TableName.Setting.ToString()), settingName, decimalData, withoutProfile);
             }
-            else
-            {
-                this.SetDecimalSetting(settingName, decimalData, withoutProfile);
-            }
+            //else
+            //{
+            //    this.SetDecimalSetting(settingName, decimalData, withoutProfile);
+            //}
         }
         private bool SettingExists(string name, bool withoutProfile = false)
         {

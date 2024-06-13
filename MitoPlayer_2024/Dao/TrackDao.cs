@@ -262,6 +262,8 @@ namespace MitoPlayer_2024.Dao
         }
         public void SetActivePlaylist(int id)
         {
+            this.InactiveAllPlaylist();
+
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
             {
@@ -274,6 +276,31 @@ namespace MitoPlayer_2024.Dao
                                         AND ProfileId = @ProfileId";
 
                 command.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
+
+                try
+                {
+                    command.ExecuteNonQuery();
+                }
+                catch (MySqlException ex)
+                {
+                    MessageBox.Show("Playlist is not updated. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                connection.Close();
+            }
+        }
+        public void InactiveAllPlaylist()
+        {
+            using (var connection = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand())
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"UPDATE Playlist 
+                                        SET IsActive = false
+                                        WHERE ProfileId = @ProfileId";
+
                 command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
 
                 try
@@ -533,7 +560,7 @@ namespace MitoPlayer_2024.Dao
                         track.Path = (string)reader[1];
                         track.FileName = (string)reader[2];
                         track.Artist = (string)reader[3];
-                        track.Title = (string)reader[4];
+                        track.Title =  (string)reader[4];
                         track.Album = (string)reader[5];
                         track.Year = (int)reader[6];
                         track.Length = (int)reader[7];
