@@ -78,11 +78,15 @@ namespace MitoPlayer_2024.Presenters
         }
         private void SetCurrentTagId(object sender, ListEventArgs e)
         {
+            this.SetCurrentTagId(e.IntegerField1);
+        }
+        private void SetCurrentTagId(int index)
+        {
             tagValueListTable.Rows.Clear();
 
-            this.currentTag = this.tagDao.GetTag(Convert.ToInt32(this.tagListTable.Rows[e.IntegerField1]["Id"]));
+            this.currentTag = this.tagDao.GetTag(Convert.ToInt32(this.tagListTable.Rows[index]["Id"]));
             List<TagValue> tagValueList = this.tagDao.GetTagValuesByTagId(this.currentTag.Id);
-            
+
             if (tagValueList != null && tagValueList.Count > 0)
             {
                 foreach (TagValue tag in tagValueList)
@@ -90,7 +94,7 @@ namespace MitoPlayer_2024.Presenters
                     tagValueListTable.Rows.Add(tag.Id, tag.Name);
                 }
             }
-  
+
             this.tagValueListBindingSource.DataSource = tagValueListTable;
             this.tagValueEditorView.SetTagValueListBindingSource(this.tagValueListBindingSource);
         }
@@ -180,15 +184,31 @@ namespace MitoPlayer_2024.Presenters
         {
             if (MessageBox.Show("Do you really want to delete the tag? All metadata of all track related to this Tag will be deleted!", "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK)
             {
-                this.tagDao.DeleteTag(e.IntegerField1);
-
                 this.trackDao.DeleteTrackTagValueByTagId(e.IntegerField1);
 
                 DataRow tagRow = this.tagListTable.Select("Id = " + Convert.ToInt32(this.tagListTable.Rows[e.IntegerField1]["Id"])).First();
+
+                this.tagDao.DeleteTagValuesByTagId((int)tagRow["Id"]);
+                this.tagDao.DeleteTag((int)tagRow["Id"]);
+
                 TrackProperty tp = this.settingDao.GetTrackPropertyByNameAndGroup((string)tagRow["Name"], ColumnGroup.TracklistColumns.ToString());
                 if (tp != null)
                 {
                     this.settingDao.DeleteTrackProperty(tp.Id);
+                }
+
+                int selectedIndex = 0;
+                if (e.IntegerField1 == 0)
+                {
+                    selectedIndex = 0;
+                }
+                else if (e.IntegerField1 == this.tagListTable.Rows.Count - 1)
+                {
+                    selectedIndex = this.tagListTable.Rows.Count - 2;
+                }
+                else
+                {
+                    selectedIndex = e.IntegerField1;
                 }
 
                 this.tagListTable.Rows.Remove(tagRow);
@@ -197,6 +217,9 @@ namespace MitoPlayer_2024.Presenters
                 this.tagValueListTable.Rows.Clear();
                 this.tagValueListBindingSource.DataSource = tagValueListTable;
                 this.tagValueEditorView.SetTagValueListBindingSource(this.tagValueListBindingSource);
+
+                if(this.tagListTable.Rows.Count > 0)
+                    this.SetCurrentTagId(selectedIndex);
             }
         }
         private void CreateTagValue(object sender, EventArgs e)

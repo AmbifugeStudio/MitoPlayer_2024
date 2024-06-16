@@ -34,6 +34,7 @@ namespace MitoPlayer_2024.Models
 
         #region COLUMNS
         void CreateTrackProperty(TrackProperty tp, bool withoutProfile = false);
+        TrackProperty GetTrackProperty(int id, bool withoutProfile = false);
         TrackProperty GetTrackPropertyByNameAndGroup(string name, string group, bool withoutProfile = false);
         List<TrackProperty> GetTrackPropertyListByColumnGroup(String columnGroup, bool withoutProfile = false, bool withAndWithoutProfile = false);
         void UpdateTrackProperty(TrackProperty tp, bool withoutProfile = false);

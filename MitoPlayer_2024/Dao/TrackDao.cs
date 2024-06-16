@@ -657,6 +657,47 @@ namespace MitoPlayer_2024.Dao
         #endregion
 
         #region PLAYLISTCONTENT
+        public int GetNextSmallestTrackIdInPlaylist()
+        {
+            int result = 0;
+            List<int> trackIds = null;
+
+            using (var connection = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand())
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"SELECT TrackIdInPlaylist 
+                                        FROM PlaylistContent 
+                                        ORDER BY TrackIdInPlaylist ";
+                using (var reader = command.ExecuteReader())
+                {
+                    trackIds = new List<int>();
+                    while (reader.Read())
+                    {
+                        trackIds.Add((int)reader[0]);
+                    }
+                }
+            }
+            if (trackIds == null || trackIds.Count == 0)
+            {
+                return result;
+            }
+            else
+            {
+                for (int i = 0; i <= trackIds.Count - 1; i++)
+                {
+                    if (i != trackIds[i])
+                    {
+                        return i;
+                    }
+                }
+                result = trackIds.Count;
+            }
+
+            return result;
+        }
         public void CreatePlaylistContent(PlaylistContent plc)
         {
             using (var connection = new MySqlConnection(connectionString))

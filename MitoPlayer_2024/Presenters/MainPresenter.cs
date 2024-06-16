@@ -662,11 +662,11 @@ namespace MitoPlayer_2024.Presenters
                 }
                 if (directories != null && directories.Length > 0)
                 {
-                    scannedFiles = null;
+                    scannedFileNames = null;
                     foreach (string dir in directories)
                     {
                         this.ScanDirectory(dir);
-                        trackList.AddRange(this.ReadFiles(scannedFiles));
+                        trackList.AddRange(this.ReadFiles(scannedFileNames));
                     }
                 }
                 this.AddTracksToTrackList(trackList, dragIndex);

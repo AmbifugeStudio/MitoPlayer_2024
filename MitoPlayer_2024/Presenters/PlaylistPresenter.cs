@@ -541,7 +541,8 @@ namespace MitoPlayer_2024.Presenters
                     plc.PlaylistId = this.currentPlaylistId;
                     plc.TrackId = track.Id;
                     plc.OrderInList = orderInList;
-                    plc.TrackIdInPlaylist = track.TrackIdInPlaylist;
+                    plc.TrackIdInPlaylist = this.trackDao.GetNextSmallestTrackIdInPlaylist();
+                    track.TrackIdInPlaylist = plc.TrackIdInPlaylist;
                     this.trackDao.CreatePlaylistContent(plc);
                     orderInList++;
                 }
@@ -677,7 +678,7 @@ namespace MitoPlayer_2024.Presenters
                 {
                     if (!trackIds.Contains(Convert.ToInt32(this.trackListTable.Rows[i]["Id"])))
                     {
-                        trackIdInPlaylist = Convert.ToInt32(this.trackListTable.Rows[i]["OrderInList"]);
+                        trackIdInPlaylist = Convert.ToInt32(this.trackListTable.Rows[i]["TrackIdInPlaylist"]);
                         if (this.mediaPLayerComponent.CurrentTrackIdInPlaylist != trackIdInPlaylist)
                         {
                             trackIds.Add(Convert.ToInt32(this.trackListTable.Rows[i]["Id"]));
@@ -937,7 +938,7 @@ namespace MitoPlayer_2024.Presenters
                     int trackIdInPlaylist = -1;
                     for (int i = 0; i <= this.trackListTable.Rows.Count - 1; i++)
                     {
-                        trackIdInPlaylist = Convert.ToInt32(trackListTable.Rows[i]["OrderInList"]);
+                        trackIdInPlaylist = Convert.ToInt32(trackListTable.Rows[i]["TrackIdInPlaylist"]);
                         if (trackIdInPlaylist == currentTrackIdInPlaylist)
                         {
                             this.view.SetCurrentTrackColor(currentTrackIdInPlaylist);
@@ -975,6 +976,9 @@ namespace MitoPlayer_2024.Presenters
                         {
                             this.trackListTable.Rows.Clear();
                             this.currentPlaylistId = Convert.ToInt32(this.playlistListTable.Rows[0]["Id"]);
+
+                            this.LoadPlaylist(this.currentPlaylistId);
+
                             this.SaveTrackList(this.trackListTable, this.currentPlaylistId);
                             this.SetTrackList(this.trackListTable);
                             this.SetPlaylistAsCurrent(this.currentPlaylistId);
@@ -1036,7 +1040,10 @@ namespace MitoPlayer_2024.Presenters
             if (columnVisibilityEditorView.ShowDialog((PlaylistView)this.view) == DialogResult.OK)
             {
                 this.TrackColumnVisibilityArray = presenter.TrackPropertyList.Select(x => x.IsEnabled).ToArray();
-
+                foreach(TrackProperty tp in presenter.TrackPropertyList)
+                {
+                    this.settingDao.UpdateTrackProperty(tp, true);
+                }
                 InitializeDataTables();
             }
         }

@@ -37,6 +37,7 @@ namespace MitoPlayer_2024.Model
         #endregion
 
         #region PLAYLISTCONTENT
+        int GetNextSmallestTrackIdInPlaylist();
         void CreatePlaylistContent(PlaylistContent plc);
         void UpdatePlaylistContent(PlaylistContent plc);
         void DeletePlaylistContentByPlaylistId(int playlistId);

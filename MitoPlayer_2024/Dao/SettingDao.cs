@@ -701,6 +701,43 @@ namespace MitoPlayer_2024.Dao
                 connection.Close();
             }
         }
+        public TrackProperty GetTrackProperty(int id, bool withoutProfile = false)
+        {
+            TrackProperty tp = null;
+
+            using (var connection = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand())
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"SELECT * FROM TrackProperty 
+                                        WHERE Id = @Id ";
+
+                command.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
+
+                if (!withoutProfile)
+                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
+                else
+                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = -1;
+
+                using (var reader = command.ExecuteReader())
+                {
+                    tp = new TrackProperty();
+                    while (reader.Read())
+                    {
+                        tp.Id = (int)reader[0];
+                        tp.ColumnGroup = (string)reader[1];
+                        tp.Name = (string)reader[2];
+                        tp.Type = (string)reader[3];
+                        tp.IsEnabled = (bool)reader[4];
+                        tp.SortingId = (int)reader[5];
+                        tp.ProfileId = (int)reader[6];
+                    }
+                }
+            }
+            return tp;
+        }
         public TrackProperty GetTrackPropertyByNameAndGroup(string name, string columnGroup, bool withoutProfile = false)
         {
             TrackProperty tp = null;
@@ -732,7 +769,7 @@ namespace MitoPlayer_2024.Dao
                         tp.ColumnGroup = (string)reader[1];
                         tp.Name = (string)reader[2];
                         tp.Type = (string)reader[3];
-                        tp.IsEnabled = (bool)reader[4];
+                        tp.IsEnabled = Convert.ToBoolean(reader[4]);
                         tp.SortingId = (int)reader[5];
                         tp.ProfileId = (int)reader[6];
                     }

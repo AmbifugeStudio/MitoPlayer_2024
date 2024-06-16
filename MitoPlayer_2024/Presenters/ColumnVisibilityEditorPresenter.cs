@@ -63,6 +63,7 @@ namespace MitoPlayer_2024.Presenters
         private void ChangeVisibility(object sender, Helpers.ListEventArgs e)
         {
             int selectedIndex = 0;
+
             this.trackPropertyTable.Rows.Clear();
             for(int i = 0; i <= this.TrackPropertyList.Count - 1; i++)
             {
@@ -70,12 +71,11 @@ namespace MitoPlayer_2024.Presenters
                 {
                     this.TrackPropertyList[i].IsEnabled = !this.TrackPropertyList[i].IsEnabled;
                     selectedIndex = i;
-                    break;
                 }
                 this.trackPropertyTable.Rows.Add(this.TrackPropertyList[i].Id, this.TrackPropertyList[i].Name, this.TrackPropertyList[i].IsEnabled);
             }
 
-            this.trackPropertyListBindingSource.DataSource = trackPropertyTable;
+            this.trackPropertyListBindingSource.DataSource = this.trackPropertyTable;
             this.view.SetColumnListBindingSource(this.trackPropertyListBindingSource, selectedIndex);
         }
 
