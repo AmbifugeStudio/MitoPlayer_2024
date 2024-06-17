@@ -50,6 +50,8 @@ namespace MitoPlayer_2024.Model
         void CreateTrackTagValue(TrackTagValue ttv);
         List<TrackTagValue> LoadTrackTagValuesByTrackId(int trackId, List<Tag> tagList);
         void UpdateTrackTagValues(List<TrackTagValue> trackTagValueList);
+        
+        void DeleteTagValueFromTrackTagValues(int tagValueId);
         void DeleteTrackTagValueByTagId(int tagId);
         void DeleteTrackTagValueByTrackId(int trackId);
         void DeleteAllTrackTagValue();

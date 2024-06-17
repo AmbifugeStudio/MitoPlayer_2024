@@ -191,6 +191,7 @@ namespace MitoPlayer_2024.Presenters
                         foreach (TrackTagValue ttv in track.TrackTagValues)
                         {
                             args[i] = ttv.TagValueName;
+                            i++;
                         }
                     }
                     
@@ -458,7 +459,11 @@ namespace MitoPlayer_2024.Presenters
             if (e.SelectedRows != null && e.SelectedRows.Count > 0)
             {
                 sourceTrackList = this.ConvertSelectedRowsToList(e.SelectedRows);
-                playlistRow = this.playlistListTable.Select("G = " + e.IntegerField1).First();
+                DataRow[] elements = this.playlistListTable.Select("G = " + e.IntegerField1);
+                if(elements != null && elements.Count() > 0)
+                {
+                    playlistRow = elements[0];
+                }
 
                 if (playlistRow != null)
                 {
@@ -1044,7 +1049,8 @@ namespace MitoPlayer_2024.Presenters
                 {
                     this.settingDao.UpdateTrackProperty(tp, true);
                 }
-                InitializeDataTables();
+                this.InitializeDataTables();
+                ((PlaylistView)this.view).CallSetCurrentTrackColorEvent();
             }
         }
 

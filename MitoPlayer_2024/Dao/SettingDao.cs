@@ -121,7 +121,7 @@ namespace MitoPlayer_2024.Dao
             int integerData = -1;
             integerData = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings[settingName]);
 
-            if (!this.SettingExists(settingName,true))
+            if (!this.SettingExists(settingName, withoutProfile))
             {
                 this.CreateIntegerSetting(this.GetNextId(TableName.Setting.ToString()),settingName, integerData, withoutProfile);
             }
@@ -651,6 +651,32 @@ namespace MitoPlayer_2024.Dao
                 tp.ProfileId = -1;
                 this.CreateTrackProperty(tp, true);
             }
+        }
+
+        public int GetNextTrackPropertySortingId()
+        {
+            int lastId = -1;
+            using (var connection = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand())
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"SELECT SortingId 
+                                        FROM TrackProperty 
+                                        ORDER BY SortingId  
+                                        desc LIMIT 1";
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        lastId = (int)reader[0];
+                    }
+                }
+                connection.Close();
+            }
+            return lastId + 1;
         }
         public void CreateTrackProperty(TrackProperty tp, bool withoutProfile = false)
         {

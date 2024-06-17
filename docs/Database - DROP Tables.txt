@@ -1,0 +1,9 @@
+drop table tracktagvalue;
+drop table trackproperty;
+drop table playlistcontent;
+drop table track;
+drop table tagvalue;
+drop table tag;
+drop table playlist;
+drop table setting;
+drop table profile;

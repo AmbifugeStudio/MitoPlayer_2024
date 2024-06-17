@@ -897,7 +897,7 @@ namespace MitoPlayer_2024.Dao
         }
         public List<TrackTagValue> LoadTrackTagValuesByTrackId(int trackId, List<Tag> tagList)
         {
-            List<TrackTagValue> trackTagValueList = null;
+            List<TrackTagValue> trackTagValueList = new List<TrackTagValue>();
 
             if (tagList != null && tagList.Count > 0)
             {
@@ -912,20 +912,20 @@ namespace MitoPlayer_2024.Dao
                         command.CommandText = @"SELECT 
                                                 ttv.Id, 
                                                 ttv.TrackId, 
-                                                ttv.TagId, 
-                                                ttv.TagValueId, 
-                                                t.Name, 
-                                                tv.Name, 
-                                                tv.ProfileId 
-
-                                                FROM TrackTagValue ttv, 
-                                                Tag t, 
-                                                TagValue tv 
-
-                                                WHERE ttv.TagId = t.Id 
-                                                AND tv.TagId = t.Id 
-                                                AND ttv.TrackId = @TrackId 
-                                                AND ttv.TagId = @TagId 
+                                                ttv.TagId,
+                                                ttv.TagValueId,
+                                                t.Name,
+                                                tv.Name,
+                                                ttv.ProfileId
+                                                 
+                                                FROM TrackTagValue ttv
+                                                LEFT JOIN Tag t
+                                                ON ttv.TagId=t.Id
+                                                LEFT JOIN TagValue tv
+                                                ON ttv.TagValueId= tv.Id
+                                                 
+                                                WHERE ttv.TrackId = @TrackId
+                                                AND ttv.TagId = @TagId
                                                 AND ttv.ProfileId = @ProfileId ";
 
                         command.Parameters.Add("@TrackId", MySqlDbType.Int32).Value = trackId;
@@ -934,7 +934,7 @@ namespace MitoPlayer_2024.Dao
 
                         using (var reader = command.ExecuteReader())
                         {
-                            trackTagValueList = new List<TrackTagValue>();
+                           
                             while (reader.Read())
                             {
                                 TrackTagValue ttv = new TrackTagValue();
@@ -943,7 +943,7 @@ namespace MitoPlayer_2024.Dao
                                 ttv.TagId = (int)reader[2];
                                 ttv.TagValueId = (int)reader[3];
                                 ttv.TagName = (string)reader[4];
-                                ttv.TagValueName = (string)reader[5];
+                                ttv.TagValueName = Convert.ToString(reader[5]);
                                 ttv.ProfileId = (int)reader[6];
                                 trackTagValueList.Add(ttv);
                             }
@@ -984,6 +984,35 @@ namespace MitoPlayer_2024.Dao
                     {
                         MessageBox.Show("TrackTagValue is not inserted. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
+                }
+                connection.Close();
+            }
+        }
+
+        public void DeleteTagValueFromTrackTagValues(int tagValueId)
+        {
+            using (var connection = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand())
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"UPDATE TrackTagValue 
+                                            SET TagValueId = -1
+
+                                            WHERE TagValueId = @TagValueId 
+                                            AND ProfileId = @ProfileId";
+
+                command.Parameters.Add("@TagValueId", MySqlDbType.Int32).Value = tagValueId;
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
+
+                try
+                {
+                    command.ExecuteNonQuery();
+                }
+                catch (MySqlException ex)
+                {
+                    MessageBox.Show("TrackTagValue is not updated. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 connection.Close();
             }

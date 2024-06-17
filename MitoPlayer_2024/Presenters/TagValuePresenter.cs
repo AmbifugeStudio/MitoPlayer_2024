@@ -69,12 +69,12 @@ namespace MitoPlayer_2024.Presenters
                 this.currentTag = tagList[0];
             }
 
-            
-
             this.tagListBindingSource.DataSource = tagListTable;
             this.tagValueEditorView.SetTagListBindingSource(this.tagListBindingSource);
             this.tagValueListBindingSource.DataSource = tagValueListTable;
             this.tagValueEditorView.SetTagValueListBindingSource(this.tagValueListBindingSource);
+
+            this.SetCurrentTagId(0);
         }
         private void SetCurrentTagId(object sender, ListEventArgs e)
         {
@@ -141,6 +141,7 @@ namespace MitoPlayer_2024.Presenters
                 tp.Type = "System.String";
                 tp.IsEnabled = true;
                 tp.ColumnGroup = ColumnGroup.TracklistColumns.ToString();
+                tp.SortingId = this.settingDao.GetNextTrackPropertySortingId();
                 this.settingDao.CreateTrackProperty(tp);
 
 
@@ -188,6 +189,7 @@ namespace MitoPlayer_2024.Presenters
 
                 DataRow tagRow = this.tagListTable.Select("Id = " + Convert.ToInt32(this.tagListTable.Rows[e.IntegerField1]["Id"])).First();
 
+                this.trackDao.DeleteTrackTagValueByTagId((int)tagRow["Id"]);
                 this.tagDao.DeleteTagValuesByTagId((int)tagRow["Id"]);
                 this.tagDao.DeleteTag((int)tagRow["Id"]);
 
@@ -259,12 +261,10 @@ namespace MitoPlayer_2024.Presenters
         {
             if(MessageBox.Show("Do you really want to delete the tag value? All metadata of all track related to this tag value will be deleted!", "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK)
             {
-                
-
                 DataRow tagValueRow = this.tagValueListTable.Select("Id = " + Convert.ToInt32(this.tagValueListTable.Rows[e.IntegerField1]["Id"])).First();
-                
 
                 this.tagDao.DeleteTagValue(Convert.ToInt32(this.tagValueListTable.Rows[e.IntegerField1]["Id"]));
+                this.trackDao.DeleteTagValueFromTrackTagValues(Convert.ToInt32(this.tagValueListTable.Rows[e.IntegerField1]["Id"]));
                 this.tagValueListTable.Rows.Remove(tagValueRow);
 
                 this.tagValueListBindingSource.DataSource = tagValueListTable;

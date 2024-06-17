@@ -1,0 +1,32 @@
+BUGS
+
+FEATURE
+- Quicklist: ne váltson át az aktuális playlist-re a kijelölés
+- Preferences: purge database
+
+FEATURE
+- elindítok egy zenét, leállítom, álkattintok, akkor a next/prev a kurzortól számolja a köv./előzőt
+- playlist hozzáadás/szerkesztésnél ne ugorjon a current-re a kijelölés
+- aktuális playlist jó lene zölddel megjelölve
+- drag and dropolhatók a számok a playlist-ekbe
+- egy kattintásra töltődjön a playlist és drag and drop-olható is?
+- törlés és hozzáadáskor teljes delete helyett adott elem törlése
+
+BUG
+
+
+
+
+
+
+- aktív szám szinezése eltűnik, ha a columnvisibility-t változtatom
+- szám drag and drop hozzáadja-e az adatbázishoz a zenéket?
+- a new tag-et a column visibilityben ha átrendezem, akkor még nem rendeződik át
+- new playlist elhasal a playlistcontent külsö kulcs miatt
+
+- drag and drop ne delete-tel, hanem copy-val
+- egy elem drag and drop hibája
+- drag and drop katt az utolsó elemre index miatt kifagy
+- playlist clear-re frissüljön a selected item label
+- remove missing track tesztelése
+- törlök a végéről majd megint törlök a végéről, akkor kifagy

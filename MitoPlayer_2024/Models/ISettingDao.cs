@@ -33,6 +33,7 @@ namespace MitoPlayer_2024.Models
         #endregion
 
         #region COLUMNS
+        int GetNextTrackPropertySortingId();
         void CreateTrackProperty(TrackProperty tp, bool withoutProfile = false);
         TrackProperty GetTrackProperty(int id, bool withoutProfile = false);
         TrackProperty GetTrackPropertyByNameAndGroup(string name, string group, bool withoutProfile = false);

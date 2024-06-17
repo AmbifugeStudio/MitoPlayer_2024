@@ -1,0 +1,78 @@
+==================
+UNIT TEST #1
+==================
+ADD/DELETE
+[11] - add file
+[11] - add directory
+[11] - remove
+[11] - remove duplicate
+[11] - clear
+
+ORDERING
+[11] - order by column
+[11] - order by filename
+[11] - order by title
+[11] - order by artist
+[11] - reverse
+[11] - shuffle
+
+PLAYER
+Menu
+[11] - play
+[11] - pause
+[11] - stop
+[11] - prev
+[11] - next
+[11] - random(!)
+Component
+[11]- double click play
+[11]- play
+[11]- pause
+[11]- stop
+[11]- prev
+[11]- next
+
+PLAYLIST
+[11] - add, add files, rename
+[11] - load playlist
+[11] - load playlist with playing track
+[11] - multiple load playlist and multiple playing track
+[11] - delete playlist, delete playlist with playing track
+[11] - set quicklist
+[11] - copy tracks to playlist
+
+ADD BY DRAG AND DROP 
+[11] - drop files
+[11] - drop directory
+
+COLUMN VISIBILITY
+[11] - change column visibility with non empty list
+[11] - change column order with non empty list
+
+TAGVALUES
+[] - add tag (existing tracks)
+[] - add tag and value (existing tracks)
+[] - edit tagvalue (existing tracks)
+[] - edit tag (existing tracks)
+[] - delete tagvalue (existing tracks)
+[] - delete tag (existing tracks)
+
+TAGVALUES
+[11] - add tag (and add track)
+[11] - add tag and value (and add track)
+[11] - edit tagvalue (and add track)
+[11] - edit tag (and add track)
+[11] - delete tagvalue (and add track)
+[] - delete tag (and add track)
+
+
+
+TAGVALUE
+[] - change column visibility with non empty list
+[] - change column order with non empty list
+
+PROFILE
+[] - change profile without tracks
+[] - change profile with tracks
+[] - change profile with playing music
+[] - change profile with tagvalues

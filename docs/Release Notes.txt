@@ -1,0 +1,54 @@
+
+v0.11.0.10 - Complete Dao Refactor
+[...]
+OK - Tag törlése után index problémával elhasal a Player
+OK - TagValue törlésekor, a tracklist oszlopából nem törlődött az érték
+OK - TagValue megnyitásakor, ha van már Tag, nem töltődik be a tagvalue lista
+OK - Tag hozzáadás létező track-ekhez: új tagvalue hozzáadásakor kitöltődött a tracklist-ben egy másik tag oszlopa 
+OK - Tag hozzáadás létező track-ekhez: a sorrend nem stimmel (de csak, amikor a tag létrehozás után átmegyek a player-be, ha playlist-et váltok, akkor megváltozik)
+OK - Quicklist: ha nincs beállítva, s úgy nyomok quick-key-t, kifagy
+OK - Adatbázis: LastOpenFilesFilterIndex és Volume többször hozzáadódik a Setting-hez
+OK - Column Visibility: megszűnik a lejátszott zene színezése
+OK - a new tag-et a column visibilityben ha átrendezem, akkor még nem rendeződik át
+OK - new playlist elhasal a playlistcontent külsö kulcs miatt
+
+v0.10.1.7
+OK - copy track info nem íródik ki teljesen
+OK - directory scan után elindul a legelső track, de nem írja ki a felület, hogy mi az
+OK - file scan után nem indul el automatikusan a zene
+OK - playlist hozzáadás validálásakor nem error kell, csak info
+OK - üres lista betöltésénél a selected item list 1000-t mutat
+OK - jobb alsó sarokban a listában szereplő számok darabszáma és összideje
+OK - remove duplicates és missing után nem szineződik az aktuálisan szóló zene
+OK - random nem működik
+OK - a random végigmehetne a listán, nem lenne teljesen "random"
+OK - track listába másolásnál valami visszajelzés
+OK - quickkey nem működik vagy több sort szúr be egyszerre
+OK - listához hozzáadásnál új id-t kell generálni
+OK - menüs rendezések után nem szinezi a current track-et
+OK - ua. csoportot nem állíthassak be több playlistre
+OK - enter és space-re nem a megfelelőt indítja el
+OK - lejárt szám utáni szám chk
+OK - drag and drop rosszul színezi a current track-et
+OK - duplikátumnál az elsőt jelöli ki és játsza le, nem azt, amire rákattintok
+OK - szól a szám, törlök mindent, leállítom, nem tudom újra indítani
+OK - ha ellépek a felületről és viszajövök és szól szám, nem szinez
+OK - delete all-nál is van valami error
+OK - next/prev gomb exception-nel elszáll
+OK - oszlop magasságot ne lehessen állítani
+OK - random gomb nem működik
+OK - kijelölésnél space vagy enterre játssza le a számot
+OK - 1-2-3-4 group gombok bekötése
+OK - pause-ra az idő és a progress bar eltűnik
+OK - playlist name editorban esc lépjen ki
+OK - column header-re sok click: a play track elszállt index errorral
+OK - add file nem frissíti a listát
+OK - add file után nem indul el a lejátszó
+OK - a directory scan kifagy a lastopendirectory setting mentésekor
+OK - új playlist exceptionnel elszáll
+OK - playlist table column height set
+OK - a menü gombokat be kell dokkolni balra
+OK - főmenü felületek gombnyomásra nem jelennek meg
+OK - volume gomb nem változtatja a hangerő labelt
+OK - volume hangerőt nem állítja
+OK - progress bar event nincs bekötve
