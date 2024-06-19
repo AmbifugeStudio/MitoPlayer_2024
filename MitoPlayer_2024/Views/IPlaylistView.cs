@@ -32,12 +32,17 @@ namespace MitoPlayer_2024.Views
         event EventHandler<ListEventArgs> TrackDragAndDropEvent;
         event EventHandler<ListEventArgs> CopyTracksToPlaylistEvent;
         event EventHandler ShowColumnVisibilityEditorEvent;
-
+        
         //PLAYLIST
         event EventHandler<ListEventArgs> ShowPlaylistEditorViewEvent;
         event EventHandler<ListEventArgs> LoadPlaylistEvent;
         event EventHandler<ListEventArgs> DeletePlaylistEvent;
         event EventHandler<ListEventArgs> SetQuickListEvent;
+
+        //TAG EDITOR
+        event EventHandler DisplayTagEditorEvent;
+        event EventHandler<ListEventArgs> SelectTagEvent;
+        event EventHandler<ListEventArgs> SetTagValueEvent;
 
         void SetPlaylistListBindingSource(BindingSource playlistList, bool[] columnVisibility, int currentPlaylistId);
         void SetTrackListBindingSource(BindingSource trackList, bool[] columnVisibility, int[] columnSortingId);

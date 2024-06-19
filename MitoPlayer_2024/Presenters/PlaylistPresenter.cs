@@ -5,9 +5,11 @@ using MitoPlayer_2024.Views;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml.Linq;
+using TagLib.Mpeg4;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using Type = System.Type;
 
@@ -32,6 +34,13 @@ namespace MitoPlayer_2024.Presenters
         public int[] TrackColumnSortingIdArray { get; set; }
         Dictionary<string, int> columnOrderStates { get; set; }
         private MediaPlayerComponent mediaPLayerComponent { get; set; }
+
+        private bool isTagEditorDisplayed { get; set; }
+        private List<Tag> tagList { get; set; }
+        private List<TagValue> tagValueList { get; set; }
+        private Tag currentTag { get; set; }
+        private TagValue currentTagValue { get; set; }
+
         public PlaylistPresenter(IPlaylistView view, MediaPlayerComponent mediaPlayer, ITrackDao trackDao, ITagDao tagValueDao, ISettingDao settingDao)
         {
             //INITIALIZE
@@ -43,7 +52,9 @@ namespace MitoPlayer_2024.Presenters
             this.InitializeDataTables();
 
             this.mediaPLayerComponent = mediaPlayer;
-            this.mediaPLayerComponent.Initialize(this.trackListTable); 
+            this.mediaPLayerComponent.Initialize(this.trackListTable);
+
+            this.InitializeTagEditor();
             this.InitializeVolume();
 
             //MEDIA PLAYER
@@ -70,6 +81,11 @@ namespace MitoPlayer_2024.Presenters
             this.view.DeletePlaylistEvent += DeletePlaylistEvent;
             this.view.SetQuickListEvent += SetQuickListEvent;
 
+            //TAG EDITOR
+            this.view.DisplayTagEditorEvent += DisplayTagEditorEvent;
+            this.view.SelectTagEvent += SelectTagEvent;
+            this.view.SetTagValueEvent += SetTagValueEvent;
+
             this.view.Show();
         }
 
@@ -81,6 +97,11 @@ namespace MitoPlayer_2024.Presenters
                 volume = 50;
             this.view.SetVolume(volume);
             this.mediaPLayerComponent.MediaPlayer.settings.volume = volume;
+        }
+        private void InitializeTagEditor()
+        {
+            this.isTagEditorDisplayed = false;
+            ((PlaylistView)this.view).CallDisplayTagEditor(this.isTagEditorDisplayed);
         }
 
         private void InitializeDataTables()
@@ -158,6 +179,10 @@ namespace MitoPlayer_2024.Presenters
         private void LoadPlaylist(Playlist pls)
         {
             List<Tag> tagList = this.tagDao.GetAllTag();
+            if(tagList != null && tagList.Count > 0)
+            {
+                this.tagList = tagList;
+            }
 
             List<Track> trackList = this.trackDao.GetTracklistByPlaylistId(pls.Id, tagList);
             if (trackList != null && trackList.Count > 0)
@@ -197,10 +222,13 @@ namespace MitoPlayer_2024.Presenters
                     
                     this.trackListTable.Rows.Add(args);
                 }
+                ((PlaylistView)this.view).InitializeTagEditor(this.tagList);
+                ((PlaylistView)this.view).InitializeTagValueEditor(null);
                 this.SetTrackList(this.trackListTable);
             }
             ((PlaylistView)this.view).UpdateTrackCountAndLength(this.currentPlaylistId);
         }
+
         private String LengthToString(double length)
         {
             TimeSpan t = TimeSpan.FromSeconds(length);
@@ -1052,6 +1080,52 @@ namespace MitoPlayer_2024.Presenters
                 this.InitializeDataTables();
                 ((PlaylistView)this.view).CallSetCurrentTrackColorEvent();
             }
+        }
+        private void DisplayTagEditorEvent(object sender, EventArgs e)
+        {
+            this.isTagEditorDisplayed = !this.isTagEditorDisplayed;
+            ((PlaylistView)this.view).CallDisplayTagEditor(this.isTagEditorDisplayed);
+        }
+        private void SelectTagEvent(object sender, ListEventArgs e)
+        {
+            if(this.tagList != null && this.tagList.Count > 0)
+            {
+                Tag tag = tagList[e.IntegerField1];
+                if(tag != null)
+                {
+                    this.currentTag = tag;
+                    List<TagValue> tagValueList = this.tagDao.GetTagValuesByTagId(tag.Id);
+                    if(tagValueList != null && tagValueList.Count > 0)
+                    {
+                        this.tagValueList = tagValueList;
+                        ((PlaylistView)this.view).InitializeTagValueEditor(tagValueList);
+                    }
+                }
+            }
+           
+        }
+        private void SetTagValueEvent(object sender, ListEventArgs e)
+        {
+            TagValue tv = this.tagValueList[e.IntegerField1];
+            if(tv != null)
+            {
+                if (this.trackListTable != null && this.trackListTable.Rows != null && this.trackListTable.Rows.Count > 0)
+                {
+                    for (int i = e.Rows.Count - 1; i >= 0; i--)
+                    {
+                        if (e.Rows[i].Selected)
+                        {
+                            //UPDATE TRACK TAG VALUE!!
+                            this.trackListTable.Rows[i][this.currentTag.Name] = tv.Name;
+                        }
+                    }
+                      this.SaveTrackList(trackListTable, this.currentPlaylistId);
+                      this.SetTrackList(trackListTable);
+
+                }
+            }
+
+            
         }
 
     }

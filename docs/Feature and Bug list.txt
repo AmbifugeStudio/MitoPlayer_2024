@@ -15,14 +15,8 @@ FEATURE
 BUG
 
 
-
-
-
-
-- aktív szám szinezése eltűnik, ha a columnvisibility-t változtatom
 - szám drag and drop hozzáadja-e az adatbázishoz a zenéket?
-- a new tag-et a column visibilityben ha átrendezem, akkor még nem rendeződik át
-- new playlist elhasal a playlistcontent külsö kulcs miatt
+
 
 - drag and drop ne delete-tel, hanem copy-val
 - egy elem drag and drop hibája

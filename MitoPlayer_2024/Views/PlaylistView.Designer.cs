@@ -31,6 +31,42 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PlaylistView));
             this.tabPagePlaylistDetail = new System.Windows.Forms.TabPage();
+            this.groupBoxTagValue = new System.Windows.Forms.GroupBox();
+            this.btnTagValue23 = new System.Windows.Forms.Button();
+            this.btnTagValue17 = new System.Windows.Forms.Button();
+            this.btnTagValue20 = new System.Windows.Forms.Button();
+            this.btnTagValue14 = new System.Windows.Forms.Button();
+            this.btnTagValue11 = new System.Windows.Forms.Button();
+            this.btnTagValue8 = new System.Windows.Forms.Button();
+            this.btnTagValue5 = new System.Windows.Forms.Button();
+            this.btnTagValue2 = new System.Windows.Forms.Button();
+            this.btnTagValue24 = new System.Windows.Forms.Button();
+            this.btnTagValue18 = new System.Windows.Forms.Button();
+            this.btnTagValue21 = new System.Windows.Forms.Button();
+            this.btnTagValue15 = new System.Windows.Forms.Button();
+            this.btnTagValue12 = new System.Windows.Forms.Button();
+            this.btnTagValue9 = new System.Windows.Forms.Button();
+            this.btnTagValue6 = new System.Windows.Forms.Button();
+            this.btnTagValue3 = new System.Windows.Forms.Button();
+            this.btnTagValue22 = new System.Windows.Forms.Button();
+            this.btnTagValue16 = new System.Windows.Forms.Button();
+            this.btnTagValue19 = new System.Windows.Forms.Button();
+            this.btnTagValue13 = new System.Windows.Forms.Button();
+            this.btnTagValue10 = new System.Windows.Forms.Button();
+            this.btnTagValue7 = new System.Windows.Forms.Button();
+            this.btnTagValue4 = new System.Windows.Forms.Button();
+            this.btnTagValue1 = new System.Windows.Forms.Button();
+            this.groupBoxTag = new System.Windows.Forms.GroupBox();
+            this.btnTag9 = new System.Windows.Forms.Button();
+            this.btnTag8 = new System.Windows.Forms.Button();
+            this.btnTag7 = new System.Windows.Forms.Button();
+            this.btnTag6 = new System.Windows.Forms.Button();
+            this.btnTag5 = new System.Windows.Forms.Button();
+            this.btnTag2 = new System.Windows.Forms.Button();
+            this.btnTag4 = new System.Windows.Forms.Button();
+            this.btnTag3 = new System.Windows.Forms.Button();
+            this.btnTag1 = new System.Windows.Forms.Button();
+            this.btnDisplayTagEditor = new System.Windows.Forms.Button();
             this.btnColumnVisibility = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.btnSetQuickListGroup1 = new System.Windows.Forms.Button();
@@ -67,6 +103,8 @@
             this.exportToM3uToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportToTxtToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabPagePlaylistDetail.SuspendLayout();
+            this.groupBoxTagValue.SuspendLayout();
+            this.groupBoxTag.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPlaylistList)).BeginInit();
@@ -77,6 +115,9 @@
             // 
             // tabPagePlaylistDetail
             // 
+            this.tabPagePlaylistDetail.Controls.Add(this.groupBoxTagValue);
+            this.tabPagePlaylistDetail.Controls.Add(this.groupBoxTag);
+            this.tabPagePlaylistDetail.Controls.Add(this.btnDisplayTagEditor);
             this.tabPagePlaylistDetail.Controls.Add(this.btnColumnVisibility);
             this.tabPagePlaylistDetail.Controls.Add(this.groupBox2);
             this.tabPagePlaylistDetail.Controls.Add(this.groupBox1);
@@ -96,11 +137,385 @@
             this.tabPagePlaylistDetail.Text = "Player";
             this.tabPagePlaylistDetail.UseVisualStyleBackColor = true;
             // 
+            // groupBoxTagValue
+            // 
+            this.groupBoxTagValue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxTagValue.Controls.Add(this.btnTagValue23);
+            this.groupBoxTagValue.Controls.Add(this.btnTagValue17);
+            this.groupBoxTagValue.Controls.Add(this.btnTagValue20);
+            this.groupBoxTagValue.Controls.Add(this.btnTagValue14);
+            this.groupBoxTagValue.Controls.Add(this.btnTagValue11);
+            this.groupBoxTagValue.Controls.Add(this.btnTagValue8);
+            this.groupBoxTagValue.Controls.Add(this.btnTagValue5);
+            this.groupBoxTagValue.Controls.Add(this.btnTagValue2);
+            this.groupBoxTagValue.Controls.Add(this.btnTagValue24);
+            this.groupBoxTagValue.Controls.Add(this.btnTagValue18);
+            this.groupBoxTagValue.Controls.Add(this.btnTagValue21);
+            this.groupBoxTagValue.Controls.Add(this.btnTagValue15);
+            this.groupBoxTagValue.Controls.Add(this.btnTagValue12);
+            this.groupBoxTagValue.Controls.Add(this.btnTagValue9);
+            this.groupBoxTagValue.Controls.Add(this.btnTagValue6);
+            this.groupBoxTagValue.Controls.Add(this.btnTagValue3);
+            this.groupBoxTagValue.Controls.Add(this.btnTagValue22);
+            this.groupBoxTagValue.Controls.Add(this.btnTagValue16);
+            this.groupBoxTagValue.Controls.Add(this.btnTagValue19);
+            this.groupBoxTagValue.Controls.Add(this.btnTagValue13);
+            this.groupBoxTagValue.Controls.Add(this.btnTagValue10);
+            this.groupBoxTagValue.Controls.Add(this.btnTagValue7);
+            this.groupBoxTagValue.Controls.Add(this.btnTagValue4);
+            this.groupBoxTagValue.Controls.Add(this.btnTagValue1);
+            this.groupBoxTagValue.Location = new System.Drawing.Point(859, 152);
+            this.groupBoxTagValue.Name = "groupBoxTagValue";
+            this.groupBoxTagValue.Size = new System.Drawing.Size(254, 254);
+            this.groupBoxTagValue.TabIndex = 10;
+            this.groupBoxTagValue.TabStop = false;
+            this.groupBoxTagValue.Text = "TagValues";
+            // 
+            // btnTagValue23
+            // 
+            this.btnTagValue23.Location = new System.Drawing.Point(87, 220);
+            this.btnTagValue23.Name = "btnTagValue23";
+            this.btnTagValue23.Size = new System.Drawing.Size(75, 23);
+            this.btnTagValue23.TabIndex = 0;
+            this.btnTagValue23.Text = "TagValue23";
+            this.btnTagValue23.UseVisualStyleBackColor = true;
+            // 
+            // btnTagValue17
+            // 
+            this.btnTagValue17.Location = new System.Drawing.Point(87, 162);
+            this.btnTagValue17.Name = "btnTagValue17";
+            this.btnTagValue17.Size = new System.Drawing.Size(75, 23);
+            this.btnTagValue17.TabIndex = 0;
+            this.btnTagValue17.Text = "TagValue17";
+            this.btnTagValue17.UseVisualStyleBackColor = true;
+            // 
+            // btnTagValue20
+            // 
+            this.btnTagValue20.Location = new System.Drawing.Point(87, 191);
+            this.btnTagValue20.Name = "btnTagValue20";
+            this.btnTagValue20.Size = new System.Drawing.Size(75, 23);
+            this.btnTagValue20.TabIndex = 0;
+            this.btnTagValue20.Text = "TagValue20";
+            this.btnTagValue20.UseVisualStyleBackColor = true;
+            // 
+            // btnTagValue14
+            // 
+            this.btnTagValue14.Location = new System.Drawing.Point(87, 133);
+            this.btnTagValue14.Name = "btnTagValue14";
+            this.btnTagValue14.Size = new System.Drawing.Size(75, 23);
+            this.btnTagValue14.TabIndex = 0;
+            this.btnTagValue14.Text = "TagValue14";
+            this.btnTagValue14.UseVisualStyleBackColor = true;
+            // 
+            // btnTagValue11
+            // 
+            this.btnTagValue11.Location = new System.Drawing.Point(87, 104);
+            this.btnTagValue11.Name = "btnTagValue11";
+            this.btnTagValue11.Size = new System.Drawing.Size(75, 23);
+            this.btnTagValue11.TabIndex = 0;
+            this.btnTagValue11.Text = "TagValue11";
+            this.btnTagValue11.UseVisualStyleBackColor = true;
+            // 
+            // btnTagValue8
+            // 
+            this.btnTagValue8.Location = new System.Drawing.Point(87, 77);
+            this.btnTagValue8.Name = "btnTagValue8";
+            this.btnTagValue8.Size = new System.Drawing.Size(75, 23);
+            this.btnTagValue8.TabIndex = 0;
+            this.btnTagValue8.Text = "TagValue8";
+            this.btnTagValue8.UseVisualStyleBackColor = true;
+            // 
+            // btnTagValue5
+            // 
+            this.btnTagValue5.Location = new System.Drawing.Point(87, 48);
+            this.btnTagValue5.Name = "btnTagValue5";
+            this.btnTagValue5.Size = new System.Drawing.Size(75, 23);
+            this.btnTagValue5.TabIndex = 0;
+            this.btnTagValue5.Text = "TagValue5";
+            this.btnTagValue5.UseVisualStyleBackColor = true;
+            // 
+            // btnTagValue2
+            // 
+            this.btnTagValue2.Location = new System.Drawing.Point(87, 19);
+            this.btnTagValue2.Name = "btnTagValue2";
+            this.btnTagValue2.Size = new System.Drawing.Size(75, 23);
+            this.btnTagValue2.TabIndex = 0;
+            this.btnTagValue2.Text = "TagValue2";
+            this.btnTagValue2.UseVisualStyleBackColor = true;
+            this.btnTagValue2.Click += new System.EventHandler(this.btnTagValue2_Click);
+            // 
+            // btnTagValue24
+            // 
+            this.btnTagValue24.Location = new System.Drawing.Point(168, 221);
+            this.btnTagValue24.Name = "btnTagValue24";
+            this.btnTagValue24.Size = new System.Drawing.Size(75, 23);
+            this.btnTagValue24.TabIndex = 0;
+            this.btnTagValue24.Text = "TagValue24";
+            this.btnTagValue24.UseVisualStyleBackColor = true;
+            // 
+            // btnTagValue18
+            // 
+            this.btnTagValue18.Location = new System.Drawing.Point(168, 163);
+            this.btnTagValue18.Name = "btnTagValue18";
+            this.btnTagValue18.Size = new System.Drawing.Size(75, 23);
+            this.btnTagValue18.TabIndex = 0;
+            this.btnTagValue18.Text = "TagValue18";
+            this.btnTagValue18.UseVisualStyleBackColor = true;
+            // 
+            // btnTagValue21
+            // 
+            this.btnTagValue21.Location = new System.Drawing.Point(168, 192);
+            this.btnTagValue21.Name = "btnTagValue21";
+            this.btnTagValue21.Size = new System.Drawing.Size(75, 23);
+            this.btnTagValue21.TabIndex = 0;
+            this.btnTagValue21.Text = "TagValue21";
+            this.btnTagValue21.UseVisualStyleBackColor = true;
+            // 
+            // btnTagValue15
+            // 
+            this.btnTagValue15.Location = new System.Drawing.Point(168, 134);
+            this.btnTagValue15.Name = "btnTagValue15";
+            this.btnTagValue15.Size = new System.Drawing.Size(75, 23);
+            this.btnTagValue15.TabIndex = 0;
+            this.btnTagValue15.Text = "TagValue15";
+            this.btnTagValue15.UseVisualStyleBackColor = true;
+            // 
+            // btnTagValue12
+            // 
+            this.btnTagValue12.Location = new System.Drawing.Point(168, 105);
+            this.btnTagValue12.Name = "btnTagValue12";
+            this.btnTagValue12.Size = new System.Drawing.Size(75, 23);
+            this.btnTagValue12.TabIndex = 0;
+            this.btnTagValue12.Text = "TagValue12";
+            this.btnTagValue12.UseVisualStyleBackColor = true;
+            // 
+            // btnTagValue9
+            // 
+            this.btnTagValue9.Location = new System.Drawing.Point(168, 78);
+            this.btnTagValue9.Name = "btnTagValue9";
+            this.btnTagValue9.Size = new System.Drawing.Size(75, 23);
+            this.btnTagValue9.TabIndex = 0;
+            this.btnTagValue9.Text = "TagValue9";
+            this.btnTagValue9.UseVisualStyleBackColor = true;
+            // 
+            // btnTagValue6
+            // 
+            this.btnTagValue6.Location = new System.Drawing.Point(168, 49);
+            this.btnTagValue6.Name = "btnTagValue6";
+            this.btnTagValue6.Size = new System.Drawing.Size(75, 23);
+            this.btnTagValue6.TabIndex = 0;
+            this.btnTagValue6.Text = "TagValue6";
+            this.btnTagValue6.UseVisualStyleBackColor = true;
+            // 
+            // btnTagValue3
+            // 
+            this.btnTagValue3.Location = new System.Drawing.Point(168, 20);
+            this.btnTagValue3.Name = "btnTagValue3";
+            this.btnTagValue3.Size = new System.Drawing.Size(75, 23);
+            this.btnTagValue3.TabIndex = 0;
+            this.btnTagValue3.Text = "TagValue3";
+            this.btnTagValue3.UseVisualStyleBackColor = true;
+            this.btnTagValue3.Click += new System.EventHandler(this.btnTagValue3_Click);
+            // 
+            // btnTagValue22
+            // 
+            this.btnTagValue22.Location = new System.Drawing.Point(6, 221);
+            this.btnTagValue22.Name = "btnTagValue22";
+            this.btnTagValue22.Size = new System.Drawing.Size(75, 23);
+            this.btnTagValue22.TabIndex = 0;
+            this.btnTagValue22.Text = "TagValue22";
+            this.btnTagValue22.UseVisualStyleBackColor = true;
+            // 
+            // btnTagValue16
+            // 
+            this.btnTagValue16.Location = new System.Drawing.Point(6, 163);
+            this.btnTagValue16.Name = "btnTagValue16";
+            this.btnTagValue16.Size = new System.Drawing.Size(75, 23);
+            this.btnTagValue16.TabIndex = 0;
+            this.btnTagValue16.Text = "TagValue16";
+            this.btnTagValue16.UseVisualStyleBackColor = true;
+            // 
+            // btnTagValue19
+            // 
+            this.btnTagValue19.Location = new System.Drawing.Point(6, 192);
+            this.btnTagValue19.Name = "btnTagValue19";
+            this.btnTagValue19.Size = new System.Drawing.Size(75, 23);
+            this.btnTagValue19.TabIndex = 0;
+            this.btnTagValue19.Text = "TagValue19";
+            this.btnTagValue19.UseVisualStyleBackColor = true;
+            // 
+            // btnTagValue13
+            // 
+            this.btnTagValue13.Location = new System.Drawing.Point(6, 134);
+            this.btnTagValue13.Name = "btnTagValue13";
+            this.btnTagValue13.Size = new System.Drawing.Size(75, 23);
+            this.btnTagValue13.TabIndex = 0;
+            this.btnTagValue13.Text = "TagValue13";
+            this.btnTagValue13.UseVisualStyleBackColor = true;
+            // 
+            // btnTagValue10
+            // 
+            this.btnTagValue10.Location = new System.Drawing.Point(6, 105);
+            this.btnTagValue10.Name = "btnTagValue10";
+            this.btnTagValue10.Size = new System.Drawing.Size(75, 23);
+            this.btnTagValue10.TabIndex = 0;
+            this.btnTagValue10.Text = "TagValue10";
+            this.btnTagValue10.UseVisualStyleBackColor = true;
+            // 
+            // btnTagValue7
+            // 
+            this.btnTagValue7.Location = new System.Drawing.Point(6, 78);
+            this.btnTagValue7.Name = "btnTagValue7";
+            this.btnTagValue7.Size = new System.Drawing.Size(75, 23);
+            this.btnTagValue7.TabIndex = 0;
+            this.btnTagValue7.Text = "TagValue7";
+            this.btnTagValue7.UseVisualStyleBackColor = true;
+            // 
+            // btnTagValue4
+            // 
+            this.btnTagValue4.Location = new System.Drawing.Point(6, 49);
+            this.btnTagValue4.Name = "btnTagValue4";
+            this.btnTagValue4.Size = new System.Drawing.Size(75, 23);
+            this.btnTagValue4.TabIndex = 0;
+            this.btnTagValue4.Text = "TagValue4";
+            this.btnTagValue4.UseVisualStyleBackColor = true;
+            // 
+            // btnTagValue1
+            // 
+            this.btnTagValue1.Location = new System.Drawing.Point(6, 20);
+            this.btnTagValue1.Name = "btnTagValue1";
+            this.btnTagValue1.Size = new System.Drawing.Size(75, 23);
+            this.btnTagValue1.TabIndex = 0;
+            this.btnTagValue1.Text = "TagValue1";
+            this.btnTagValue1.UseVisualStyleBackColor = true;
+            this.btnTagValue1.Click += new System.EventHandler(this.btnTagValue1_Click);
+            // 
+            // groupBoxTag
+            // 
+            this.groupBoxTag.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxTag.Controls.Add(this.btnTag9);
+            this.groupBoxTag.Controls.Add(this.btnTag8);
+            this.groupBoxTag.Controls.Add(this.btnTag7);
+            this.groupBoxTag.Controls.Add(this.btnTag6);
+            this.groupBoxTag.Controls.Add(this.btnTag5);
+            this.groupBoxTag.Controls.Add(this.btnTag2);
+            this.groupBoxTag.Controls.Add(this.btnTag4);
+            this.groupBoxTag.Controls.Add(this.btnTag3);
+            this.groupBoxTag.Controls.Add(this.btnTag1);
+            this.groupBoxTag.Location = new System.Drawing.Point(859, 35);
+            this.groupBoxTag.Name = "groupBoxTag";
+            this.groupBoxTag.Size = new System.Drawing.Size(254, 111);
+            this.groupBoxTag.TabIndex = 10;
+            this.groupBoxTag.TabStop = false;
+            this.groupBoxTag.Text = "Tags";
+            // 
+            // btnTag9
+            // 
+            this.btnTag9.Location = new System.Drawing.Point(168, 77);
+            this.btnTag9.Name = "btnTag9";
+            this.btnTag9.Size = new System.Drawing.Size(75, 23);
+            this.btnTag9.TabIndex = 0;
+            this.btnTag9.Text = "Tag9";
+            this.btnTag9.UseVisualStyleBackColor = true;
+            this.btnTag9.Click += new System.EventHandler(this.btnTag9_Click);
+            // 
+            // btnTag8
+            // 
+            this.btnTag8.Location = new System.Drawing.Point(87, 77);
+            this.btnTag8.Name = "btnTag8";
+            this.btnTag8.Size = new System.Drawing.Size(75, 23);
+            this.btnTag8.TabIndex = 0;
+            this.btnTag8.Text = "Tag8";
+            this.btnTag8.UseVisualStyleBackColor = true;
+            this.btnTag8.Click += new System.EventHandler(this.btnTag8_Click);
+            // 
+            // btnTag7
+            // 
+            this.btnTag7.Location = new System.Drawing.Point(6, 77);
+            this.btnTag7.Name = "btnTag7";
+            this.btnTag7.Size = new System.Drawing.Size(75, 23);
+            this.btnTag7.TabIndex = 0;
+            this.btnTag7.Text = "Tag7";
+            this.btnTag7.UseVisualStyleBackColor = true;
+            this.btnTag7.Click += new System.EventHandler(this.btnTag7_Click);
+            // 
+            // btnTag6
+            // 
+            this.btnTag6.Location = new System.Drawing.Point(168, 48);
+            this.btnTag6.Name = "btnTag6";
+            this.btnTag6.Size = new System.Drawing.Size(75, 23);
+            this.btnTag6.TabIndex = 0;
+            this.btnTag6.Text = "Tag6";
+            this.btnTag6.UseVisualStyleBackColor = true;
+            this.btnTag6.Click += new System.EventHandler(this.btnTag6_Click);
+            // 
+            // btnTag5
+            // 
+            this.btnTag5.Location = new System.Drawing.Point(87, 48);
+            this.btnTag5.Name = "btnTag5";
+            this.btnTag5.Size = new System.Drawing.Size(75, 23);
+            this.btnTag5.TabIndex = 0;
+            this.btnTag5.Text = "Tag5";
+            this.btnTag5.UseVisualStyleBackColor = true;
+            this.btnTag5.Click += new System.EventHandler(this.btnTag5_Click);
+            // 
+            // btnTag2
+            // 
+            this.btnTag2.Location = new System.Drawing.Point(87, 19);
+            this.btnTag2.Name = "btnTag2";
+            this.btnTag2.Size = new System.Drawing.Size(75, 23);
+            this.btnTag2.TabIndex = 0;
+            this.btnTag2.Text = "Tag2";
+            this.btnTag2.UseVisualStyleBackColor = true;
+            this.btnTag2.Click += new System.EventHandler(this.btnTag2_Click);
+            // 
+            // btnTag4
+            // 
+            this.btnTag4.Location = new System.Drawing.Point(6, 48);
+            this.btnTag4.Name = "btnTag4";
+            this.btnTag4.Size = new System.Drawing.Size(75, 23);
+            this.btnTag4.TabIndex = 0;
+            this.btnTag4.Text = "Tag4";
+            this.btnTag4.UseVisualStyleBackColor = true;
+            this.btnTag4.Click += new System.EventHandler(this.btnTag4_Click);
+            // 
+            // btnTag3
+            // 
+            this.btnTag3.Location = new System.Drawing.Point(168, 20);
+            this.btnTag3.Name = "btnTag3";
+            this.btnTag3.Size = new System.Drawing.Size(75, 23);
+            this.btnTag3.TabIndex = 0;
+            this.btnTag3.Text = "Tag3";
+            this.btnTag3.UseVisualStyleBackColor = true;
+            this.btnTag3.Click += new System.EventHandler(this.btnTag3_Click);
+            // 
+            // btnTag1
+            // 
+            this.btnTag1.Location = new System.Drawing.Point(6, 20);
+            this.btnTag1.Name = "btnTag1";
+            this.btnTag1.Size = new System.Drawing.Size(75, 23);
+            this.btnTag1.TabIndex = 0;
+            this.btnTag1.Text = "Tag1";
+            this.btnTag1.UseVisualStyleBackColor = true;
+            this.btnTag1.Click += new System.EventHandler(this.btnTag1_Click);
+            // 
+            // btnDisplayTagEditor
+            // 
+            this.btnDisplayTagEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnDisplayTagEditor.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnDisplayTagEditor.Location = new System.Drawing.Point(1082, 6);
+            this.btnDisplayTagEditor.Name = "btnDisplayTagEditor";
+            this.btnDisplayTagEditor.Size = new System.Drawing.Size(31, 23);
+            this.btnDisplayTagEditor.TabIndex = 9;
+            this.btnDisplayTagEditor.Text = "<";
+            this.btnDisplayTagEditor.UseVisualStyleBackColor = true;
+            this.btnDisplayTagEditor.Click += new System.EventHandler(this.btnDisplayTagEditor_Click);
+            // 
             // btnColumnVisibility
             // 
             this.btnColumnVisibility.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnColumnVisibility.Image = ((System.Drawing.Image)(resources.GetObject("btnColumnVisibility.Image")));
-            this.btnColumnVisibility.Location = new System.Drawing.Point(1082, 6);
+            this.btnColumnVisibility.Location = new System.Drawing.Point(1045, 6);
             this.btnColumnVisibility.Name = "btnColumnVisibility";
             this.btnColumnVisibility.Size = new System.Drawing.Size(31, 23);
             this.btnColumnVisibility.TabIndex = 9;
@@ -217,22 +632,20 @@
             // 
             // lblTrackSumLength
             // 
-            this.lblTrackSumLength.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblTrackSumLength.Location = new System.Drawing.Point(994, 531);
+            this.lblTrackSumLength.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblTrackSumLength.Location = new System.Drawing.Point(927, 531);
             this.lblTrackSumLength.Name = "lblTrackSumLength";
-            this.lblTrackSumLength.Size = new System.Drawing.Size(119, 13);
+            this.lblTrackSumLength.Size = new System.Drawing.Size(186, 13);
             this.lblTrackSumLength.TabIndex = 3;
             this.lblTrackSumLength.Text = "Length: 00:00:00";
             this.lblTrackSumLength.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lblTrackCount
             // 
-            this.lblTrackCount.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblTrackCount.Location = new System.Drawing.Point(997, 515);
+            this.lblTrackCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblTrackCount.Location = new System.Drawing.Point(924, 515);
             this.lblTrackCount.Name = "lblTrackCount";
-            this.lblTrackCount.Size = new System.Drawing.Size(116, 13);
+            this.lblTrackCount.Size = new System.Drawing.Size(189, 13);
             this.lblTrackCount.TabIndex = 3;
             this.lblTrackCount.Text = "1000 item(s) in [Playlist]";
             this.lblTrackCount.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -315,7 +728,7 @@
             this.dgvTrackList.ReadOnly = true;
             this.dgvTrackList.RowHeadersVisible = false;
             this.dgvTrackList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvTrackList.Size = new System.Drawing.Size(940, 477);
+            this.dgvTrackList.Size = new System.Drawing.Size(680, 477);
             this.dgvTrackList.TabIndex = 0;
             this.dgvTrackList.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTrackList_CellClick);
             this.dgvTrackList.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTrackList_CellDoubleClick);
@@ -461,6 +874,8 @@
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.tabPagePlaylistDetail.ResumeLayout(false);
             this.tabPagePlaylistDetail.PerformLayout();
+            this.groupBoxTagValue.ResumeLayout(false);
+            this.groupBoxTag.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvPlaylistList)).EndInit();
@@ -508,5 +923,41 @@
         private System.Windows.Forms.Label lblTrackCount;
         private System.Windows.Forms.Label lblTrackSumLength;
         private System.Windows.Forms.Button btnColumnVisibility;
+        private System.Windows.Forms.GroupBox groupBoxTag;
+        private System.Windows.Forms.Button btnTag7;
+        private System.Windows.Forms.Button btnTag2;
+        private System.Windows.Forms.Button btnTag1;
+        private System.Windows.Forms.GroupBox groupBoxTagValue;
+        private System.Windows.Forms.Button btnTagValue23;
+        private System.Windows.Forms.Button btnTagValue17;
+        private System.Windows.Forms.Button btnTagValue20;
+        private System.Windows.Forms.Button btnTagValue14;
+        private System.Windows.Forms.Button btnTagValue11;
+        private System.Windows.Forms.Button btnTagValue8;
+        private System.Windows.Forms.Button btnTagValue5;
+        private System.Windows.Forms.Button btnTagValue2;
+        private System.Windows.Forms.Button btnTagValue24;
+        private System.Windows.Forms.Button btnTagValue18;
+        private System.Windows.Forms.Button btnTagValue21;
+        private System.Windows.Forms.Button btnTagValue15;
+        private System.Windows.Forms.Button btnTagValue12;
+        private System.Windows.Forms.Button btnTagValue9;
+        private System.Windows.Forms.Button btnTagValue6;
+        private System.Windows.Forms.Button btnTagValue3;
+        private System.Windows.Forms.Button btnTagValue22;
+        private System.Windows.Forms.Button btnTagValue16;
+        private System.Windows.Forms.Button btnTagValue19;
+        private System.Windows.Forms.Button btnTagValue13;
+        private System.Windows.Forms.Button btnTagValue10;
+        private System.Windows.Forms.Button btnTagValue7;
+        private System.Windows.Forms.Button btnTagValue4;
+        private System.Windows.Forms.Button btnTagValue1;
+        private System.Windows.Forms.Button btnTag9;
+        private System.Windows.Forms.Button btnTag8;
+        private System.Windows.Forms.Button btnTag6;
+        private System.Windows.Forms.Button btnTag5;
+        private System.Windows.Forms.Button btnTag4;
+        private System.Windows.Forms.Button btnTag3;
+        private System.Windows.Forms.Button btnDisplayTagEditor;
     }
 }
