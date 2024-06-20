@@ -28,6 +28,8 @@ namespace MitoPlayer_2024
         public event EventHandler LoadPlaylist;
         public event EventHandler RenamePlaylist;
         public event EventHandler DeletePlaylist;
+        public event EventHandler ExportToM3U;
+        public event EventHandler ExportToTXT;
         public event EventHandler Preferences;
         public event EventHandler Exit;
 
@@ -117,6 +119,15 @@ namespace MitoPlayer_2024
         private void menuStripDeletePlaylist_Click(object sender, EventArgs e)
         {
             this.DeletePlaylist?.Invoke(this, EventArgs.Empty);
+        }
+        private void menuStripExportToTXT_Click(object sender, EventArgs e)
+        {
+            this.ExportToM3U?.Invoke(this, ListEventArgs.Empty);
+        }
+
+        private void menuStripExportToM3U_Click(object sender, EventArgs e)
+        {
+            this.ExportToTXT?.Invoke(this, ListEventArgs.Empty);
         }
         private void menuStripPreferences_Click(object sender, EventArgs e)
         {
@@ -222,6 +233,10 @@ namespace MitoPlayer_2024
             this.menuStripNext.Enabled = true;
             this.menuStripRandom.Enabled = true;
             this.menuStripAbout.Enabled = true;
+            this.btnPrev.Enabled = true;
+            this.btnNext.Enabled = true;
+            this.btnOpen.Enabled = true;
+            this.btnOpenDirectory.Enabled = true;
 
             if (view.GetType() == typeof(PlaylistView))
             {
@@ -261,6 +276,10 @@ namespace MitoPlayer_2024
             this.menuStripNext.Enabled = false;
             this.menuStripRandom.Enabled = false;
             this.menuStripAbout.Enabled = true;
+            this.btnPrev.Enabled = false;
+            this.btnNext.Enabled = false;
+            this.btnOpen.Enabled = false;
+            this.btnOpenDirectory.Enabled = false;
 
         }
 

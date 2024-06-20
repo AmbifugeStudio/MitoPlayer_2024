@@ -31,6 +31,9 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainView));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStripProfile = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
+            this.menuStripOpenFiles = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStripOpenDirectories = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.menuStripCreatePlaylist = new System.Windows.Forms.ToolStripMenuItem();
@@ -84,9 +87,9 @@
             this.btnPrev = new System.Windows.Forms.Button();
             this.btnPlay = new System.Windows.Forms.Button();
             this.mediaPlayer = new AxWMPLib.AxWindowsMediaPlayer();
-            this.menuStripProfile = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuStripOpenFiles = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
+            this.menuStripExportToM3U = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStripExportToTXT = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -119,12 +122,34 @@
             this.menuStripLoadPlaylist,
             this.menuStripRenamePlaylist,
             this.menuStripDeletePlaylist,
+            this.toolStripSeparator8,
+            this.menuStripExportToTXT,
+            this.menuStripExportToM3U,
             this.toolStripSeparator3,
             this.menuStripPreferences,
             this.menuStripExit});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
+            // 
+            // menuStripProfile
+            // 
+            this.menuStripProfile.Name = "menuStripProfile";
+            this.menuStripProfile.Size = new System.Drawing.Size(180, 22);
+            this.menuStripProfile.Text = "Select profile";
+            this.menuStripProfile.Click += new System.EventHandler(this.menuStripProfile_Click);
+            // 
+            // toolStripSeparator7
+            // 
+            this.toolStripSeparator7.Name = "toolStripSeparator7";
+            this.toolStripSeparator7.Size = new System.Drawing.Size(177, 6);
+            // 
+            // menuStripOpenFiles
+            // 
+            this.menuStripOpenFiles.Name = "menuStripOpenFiles";
+            this.menuStripOpenFiles.Size = new System.Drawing.Size(180, 22);
+            this.menuStripOpenFiles.Text = "Add files...";
+            this.menuStripOpenFiles.Click += new System.EventHandler(this.menuStripOpenFiles_Click);
             // 
             // menuStripOpenDirectories
             // 
@@ -595,24 +620,24 @@
             this.mediaPlayer.Size = new System.Drawing.Size(10, 10);
             this.mediaPlayer.TabIndex = 1;
             // 
-            // menuStripProfile
+            // toolStripSeparator8
             // 
-            this.menuStripProfile.Name = "menuStripProfile";
-            this.menuStripProfile.Size = new System.Drawing.Size(180, 22);
-            this.menuStripProfile.Text = "Select profile";
-            this.menuStripProfile.Click += new System.EventHandler(this.menuStripProfile_Click);
+            this.toolStripSeparator8.Name = "toolStripSeparator8";
+            this.toolStripSeparator8.Size = new System.Drawing.Size(177, 6);
             // 
-            // menuStripOpenFiles
+            // menuStripExportToM3U
             // 
-            this.menuStripOpenFiles.Name = "menuStripOpenFiles";
-            this.menuStripOpenFiles.Size = new System.Drawing.Size(180, 22);
-            this.menuStripOpenFiles.Text = "Add files...";
-            this.menuStripOpenFiles.Click += new System.EventHandler(this.menuStripOpenFiles_Click);
+            this.menuStripExportToM3U.Name = "menuStripExportToM3U";
+            this.menuStripExportToM3U.Size = new System.Drawing.Size(180, 22);
+            this.menuStripExportToM3U.Text = "Export to *.m3u";
+            this.menuStripExportToM3U.Click += new System.EventHandler(this.menuStripExportToM3U_Click);
             // 
-            // toolStripSeparator7
+            // menuStripExportToTXT
             // 
-            this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(177, 6);
+            this.menuStripExportToTXT.Name = "menuStripExportToTXT";
+            this.menuStripExportToTXT.Size = new System.Drawing.Size(180, 22);
+            this.menuStripExportToTXT.Text = "Export to *.txt";
+            this.menuStripExportToTXT.Click += new System.EventHandler(this.menuStripExportToTXT_Click);
             // 
             // MainView
             // 
@@ -701,6 +726,9 @@
         private System.Windows.Forms.ToolStripMenuItem menuStripProfile;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
         private System.Windows.Forms.ToolStripMenuItem menuStripOpenFiles;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
+        private System.Windows.Forms.ToolStripMenuItem menuStripExportToTXT;
+        private System.Windows.Forms.ToolStripMenuItem menuStripExportToM3U;
     }
 }
 

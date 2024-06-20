@@ -28,6 +28,8 @@ namespace MitoPlayer_2024.Views
         event EventHandler LoadPlaylist;
         event EventHandler RenamePlaylist;
         event EventHandler DeletePlaylist;
+        event EventHandler ExportToM3U;
+        event EventHandler ExportToTXT;
         event EventHandler Preferences;
         event EventHandler Exit;
         //EDIT

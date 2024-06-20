@@ -1,8 +1,12 @@
 BUGS
+- kellene length a flac-nak is
+- TagValue felületen is működjön a player gombjai
 
 FEATURE
 - Quicklist: ne váltson át az aktuális playlist-re a kijelölés
 - Preferences: purge database
+
+
 
 FEATURE
 - elindítok egy zenét, leállítom, álkattintok, akkor a next/prev a kurzortól számolja a köv./előzőt
@@ -14,10 +18,7 @@ FEATURE
 
 BUG
 
-
 - szám drag and drop hozzáadja-e az adatbázishoz a zenéket?
-
-
 - drag and drop ne delete-tel, hanem copy-val
 - egy elem drag and drop hibája
 - drag and drop katt az utolsó elemre index miatt kifagy

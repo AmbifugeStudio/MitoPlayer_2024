@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml.Linq;
@@ -80,6 +81,8 @@ namespace MitoPlayer_2024.Presenters
             this.view.LoadPlaylistEvent += LoadPlaylistEvent;
             this.view.DeletePlaylistEvent += DeletePlaylistEvent;
             this.view.SetQuickListEvent += SetQuickListEvent;
+            this.view.ExportToM3UEvent += ExportToM3UEvent;
+            this.view.ExportToTXTEvent += ExportToTXTEvent;
 
             //TAG EDITOR
             this.view.DisplayTagEditorEvent += DisplayTagEditorEvent;
@@ -101,6 +104,13 @@ namespace MitoPlayer_2024.Presenters
         private void InitializeTagEditor()
         {
             this.isTagEditorDisplayed = false;
+            List<Tag> tagList = this.tagDao.GetAllTag();
+            if (tagList != null && tagList.Count > 0)
+            {
+                this.tagList = tagList;
+            }
+            ((PlaylistView)this.view).InitializeTagEditor(this.tagList);
+            ((PlaylistView)this.view).InitializeTagValueEditor(null);
             ((PlaylistView)this.view).CallDisplayTagEditor(this.isTagEditorDisplayed);
         }
 
@@ -178,12 +188,6 @@ namespace MitoPlayer_2024.Presenters
 
         private void LoadPlaylist(Playlist pls)
         {
-            List<Tag> tagList = this.tagDao.GetAllTag();
-            if(tagList != null && tagList.Count > 0)
-            {
-                this.tagList = tagList;
-            }
-
             List<Track> trackList = this.trackDao.GetTracklistByPlaylistId(pls.Id, tagList);
             if (trackList != null && trackList.Count > 0)
             {
@@ -222,8 +226,6 @@ namespace MitoPlayer_2024.Presenters
                     
                     this.trackListTable.Rows.Add(args);
                 }
-                ((PlaylistView)this.view).InitializeTagEditor(this.tagList);
-                ((PlaylistView)this.view).InitializeTagValueEditor(null);
                 this.SetTrackList(this.trackListTable);
             }
             ((PlaylistView)this.view).UpdateTrackCountAndLength(this.currentPlaylistId);
@@ -1064,6 +1066,83 @@ namespace MitoPlayer_2024.Presenters
             this.SavePlaylistList(this.playlistListTable);
             this.SetPlaylistList(this.playlistListTable);
         }
+        private void ExportToM3UEvent(object sender, ListEventArgs e)
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "Playlist files (*.m3u)|*.m3u";
+            sfd.RestoreDirectory = true;
+
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                String row = String.Empty;
+
+                using (StreamWriter myStream = new StreamWriter(sfd.FileName))
+                {
+                    int playlistId = Convert.ToInt32(this.playlistListTable.Rows[e.IntegerField1]["Id"]);
+                    List<Track> trackList = this.trackDao.GetTracklistByPlaylistId(playlistId, this.tagList);
+                    if (trackList != null && trackList.Count > 0)
+                    {
+                        foreach (Track track in trackList)
+                        {
+                            row = "#EXTVDJ:";
+                            row += track.Length.ToString() + "," ;
+                            if (!String.IsNullOrEmpty(track.Title))
+                            {
+                                row += track.Artist + " - " + track.Title;
+                            }
+                            else
+                            {
+                                row += track.Artist;
+                            }
+
+                            myStream.WriteLine(row);
+                            myStream.WriteLine(track.Path);
+                        }
+                        myStream.Close();
+                    }
+                }
+            }
+        }
+        private void ExportToTXTEvent(object sender, ListEventArgs e)
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "Text files (*.txt)|*.txt";
+            sfd.RestoreDirectory = true;
+
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                String row = String.Empty;
+                int index = 1;
+
+                using (StreamWriter myStream = new StreamWriter(sfd.FileName))
+                {
+                    int playlistId = Convert.ToInt32(this.playlistListTable.Rows[e.IntegerField1]["Id"]);
+                    List<Track> trackList = this.trackDao.GetTracklistByPlaylistId(playlistId, this.tagList);
+                    if (trackList != null && trackList.Count > 0)
+                    {
+                        foreach (Track track in trackList)
+                        {
+                            row = index.ToString() + ". ";
+                            
+                            if (!String.IsNullOrEmpty(track.Title))
+                            {
+                                row += track.Artist + " - " + track.Title;
+                            }
+                            else
+                            {
+                                row += track.Artist;
+                            }
+                            row += " (" + this.LengthToString(track.Length) + ")";
+
+                            myStream.WriteLine(row);
+
+                            index++;
+                        }
+                        myStream.Close();
+                    }
+                }
+            }
+        }
         #endregion
 
         private void ShowColumnVisibilityEditorEvent(object sender, EventArgs e)
@@ -1115,7 +1194,20 @@ namespace MitoPlayer_2024.Presenters
                     {
                         if (e.Rows[i].Selected)
                         {
-                            //UPDATE TRACK TAG VALUE!!
+                            Track track = this.trackDao.GetTrack(Convert.ToInt32(this.trackListTable.Rows[i]["Id"]), this.tagList);
+                            if(track != null)
+                            {
+                                foreach(TrackTagValue ttv in track.TrackTagValues)
+                                {
+                                    if(ttv.TagId == this.currentTag.Id)
+                                    {
+                                        ttv.TagValueId = tv.Id;
+                                        ttv.TagValueName = tv.Name;
+                                        this.trackDao.UpdateTrackTagValue(ttv);
+                                        break;
+                                    }
+                                }
+                            }
                             this.trackListTable.Rows[i][this.currentTag.Name] = tv.Name;
                         }
                     }

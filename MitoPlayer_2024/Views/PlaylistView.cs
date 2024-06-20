@@ -45,6 +45,8 @@ namespace MitoPlayer_2024.Views
         public event EventHandler<ListEventArgs> LoadPlaylistEvent;
         public event EventHandler<ListEventArgs> DeletePlaylistEvent;
         public event EventHandler<ListEventArgs> SetQuickListEvent;
+        public event EventHandler<ListEventArgs> ExportToM3UEvent;
+        public event EventHandler<ListEventArgs> ExportToTXTEvent;
 
         //TAG EDITOR
         public event EventHandler DisplayTagEditorEvent;
@@ -876,11 +878,15 @@ namespace MitoPlayer_2024.Views
             {
                 buttonList[i].Hide();
             }
-            for (int i = 0; i <= tagList.Count - 1; i++)
+            if(tagList != null && tagList.Count > 0)
             {
-                buttonList[i].Text = tagList[i].Name;
-                buttonList[i].Show();
+                for (int i = 0; i <= tagList.Count - 1; i++)
+                {
+                    buttonList[i].Text = tagList[i].Name;
+                    buttonList[i].Show();
+                }
             }
+            
         }
         public void InitializeTagValueEditor(List<TagValue> tagValueList)
         {
@@ -975,6 +981,14 @@ namespace MitoPlayer_2024.Views
         {
             this.CallSetQuickListEvent(4);
         }
+        private void menuStripExportToM3uToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.CallExportToM3UEvent();
+        }
+        private void menuStripExportToTxtToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.CallExportToTXTEvent();
+        }
         private void btnNewPlaylist_Click(object sender, EventArgs e)
         {
             this.CallCreatePlaylistEvent();
@@ -1044,7 +1058,16 @@ namespace MitoPlayer_2024.Views
             if (this.dgvPlaylistList.SelectedRows.Count > 0)
                 this.SetQuickListEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = dgvPlaylistList.Rows.IndexOf(dgvPlaylistList.SelectedRows[0]), IntegerField2 = group });
         }
-
+        public void CallExportToM3UEvent()
+        {
+            if (this.dgvPlaylistList.SelectedRows.Count > 0)
+                this.ExportToM3UEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = this.dgvPlaylistList.SelectedRows[0].Index });
+        }
+        public void CallExportToTXTEvent()
+        {
+            if (this.dgvPlaylistList.SelectedRows.Count > 0)
+                this.ExportToTXTEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = this.dgvPlaylistList.SelectedRows[0].Index });
+        }
 
         #endregion
 
@@ -1126,5 +1149,7 @@ namespace MitoPlayer_2024.Views
                 this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 2, Rows = this.dgvTrackList.Rows });
             }
         }
+
+        
     }
 }

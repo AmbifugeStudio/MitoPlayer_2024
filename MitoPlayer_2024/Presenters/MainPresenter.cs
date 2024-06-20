@@ -68,6 +68,8 @@ namespace MitoPlayer_2024.Presenters
             this.mainView.LoadPlaylist += LoadPlaylist;
             this.mainView.RenamePlaylist += RenamePlaylist;
             this.mainView.DeletePlaylist += DeletePlaylist;
+            this.mainView.ExportToM3U += ExportToM3U;
+            this.mainView.ExportToTXT += ExportToTXT;
             this.mainView.Preferences += Preferences;
             this.mainView.Exit += Exit;
             this.mainView.RemoveMissingTracks += RemoveMissingTracks;
@@ -325,6 +327,24 @@ namespace MitoPlayer_2024.Presenters
                 ((TrackEditorView)this.trackEditorView).CallDeletePlaylistEvent();
             else if (this.harmonizerView != null && this.actualView.GetType() == typeof(HarmonizerView))
                 ((HarmonizerView)this.harmonizerView).CallDeletePlaylistEvent();
+        }
+        private void ExportToM3U(object sender, EventArgs e)
+        {
+            if (this.playlistView != null && this.actualView.GetType() == typeof(PlaylistView))
+                ((PlaylistView)this.playlistView).CallExportToM3UEvent();
+            else if (this.trackEditorView != null && this.actualView.GetType() == typeof(TrackEditorView))
+                ((TrackEditorView)this.trackEditorView).CallExportToM3UEvent();
+            else if (this.harmonizerView != null && this.actualView.GetType() == typeof(HarmonizerView))
+                ((HarmonizerView)this.harmonizerView).CallExportToM3UEvent();
+        }
+        private void ExportToTXT(object sender, EventArgs e)
+        {
+            if (this.playlistView != null && this.actualView.GetType() == typeof(PlaylistView))
+                ((PlaylistView)this.playlistView).CallExportToTXTEvent();
+            else if (this.trackEditorView != null && this.actualView.GetType() == typeof(TrackEditorView))
+                ((TrackEditorView)this.trackEditorView).CallExportToTXTEvent();
+            else if (this.harmonizerView != null && this.actualView.GetType() == typeof(HarmonizerView))
+                ((HarmonizerView)this.harmonizerView).CallExportToTXTEvent();
         }
         private void Preferences(object sender, EventArgs e)
         {
@@ -622,7 +642,9 @@ namespace MitoPlayer_2024.Presenters
 
                         track.TrackTagValues = new List<TrackTagValue>();
 
-                        foreach(Tag tag in tagList) 
+                        this.trackDao.CreateTrack(track);
+
+                        foreach (Tag tag in tagList) 
                         {
                             TrackTagValue ttv = new TrackTagValue();
                             ttv.Id = this.trackDao.GetNextId(TableName.TrackTagValue.ToString());
@@ -631,10 +653,10 @@ namespace MitoPlayer_2024.Presenters
                             ttv.TagName = tag.Name;
                             ttv.TagValueId = -1;
                             ttv.TagValueName = String.Empty;
-                            track.TrackTagValues.Add(ttv);
+                            this.trackDao.CreateTrackTagValue(ttv);
                         }
 
-                        this.trackDao.CreateTrack(track);
+                       
 
                     }
                     trackList.Add(track);

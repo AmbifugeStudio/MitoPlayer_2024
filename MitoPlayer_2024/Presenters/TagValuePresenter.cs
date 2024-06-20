@@ -82,21 +82,23 @@ namespace MitoPlayer_2024.Presenters
         }
         private void SetCurrentTagId(int index)
         {
-            tagValueListTable.Rows.Clear();
-
-            this.currentTag = this.tagDao.GetTag(Convert.ToInt32(this.tagListTable.Rows[index]["Id"]));
-            List<TagValue> tagValueList = this.tagDao.GetTagValuesByTagId(this.currentTag.Id);
-
-            if (tagValueList != null && tagValueList.Count > 0)
+            if(this.tagListTable.Rows.Count > 0)
             {
-                foreach (TagValue tag in tagValueList)
-                {
-                    tagValueListTable.Rows.Add(tag.Id, tag.Name);
-                }
-            }
+                tagValueListTable.Rows.Clear();
 
-            this.tagValueListBindingSource.DataSource = tagValueListTable;
-            this.tagValueEditorView.SetTagValueListBindingSource(this.tagValueListBindingSource);
+                this.currentTag = this.tagDao.GetTag(Convert.ToInt32(this.tagListTable.Rows[index]["Id"]));
+                List<TagValue> tagValueList = this.tagDao.GetTagValuesByTagId(this.currentTag.Id);
+
+                if (tagValueList != null && tagValueList.Count > 0)
+                {
+                    foreach (TagValue tag in tagValueList)
+                    {
+                        tagValueListTable.Rows.Add(tag.Id, tag.Name);
+                    }
+                }
+                this.tagValueListBindingSource.DataSource = tagValueListTable;
+                this.tagValueEditorView.SetTagValueListBindingSource(this.tagValueListBindingSource);
+            }
         }
         private void SetCurrentTagValueId(object sender, ListEventArgs e)
         {

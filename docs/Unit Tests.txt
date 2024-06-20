@@ -49,21 +49,21 @@ COLUMN VISIBILITY
 [11] - change column visibility with non empty list
 [11] - change column order with non empty list
 
-TAGVALUES
-[] - add tag (existing tracks)
-[] - add tag and value (existing tracks)
-[] - edit tagvalue (existing tracks)
-[] - edit tag (existing tracks)
-[] - delete tagvalue (existing tracks)
-[] - delete tag (existing tracks)
+TAGVALUES - with existing tracks
+[11] - add tag (existing tracks)
+[11] - add tag and value (existing tracks)
+[11] - edit tagvalue (existing tracks)
+[11] - edit tag (existing tracks)
+[11] - delete tagvalue (existing tracks)
+[11] - delete tag (existing tracks)
 
-TAGVALUES
+TAGVALUES - with empty db
 [11] - add tag (and add track)
 [11] - add tag and value (and add track)
 [11] - edit tagvalue (and add track)
 [11] - edit tag (and add track)
 [11] - delete tagvalue (and add track)
-[] - delete tag (and add track)
+[11] - delete tag (and add track)
 
 
 

@@ -29,6 +29,7 @@ namespace MitoPlayer_2024.Model
 
         #region TRACK
         void CreateTrack(Track track);
+        Track GetTrack(int id, List<Tag> tagList);
         Track GetTrackByPath(string path, List<Tag> tagList);
         List<Track> GetTracklistByPlaylistId(int playlistId, List<Tag> tagList);
         List<int> GetAllTrackIdInList();
@@ -49,6 +50,7 @@ namespace MitoPlayer_2024.Model
         bool IsTrackTagValueAlreadyExists(int trackId, int tagId);
         void CreateTrackTagValue(TrackTagValue ttv);
         List<TrackTagValue> LoadTrackTagValuesByTrackId(int trackId, List<Tag> tagList);
+        void UpdateTrackTagValue(TrackTagValue trackTagValue);
         void UpdateTrackTagValues(List<TrackTagValue> trackTagValueList);
         
         void DeleteTagValueFromTrackTagValues(int tagValueId);

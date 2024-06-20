@@ -772,40 +772,40 @@
             this.exportToM3uToolStripMenuItem,
             this.exportToTxtToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(176, 170);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(181, 192);
             // 
             // menuStripCreatePlaylist
             // 
             this.menuStripCreatePlaylist.Name = "menuStripCreatePlaylist";
-            this.menuStripCreatePlaylist.Size = new System.Drawing.Size(175, 22);
+            this.menuStripCreatePlaylist.Size = new System.Drawing.Size(180, 22);
             this.menuStripCreatePlaylist.Text = "New";
             this.menuStripCreatePlaylist.Click += new System.EventHandler(this.menuStripCreatePlaylist_Click);
             // 
             // menuStripLoadPlaylist
             // 
             this.menuStripLoadPlaylist.Name = "menuStripLoadPlaylist";
-            this.menuStripLoadPlaylist.Size = new System.Drawing.Size(175, 22);
+            this.menuStripLoadPlaylist.Size = new System.Drawing.Size(180, 22);
             this.menuStripLoadPlaylist.Text = "Load";
             this.menuStripLoadPlaylist.Click += new System.EventHandler(this.menuStripLoadPlaylist_Click);
             // 
             // menuStripRenamePlaylist
             // 
             this.menuStripRenamePlaylist.Name = "menuStripRenamePlaylist";
-            this.menuStripRenamePlaylist.Size = new System.Drawing.Size(175, 22);
+            this.menuStripRenamePlaylist.Size = new System.Drawing.Size(180, 22);
             this.menuStripRenamePlaylist.Text = "Rename";
             this.menuStripRenamePlaylist.Click += new System.EventHandler(this.menuStripRenamePlaylist_Click);
             // 
             // menuStripDeletePlaylist
             // 
             this.menuStripDeletePlaylist.Name = "menuStripDeletePlaylist";
-            this.menuStripDeletePlaylist.Size = new System.Drawing.Size(175, 22);
+            this.menuStripDeletePlaylist.Size = new System.Drawing.Size(180, 22);
             this.menuStripDeletePlaylist.Text = "Remove";
             this.menuStripDeletePlaylist.Click += new System.EventHandler(this.menuStripDeletePlaylist_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(172, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
             // 
             // menuStripSetQuickListGroup
             // 
@@ -815,7 +815,7 @@
             this.menuStripSetQuickListGroup3,
             this.menuStripSetQuickListGroup4});
             this.menuStripSetQuickListGroup.Name = "menuStripSetQuickListGroup";
-            this.menuStripSetQuickListGroup.Size = new System.Drawing.Size(175, 22);
+            this.menuStripSetQuickListGroup.Size = new System.Drawing.Size(180, 22);
             this.menuStripSetQuickListGroup.Text = "Set quick list group";
             // 
             // menuStripSetQuickListGroup1
@@ -849,19 +849,21 @@
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(172, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
             // 
             // exportToM3uToolStripMenuItem
             // 
             this.exportToM3uToolStripMenuItem.Name = "exportToM3uToolStripMenuItem";
-            this.exportToM3uToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.exportToM3uToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exportToM3uToolStripMenuItem.Text = "Export to m3u";
+            this.exportToM3uToolStripMenuItem.Click += new System.EventHandler(this.menuStripExportToM3uToolStripMenuItem_Click);
             // 
             // exportToTxtToolStripMenuItem
             // 
             this.exportToTxtToolStripMenuItem.Name = "exportToTxtToolStripMenuItem";
-            this.exportToTxtToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.exportToTxtToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exportToTxtToolStripMenuItem.Text = "Export to txt";
+            this.exportToTxtToolStripMenuItem.Click += new System.EventHandler(this.menuStripExportToTxtToolStripMenuItem_Click);
             // 
             // PlaylistView
             // 

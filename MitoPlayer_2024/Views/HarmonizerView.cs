@@ -79,6 +79,11 @@ namespace MitoPlayer_2024.Views
 
         internal void CallRandomTrackEvent()
         {
+          } internal void CallExportToM3UEvent()
+        {
           }
+        internal void CallExportToTXTEvent()
+        {
+        }
     }
 }

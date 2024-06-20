@@ -462,14 +462,47 @@ namespace MitoPlayer_2024.Dao
                 }
                 connection.Close();
             }
+        }
+        public Track GetTrack(int id, List<Tag> tagList)
+        {
+            Track track = null;
 
-            if (track.TrackTagValues != null && track.TrackTagValues.Count > 0)
+            using (var connection = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand())
             {
-                foreach (TrackTagValue ttv in track.TrackTagValues)
+                connection.Open();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"SELECT * FROM Track 
+                                        WHERE Id = @Id 
+                                        AND ProfileId = @ProfileId ";
+
+                command.Parameters.Add("@Id", MySqlDbType.VarChar).Value = id;
+                command.Parameters.Add("@ProfileId", MySqlDbType.VarChar).Value = this.profileId;
+
+                using (var reader = command.ExecuteReader())
                 {
-                    this.CreateTrackTagValue(ttv);
+                    while (reader.Read())
+                    {
+                        track = new Track();
+                        track.Id = (int)reader[0];
+                        track.Path = reader[1].ToString();
+                        track.FileName = reader[2].ToString();
+                        track.Artist = reader[3].ToString();
+                        track.Title = reader[4].ToString();
+                        track.Album = reader[5].ToString();
+                        track.Year = (int)reader[6];
+                        track.Length = (int)reader[7];
+                        track.ProfileId = (int)reader[8];
+                        break;
+                    }
                 }
             }
+
+            if (track != null)
+                track.TrackTagValues = this.LoadTrackTagValuesByTrackId(track.Id, tagList);
+
+            return track;
         }
         public Track GetTrackByPath(string path, List<Tag> tagList)
         {
@@ -952,6 +985,36 @@ namespace MitoPlayer_2024.Dao
                 }
             }
             return trackTagValueList;
+        }
+        public void UpdateTrackTagValue(TrackTagValue ttv)
+        {
+            using (var connection = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand())
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"UPDATE TrackTagValue 
+                                        SET TagValueId = @TagValueId 
+
+                                        WHERE Id = @Id 
+                                        AND ProfileId = @ProfileId";
+
+                command.Parameters.Add("@Id", MySqlDbType.Int32).Value = ttv.Id;
+                command.Parameters.Add("@TagValueId", MySqlDbType.Int32).Value = ttv.TagValueId;
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
+
+                try
+                {
+                    command.ExecuteNonQuery();
+                }
+                catch (MySqlException ex)
+                {
+                    MessageBox.Show("TrackTagValue is not inserted. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                
+                connection.Close();
+            }
         }
         public void UpdateTrackTagValues(List<TrackTagValue> trackTagValueList)
         {

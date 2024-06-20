@@ -1,4 +1,14 @@
 
+v0.11.1.1
+OK - Export playlist to *.m3u or *.txt
+OK - le kell tiltani a player egyes vezérléseit a tag values felületen
+OK - üres db-nél csinálunk tag-et és tagvalue-t, hozzáaduk track-et, nem jelenik meg a tag editor helyesen
+OK - üres listánál tag editor gombjainak használatát le kell tiltani
+OK - ugyanolyan tagvalue felvétel után, ha track-et adunk az üres listához insert error-ral elszáll
+
+v0.11.1.0
+OK - TagValue editor
+
 v0.11.0.10 - Complete Dao Refactor
 [...]
 OK - Tag törlése után index problémával elhasal a Player

@@ -38,6 +38,8 @@ namespace MitoPlayer_2024.Views
         event EventHandler<ListEventArgs> LoadPlaylistEvent;
         event EventHandler<ListEventArgs> DeletePlaylistEvent;
         event EventHandler<ListEventArgs> SetQuickListEvent;
+        event EventHandler<ListEventArgs> ExportToM3UEvent;
+        event EventHandler<ListEventArgs> ExportToTXTEvent;
 
         //TAG EDITOR
         event EventHandler DisplayTagEditorEvent;
