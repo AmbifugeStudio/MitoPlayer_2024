@@ -1,5 +1,5 @@
 BUGS
-- tracklist drag and drop után minden kijelölődik
+BUG: quicklist törlés
 - tracklist play, törlés mind, hozzaáadás és next/prev nem jó
 
 

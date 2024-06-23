@@ -1,7 +1,7 @@
 
 v0.11.2.0
 OK - FEATURE: Drag And Drop átalakítás
-- FEATURE: Playlist-be drag and drop
+OK - FEATURE: Playlist-be drag and drop
 OK - BUG: playing track drag and drop-ja utánnem szinezi a számot
 
 v0.11.1.1

@@ -32,26 +32,14 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PlaylistView));
             this.tabPagePlaylistDetail = new System.Windows.Forms.TabPage();
             this.groupBoxTagValue = new System.Windows.Forms.GroupBox();
-            this.btnTagValue23 = new System.Windows.Forms.Button();
-            this.btnTagValue17 = new System.Windows.Forms.Button();
-            this.btnTagValue20 = new System.Windows.Forms.Button();
-            this.btnTagValue14 = new System.Windows.Forms.Button();
             this.btnTagValue11 = new System.Windows.Forms.Button();
             this.btnTagValue8 = new System.Windows.Forms.Button();
             this.btnTagValue5 = new System.Windows.Forms.Button();
             this.btnTagValue2 = new System.Windows.Forms.Button();
-            this.btnTagValue24 = new System.Windows.Forms.Button();
-            this.btnTagValue18 = new System.Windows.Forms.Button();
-            this.btnTagValue21 = new System.Windows.Forms.Button();
-            this.btnTagValue15 = new System.Windows.Forms.Button();
             this.btnTagValue12 = new System.Windows.Forms.Button();
             this.btnTagValue9 = new System.Windows.Forms.Button();
             this.btnTagValue6 = new System.Windows.Forms.Button();
             this.btnTagValue3 = new System.Windows.Forms.Button();
-            this.btnTagValue22 = new System.Windows.Forms.Button();
-            this.btnTagValue16 = new System.Windows.Forms.Button();
-            this.btnTagValue19 = new System.Windows.Forms.Button();
-            this.btnTagValue13 = new System.Windows.Forms.Button();
             this.btnTagValue10 = new System.Windows.Forms.Button();
             this.btnTagValue7 = new System.Windows.Forms.Button();
             this.btnTagValue4 = new System.Windows.Forms.Button();
@@ -140,72 +128,24 @@
             // groupBoxTagValue
             // 
             this.groupBoxTagValue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBoxTagValue.Controls.Add(this.btnTagValue23);
-            this.groupBoxTagValue.Controls.Add(this.btnTagValue17);
-            this.groupBoxTagValue.Controls.Add(this.btnTagValue20);
-            this.groupBoxTagValue.Controls.Add(this.btnTagValue14);
             this.groupBoxTagValue.Controls.Add(this.btnTagValue11);
             this.groupBoxTagValue.Controls.Add(this.btnTagValue8);
             this.groupBoxTagValue.Controls.Add(this.btnTagValue5);
             this.groupBoxTagValue.Controls.Add(this.btnTagValue2);
-            this.groupBoxTagValue.Controls.Add(this.btnTagValue24);
-            this.groupBoxTagValue.Controls.Add(this.btnTagValue18);
-            this.groupBoxTagValue.Controls.Add(this.btnTagValue21);
-            this.groupBoxTagValue.Controls.Add(this.btnTagValue15);
             this.groupBoxTagValue.Controls.Add(this.btnTagValue12);
             this.groupBoxTagValue.Controls.Add(this.btnTagValue9);
             this.groupBoxTagValue.Controls.Add(this.btnTagValue6);
             this.groupBoxTagValue.Controls.Add(this.btnTagValue3);
-            this.groupBoxTagValue.Controls.Add(this.btnTagValue22);
-            this.groupBoxTagValue.Controls.Add(this.btnTagValue16);
-            this.groupBoxTagValue.Controls.Add(this.btnTagValue19);
-            this.groupBoxTagValue.Controls.Add(this.btnTagValue13);
             this.groupBoxTagValue.Controls.Add(this.btnTagValue10);
             this.groupBoxTagValue.Controls.Add(this.btnTagValue7);
             this.groupBoxTagValue.Controls.Add(this.btnTagValue4);
             this.groupBoxTagValue.Controls.Add(this.btnTagValue1);
             this.groupBoxTagValue.Location = new System.Drawing.Point(859, 152);
             this.groupBoxTagValue.Name = "groupBoxTagValue";
-            this.groupBoxTagValue.Size = new System.Drawing.Size(254, 254);
+            this.groupBoxTagValue.Size = new System.Drawing.Size(254, 139);
             this.groupBoxTagValue.TabIndex = 10;
             this.groupBoxTagValue.TabStop = false;
             this.groupBoxTagValue.Text = "TagValues";
-            // 
-            // btnTagValue23
-            // 
-            this.btnTagValue23.Location = new System.Drawing.Point(87, 220);
-            this.btnTagValue23.Name = "btnTagValue23";
-            this.btnTagValue23.Size = new System.Drawing.Size(75, 23);
-            this.btnTagValue23.TabIndex = 0;
-            this.btnTagValue23.Text = "TagValue23";
-            this.btnTagValue23.UseVisualStyleBackColor = true;
-            // 
-            // btnTagValue17
-            // 
-            this.btnTagValue17.Location = new System.Drawing.Point(87, 162);
-            this.btnTagValue17.Name = "btnTagValue17";
-            this.btnTagValue17.Size = new System.Drawing.Size(75, 23);
-            this.btnTagValue17.TabIndex = 0;
-            this.btnTagValue17.Text = "TagValue17";
-            this.btnTagValue17.UseVisualStyleBackColor = true;
-            // 
-            // btnTagValue20
-            // 
-            this.btnTagValue20.Location = new System.Drawing.Point(87, 191);
-            this.btnTagValue20.Name = "btnTagValue20";
-            this.btnTagValue20.Size = new System.Drawing.Size(75, 23);
-            this.btnTagValue20.TabIndex = 0;
-            this.btnTagValue20.Text = "TagValue20";
-            this.btnTagValue20.UseVisualStyleBackColor = true;
-            // 
-            // btnTagValue14
-            // 
-            this.btnTagValue14.Location = new System.Drawing.Point(87, 133);
-            this.btnTagValue14.Name = "btnTagValue14";
-            this.btnTagValue14.Size = new System.Drawing.Size(75, 23);
-            this.btnTagValue14.TabIndex = 0;
-            this.btnTagValue14.Text = "TagValue14";
-            this.btnTagValue14.UseVisualStyleBackColor = true;
             // 
             // btnTagValue11
             // 
@@ -247,42 +187,6 @@
             this.btnTagValue2.UseVisualStyleBackColor = true;
             this.btnTagValue2.Click += new System.EventHandler(this.btnTagValue2_Click);
             // 
-            // btnTagValue24
-            // 
-            this.btnTagValue24.Location = new System.Drawing.Point(168, 221);
-            this.btnTagValue24.Name = "btnTagValue24";
-            this.btnTagValue24.Size = new System.Drawing.Size(75, 23);
-            this.btnTagValue24.TabIndex = 0;
-            this.btnTagValue24.Text = "TagValue24";
-            this.btnTagValue24.UseVisualStyleBackColor = true;
-            // 
-            // btnTagValue18
-            // 
-            this.btnTagValue18.Location = new System.Drawing.Point(168, 163);
-            this.btnTagValue18.Name = "btnTagValue18";
-            this.btnTagValue18.Size = new System.Drawing.Size(75, 23);
-            this.btnTagValue18.TabIndex = 0;
-            this.btnTagValue18.Text = "TagValue18";
-            this.btnTagValue18.UseVisualStyleBackColor = true;
-            // 
-            // btnTagValue21
-            // 
-            this.btnTagValue21.Location = new System.Drawing.Point(168, 192);
-            this.btnTagValue21.Name = "btnTagValue21";
-            this.btnTagValue21.Size = new System.Drawing.Size(75, 23);
-            this.btnTagValue21.TabIndex = 0;
-            this.btnTagValue21.Text = "TagValue21";
-            this.btnTagValue21.UseVisualStyleBackColor = true;
-            // 
-            // btnTagValue15
-            // 
-            this.btnTagValue15.Location = new System.Drawing.Point(168, 134);
-            this.btnTagValue15.Name = "btnTagValue15";
-            this.btnTagValue15.Size = new System.Drawing.Size(75, 23);
-            this.btnTagValue15.TabIndex = 0;
-            this.btnTagValue15.Text = "TagValue15";
-            this.btnTagValue15.UseVisualStyleBackColor = true;
-            // 
             // btnTagValue12
             // 
             this.btnTagValue12.Location = new System.Drawing.Point(168, 105);
@@ -322,42 +226,6 @@
             this.btnTagValue3.Text = "TagValue3";
             this.btnTagValue3.UseVisualStyleBackColor = true;
             this.btnTagValue3.Click += new System.EventHandler(this.btnTagValue3_Click);
-            // 
-            // btnTagValue22
-            // 
-            this.btnTagValue22.Location = new System.Drawing.Point(6, 221);
-            this.btnTagValue22.Name = "btnTagValue22";
-            this.btnTagValue22.Size = new System.Drawing.Size(75, 23);
-            this.btnTagValue22.TabIndex = 0;
-            this.btnTagValue22.Text = "TagValue22";
-            this.btnTagValue22.UseVisualStyleBackColor = true;
-            // 
-            // btnTagValue16
-            // 
-            this.btnTagValue16.Location = new System.Drawing.Point(6, 163);
-            this.btnTagValue16.Name = "btnTagValue16";
-            this.btnTagValue16.Size = new System.Drawing.Size(75, 23);
-            this.btnTagValue16.TabIndex = 0;
-            this.btnTagValue16.Text = "TagValue16";
-            this.btnTagValue16.UseVisualStyleBackColor = true;
-            // 
-            // btnTagValue19
-            // 
-            this.btnTagValue19.Location = new System.Drawing.Point(6, 192);
-            this.btnTagValue19.Name = "btnTagValue19";
-            this.btnTagValue19.Size = new System.Drawing.Size(75, 23);
-            this.btnTagValue19.TabIndex = 0;
-            this.btnTagValue19.Text = "TagValue19";
-            this.btnTagValue19.UseVisualStyleBackColor = true;
-            // 
-            // btnTagValue13
-            // 
-            this.btnTagValue13.Location = new System.Drawing.Point(6, 134);
-            this.btnTagValue13.Name = "btnTagValue13";
-            this.btnTagValue13.Size = new System.Drawing.Size(75, 23);
-            this.btnTagValue13.TabIndex = 0;
-            this.btnTagValue13.Text = "TagValue13";
-            this.btnTagValue13.UseVisualStyleBackColor = true;
             // 
             // btnTagValue10
             // 
@@ -944,26 +812,14 @@
         private System.Windows.Forms.Button btnTag2;
         private System.Windows.Forms.Button btnTag1;
         private System.Windows.Forms.GroupBox groupBoxTagValue;
-        private System.Windows.Forms.Button btnTagValue23;
-        private System.Windows.Forms.Button btnTagValue17;
-        private System.Windows.Forms.Button btnTagValue20;
-        private System.Windows.Forms.Button btnTagValue14;
         private System.Windows.Forms.Button btnTagValue11;
         private System.Windows.Forms.Button btnTagValue8;
         private System.Windows.Forms.Button btnTagValue5;
         private System.Windows.Forms.Button btnTagValue2;
-        private System.Windows.Forms.Button btnTagValue24;
-        private System.Windows.Forms.Button btnTagValue18;
-        private System.Windows.Forms.Button btnTagValue21;
-        private System.Windows.Forms.Button btnTagValue15;
         private System.Windows.Forms.Button btnTagValue12;
         private System.Windows.Forms.Button btnTagValue9;
         private System.Windows.Forms.Button btnTagValue6;
         private System.Windows.Forms.Button btnTagValue3;
-        private System.Windows.Forms.Button btnTagValue22;
-        private System.Windows.Forms.Button btnTagValue16;
-        private System.Windows.Forms.Button btnTagValue19;
-        private System.Windows.Forms.Button btnTagValue13;
         private System.Windows.Forms.Button btnTagValue10;
         private System.Windows.Forms.Button btnTagValue7;
         private System.Windows.Forms.Button btnTagValue4;

@@ -40,7 +40,7 @@ namespace MitoPlayer_2024.Presenters
         {
             this.workingTable = workingTable;
 
-            this.selectedRowIndex = -1;
+           // this.selectedRowIndex = -1;
             this.currentPlayPosition = 0;
         }
 

@@ -592,13 +592,7 @@ namespace MitoPlayer_2024.Presenters
                 sourceTrackList = this.ConvertSelectedRowsToList(e.SelectedRows);
                 if(sourceTrackList != null && sourceTrackList.Count > 0)
                 {
-                    this.AddTracksToPlaylist(this.currentPlaylistId, sourceTrackList, e.IntegerField1);
-
-                    List<int> oldListTrackIdInPlaylistList = new List<int>();
-                    for (int i = 0; i <= sourceTrackList.Count - 1; i++)
-                    {
-                        oldListTrackIdInPlaylistList.Add(sourceTrackList[i].TrackIdInPlaylist);
-                    }
+                    this.AddTracksToPlaylist(this.currentPlaylistId, sourceTrackList, e.IntegerField1, true);
                 }
             }
         }
@@ -608,25 +602,18 @@ namespace MitoPlayer_2024.Presenters
             DataRow playlistRow = null;
             int playlistId = -1;
 
+            playlistRow = this.playlistListTable.Rows[e.IntegerField1];
+            if (playlistRow != null)
+            {
+                playlistId = Convert.ToInt32(playlistRow["Id"]);
+            }
+
             if (e.SelectedRows != null && e.SelectedRows.Count > 0)
             {
-                List<int> oldListTrackIdInPlaylistList = new List<int>();
-                for (int i = 0; i <= this.trackListTable.Rows.Count - 1; i++)
-                {
-                    int trackIdInPlaylist = Convert.ToInt32(this.trackListTable.Rows[i]["TrackIdInPlaylist"]);
-                    oldListTrackIdInPlaylistList.Add(trackIdInPlaylist);
-                }
-
                 sourceTrackList = this.ConvertSelectedRowsToList(e.SelectedRows);
                 if (sourceTrackList != null && sourceTrackList.Count > 0)
                 {
-                    playlistRow = this.playlistListTable.Rows[e.IntegerField1];
-                    if (playlistRow != null)
-                    {
-                        playlistId = Convert.ToInt32(playlistRow["Id"]);
-                    }
                     this.AddTracksToPlaylist(playlistId, sourceTrackList);
-                  //  ((PlaylistView)this.view).SetSelectionAfterDragAndDrop(oldListTrackIdInPlaylistList);
                 }
             }
         }
@@ -866,11 +853,9 @@ namespace MitoPlayer_2024.Presenters
                 }
 
                 this.AddTracksToPlaylist(playlistId, trackList);
-
-               
             }
         }
-        private void AddTracksToPlaylist(int playlistId, List<Track> trackList, int dragIndex = -1)
+        private void AddTracksToPlaylist(int playlistId, List<Track> trackList, int dragIndex = -1, bool internalDragAndDrop = false)
         {
             List<Track> playlistTracklist = this.trackDao.GetTracklistByPlaylistId(playlistId, this.tagList);
 
@@ -879,29 +864,29 @@ namespace MitoPlayer_2024.Presenters
                 int orderInList = playlistTracklist.Count;
                 foreach (Track track in trackList)
                 {
+                    
+
                     PlaylistContent plc = new PlaylistContent();
                     plc.Id = this.trackDao.GetNextId(TableName.PlaylistContent.ToString());
                     plc.PlaylistId = playlistId;
                     plc.TrackId = track.Id;
                     plc.OrderInList = orderInList;
                     plc.TrackIdInPlaylist = this.trackDao.GetNextSmallestTrackIdInPlaylist();
+
+                    if (internalDragAndDrop && track.TrackIdInPlaylist == this.mediaPLayerComponent.CurrentTrackIdInPlaylist)
+                    {
+                        this.mediaPLayerComponent.CurrentTrackIdInPlaylist = plc.TrackIdInPlaylist;
+                    }
+
                     track.TrackIdInPlaylist = plc.TrackIdInPlaylist;
                     this.trackDao.CreatePlaylistContent(plc);
                     orderInList++;
 
-                  /*  if (insertIntoDefault && fromDragAndDrop)
-                    {
-                        if (trackToReplaceInMediaPlayer != null &&
-                            trackToReplaceInMediaPlayer.Id == track.Id &&
-                            trackToReplaceInMediaPlayer.Path == track.Path)
-                        {
-                            this.mediaPLayerComponent.CurrentTrackIdInPlaylist = plc.TrackIdInPlaylist;
-                        }
-                    }*/
+                    
                 }
 
 
-                if(playlistId == this.currentPlaylistId)
+                if (playlistId == this.currentPlaylistId)
                 {
                     this.LoadTrackList(trackList, dragIndex);
                     if (this.mediaPLayerComponent.MediaPlayer.playState != WMPLib.WMPPlayState.wmppsPlaying)

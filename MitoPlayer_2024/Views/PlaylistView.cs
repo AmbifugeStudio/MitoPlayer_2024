@@ -730,7 +730,9 @@ namespace MitoPlayer_2024.Views
             }
             else if (e.Effect == DragDropEffects.Copy)
             {
+
                 this.InternalDragAndDropIntoTracklistEvent?.Invoke(this, new ListEventArgs() { SelectedRows = this.dgvTrackList.SelectedRows, IntegerField1 = dragIndex });
+                
                 this.DeleteTracksEvent?.Invoke(this, new ListEventArgs() { Rows = this.dgvTrackList.Rows });
                 
             }
