@@ -2,12 +2,14 @@
 using MitoPlayer_2024.Model;
 using MitoPlayer_2024.Models;
 using MitoPlayer_2024.Views;
+using NAudio.Wave;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using TagLib.Mpeg4;
@@ -73,7 +75,13 @@ namespace MitoPlayer_2024.Presenters
             this.view.OrderByColumnEvent += OrderByColumnEvent;
             this.view.DeleteTracksEvent += DeleteTracksEvent;
             this.view.TrackDragAndDropEvent += TrackDragAndDropEvent;
-            this.view.CopyTracksToPlaylistEvent += CopyTracksToPlaylistEvent;
+            this.view.CopyTracksToPlaylistViaHotkeyEvent += CopyTracksToPlaylistViaHotkeyEvent;
+
+            this.view.InternalDragAndDropIntoTracklistEvent += InternalDragAndDropIntoTracklistEvent;
+            this.view.InternalDragAndDropIntoPlaylistEvent += InternalDragAndDropIntoPlaylistEvent;
+            this.view.ExternalDragAndDropIntoTracklistEvent += ExternalDragAndDropIntoTracklistEvent;
+            this.view.ExternalDragAndDropIntoPlaylistEvent += ExternalDragAndDropIntoPlaylistEvent;
+
             this.view.ShowColumnVisibilityEditorEvent += ShowColumnVisibilityEditorEvent;
 
             //PLAYLIST
@@ -113,7 +121,6 @@ namespace MitoPlayer_2024.Presenters
             ((PlaylistView)this.view).InitializeTagValueEditor(null);
             ((PlaylistView)this.view).CallDisplayTagEditor(this.isTagEditorDisplayed);
         }
-
         private void InitializeDataTables()
         {
             this.InitializePlaylistDataTable();
@@ -170,7 +177,6 @@ namespace MitoPlayer_2024.Presenters
 
             this.SetSelectedTrackList(this.selectedTrackListTable);
         }
-
         private void InitializePlaylistListAndTrackList()
         {
             this.playlistListTable.Clear();
@@ -185,7 +191,6 @@ namespace MitoPlayer_2024.Presenters
 
             this.SetPlaylistList(playlistListTable);
         }
-
         private void LoadPlaylist(Playlist pls)
         {
             List<Track> trackList = this.trackDao.GetTracklistByPlaylistId(pls.Id, tagList);
@@ -230,7 +235,6 @@ namespace MitoPlayer_2024.Presenters
             }
             ((PlaylistView)this.view).UpdateTrackCountAndLength(this.currentPlaylistId);
         }
-
         private String LengthToString(double length)
         {
             TimeSpan t = TimeSpan.FromSeconds(length);
@@ -475,8 +479,14 @@ namespace MitoPlayer_2024.Presenters
         #endregion
 
         #region TRACKLIST - TRACK COPY TO PLAYLIST
-        private void CopyTracksToPlaylistEvent(object sender, ListEventArgs e)
+        private void CopyTracksToPlaylistViaHotkeyEvent(object sender, ListEventArgs e)
         {
+            if (e.SelectedRows != null && e.SelectedRows.Count > 0)
+            {
+
+            }
+
+
             int quickPlaylistId = -1;
             List<Track> sourceTrackList = null;
             List<Track> targetTrackList = null;
@@ -516,6 +526,110 @@ namespace MitoPlayer_2024.Presenters
             if (sourceTrackList != null && sourceTrackList.Count > 0 && playlistRow != null)
                 ((PlaylistView)this.view).UpdateAfterCopyTracksToPlaylist(sourceTrackList.Count, playlistName);
         }
+        private void CopyTracksToPlaylistViaDragAndDropEvent(object sender, ListEventArgs e)
+        {
+            int playlistId = -1;
+            List<Track> sourceTrackList = null;
+            List<Track> targetTrackList = null;
+            int playlistIndex = 0;
+            DataRow playlistRow = null;
+            String playlistName = "";
+
+            if (e.SelectedRows != null && e.SelectedRows.Count > 0)
+            {
+                sourceTrackList = this.ConvertSelectedRowsToList(e.SelectedRows);
+                playlistRow = this.playlistListTable.Rows[e.IntegerField1];
+
+                if (playlistRow != null)
+                {
+                    playlistId = Convert.ToInt32(playlistRow["Id"]);
+                    playlistName = playlistRow["Name"].ToString();
+                    targetTrackList = this.trackDao.GetTracklistByPlaylistId(playlistId, this.tagList);
+                    if (targetTrackList != null)
+                    {
+                        this.CopyTracksToPlaylist(playlistId, sourceTrackList, targetTrackList);
+
+                        if (this.currentPlaylistId == playlistId)
+                        {
+                            playlistIndex = this.playlistListTable.Rows.IndexOf(playlistRow);
+                            this.LoadPlaylist(playlistIndex);
+                        }
+                    }
+                }
+            }
+
+            if (sourceTrackList != null && sourceTrackList.Count > 0 && playlistRow != null)
+                ((PlaylistView)this.view).UpdateAfterCopyTracksToPlaylist(sourceTrackList.Count, playlistName);
+        }
+       
+        internal void CopyTracksToPlaylist(int playlistId, List<Track> sourceTrackList, List<Track> targetTrackList)
+        {
+            if (sourceTrackList != null && sourceTrackList.Count > 0)
+            {
+                int orderInList = targetTrackList.Count;
+                foreach (Track track in sourceTrackList)
+                {
+                    PlaylistContent plc = new PlaylistContent();
+                    plc.Id = this.trackDao.GetNextId(TableName.PlaylistContent.ToString());
+                    plc.PlaylistId = playlistId;
+                    plc.TrackId = track.Id;
+                    plc.OrderInList = orderInList;
+                    plc.TrackIdInPlaylist = track.TrackIdInPlaylist;
+                    this.trackDao.CreatePlaylistContent(plc);
+                    orderInList++;
+                }
+            }
+        }
+
+        #endregion
+
+
+        private void InternalDragAndDropIntoTracklistEvent(object sender, ListEventArgs e)
+        {
+            List<Track> sourceTrackList = null;
+            if (e.SelectedRows != null && e.SelectedRows.Count > 0)
+            {
+                sourceTrackList = this.ConvertSelectedRowsToList(e.SelectedRows);
+                if(sourceTrackList != null && sourceTrackList.Count > 0)
+                {
+                    this.AddTracksToPlaylist(this.currentPlaylistId, sourceTrackList, e.IntegerField1);
+
+                    List<int> oldListTrackIdInPlaylistList = new List<int>();
+                    for (int i = 0; i <= sourceTrackList.Count - 1; i++)
+                    {
+                        oldListTrackIdInPlaylistList.Add(sourceTrackList[i].TrackIdInPlaylist);
+                    }
+                }
+            }
+        }
+        private void InternalDragAndDropIntoPlaylistEvent(object sender, ListEventArgs e)
+        {
+            List<Track> sourceTrackList = null;
+            DataRow playlistRow = null;
+            int playlistId = -1;
+
+            if (e.SelectedRows != null && e.SelectedRows.Count > 0)
+            {
+                List<int> oldListTrackIdInPlaylistList = new List<int>();
+                for (int i = 0; i <= this.trackListTable.Rows.Count - 1; i++)
+                {
+                    int trackIdInPlaylist = Convert.ToInt32(this.trackListTable.Rows[i]["TrackIdInPlaylist"]);
+                    oldListTrackIdInPlaylistList.Add(trackIdInPlaylist);
+                }
+
+                sourceTrackList = this.ConvertSelectedRowsToList(e.SelectedRows);
+                if (sourceTrackList != null && sourceTrackList.Count > 0)
+                {
+                    playlistRow = this.playlistListTable.Rows[e.IntegerField1];
+                    if (playlistRow != null)
+                    {
+                        playlistId = Convert.ToInt32(playlistRow["Id"]);
+                    }
+                    this.AddTracksToPlaylist(playlistId, sourceTrackList);
+                  //  ((PlaylistView)this.view).SetSelectionAfterDragAndDrop(oldListTrackIdInPlaylistList);
+                }
+            }
+        }
         private List<Track> ConvertSelectedRowsToList(DataGridViewSelectedRowCollection selectedRows)
         {
             List<Track> trackList = new List<Track>();
@@ -542,30 +656,335 @@ namespace MitoPlayer_2024.Presenters
 
             return trackList;
         }
-        internal void CopyTracksToPlaylist(int playlistId, List<Track> sourceTrackList, List<Track> targetTrackList)
+        private string[] scannedFileNames;
+        
+        private List<Track> ReadFiles(string[] fileNames)
         {
-            if (sourceTrackList != null && sourceTrackList.Count > 0)
+            List<String> filePathList = new List<String>();
+            List<Track> trackList = new List<Track>();
+            if (fileNames != null && fileNames.Length > 0)
             {
-                int orderInList = targetTrackList.Count;
-                foreach (Track track in sourceTrackList)
+                foreach (String path in fileNames)
+                {
+                    if (path.Contains(".mp3"))
+                    {
+                        filePathList.Add(path);
+                    }
+                    else if (path.Contains(".wav"))
+                    {
+                        filePathList.Add(path);
+                    }
+                    else if (path.Contains(".flac"))
+                    {
+                        filePathList.Add(path);
+                    }
+                    else if (path.Contains(".m3u"))
+                    {
+                        const Int32 BufferSize = 128;
+                        char[] firstThreeCharacter;
+                        using (var fileStream = System.IO.File.OpenRead(path))
+                        using (var streamReader = new StreamReader(fileStream, Encoding.UTF8, true, BufferSize))
+                        {
+                            String line;
+                            while ((line = streamReader.ReadLine()) != null)
+                            {
+                                firstThreeCharacter = line.Substring(0, 3).ToCharArray();
+
+                                if (firstThreeCharacter[1] == ':' && firstThreeCharacter[2] == '\\')
+                                {
+                                    filePathList.Add(line);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                List<Tag> tagList = this.tagDao.GetAllTag();
+
+                foreach (string path in filePathList)
+                {
+                    string fileName = "";
+
+                    Track track = new Track();
+                    track.Path = path;
+
+                    int extCharCount = path.EndsWith("flac") ? 5 : 4;
+                    fileName = path.Substring(path.LastIndexOf(@"\") + 1);
+                    fileName = fileName.Remove(fileName.LastIndexOf("."), extCharCount);
+
+                    track.FileName = fileName;
+                    track.Album = "";
+                    track.Title = "";
+
+                    if (!System.IO.File.Exists(path))
+                    {
+                        track.Artist = fileName;
+                        track.IsMissing = true;
+                    }
+                    else
+                    {
+                        Track trackFromDb = this.trackDao.GetTrackByPath(track.Path, tagList);
+                        if (trackFromDb != null)
+                            track = trackFromDb;
+
+                        if (track.Path.Contains(".mp3"))
+                        {
+                            TagLib.File file = TagLib.File.Create(track.Path);
+                            if (!String.IsNullOrEmpty(file.Tag.FirstArtist))
+                                track.Artist = file.Tag.FirstArtist;
+                            else if (!String.IsNullOrEmpty(file.Tag.FirstAlbumArtist))
+                                track.Artist = file.Tag.FirstAlbumArtist;
+                            else if (file.Tag.Artists != null && file.Tag.Artists.Count() > 0)
+                                track.Artist = file.Tag.Artists[0];
+                            track.Album = file.Tag.Album;
+                            track.Title = file.Tag.Title;
+                            track.Year = (int)file.Tag.Year;
+                            track.Length = file.Properties.Duration.TotalSeconds;
+
+                            if (String.IsNullOrEmpty(track.Artist))
+                                track.Artist = fileName;
+                        }
+                        else if (path.Contains(".wav"))
+                        {
+                            WaveFileReader wf = new WaveFileReader(path);
+                            track.Artist = fileName;
+                            track.Length = wf.TotalTime.TotalSeconds;
+                        }
+                        else if (path.Contains(".flac"))
+                        {
+                            track.Artist = fileName;
+                        }
+                    }
+
+                    if (track.Id == -1)
+                    {
+                        track.Id = this.trackDao.GetNextId(TableName.Track.ToString());
+
+                        track.TrackTagValues = new List<TrackTagValue>();
+
+                        this.trackDao.CreateTrack(track);
+
+                        foreach (Tag tag in tagList)
+                        {
+                            TrackTagValue ttv = new TrackTagValue();
+                            ttv.Id = this.trackDao.GetNextId(TableName.TrackTagValue.ToString());
+                            ttv.TrackId = track.Id;
+                            ttv.TagId = tag.Id;
+                            ttv.TagName = tag.Name;
+                            ttv.TagValueId = -1;
+                            ttv.TagValueName = String.Empty;
+                            this.trackDao.CreateTrackTagValue(ttv);
+                        }
+                    }
+                    trackList.Add(track);
+
+                }
+            }
+            return trackList;
+        }
+        private void ScanDirectory(string path)
+        {
+            string[] files = Directory.GetFiles(path);
+            files = files.Where(x => x.Contains(".mp3") || x.Contains(".flac") || x.Contains(".wav")).ToArray();
+
+            if (files != null && files.Length > 0)
+            {
+                if (scannedFileNames == null)
+                    scannedFileNames = files;
+                else
+                    scannedFileNames = scannedFileNames.Concat(files).ToArray();
+            }
+
+            string[] directories = Directory.GetDirectories(path);
+            foreach (String dir in directories)
+            {
+                this.ScanDirectory(dir);
+            }
+        }
+        private void ExternalDragAndDropIntoTracklistEvent(object sender, ListEventArgs e)
+        {
+            List<Track> trackList = new List<Track>();
+            string[] mediaFiles;
+            string[] directories;
+
+            int dragIndex = e.IntegerField1;
+            if (e.DragAndDropFilePathArray != null && e.DragAndDropFilePathArray.Length > 0)
+            {
+                mediaFiles = e.DragAndDropFilePathArray.Where(x => x.EndsWith(".mp3") || x.EndsWith(".wav") || x.EndsWith(".flac") || x.EndsWith(".m3u")).ToArray();
+                directories = e.DragAndDropFilePathArray.Where(x => !x.EndsWith(".mp3") && !x.EndsWith(".wav") && !x.EndsWith(".flac") && !x.EndsWith(".m3u")).ToArray();
+
+                if (mediaFiles != null && mediaFiles.Length > 0)
+                {
+                    trackList = this.ReadFiles(mediaFiles);
+                }
+                if (directories != null && directories.Length > 0)
+                {
+                    scannedFileNames = null;
+                    foreach (string dir in directories)
+                    {
+                        this.ScanDirectory(dir);
+                        trackList.AddRange(this.ReadFiles(scannedFileNames));
+                    }
+                }
+
+                this.AddTracksToPlaylist(this.currentPlaylistId, trackList, dragIndex);
+            }
+        }
+
+        private void ExternalDragAndDropIntoPlaylistEvent(object sender, ListEventArgs e)
+        {
+            List<Track> trackList = new List<Track>();
+            string[] mediaFiles;
+            string[] directories;
+            DataRow playlistRow = null;
+            int playlistId = -1;
+
+            int dragIndex = e.IntegerField1;
+            if (e.DragAndDropFilePathArray != null && e.DragAndDropFilePathArray.Length > 0)
+            {
+                mediaFiles = e.DragAndDropFilePathArray.Where(x => x.EndsWith(".mp3") || x.EndsWith(".wav") || x.EndsWith(".flac") || x.EndsWith(".m3u")).ToArray();
+                directories = e.DragAndDropFilePathArray.Where(x => !x.EndsWith(".mp3") && !x.EndsWith(".wav") && !x.EndsWith(".flac") && !x.EndsWith(".m3u")).ToArray();
+
+                if (mediaFiles != null && mediaFiles.Length > 0)
+                {
+                    trackList = this.ReadFiles(mediaFiles);
+                }
+                if (directories != null && directories.Length > 0)
+                {
+                    scannedFileNames = null;
+                    foreach (string dir in directories)
+                    {
+                        this.ScanDirectory(dir);
+                        trackList.AddRange(this.ReadFiles(scannedFileNames));
+                    }
+                }
+
+                playlistRow = this.playlistListTable.Rows[dragIndex];
+                if (playlistRow != null)
+                {
+                    playlistId = Convert.ToInt32(playlistRow["Id"]);
+                }
+
+                this.AddTracksToPlaylist(playlistId, trackList);
+
+               
+            }
+        }
+        private void AddTracksToPlaylist(int playlistId, List<Track> trackList, int dragIndex = -1)
+        {
+            List<Track> playlistTracklist = this.trackDao.GetTracklistByPlaylistId(playlistId, this.tagList);
+
+            if (trackList != null && trackList.Count > 0)
+            {
+                int orderInList = playlistTracklist.Count;
+                foreach (Track track in trackList)
                 {
                     PlaylistContent plc = new PlaylistContent();
                     plc.Id = this.trackDao.GetNextId(TableName.PlaylistContent.ToString());
                     plc.PlaylistId = playlistId;
                     plc.TrackId = track.Id;
                     plc.OrderInList = orderInList;
-                    plc.TrackIdInPlaylist = track.TrackIdInPlaylist;
+                    plc.TrackIdInPlaylist = this.trackDao.GetNextSmallestTrackIdInPlaylist();
+                    track.TrackIdInPlaylist = plc.TrackIdInPlaylist;
                     this.trackDao.CreatePlaylistContent(plc);
                     orderInList++;
+
+                  /*  if (insertIntoDefault && fromDragAndDrop)
+                    {
+                        if (trackToReplaceInMediaPlayer != null &&
+                            trackToReplaceInMediaPlayer.Id == track.Id &&
+                            trackToReplaceInMediaPlayer.Path == track.Path)
+                        {
+                            this.mediaPLayerComponent.CurrentTrackIdInPlaylist = plc.TrackIdInPlaylist;
+                        }
+                    }*/
+                }
+
+
+                if(playlistId == this.currentPlaylistId)
+                {
+                    this.LoadTrackList(trackList, dragIndex);
+                    if (this.mediaPLayerComponent.MediaPlayer.playState != WMPLib.WMPPlayState.wmppsPlaying)
+                    {
+                        this.mediaPLayerComponent.SetCurrentTrackIndex(0);
+                        this.PlayTrack();
+                    }
+                }
+
+
+
+                /*  if (insertIntoDefault)
+                  {
+                      this.LoadTrackList(trackList, dragIndex);
+                      if (this.mediaPLayerComponent.MediaPlayer.playState != WMPLib.WMPPlayState.wmppsPlaying)
+                      {
+                          this.mediaPLayerComponent.SetCurrentTrackIndex(0);
+                          this.PlayTrack();
+                      }
+                  }
+
+                  if (insertIntoDefault && fromDragAndDrop && fromExternalDragAndDrop)
+                  {
+                      List<int> oldListTrackIdInPlaylistList = new List<int>();
+                      for (int i = 0; i <= trackList.Count - 1; i++)
+                      {
+                          oldListTrackIdInPlaylistList.Add(trackList[i].TrackIdInPlaylist);
+                      }
+                      this.SetTrackList(trackListTable);
+                      this.SaveTrackList(trackListTable, this.currentPlaylistId);
+                      ((PlaylistView)this.view).SetSelectionAfterExternalDragAndDrop(oldListTrackIdInPlaylistList);
+                  }*/
+
+            }
+
+            /*
+            Track trackToReplaceInMediaPlayer = null;
+            if (insertIntoDefault && fromDragAndDrop)
+            {
+                PlaylistContent currentPlayedTrackPlc = this.trackDao.GetPlaylistContentByTrackIdInPlaylist(this.mediaPLayerComponent.CurrentTrackIdInPlaylist);
+                if (currentPlayedTrackPlc != null)
+                {
+                    trackToReplaceInMediaPlayer = this.trackDao.GetTrack(currentPlayedTrackPlc.TrackId, this.tagList);
                 }
             }
+            */
+ 
+
+            
         }
 
-        #endregion
 
         #region TRACKLIST - DRAG FILES FROM OUTSIDE
+
+
+
+
         internal void CallAddTrackToTrackListEvent(List<Track> trackList, int dragIndex)
         {
+            this.AddTracksToPlaylist(this.currentPlaylistId, trackList, dragIndex);
+
+            /*
+            Track trackToReplaceInMediaPlayer = null;
+            if (insertIntoDefault && fromDragAndDrop)
+            {
+                PlaylistContent currentPlayedTrackPlc = this.trackDao.GetPlaylistContentByTrackIdInPlaylist(this.mediaPLayerComponent.CurrentTrackIdInPlaylist);
+                if(currentPlayedTrackPlc != null)
+                {
+                    trackToReplaceInMediaPlayer = this.trackDao.GetTrack(currentPlayedTrackPlc.TrackId, this.tagList);
+                }
+            }
+
+            DataRow playlistRow = null;
+            int quickPlaylistId = -1;
+            if (!insertIntoDefault && dragIndex > -1)
+            {
+                playlistRow = this.playlistListTable.Rows[dragIndex];
+                if (playlistRow != null)
+                {
+                    quickPlaylistId = Convert.ToInt32(playlistRow["Id"]);
+                }
+            }
+
             if (trackList != null && trackList.Count > 0)
             {
                 int orderInList = this.trackListTable.Rows.Count;
@@ -573,22 +992,138 @@ namespace MitoPlayer_2024.Presenters
                 {
                     PlaylistContent plc = new PlaylistContent();
                     plc.Id = this.trackDao.GetNextId(TableName.PlaylistContent.ToString());
-                    plc.PlaylistId = this.currentPlaylistId;
+
+                    if (!insertIntoDefault && dragIndex > -1)
+                    {
+                        plc.PlaylistId = quickPlaylistId;
+                    }
+                    else
+                    {
+                        plc.PlaylistId = this.currentPlaylistId;
+                    }
+
                     plc.TrackId = track.Id;
                     plc.OrderInList = orderInList;
                     plc.TrackIdInPlaylist = this.trackDao.GetNextSmallestTrackIdInPlaylist();
                     track.TrackIdInPlaylist = plc.TrackIdInPlaylist;
                     this.trackDao.CreatePlaylistContent(plc);
                     orderInList++;
+
+                    if (insertIntoDefault && fromDragAndDrop)
+                    {
+                        if (trackToReplaceInMediaPlayer != null &&
+                            trackToReplaceInMediaPlayer.Id == track.Id &&
+                            trackToReplaceInMediaPlayer.Path == track.Path)
+                        {
+                            this.mediaPLayerComponent.CurrentTrackIdInPlaylist = plc.TrackIdInPlaylist;
+                        }
+                    }
                 }
-                this.LoadTrackList(trackList, dragIndex);
-                if (this.mediaPLayerComponent.MediaPlayer.playState != WMPLib.WMPPlayState.wmppsPlaying)
+                if (insertIntoDefault)
                 {
-                    this.mediaPLayerComponent.SetCurrentTrackIndex(0);
-                    this.PlayTrack();
+                    this.LoadTrackList(trackList, dragIndex);
+                    if (this.mediaPLayerComponent.MediaPlayer.playState != WMPLib.WMPPlayState.wmppsPlaying)
+                    {
+                        this.mediaPLayerComponent.SetCurrentTrackIndex(0);
+                        this.PlayTrack();
+                    }
+                }
+
+                if (insertIntoDefault && fromDragAndDrop && fromExternalDragAndDrop)
+                {
+                    List<int> oldListTrackIdInPlaylistList = new List<int>();
+                    for (int i = 0; i <= trackList.Count - 1; i++)
+                    {
+                        oldListTrackIdInPlaylistList.Add(trackList[i].TrackIdInPlaylist);
+                    }
+                    this.SetTrackList(trackListTable);
+                    this.SaveTrackList(trackListTable, this.currentPlaylistId);
+                    ((PlaylistView)this.view).SetSelectionAfterExternalDragAndDrop(oldListTrackIdInPlaylistList);
+                }
+
+            }*/
+        }
+       /* public void CallAddTracksToTrackListFromExternalDragAndDropEvent(List<Track> trackList, int dragIndex)
+        {
+            Track trackToReplaceInMediaPlayer = null;
+            if (insertIntoDefault && fromDragAndDrop)
+            {
+                PlaylistContent currentPlayedTrackPlc = this.trackDao.GetPlaylistContentByTrackIdInPlaylist(this.mediaPLayerComponent.CurrentTrackIdInPlaylist);
+                if (currentPlayedTrackPlc != null)
+                {
+                    trackToReplaceInMediaPlayer = this.trackDao.GetTrack(currentPlayedTrackPlc.TrackId, this.tagList);
                 }
             }
-        }
+
+            DataRow playlistRow = null;
+            int quickPlaylistId = -1;
+            if (!insertIntoDefault && dragIndex > -1)
+            {
+                playlistRow = this.playlistListTable.Rows[dragIndex];
+                if (playlistRow != null)
+                {
+                    quickPlaylistId = Convert.ToInt32(playlistRow["Id"]);
+                }
+            }
+
+            if (trackList != null && trackList.Count > 0)
+            {
+                int orderInList = this.trackListTable.Rows.Count;
+                foreach (Track track in trackList)
+                {
+                    PlaylistContent plc = new PlaylistContent();
+                    plc.Id = this.trackDao.GetNextId(TableName.PlaylistContent.ToString());
+
+                    if (!insertIntoDefault && dragIndex > -1)
+                    {
+                        plc.PlaylistId = quickPlaylistId;
+                    }
+                    else
+                    {
+                        plc.PlaylistId = this.currentPlaylistId;
+                    }
+
+                    plc.TrackId = track.Id;
+                    plc.OrderInList = orderInList;
+                    plc.TrackIdInPlaylist = this.trackDao.GetNextSmallestTrackIdInPlaylist();
+                    track.TrackIdInPlaylist = plc.TrackIdInPlaylist;
+                    this.trackDao.CreatePlaylistContent(plc);
+                    orderInList++;
+
+                    if (insertIntoDefault && fromDragAndDrop)
+                    {
+                        if (trackToReplaceInMediaPlayer != null &&
+                            trackToReplaceInMediaPlayer.Id == track.Id &&
+                            trackToReplaceInMediaPlayer.Path == track.Path)
+                        {
+                            this.mediaPLayerComponent.CurrentTrackIdInPlaylist = plc.TrackIdInPlaylist;
+                        }
+                    }
+                }
+                if (insertIntoDefault)
+                {
+                    this.LoadTrackList(trackList, dragIndex);
+                    if (this.mediaPLayerComponent.MediaPlayer.playState != WMPLib.WMPPlayState.wmppsPlaying)
+                    {
+                        this.mediaPLayerComponent.SetCurrentTrackIndex(0);
+                        this.PlayTrack();
+                    }
+                }
+
+                if (insertIntoDefault && fromDragAndDrop && fromExternalDragAndDrop)
+                {
+                    List<int> oldListTrackIdInPlaylistList = new List<int>();
+                    for (int i = 0; i <= trackList.Count - 1; i++)
+                    {
+                        oldListTrackIdInPlaylistList.Add(trackList[i].TrackIdInPlaylist);
+                    }
+                    this.SetTrackList(trackListTable);
+                    this.SaveTrackList(trackListTable, this.currentPlaylistId);
+                    ((PlaylistView)this.view).SetSelectionAfterExternalDragAndDrop(oldListTrackIdInPlaylistList);
+                }
+
+            }
+        }*/
         private void LoadTrackList(List<Track> trackList, int dragIndex)
         {
             if (trackList != null && trackList.Count > 0)
@@ -1043,7 +1578,6 @@ namespace MitoPlayer_2024.Presenters
             }
             this.trackDao.SetActivePlaylist(playlistId);
         }
-
         private void SetQuickListEvent(object sender, ListEventArgs e)
         {
             for(int i = 0; i <= this.playlistListTable.Rows.Count - 1; i++)

@@ -63,7 +63,7 @@ namespace MitoPlayer_2024.Presenters
         }
 
        
-        internal void CallAddTrackToTrackListEvent(List<Track> trackList, int dragIndex)
+        internal void CallAddTrackToTrackListEvent(List<Track> trackList, int dragIndex, bool internalDragnadDrop = false, bool fromExternalDragAndDrop = false,  bool insertIntoDefault = false)
         {
  
         }

@@ -215,6 +215,7 @@
             this.btnTagValue11.TabIndex = 0;
             this.btnTagValue11.Text = "TagValue11";
             this.btnTagValue11.UseVisualStyleBackColor = true;
+            this.btnTagValue11.Click += new System.EventHandler(this.btnTagValue11_Click);
             // 
             // btnTagValue8
             // 
@@ -224,6 +225,7 @@
             this.btnTagValue8.TabIndex = 0;
             this.btnTagValue8.Text = "TagValue8";
             this.btnTagValue8.UseVisualStyleBackColor = true;
+            this.btnTagValue8.Click += new System.EventHandler(this.btnTagValue8_Click);
             // 
             // btnTagValue5
             // 
@@ -233,6 +235,7 @@
             this.btnTagValue5.TabIndex = 0;
             this.btnTagValue5.Text = "TagValue5";
             this.btnTagValue5.UseVisualStyleBackColor = true;
+            this.btnTagValue5.Click += new System.EventHandler(this.btnTagValue5_Click);
             // 
             // btnTagValue2
             // 
@@ -288,6 +291,7 @@
             this.btnTagValue12.TabIndex = 0;
             this.btnTagValue12.Text = "TagValue12";
             this.btnTagValue12.UseVisualStyleBackColor = true;
+            this.btnTagValue12.Click += new System.EventHandler(this.btnTagValue12_Click);
             // 
             // btnTagValue9
             // 
@@ -297,6 +301,7 @@
             this.btnTagValue9.TabIndex = 0;
             this.btnTagValue9.Text = "TagValue9";
             this.btnTagValue9.UseVisualStyleBackColor = true;
+            this.btnTagValue9.Click += new System.EventHandler(this.btnTagValue9_Click);
             // 
             // btnTagValue6
             // 
@@ -306,6 +311,7 @@
             this.btnTagValue6.TabIndex = 0;
             this.btnTagValue6.Text = "TagValue6";
             this.btnTagValue6.UseVisualStyleBackColor = true;
+            this.btnTagValue6.Click += new System.EventHandler(this.btnTagValue6_Click);
             // 
             // btnTagValue3
             // 
@@ -361,6 +367,7 @@
             this.btnTagValue10.TabIndex = 0;
             this.btnTagValue10.Text = "TagValue10";
             this.btnTagValue10.UseVisualStyleBackColor = true;
+            this.btnTagValue10.Click += new System.EventHandler(this.btnTagValue10_Click);
             // 
             // btnTagValue7
             // 
@@ -370,6 +377,7 @@
             this.btnTagValue7.TabIndex = 0;
             this.btnTagValue7.Text = "TagValue7";
             this.btnTagValue7.UseVisualStyleBackColor = true;
+            this.btnTagValue7.Click += new System.EventHandler(this.btnTagValue7_Click);
             // 
             // btnTagValue4
             // 
@@ -379,6 +387,7 @@
             this.btnTagValue4.TabIndex = 0;
             this.btnTagValue4.Text = "TagValue4";
             this.btnTagValue4.UseVisualStyleBackColor = true;
+            this.btnTagValue4.Click += new System.EventHandler(this.btnTagValue4_Click);
             // 
             // btnTagValue1
             // 
@@ -693,6 +702,7 @@
             // 
             // dgvPlaylistList
             // 
+            this.dgvPlaylistList.AllowDrop = true;
             this.dgvPlaylistList.AllowUserToAddRows = false;
             this.dgvPlaylistList.AllowUserToDeleteRows = false;
             this.dgvPlaylistList.AllowUserToResizeRows = false;
@@ -709,8 +719,12 @@
             this.dgvPlaylistList.Size = new System.Drawing.Size(164, 401);
             this.dgvPlaylistList.TabIndex = 1;
             this.dgvPlaylistList.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvPlaylistList_CellDoubleClick);
+            this.dgvPlaylistList.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.dgvPlaylistList_CellPainting);
+            this.dgvPlaylistList.DragDrop += new System.Windows.Forms.DragEventHandler(this.dgvPlaylistList_DragDrop);
+            this.dgvPlaylistList.DragOver += new System.Windows.Forms.DragEventHandler(this.dgvPlaylistList_DragOver);
             this.dgvPlaylistList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvPlaylistList_KeyDown);
             this.dgvPlaylistList.MouseClick += new System.Windows.Forms.MouseEventHandler(this.dgvPlaylistList_MouseClick);
+            this.dgvPlaylistList.MouseUp += new System.Windows.Forms.MouseEventHandler(this.dgvPlaylistList_MouseUp);
             // 
             // dgvTrackList
             // 
@@ -772,40 +786,40 @@
             this.exportToM3uToolStripMenuItem,
             this.exportToTxtToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(181, 192);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(176, 170);
             // 
             // menuStripCreatePlaylist
             // 
             this.menuStripCreatePlaylist.Name = "menuStripCreatePlaylist";
-            this.menuStripCreatePlaylist.Size = new System.Drawing.Size(180, 22);
+            this.menuStripCreatePlaylist.Size = new System.Drawing.Size(175, 22);
             this.menuStripCreatePlaylist.Text = "New";
             this.menuStripCreatePlaylist.Click += new System.EventHandler(this.menuStripCreatePlaylist_Click);
             // 
             // menuStripLoadPlaylist
             // 
             this.menuStripLoadPlaylist.Name = "menuStripLoadPlaylist";
-            this.menuStripLoadPlaylist.Size = new System.Drawing.Size(180, 22);
+            this.menuStripLoadPlaylist.Size = new System.Drawing.Size(175, 22);
             this.menuStripLoadPlaylist.Text = "Load";
             this.menuStripLoadPlaylist.Click += new System.EventHandler(this.menuStripLoadPlaylist_Click);
             // 
             // menuStripRenamePlaylist
             // 
             this.menuStripRenamePlaylist.Name = "menuStripRenamePlaylist";
-            this.menuStripRenamePlaylist.Size = new System.Drawing.Size(180, 22);
+            this.menuStripRenamePlaylist.Size = new System.Drawing.Size(175, 22);
             this.menuStripRenamePlaylist.Text = "Rename";
             this.menuStripRenamePlaylist.Click += new System.EventHandler(this.menuStripRenamePlaylist_Click);
             // 
             // menuStripDeletePlaylist
             // 
             this.menuStripDeletePlaylist.Name = "menuStripDeletePlaylist";
-            this.menuStripDeletePlaylist.Size = new System.Drawing.Size(180, 22);
+            this.menuStripDeletePlaylist.Size = new System.Drawing.Size(175, 22);
             this.menuStripDeletePlaylist.Text = "Remove";
             this.menuStripDeletePlaylist.Click += new System.EventHandler(this.menuStripDeletePlaylist_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(172, 6);
             // 
             // menuStripSetQuickListGroup
             // 
@@ -815,7 +829,7 @@
             this.menuStripSetQuickListGroup3,
             this.menuStripSetQuickListGroup4});
             this.menuStripSetQuickListGroup.Name = "menuStripSetQuickListGroup";
-            this.menuStripSetQuickListGroup.Size = new System.Drawing.Size(180, 22);
+            this.menuStripSetQuickListGroup.Size = new System.Drawing.Size(175, 22);
             this.menuStripSetQuickListGroup.Text = "Set quick list group";
             // 
             // menuStripSetQuickListGroup1
@@ -849,19 +863,19 @@
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(172, 6);
             // 
             // exportToM3uToolStripMenuItem
             // 
             this.exportToM3uToolStripMenuItem.Name = "exportToM3uToolStripMenuItem";
-            this.exportToM3uToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exportToM3uToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.exportToM3uToolStripMenuItem.Text = "Export to m3u";
             this.exportToM3uToolStripMenuItem.Click += new System.EventHandler(this.menuStripExportToM3uToolStripMenuItem_Click);
             // 
             // exportToTxtToolStripMenuItem
             // 
             this.exportToTxtToolStripMenuItem.Name = "exportToTxtToolStripMenuItem";
-            this.exportToTxtToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exportToTxtToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.exportToTxtToolStripMenuItem.Text = "Export to txt";
             this.exportToTxtToolStripMenuItem.Click += new System.EventHandler(this.menuStripExportToTxtToolStripMenuItem_Click);
             // 

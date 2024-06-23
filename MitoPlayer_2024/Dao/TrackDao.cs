@@ -763,6 +763,39 @@ namespace MitoPlayer_2024.Dao
                 connection.Close();
             }
         }
+        public PlaylistContent GetPlaylistContentByTrackIdInPlaylist(int trackIdInPlaylist)
+        {
+            PlaylistContent result = null;
+
+            using (var connection = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand())
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"SELECT * 
+                                        FROM PlaylistContent 
+                                        WHERE TrackIdInPlaylist = @TrackIdInPlaylist ";
+                command.Parameters.Add("@TrackIdInPlaylist", MySqlDbType.Int32).Value = trackIdInPlaylist;
+
+                using (var reader = command.ExecuteReader())
+                {
+                    result = new PlaylistContent();
+                    while (reader.Read())
+                    {
+                        result.Id = (int)reader[0];
+                        result.PlaylistId = (int)reader[1];
+                        result.TrackId = (int)reader[2];
+                        result.OrderInList = (int)reader[3];
+                        result.TrackIdInPlaylist = (int)reader[4];
+                        result.ProfileId = (int)reader[5];
+                    }
+                }
+                connection.Close();
+            }
+
+            return result;
+        }
         public void UpdatePlaylistContent(PlaylistContent plc)
         {
             using (var connection = new MySqlConnection(connectionString))

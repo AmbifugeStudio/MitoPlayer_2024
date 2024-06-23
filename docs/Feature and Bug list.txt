@@ -1,4 +1,8 @@
 BUGS
+- tracklist drag and drop után minden kijelölődik
+- tracklist play, törlés mind, hozzaáadás és next/prev nem jó
+
+
 - kellene length a flac-nak is
 - TagValue felületen is működjön a player gombjai
 

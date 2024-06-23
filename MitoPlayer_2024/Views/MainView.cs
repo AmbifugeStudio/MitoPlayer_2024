@@ -1,6 +1,9 @@
 ﻿using MitoPlayer_2024.Helpers;
 using MitoPlayer_2024.Views;
+using NAudio.CoreAudioApi;
 using System;
+using System.Collections.Generic;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace MitoPlayer_2024
@@ -342,12 +345,6 @@ namespace MitoPlayer_2024
             this.lblTrackStart.Text = currentPositionString;
         }
 
-        //OTHER
-        public void OpenFilesFromDragAndDrop(String[] pathList, int index)
-        {
-            this.ScanFiles?.Invoke(this, new ListEventArgs() { DragAndDropFiles = pathList, IntegerField1 = index });
-        }
 
-       
     }
 }

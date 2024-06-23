@@ -38,7 +38,7 @@ namespace MitoPlayer_2024.Presenters
            // this.view.SetVolume(volume);
             this.mediaPLayerComponent.MediaPlayer.settings.volume = volume;
         }
-        public void CallAddTrackToTrackListEvent(List<Track> trackList, int dragIndex)
+        public void CallAddTrackToTrackListEvent(List<Track> trackList, int dragIndex, bool internalDragnadDrop = false, bool fromExternalDragAndDrop = false,  bool insertIntoDefault = false)
         {
         }
         public void CallChangeProgressEvent(int integerField1, int integerField2)

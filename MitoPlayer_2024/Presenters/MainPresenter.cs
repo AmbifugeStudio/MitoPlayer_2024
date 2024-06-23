@@ -672,11 +672,12 @@ namespace MitoPlayer_2024.Presenters
         {
             string[] mediaFiles;
             string[] directories;
+            trackList = new List<Track>();
             int dragIndex = e.IntegerField1;
-            if (e.DragAndDropFiles != null && e.DragAndDropFiles.Length > 0)
+            if (e.DragAndDropFilePathArray != null && e.DragAndDropFilePathArray.Length > 0)
             {
-                mediaFiles = e.DragAndDropFiles.Where(x => x.EndsWith(".mp3") || x.EndsWith(".wav") || x.EndsWith(".flac") || x.EndsWith(".m3u")).ToArray();
-                directories = e.DragAndDropFiles.Where(x => !x.EndsWith(".mp3") && !x.EndsWith(".wav") && !x.EndsWith(".flac") && !x.EndsWith(".m3u")).ToArray();
+                mediaFiles = e.DragAndDropFilePathArray.Where(x => x.EndsWith(".mp3") || x.EndsWith(".wav") || x.EndsWith(".flac") || x.EndsWith(".m3u")).ToArray();
+                directories = e.DragAndDropFilePathArray.Where(x => !x.EndsWith(".mp3") && !x.EndsWith(".wav") && !x.EndsWith(".flac") && !x.EndsWith(".m3u")).ToArray();
 
                 if (mediaFiles != null && mediaFiles.Length > 0)
                 {
@@ -691,9 +692,12 @@ namespace MitoPlayer_2024.Presenters
                         trackList.AddRange(this.ReadFiles(scannedFileNames));
                     }
                 }
+
                 this.AddTracksToTrackList(trackList, dragIndex);
             }
         }
+
+  
 
     }
 }
