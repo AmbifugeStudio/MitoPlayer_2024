@@ -1,5 +1,5 @@
 BUGS
-BUG: quicklist törlés
+- BUG: betöltésre nem szinezi az aktuális playlist-et
 - tracklist play, törlés mind, hozzaáadás és next/prev nem jó
 
 

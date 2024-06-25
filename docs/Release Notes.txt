@@ -1,3 +1,10 @@
+v0.11.2.1
+OK - BUG: nem hozzárendelt hotkey megnyomására elfagy
+OK - BUG: quicklist törlés
+OK - BUG: quicklist gombra nem íródik ki a másolásról a visszajelzés
+OK - BUG: playlist rendezés tiltás felületről
+OK - BUG: playlist external drag and drop-ra elromlik a tracklist selection
+OK - BUG: playlist-be drag and drop-nál úgy marad a drag and drop kijelölés
 
 v0.11.2.0
 OK - FEATURE: Drag And Drop átalakítás

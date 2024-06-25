@@ -65,6 +65,12 @@ TAGVALUES - with empty db
 [11] - delete tagvalue (and add track)
 [11] - delete tag (and add track)
 
+DRAG AND DROP
+[11] - tracklist: drop from outside
+[11] - tracklist: drag and drop
+[] - playlist: drop from tracklist
+[] - playlist: drop from outside
+[11] - playlist: drop with hotkey
 
 
 TAGVALUE
