@@ -16,15 +16,15 @@ ORDERING
 [11] - reverse
 [11] - shuffle
 
-PLAYER
-Menu
+PLAYER - Menu
 [11] - play
 [11] - pause
 [11] - stop
 [11] - prev
 [11] - next
-[11] - random(!)
-Component
+[11] - random
+
+PLAYER - Component
 [11]- double click play
 [11]- play
 [11]- pause
@@ -33,23 +33,19 @@ Component
 [11]- next
 
 PLAYLIST
-[11] - add, add files, rename
+[11] - add playlist
+[11] - add files to playlist
+[11] - rename playlist
 [11] - load playlist
 [11] - load playlist with playing track
 [11] - multiple load playlist and multiple playing track
-[11] - delete playlist, delete playlist with playing track
+[11] - delete playlist
+[11] - delete playlist with playing track
 [11] - set quicklist
-[11] - copy tracks to playlist
+[11] - remove quicklist
+[11] - copy tracks to playlist with hotkey
 
-ADD BY DRAG AND DROP 
-[11] - drop files
-[11] - drop directory
-
-COLUMN VISIBILITY
-[11] - change column visibility with non empty list
-[11] - change column order with non empty list
-
-TAGVALUES - with existing tracks
+TAGVALUES MASTERDATA - with existing tracks
 [11] - add tag (existing tracks)
 [11] - add tag and value (existing tracks)
 [11] - edit tagvalue (existing tracks)
@@ -57,7 +53,7 @@ TAGVALUES - with existing tracks
 [11] - delete tagvalue (existing tracks)
 [11] - delete tag (existing tracks)
 
-TAGVALUES - with empty db
+TAGVALUE MASTERDATA - with empty db
 [11] - add tag (and add track)
 [11] - add tag and value (and add track)
 [11] - edit tagvalue (and add track)
@@ -65,17 +61,26 @@ TAGVALUES - with empty db
 [11] - delete tagvalue (and add track)
 [11] - delete tag (and add track)
 
+TAGVALUE TRACK EDITOR
+[11] - set tag
+[11] - set tagvalue
+[11] - set one track tagvalue
+[11] - set multiple track tagvalues
+
+COLUMN VISIBILITY
+[11] - change column visibility with non empty list
+[11] - change column order with non empty list
+[11] - change tag column visibility with non empty list
+[11] - change tag column order with non empty list
+
 DRAG AND DROP
-[11] - tracklist: drop from outside
-[11] - tracklist: drag and drop
-[] - playlist: drop from tracklist
-[] - playlist: drop from outside
-[11] - playlist: drop with hotkey
-
-
-TAGVALUE
-[] - change column visibility with non empty list
-[] - change column order with non empty list
+[11] - tracklist: drop files from outside
+[11] - tracklist: drop directories from outside
+[11] - tracklist: drag and drop tracks
+[11] - playlist: drop tracks from tracklist
+[11] - playlist: drop tracks from outside
+[] - playlist: drop directories from outside
+[] - playlist: drag and drop playlist
 
 PROFILE
 [] - change profile without tracks

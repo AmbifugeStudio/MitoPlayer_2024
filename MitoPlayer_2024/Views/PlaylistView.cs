@@ -48,6 +48,7 @@ namespace MitoPlayer_2024.Views
         //PLAYLIST
         public event EventHandler<ListEventArgs> ShowPlaylistEditorViewEvent;
         public event EventHandler<ListEventArgs> LoadPlaylistEvent;
+        public event EventHandler<ListEventArgs> MovePlaylistEvent;
         public event EventHandler<ListEventArgs> DeletePlaylistEvent;
         public event EventHandler<ListEventArgs> SetQuickListEvent;
         public event EventHandler<ListEventArgs> ExportToM3UEvent;
@@ -294,7 +295,6 @@ namespace MitoPlayer_2024.Views
         private bool dragMultipleRow = false;
         private bool dragOneRow = false;
         private bool prepareToDragOneRow = false;
-
         private void dgvTrackList_MouseDown(object sender, MouseEventArgs e) 
         {
             HitTestInfo hitTest = this.dgvTrackList.HitTest(e.X, e.Y);
@@ -323,7 +323,6 @@ namespace MitoPlayer_2024.Views
                 }
             }
         }
-
         List<String> dragAndDropPathList = new List<String>();
         List<int> dragAndDropTrackIdInPlaylistList = new List<int>();
         private void Drag()
@@ -342,7 +341,6 @@ namespace MitoPlayer_2024.Views
             }
             this.dgvTrackList.DoDragDrop(dragAndDropTrackIdInPlaylistList, DragDropEffects.Copy);
         }
-
         private int trackListDropLocationRowIndex = -1;
         private void dgvTrackList_DragOver(object sender, DragEventArgs e)
         {
@@ -411,7 +409,6 @@ namespace MitoPlayer_2024.Views
                 }
             }
         }
-
         Pen pen2 = new Pen(Color.LightSeaGreen, 4);
         private void dgvTrackList_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
@@ -421,7 +418,6 @@ namespace MitoPlayer_2024.Views
                 e.Handled = true;
             }
         }
-
         List<int> oldListTrackIdInPlaylistList = new List<int>();
         private void dgvTrackList_DragDrop(object sender, DragEventArgs e)
         {
@@ -452,7 +448,6 @@ namespace MitoPlayer_2024.Views
             this.dragOneRow = false;
             this.currentRowIndex = -1;
         }
-
         public void SetSelectionAfterDragAndDrop(List<int> oldListTrackIdInPlaylistList)
         {
             this.oldListTrackIdInPlaylistList = oldListTrackIdInPlaylistList;
@@ -915,7 +910,6 @@ namespace MitoPlayer_2024.Views
             if (this.dgvPlaylistList.SelectedRows.Count > 0)
                 this.ExportToTXTEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = this.dgvPlaylistList.SelectedRows[0].Index });
         }
-
         public void SetCurrentPlaylistColor(int playlistId)
         {
             this.ClearCurrentPlaylistColor();
@@ -951,7 +945,7 @@ namespace MitoPlayer_2024.Views
 
         private int currentPlaylistRowIndex = -1;
         private bool dragPlaylist = false;
-
+        private bool prepareToPlaylistDrag = false;
         private void dgvPlaylistList_MouseDown(object sender, MouseEventArgs e)
         {
             HitTestInfo hitTest = this.dgvPlaylistList.HitTest(e.X, e.Y);
@@ -963,9 +957,22 @@ namespace MitoPlayer_2024.Views
                 {
                     if (this.dgvPlaylistList.Rows.Count != this.dgvPlaylistList.SelectedRows.Count)
                     {
-                        this.dragPlaylist = true;
-                        this.DragPlaylist();
+                        this.prepareToPlaylistDrag = true;
                     }
+                }
+            }
+        }
+        private void dgvPlaylistList_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (this.prepareToPlaylistDrag && e.Button == MouseButtons.Left)
+            {
+                Point p = this.dgvPlaylistList.PointToClient(new Point(e.X, e.Y));
+                int dragIndex = this.dgvPlaylistList.HitTest(p.X, p.Y).RowIndex;
+
+                if (this.currentPlaylistRowIndex != dragIndex)
+                {
+                    this.dragPlaylist = true;
+                    this.DragPlaylist();
                 }
             }
         }
@@ -1010,13 +1017,22 @@ namespace MitoPlayer_2024.Views
             this.playlistDropLocationRowIndex = this.dgvPlaylistList.HitTest(clientPoint.X, clientPoint.Y).RowIndex;
             this.dgvPlaylistList.Invalidate();
         }
-        Pen playlistDragAndDropPen = new Pen(Color.LightSeaGreen, 4);
         private void dgvPlaylistList_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
-            if (this.dragPlaylist && e.RowIndex == this.playlistDropLocationRowIndex - 1)
+            if (this.dragPlaylist && e.RowIndex == this.playlistDropLocationRowIndex)
             {
-                e.Graphics.DrawLine(playlistDragAndDropPen, e.CellBounds.Left, e.CellBounds.Bottom, e.CellBounds.Right, e.CellBounds.Bottom);
-                e.Handled = true;
+                Rectangle newRect = new Rectangle(e.CellBounds.X + 1,
+                  e.CellBounds.Y + 1, e.CellBounds.Width - 4,
+                  e.CellBounds.Height - 4);
+
+                using (Brush gridBrush = new SolidBrush(Color.LightSeaGreen), backColorBrush = new SolidBrush(e.CellStyle.BackColor))
+                {
+                    using (Pen gridLinePen = new Pen(gridBrush))
+                    {
+                        e.Graphics.DrawRectangle(Pens.LightSeaGreen, newRect);
+                        e.Handled = true;
+                    }
+                }
             }
             else if ((this.dragMultipleRow || this.dragOneRow) && e.RowIndex == this.playlistDropLocationRowIndex)
             {
@@ -1032,13 +1048,8 @@ namespace MitoPlayer_2024.Views
                         e.Handled = true;
                     }
                 }
-
             }
         }
-
-        List<int> oldPlaylistIdList = new List<int>();
-        List<int> oldTrackIdInPlayListList = new List<int>();
-
         private void dgvPlaylistList_DragDrop(object sender, DragEventArgs e)
         {
             Point p = this.dgvPlaylistList.PointToClient(new Point(e.X, e.Y));
@@ -1047,22 +1058,16 @@ namespace MitoPlayer_2024.Views
            
             if (this.dragPlaylist)
             {
-                oldPlaylistIdList = new List<int>();
-                for (int i = this.dgvPlaylistList.Rows.Count - 1; i >= 0; i--)
-                {
-                    oldPlaylistIdList.Add(Convert.ToInt32(this.dgvPlaylistList.Rows[i].Cells["Id"].Value));
-                }
-
                 if (e.Effect == DragDropEffects.Copy)
                 {
-                  //  this.InternalTracklistDragAndDropEvent?.Invoke(this, new ListEventArgs() { SelectedRows = this.dgvPlaylistList.SelectedRows, IntegerField1 = dragIndex });
-                   // this.DeletePlaylistEvent?.Invoke(this, new ListEventArgs() { Rows = this.dgvPlaylistList.Rows });
+                    this.MovePlaylistEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = this.dgvPlaylistList.SelectedRows[0].Index, IntegerField2 = dragIndex });
                 }
 
                 this.dragPlaylist = false;
+                this.prepareToPlaylistDrag = false;
                 this.currentPlaylistRowIndex = -1;
 
-                this.SetSelectionAfterPlaylistDragAndDrop(oldPlaylistIdList);
+                this.SetSelectionAfterPlaylistDragAndDrop(dragIndex);
             }
             else
             {
@@ -1090,28 +1095,13 @@ namespace MitoPlayer_2024.Views
                 this.dgvPlaylistList.Rows[dragIndex].Selected = true;
                 this.SetSelectionAfterDragAndDrop(oldListTrackIdInPlaylistList);
             }
-
-
         }
-        public void SetSelectionAfterPlaylistDragAndDrop(List<int> oldPlaylistIdList)
+        public void SetSelectionAfterPlaylistDragAndDrop(int dragIndex)
         {
-            this.oldPlaylistIdList = oldPlaylistIdList;
-
             this.BeginInvoke(new Action(() =>
             {
                 this.dgvPlaylistList.ClearSelection();
-                foreach (DataGridViewRow row in this.dgvPlaylistList.Rows)
-                {
-                    if (!this.oldPlaylistIdList.Contains(Convert.ToInt32(row.Cells["Id"].Value)))
-                    {
-                        row.Selected = true;
-                    }
-                    else
-                    {
-                        row.Selected = false;
-                    }
-                }
-                oldPlaylistIdList = new List<int>();
+                this.dgvPlaylistList.Rows[dragIndex].Selected = true;
             }));
         }
         private void dgvPlaylistList_QueryContinueDrag(object sender, QueryContinueDragEventArgs e)
@@ -1125,6 +1115,8 @@ namespace MitoPlayer_2024.Views
                     {
                         if (this.dragPlaylist)
                             this.dragPlaylist = false;
+                        if(this.prepareToPlaylistDrag)
+                            this.prepareToPlaylistDrag = false;
                         e.Action = DragAction.Cancel;
                     }
                 }
@@ -1134,10 +1126,12 @@ namespace MitoPlayer_2024.Views
 
         #endregion
 
+        #region TRACKLIST - COLUMNS
         private void btnColumnVisibility_Click(object sender, EventArgs e)
         {
             this.ShowColumnVisibilityEditorEvent?.Invoke(this, new EventArgs());
         }
+        #endregion
 
         #region TAG EDITOR
         private void btnDisplayTagEditor_Click(object sender, EventArgs e)
@@ -1265,5 +1259,7 @@ namespace MitoPlayer_2024.Views
             }
         }
         #endregion
+
+       
     }
 }

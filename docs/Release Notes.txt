@@ -1,3 +1,15 @@
+
+
+
+v0.11.2.2
+OK - FEATURE: playlist drag and drop
+OK - BUG: playlist duplakatt vs. drag and drop conflict
+OK - BUG: törlök a végéről majd megint törlök a végéről, akkor kifagy
+OK - BUG: szám drag and drop hozzáadja-e az adatbázishoz a zenéket?
+OK - BUG: drag and drop ne delete-tel, hanem copy-val
+OK - BUG: egy elem drag and drop hibája
+OK - BUG: drag and drop katt az utolsó elemre index miatt kifagy
+
 v0.11.2.1
 OK - BUG: nem hozzárendelt hotkey megnyomására elfagy
 OK - BUG: quicklist törlés
@@ -11,28 +23,40 @@ OK - FEATURE: Drag And Drop átalakítás
 OK - FEATURE: Playlist-be drag and drop
 OK - BUG: playing track drag and drop-ja utánnem szinezi a számot
 
+==========================
+v0.11.2.0 - DRAG AND DROP REFACTOR
+==========================
+
 v0.11.1.1
-OK - Export playlist to *.m3u or *.txt
-OK - le kell tiltani a player egyes vezérléseit a tag values felületen
-OK - üres db-nél csinálunk tag-et és tagvalue-t, hozzáaduk track-et, nem jelenik meg a tag editor helyesen
-OK - üres listánál tag editor gombjainak használatát le kell tiltani
-OK - ugyanolyan tagvalue felvétel után, ha track-et adunk az üres listához insert error-ral elszáll
+OK - FEATURE: Export playlist to *.m3u or *.txt
+OK - BUG: le kell tiltani a player egyes vezérléseit a tag values felületen
+OK - BUG: üres db-nél csinálunk tag-et és tagvalue-t, hozzáaduk track-et, nem jelenik meg a tag editor helyesen
+OK - BUG: üres listánál tag editor gombjainak használatát le kell tiltani
+OK - BUG: ugyanolyan tagvalue felvétel után, ha track-et adunk az üres listához insert error-ral elszáll
 
 v0.11.1.0
-OK - TagValue editor
+OK - FEATURE: TagValue editor
+
+==========================
+v0.11.0.0 - TAGVALUE EDITOR
+==========================
 
 v0.11.0.10 - Complete Dao Refactor
 [...]
-OK - Tag törlése után index problémával elhasal a Player
-OK - TagValue törlésekor, a tracklist oszlopából nem törlődött az érték
-OK - TagValue megnyitásakor, ha van már Tag, nem töltődik be a tagvalue lista
-OK - Tag hozzáadás létező track-ekhez: új tagvalue hozzáadásakor kitöltődött a tracklist-ben egy másik tag oszlopa 
-OK - Tag hozzáadás létező track-ekhez: a sorrend nem stimmel (de csak, amikor a tag létrehozás után átmegyek a player-be, ha playlist-et váltok, akkor megváltozik)
-OK - Quicklist: ha nincs beállítva, s úgy nyomok quick-key-t, kifagy
-OK - Adatbázis: LastOpenFilesFilterIndex és Volume többször hozzáadódik a Setting-hez
-OK - Column Visibility: megszűnik a lejátszott zene színezése
-OK - a new tag-et a column visibilityben ha átrendezem, akkor még nem rendeződik át
-OK - new playlist elhasal a playlistcontent külsö kulcs miatt
+OK - BUG: Tag törlése után index problémával elhasal a Player
+OK - BUG: TagValue törlésekor, a tracklist oszlopából nem törlődött az érték
+OK - BUG: TagValue megnyitásakor, ha van már Tag, nem töltődik be a tagvalue lista
+OK - BUG: Tag hozzáadás létező track-ekhez: új tagvalue hozzáadásakor kitöltődött a tracklist-ben egy másik tag oszlopa 
+OK - BUG: Tag hozzáadás létező track-ekhez: a sorrend nem stimmel (de csak, amikor a tag létrehozás után átmegyek a player-be, ha playlist-et váltok, akkor megváltozik)
+OK - BUG: Quicklist: ha nincs beállítva, s úgy nyomok quick-key-t, kifagy
+OK - BUG: Adatbázis: LastOpenFilesFilterIndex és Volume többször hozzáadódik a Setting-hez
+OK - BUG: Column Visibility: megszűnik a lejátszott zene színezése
+OK - BUG: a new tag-et a column visibilityben ha átrendezem, akkor még nem rendeződik át
+OK - BUG: new playlist elhasal a playlistcontent külsö kulcs miatt
+
+==========================
+v0.11.0.0 - DAO REFACTOR
+==========================
 
 v0.10.1.7
 OK - copy track info nem íródik ki teljesen

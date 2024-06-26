@@ -9,6 +9,7 @@ using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Security.Principal;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml.Linq;
@@ -85,6 +86,7 @@ namespace MitoPlayer_2024.Presenters
             //PLAYLIST
             this.view.ShowPlaylistEditorViewEvent += ShowPlaylistEditorViewEvent;
             this.view.LoadPlaylistEvent += LoadPlaylistEvent;
+            this.view.MovePlaylistEvent += MovePlaylistEvent;
             this.view.DeletePlaylistEvent += DeletePlaylistEvent;
             this.view.SetQuickListEvent += SetQuickListEvent;
             this.view.ExportToM3UEvent += ExportToM3UEvent;
@@ -97,6 +99,8 @@ namespace MitoPlayer_2024.Presenters
 
             this.view.Show();
         }
+
+        
 
         #region INITIALIZE
         private void InitializeVolume()
@@ -783,6 +787,42 @@ namespace MitoPlayer_2024.Presenters
 
             }
             
+        }
+
+        private void MovePlaylistEvent(object sender, ListEventArgs e)
+        {
+            int oldId = Convert.ToInt32(this.playlistListTable.Rows[e.IntegerField1]["Id"]);
+
+            DataRow row = this.playlistListTable.NewRow();
+            row["Id"] = -1;
+            row["G"] = this.playlistListTable.Rows[e.IntegerField1]["G"];
+            row["Name"] = this.playlistListTable.Rows[e.IntegerField1]["Name"];
+            row["OrderInList"] = this.playlistListTable.Rows[e.IntegerField1]["OrderInList"];
+            row["ProfileId"] = this.playlistListTable.Rows[e.IntegerField1]["ProfileId"];
+            row["IsActive"] = this.playlistListTable.Rows[e.IntegerField1]["IsActive"];
+
+            this.playlistListTable.Rows.InsertAt(row, e.IntegerField2);
+
+            for (var i = this.playlistListTable.Rows.Count - 1; i >= 0; i--)
+            {
+                if (Convert.ToInt32(this.playlistListTable.Rows[i]["Id"]) == oldId)
+                {
+                    this.playlistListTable.Rows[i].Delete();
+                    break;
+                }
+            }
+
+            for (var i = this.playlistListTable.Rows.Count - 1; i >= 0; i--)
+            {
+                if (Convert.ToInt32(this.playlistListTable.Rows[i]["Id"]) == -1)
+                {
+                    this.playlistListTable.Rows[i]["Id"] = oldId;
+                    break;
+                }
+            }
+
+            this.SavePlaylistList(this.playlistListTable);
+            this.SetPlaylistList(this.playlistListTable);
         }
         internal void CallAddTrackToTrackListEvent(List<Track> trackList, int dragIndex)
         {

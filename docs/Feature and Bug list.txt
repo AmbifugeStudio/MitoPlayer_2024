@@ -1,4 +1,5 @@
 BUGS
+
 - BUG: betöltésre nem szinezi az aktuális playlist-et
 - tracklist play, törlés mind, hozzaáadás és next/prev nem jó
 
@@ -7,8 +8,8 @@ BUGS
 - TagValue felületen is működjön a player gombjai
 
 FEATURE
-- Quicklist: ne váltson át az aktuális playlist-re a kijelölés
-- Preferences: purge database
+- BUG: a quicklist beállításnál ne váltson át az aktuális playlist-re a kijelölés
+- FEATURE: purge database
 
 
 
@@ -16,16 +17,11 @@ FEATURE
 - elindítok egy zenét, leállítom, álkattintok, akkor a next/prev a kurzortól számolja a köv./előzőt
 - playlist hozzáadás/szerkesztésnél ne ugorjon a current-re a kijelölés
 - aktuális playlist jó lene zölddel megjelölve
-- drag and dropolhatók a számok a playlist-ekbe
-- egy kattintásra töltődjön a playlist és drag and drop-olható is?
+
 - törlés és hozzáadáskor teljes delete helyett adott elem törlése
 
 BUG
 
-- szám drag and drop hozzáadja-e az adatbázishoz a zenéket?
-- drag and drop ne delete-tel, hanem copy-val
-- egy elem drag and drop hibája
-- drag and drop katt az utolsó elemre index miatt kifagy
+
 - playlist clear-re frissüljön a selected item label
 - remove missing track tesztelése
-- törlök a végéről majd megint törlök a végéről, akkor kifagy
