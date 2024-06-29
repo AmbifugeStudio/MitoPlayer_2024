@@ -1031,10 +1031,12 @@ namespace MitoPlayer_2024.Dao
                                         SET TagValueId = @TagValueId 
 
                                         WHERE Id = @Id 
+                                        AND TrackId = @TrackId 
                                         AND ProfileId = @ProfileId";
 
                 command.Parameters.Add("@Id", MySqlDbType.Int32).Value = ttv.Id;
                 command.Parameters.Add("@TagValueId", MySqlDbType.Int32).Value = ttv.TagValueId;
+                command.Parameters.Add("@TrackId", MySqlDbType.Int32).Value = ttv.TrackId;
                 command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
 
                 try

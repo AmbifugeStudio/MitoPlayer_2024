@@ -342,7 +342,8 @@ namespace MitoPlayer_2024.Helpers
                                         Name varchar(50) NOT NULL, 
                                         TagId int(11) NOT NULL, 
                                         ProfileId int(11) NOT NULL, 
-                                            
+                                        Color varchar(25) NOT NULL,
+
                                         PRIMARY KEY (Id), 
                                                
                                         KEY TagId (TagId), 

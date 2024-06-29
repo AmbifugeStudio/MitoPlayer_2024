@@ -31,6 +31,8 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PlaylistView));
             this.tabPagePlaylistDetail = new System.Windows.Forms.TabPage();
+            this.lblTagColor = new System.Windows.Forms.Label();
+            this.cmbColor = new System.Windows.Forms.ComboBox();
             this.groupBoxTagValue = new System.Windows.Forms.GroupBox();
             this.btnTagValue11 = new System.Windows.Forms.Button();
             this.btnTagValue8 = new System.Windows.Forms.Button();
@@ -103,6 +105,8 @@
             // 
             // tabPagePlaylistDetail
             // 
+            this.tabPagePlaylistDetail.Controls.Add(this.lblTagColor);
+            this.tabPagePlaylistDetail.Controls.Add(this.cmbColor);
             this.tabPagePlaylistDetail.Controls.Add(this.groupBoxTagValue);
             this.tabPagePlaylistDetail.Controls.Add(this.groupBoxTag);
             this.tabPagePlaylistDetail.Controls.Add(this.btnDisplayTagEditor);
@@ -124,6 +128,24 @@
             this.tabPagePlaylistDetail.TabIndex = 1;
             this.tabPagePlaylistDetail.Text = "Player";
             this.tabPagePlaylistDetail.UseVisualStyleBackColor = true;
+            // 
+            // lblTagColor
+            // 
+            this.lblTagColor.AutoSize = true;
+            this.lblTagColor.Location = new System.Drawing.Point(173, 11);
+            this.lblTagColor.Name = "lblTagColor";
+            this.lblTagColor.Size = new System.Drawing.Size(31, 13);
+            this.lblTagColor.TabIndex = 12;
+            this.lblTagColor.Text = "Color";
+            // 
+            // cmbColor
+            // 
+            this.cmbColor.FormattingEnabled = true;
+            this.cmbColor.Location = new System.Drawing.Point(210, 8);
+            this.cmbColor.Name = "cmbColor";
+            this.cmbColor.Size = new System.Drawing.Size(121, 21);
+            this.cmbColor.TabIndex = 11;
+            this.cmbColor.SelectedIndexChanged += new System.EventHandler(this.cmbColor_SelectedIndexChanged);
             // 
             // groupBoxTagValue
             // 
@@ -832,5 +854,7 @@
         private System.Windows.Forms.Button btnTag4;
         private System.Windows.Forms.Button btnTag3;
         private System.Windows.Forms.Button btnDisplayTagEditor;
+        private System.Windows.Forms.Label lblTagColor;
+        private System.Windows.Forms.ComboBox cmbColor;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using MitoPlayer_2024.Helpers;
+using MitoPlayer_2024.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -70,8 +71,21 @@ namespace MitoPlayer_2024.Views
             this.tagValueListBindingSource.DataSource = tagValueList;
             this.dgvTagValueList.DataSource = this.tagValueListBindingSource.DataSource;
             this.dgvTagValueList.Columns["Id"].Visible = false;
-        }
+            this.dgvTagValueList.Columns["Color"].Visible = false;
 
+            
+            this.BeginInvoke(new Action(() =>
+            {
+                for (int i = 0; i < this.dgvTagValueList.Rows.Count; i++)
+                {
+                    this.dgvTagValueList.Rows[i].DefaultCellStyle.BackColor = HexToColor(this.dgvTagValueList.Rows[i].Cells["Color"].Value.ToString());
+                }
+            }));
+        }
+        private Color HexToColor(string hexValue)
+        {
+            return System.Drawing.ColorTranslator.FromHtml(hexValue);
+        }
         private void btnAddTag_Click(object sender, EventArgs e)
         {
             this.CreateTag?.Invoke(this, EventArgs.Empty);

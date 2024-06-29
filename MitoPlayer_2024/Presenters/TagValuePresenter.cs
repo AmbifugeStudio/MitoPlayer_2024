@@ -5,6 +5,7 @@ using MitoPlayer_2024.Views;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -58,6 +59,7 @@ namespace MitoPlayer_2024.Presenters
             this.tagValueListTable = new DataTable();
             this.tagValueListTable.Columns.Add("Id", typeof(Int32));
             this.tagValueListTable.Columns.Add("Name", typeof(String));
+            this.tagValueListTable.Columns.Add("Color", typeof(String));
 
             List<Tag> tagList = this.tagDao.GetAllTag();
             if(tagList != null && tagList.Count > 0)
@@ -71,8 +73,6 @@ namespace MitoPlayer_2024.Presenters
 
             this.tagListBindingSource.DataSource = tagListTable;
             this.tagValueEditorView.SetTagListBindingSource(this.tagListBindingSource);
-            this.tagValueListBindingSource.DataSource = tagValueListTable;
-            this.tagValueEditorView.SetTagValueListBindingSource(this.tagValueListBindingSource);
 
             this.SetCurrentTagId(0);
         }
@@ -91,11 +91,12 @@ namespace MitoPlayer_2024.Presenters
 
                 if (tagValueList != null && tagValueList.Count > 0)
                 {
-                    foreach (TagValue tag in tagValueList)
+                    foreach (TagValue tagValue in tagValueList)
                     {
-                        tagValueListTable.Rows.Add(tag.Id, tag.Name);
+                        tagValueListTable.Rows.Add(tagValue.Id, tagValue.Name, this.ColorToHex(tagValue.Color));
                     }
                 }
+
                 this.tagValueListBindingSource.DataSource = tagValueListTable;
                 this.tagValueEditorView.SetTagValueListBindingSource(this.tagValueListBindingSource);
             }
@@ -241,9 +242,9 @@ namespace MitoPlayer_2024.Presenters
             DataRow tagValueRow = this.tagValueListTable.Select("Id = " + Convert.ToInt32(this.tagValueListTable.Rows[e.IntegerField1]["Id"])).First();
             if (tagValueRow != null)
             {
-                TagValue tagValue = new TagValue();
-                tagValue.Id = (int)tagValueRow["Id"];
-                tagValue.Name = (string)tagValueRow["Name"];
+                int id = (int)tagValueRow["Id"];
+
+                TagValue tagValue = this.tagDao.GetTagValue(id);
 
                 int tagValueIndex = this.tagValueListTable.Rows.IndexOf(tagValueRow);
 
@@ -253,11 +254,16 @@ namespace MitoPlayer_2024.Presenters
                 {
                     this.tagDao.UpdateTagValue(presenter.newTagValue);
                     this.tagValueListTable.Rows[tagValueIndex]["Name"] = presenter.newTagValue?.Name;
+                    this.tagValueListTable.Rows[tagValueIndex]["Color"] = ColorToHex(presenter.newTagValue.Color);
 
                     this.tagValueListBindingSource.DataSource = tagValueListTable;
                     this.tagValueEditorView.SetTagValueListBindingSource(this.tagValueListBindingSource);
                 }
             }
+        }
+        public string ColorToHex(Color color)
+        {
+            return ColorTranslator.ToHtml(color);
         }
         private void DeleteTagValue(object sender, ListEventArgs e)
         {

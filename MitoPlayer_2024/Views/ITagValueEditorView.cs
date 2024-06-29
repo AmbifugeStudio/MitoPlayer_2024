@@ -11,6 +11,7 @@ namespace MitoPlayer_2024.Views
     {
         event EventHandler<ListEventArgs> CreateOrEditTagValue;
         event EventHandler CloseEditor;
+        event EventHandler ChangeColor;
         void Show();
     }
 }

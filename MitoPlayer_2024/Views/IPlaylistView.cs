@@ -33,6 +33,7 @@ namespace MitoPlayer_2024.Views
         event EventHandler<ListEventArgs> InternalDragAndDropIntoPlaylistEvent;
         event EventHandler<ListEventArgs> ExternalDragAndDropIntoTracklistEvent;
         event EventHandler<ListEventArgs> ExternalDragAndDropIntoPlaylistEvent;
+        event EventHandler<ListEventArgs> ChangeTracklistColorEvent;
         event EventHandler ShowColumnVisibilityEditorEvent;
         
         //PLAYLIST
@@ -50,9 +51,9 @@ namespace MitoPlayer_2024.Views
         event EventHandler<ListEventArgs> SetTagValueEvent;
 
         void SetPlaylistListBindingSource(BindingSource playlistList, bool[] columnVisibility, int currentPlaylistId);
-        void SetTrackListBindingSource(BindingSource trackList, bool[] columnVisibility, int[] columnSortingId);
+        void SetTrackListBindingSource(BindingSource trackList, bool[] columnVisibility, int[] columnSortingId, int currentTrackIdInPlaylist);
         void SetSelectedTrackListBindingSource(BindingSource selectedTrackList);
-        void UpdateAfterPlayTrack(int currentTrackIndex);
+        void UpdateAfterPlayTrack(int currentTrackIndex, int currentTrackId);
         void UpdateAfterPlayTrackAfterPause();
         void UpdateAfterStopTrack();
         void UpdateAfterPauseTrack();
