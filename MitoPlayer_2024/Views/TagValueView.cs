@@ -80,7 +80,7 @@ namespace MitoPlayer_2024.Views
                 {
                     Color bgColor = HexToColor(this.dgvTagValueList.Rows[i].Cells["Color"].Value.ToString());
                     this.dgvTagValueList.Rows[i].DefaultCellStyle.BackColor = bgColor;
-                    if (bgColor.R < 50)
+                    if ((bgColor.R < 100 && bgColor.G < 100) || (bgColor.R < 100 && bgColor.B < 100) || (bgColor.B < 100 && bgColor.G < 100))
                     {
                         this.dgvTagValueList.Rows[i].DefaultCellStyle.ForeColor = Color.White;
                     }

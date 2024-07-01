@@ -193,7 +193,7 @@ namespace MitoPlayer_2024.Views
                                             this.dgvTrackList.Rows[i].Cells[j].Style.BackColor = Color.White;
 
                                         }
-                                        if (color.R < 50)
+                                        if ((color.R < 100 && color.G < 100) || (color.R < 100 && color.B < 100) || (color.B < 100 && color.G < 100))
                                         {
                                             this.dgvTrackList.Rows[i].Cells[j].Style.ForeColor = Color.White;
                                         }
@@ -209,7 +209,7 @@ namespace MitoPlayer_2024.Views
                                     for (int j = 0; j < this.dgvTrackList.Columns.Count; j++)
                                     {
                                         this.dgvTrackList.Rows[i].Cells[j].Style.BackColor = color;
-                                        if (color.R < 50)
+                                        if ((color.R < 100 && color.G < 100) || (color.R < 100 && color.B < 100) || (color.B < 100 && color.G < 100))
                                         {
                                             this.dgvTrackList.Rows[i].Cells[j].Style.ForeColor = Color.White;
                                         }
@@ -844,7 +844,7 @@ namespace MitoPlayer_2024.Views
                     buttonList[i].Text = tagValueList[i].Name;
                     buttonList[i].BackColor = tagValueList[i].Color;
 
-                    if (tagValueList[i].Color.R < 50)
+                    if ((tagValueList[i].Color.R < 100 && tagValueList[i].Color.G < 100) || (tagValueList[i].Color.R < 100 && tagValueList[i].Color.B < 100) || (tagValueList[i].Color.B < 100 && tagValueList[i].Color.G < 100))
                     {
                         buttonList[i].ForeColor = Color.White;
                     }
