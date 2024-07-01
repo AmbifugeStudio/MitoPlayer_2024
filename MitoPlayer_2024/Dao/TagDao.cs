@@ -65,10 +65,12 @@ namespace MitoPlayer_2024.Dao
                 command.CommandText = @"INSERT INTO Tag values ( 
                                         @Id, 
                                         @Name, 
+                                        @CellOnly,
                                         @ProfileId)";
 
                 command.Parameters.Add("@Id", MySqlDbType.Int32).Value = tag.Id;
                 command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = tag.Name;
+                command.Parameters.Add("@CellOnly", MySqlDbType.Bit).Value = tag.CellOnly;
                 command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
 
                 try
@@ -106,7 +108,8 @@ namespace MitoPlayer_2024.Dao
                         tag = new Tag();
                         tag.Id = (int)reader[0];
                         tag.Name = (string)reader[1];
-                        tag.ProfileId = (int)reader[2];
+                        tag.CellOnly = Convert.ToBoolean(reader[2]);
+                        tag.ProfileId = (int)reader[3];
                         break;
                     }
                 }
@@ -135,8 +138,9 @@ namespace MitoPlayer_2024.Dao
                     {
                         tag = new Tag();
                         tag.Id = (int)reader[0];
-                        tag.Name = reader[1].ToString();
-                        tag.ProfileId = (int)reader[2];
+                        tag.Name = (string)reader[1];
+                        tag.CellOnly = Convert.ToBoolean(reader[2]);
+                        tag.ProfileId = (int)reader[3];
                         break;
                     }
                 }
@@ -167,7 +171,8 @@ namespace MitoPlayer_2024.Dao
                         Tag tag = new Tag();
                         tag.Id = (int)reader[0];
                         tag.Name = (string)reader[1];
-                        tag.ProfileId = (int)reader[2];
+                        tag.CellOnly = Convert.ToBoolean(reader[2]);
+                        tag.ProfileId = (int)reader[3];
                         tagList.Add(tag);
                     }
                 }
@@ -185,12 +190,13 @@ namespace MitoPlayer_2024.Dao
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
                 command.CommandText = @"UPDATE Tag 
-                                        SET Name = @Name 
+                                        SET Name = @Name, CellOnly = @CellOnly 
                                         WHERE Id = @Id 
                                         AND ProfileId = @ProfileId";
                 
                 command.Parameters.Add("@Id", MySqlDbType.Int32).Value = tag.Id;
                 command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = tag.Name;
+                command.Parameters.Add("@CellOnly", MySqlDbType.Bit).Value = tag.CellOnly;
                 command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
                 
                 try
@@ -299,8 +305,7 @@ namespace MitoPlayer_2024.Dao
                 command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = tagValue.Name;
                 command.Parameters.Add("@TagId", MySqlDbType.Int32).Value = tagValue.TagId;
                 command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
-                command.Parameters.Add("@Color", MySqlDbType.VarChar).Value = ColorToHex(tagValue.Color);
-                
+
                 try
                 {
                     command.ExecuteNonQuery();
@@ -379,6 +384,7 @@ namespace MitoPlayer_2024.Dao
                         tagValue.TagId = (int)reader[2];
                         tagValue.ProfileId = (int)reader[3];
                         tagValue.Color = HexToColor((string)reader[4]);
+
                         break;
                     }
                 }
@@ -415,9 +421,10 @@ namespace MitoPlayer_2024.Dao
                     {
                         tagValue = new TagValue();
                         tagValue.Id = (int)reader[0];
-                        tagValue.Name = reader[1].ToString();
-                        tagValue.ProfileId = (int)reader[2];
-                        tagValue.Color = HexToColor((string)reader[3]);
+                        tagValue.Name = (string)reader[1];
+                        tagValue.TagId = (int)reader[2];
+                        tagValue.ProfileId = (int)reader[3];
+                        tagValue.Color = HexToColor((string)reader[4]);
                         break;
                     }
                 }
@@ -449,9 +456,10 @@ namespace MitoPlayer_2024.Dao
                     {
                         tagValue = new TagValue();
                         tagValue.Id = (int)reader[0];
-                        tagValue.Name = reader[1].ToString();
-                        tagValue.ProfileId = (int)reader[2];
-                        tagValue.Color = HexToColor((string)reader[3]);
+                        tagValue.Name = (string)reader[1];
+                        tagValue.TagId = (int)reader[2];
+                        tagValue.ProfileId = (int)reader[3];
+                        tagValue.Color = HexToColor((string)reader[4]);
                         break;
                     }
                 }

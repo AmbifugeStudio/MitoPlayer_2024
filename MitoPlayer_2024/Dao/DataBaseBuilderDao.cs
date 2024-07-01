@@ -312,6 +312,7 @@ namespace MitoPlayer_2024.Helpers
 
                                         Id int(11) NOT NULL, 
                                         Name varchar(50) NOT NULL, 
+                                        CellOnly tinyint(4) NOT NULL,
                                         ProfileId int(11) NOT NULL, 
 
                                         PRIMARY KEY (Id)) 

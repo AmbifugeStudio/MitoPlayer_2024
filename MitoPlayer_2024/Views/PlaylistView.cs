@@ -24,7 +24,7 @@ namespace MitoPlayer_2024.Views
         private BindingSource trackListBindingSource { get; set; }
 
         private Tag currentTagForColors { get; set; }
-        private Dictionary<String, Color> currentTagValueColors = new Dictionary<String, Color>();
+        private Dictionary<String, Color> currentTagValueColorDic = new Dictionary<String, Color>();
 
         //PLAYER
         public event EventHandler<ListEventArgs> SetCurrentTrackEvent;
@@ -136,41 +136,6 @@ namespace MitoPlayer_2024.Views
                 this.dgvTrackList.Columns[i].DisplayIndex = columnSortingId[i];
             }
 
-            /*
-            int isMissingColumnIndex = this.dgvTrackList.Columns["IsMissing"].Index;
-            for (int i = 0; i < this.dgvTrackList.Rows.Count; i++)
-            {
-                if ((bool)this.dgvTrackList.Rows[i].Cells[isMissingColumnIndex].Value)
-                {
-                    this.dgvTrackList.Rows[i].DefaultCellStyle.BackColor = Color.Salmon;
-                }
-                else
-                {
-                    if(this.currentTagForColors != null)
-                    {
-                        String actualTagValueName = this.dgvTrackList.Rows[i].Cells[this.currentTagForColors.Name].Value.ToString();
-                        if (!String.IsNullOrEmpty(actualTagValueName))
-                        {
-                            Color color = this.currentTagValueColors[actualTagValueName];
-                            if (color != null)
-                            {
-                                this.dgvTrackList.Rows[i].DefaultCellStyle.BackColor = color;
-                            }
-                        }
-                        else
-                        {
-                            this.dgvTrackList.Rows[i].DefaultCellStyle.BackColor = Color.White;
-                        }
-
-                    }
-                    else
-                    {
-                        this.dgvTrackList.Rows[i].DefaultCellStyle.BackColor = Color.White;
-                    }
-                   
-                }
-            }
-            this.CallSetCurrentTrackColorEvent();*/
             this.SetColorAndSelection(currentTrackIdInPlaylist);
         }
 
@@ -178,6 +143,21 @@ namespace MitoPlayer_2024.Views
         {
             bool isMissing = false;
             int trackIdInPlaylist = -1;
+
+            int columnIndex = 0;
+
+            if (this.currentTagForColors != null)
+            {
+                for (int j = 0; j < this.dgvTrackList.Columns.Count; j++)
+                {
+                    if (this.dgvTrackList.Columns[j].Name == this.currentTagForColors.Name)
+                    {
+                        columnIndex = j;
+                        break;
+                    }
+                }
+            }
+
             for (int i = 0; i < this.dgvTrackList.Rows.Count; i++)
             {
                 isMissing = (bool)this.dgvTrackList.Rows[i].Cells["IsMissing"].Value;
@@ -197,21 +177,61 @@ namespace MitoPlayer_2024.Views
                         String actualTagValueName = this.dgvTrackList.Rows[i].Cells[this.currentTagForColors.Name].Value.ToString();
                         if (!String.IsNullOrEmpty(actualTagValueName))
                         {
-                            Color color = this.currentTagValueColors[actualTagValueName];
+                            Color color = this.currentTagValueColorDic[actualTagValueName];
                             if (color != null)
                             {
-                                this.dgvTrackList.Rows[i].DefaultCellStyle.BackColor = color;
+                                if (this.currentTagForColors.CellOnly)
+                                {
+                                    for (int j = 0; j < this.dgvTrackList.Columns.Count; j++)
+                                    {
+                                        if(columnIndex == j)
+                                        {
+                                            this.dgvTrackList.Rows[i].Cells[j].Style.BackColor = color;
+                                        }
+                                        else
+                                        {
+                                            this.dgvTrackList.Rows[i].Cells[j].Style.BackColor = Color.White;
+
+                                        }
+                                        if (color.R < 50)
+                                        {
+                                            this.dgvTrackList.Rows[i].Cells[j].Style.ForeColor = Color.White;
+                                        }
+                                        else
+                                        {
+                                            this.dgvTrackList.Rows[i].Cells[j].Style.ForeColor = Color.Black;
+                                        }
+                                    }
+
+                                }
+                                else
+                                {
+                                    for (int j = 0; j < this.dgvTrackList.Columns.Count; j++)
+                                    {
+                                        this.dgvTrackList.Rows[i].Cells[j].Style.BackColor = color;
+                                        if (color.R < 50)
+                                        {
+                                            this.dgvTrackList.Rows[i].Cells[j].Style.ForeColor = Color.White;
+                                        }
+                                        else
+                                        {
+                                            this.dgvTrackList.Rows[i].Cells[j].Style.ForeColor = Color.Black;
+                                        }
+                                    }
+                                }
                             }
                         }
-                        else
-                        {
-                            this.dgvTrackList.Rows[i].DefaultCellStyle.BackColor = Color.White;
-                        }
+
                     }
                     else
                     {
-                        this.dgvTrackList.Rows[i].DefaultCellStyle.BackColor = Color.White;
+                        for (int j = 0; j < this.dgvTrackList.Columns.Count; j++)
+                        {
+                            this.dgvTrackList.Rows[i].Cells[j].Style.BackColor = Color.White;
+                            this.dgvTrackList.Rows[i].Cells[j].Style.ForeColor = Color.Black;
+                        }
                     }
+
                 }
             }
         }
@@ -808,7 +828,11 @@ namespace MitoPlayer_2024.Views
             List<Button> buttonList = new List<Button> { this.btnTagValue1, this.btnTagValue2, this.btnTagValue3,
                                                         this.btnTagValue4, this.btnTagValue5, this.btnTagValue6,
                                                         this.btnTagValue7,this.btnTagValue8,this.btnTagValue9,
-                                                        this.btnTagValue10, this.btnTagValue11, this.btnTagValue12 };
+                                                        this.btnTagValue10, this.btnTagValue11, this.btnTagValue12,
+                                                        this.btnTagValue13, this.btnTagValue14,this.btnTagValue15,
+                                                        this.btnTagValue16,this.btnTagValue17,this.btnTagValue18,
+                                                        this.btnTagValue19,this.btnTagValue20,this.btnTagValue21,
+                                                        this.btnTagValue22,this.btnTagValue23,this.btnTagValue24};
             for (int i = 0; i <= buttonList.Count - 1; i++)
             {
                 buttonList[i].Hide();
@@ -818,6 +842,13 @@ namespace MitoPlayer_2024.Views
                 for (int i = 0; i <= tagValueList.Count - 1; i++)
                 {
                     buttonList[i].Text = tagValueList[i].Name;
+                    buttonList[i].BackColor = tagValueList[i].Color;
+
+                    if (tagValueList[i].Color.R < 50)
+                    {
+                        buttonList[i].ForeColor = Color.White;
+                    }
+
                     buttonList[i].Show();
                 }
             }
@@ -839,12 +870,12 @@ namespace MitoPlayer_2024.Views
             }
 
             this.currentTagForColors = null;
-            this.currentTagValueColors = null;
+            this.currentTagValueColorDic = null;
         }
         public void ChangeCurrentTagValueColors(Tag tag, Dictionary<String, Color> tagValueColors)
         {
             this.currentTagForColors = tag;
-            this.currentTagValueColors = tagValueColors;
+            this.currentTagValueColorDic = tagValueColors;
         }
         public void CallDisplayTagEditor(bool isTagEditorDisplayed)
         {
@@ -1357,6 +1388,101 @@ namespace MitoPlayer_2024.Views
                 this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 11, Rows = this.dgvTrackList.Rows });
             }
         }
+        private void btnTagValue13_Click(object sender, EventArgs e)
+        {
+            if (this.dgvPlaylistList.SelectedRows.Count > 0)
+            {
+                this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 12, Rows = this.dgvTrackList.Rows });
+            }
+        }
+
+        private void btnTagValue14_Click(object sender, EventArgs e)
+        {
+            if (this.dgvPlaylistList.SelectedRows.Count > 0)
+            {
+                this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 13, Rows = this.dgvTrackList.Rows });
+            }
+        }
+
+        private void btnTagValue15_Click(object sender, EventArgs e)
+        {
+            if (this.dgvPlaylistList.SelectedRows.Count > 0)
+            {
+                this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 14, Rows = this.dgvTrackList.Rows });
+            }
+        }
+
+        private void btnTagValue16_Click(object sender, EventArgs e)
+        {
+            if (this.dgvPlaylistList.SelectedRows.Count > 0)
+            {
+                this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 15, Rows = this.dgvTrackList.Rows });
+            }
+        }
+
+        private void btnTagValue17_Click(object sender, EventArgs e)
+        {
+            if (this.dgvPlaylistList.SelectedRows.Count > 0)
+            {
+                this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 16, Rows = this.dgvTrackList.Rows });
+            }
+        }
+
+        private void btnTagValue18_Click(object sender, EventArgs e)
+        {
+            if (this.dgvPlaylistList.SelectedRows.Count > 0)
+            {
+                this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 17, Rows = this.dgvTrackList.Rows });
+            }
+        }
+
+        private void btnTagValue19_Click(object sender, EventArgs e)
+        {
+            if (this.dgvPlaylistList.SelectedRows.Count > 0)
+            {
+                this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 18, Rows = this.dgvTrackList.Rows });
+            }
+        }
+
+        private void btnTagValue20_Click(object sender, EventArgs e)
+        {
+            if (this.dgvPlaylistList.SelectedRows.Count > 0)
+            {
+                this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 19, Rows = this.dgvTrackList.Rows });
+            }
+        }
+
+        private void btnTagValue21_Click(object sender, EventArgs e)
+        {
+            if (this.dgvPlaylistList.SelectedRows.Count > 0)
+            {
+                this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 20, Rows = this.dgvTrackList.Rows });
+            }
+        }
+
+        private void btnTagValue22_Click(object sender, EventArgs e)
+        {
+            if (this.dgvPlaylistList.SelectedRows.Count > 0)
+            {
+                this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 21, Rows = this.dgvTrackList.Rows });
+            }
+        }
+
+        private void btnTagValue23_Click(object sender, EventArgs e)
+        {
+            if (this.dgvPlaylistList.SelectedRows.Count > 0)
+            {
+                this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 22, Rows = this.dgvTrackList.Rows });
+            }
+        }
+
+        private void btnTagValue24_Click(object sender, EventArgs e)
+        {
+            if (this.dgvPlaylistList.SelectedRows.Count > 0)
+            {
+                this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 23, Rows = this.dgvTrackList.Rows });
+            }
+        }
 
         #endregion
 
@@ -1366,5 +1492,7 @@ namespace MitoPlayer_2024.Views
         {
             this.ChangeTracklistColorEvent?.Invoke(this, new ListEventArgs() { StringField1 = (String)this.cmbColor.SelectedItem });
         }
+
+        
     }
 }

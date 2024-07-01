@@ -1,5 +1,8 @@
 BUGS
-
+- BUGS: tracklist színezés fix
+- BUG: tagvalue táblában dupla kattra nem szerkeszti
+- BUG: tagvalue list létrehozásnál fehér szín beállításakor a szöveg is fehér lesz
+- BUG: tracklist drag and drop vs double click fix
 - BUG: betöltésre nem szinezi az aktuális playlist-et
 - tracklist play, törlés mind, hozzaáadás és next/prev nem jó
 

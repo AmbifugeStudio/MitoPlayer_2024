@@ -13,6 +13,7 @@ namespace MitoPlayer_2024.Models
         void InitializeFirstRun();
         void InitializeGlobalSettings();
         void InitializeProfileSettings();
+        void InitializeKeys(ref String[] keyNameArray,ref String[] keyColorArray);
         #endregion
 
         #region SETTINGS

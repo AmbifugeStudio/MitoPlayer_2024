@@ -159,9 +159,9 @@ namespace MitoPlayer_2024.Presenters
             DataRow tagRow = this.tagListTable.Select("Id = " + Convert.ToInt32(this.tagListTable.Rows[e.IntegerField1]["Id"])).First();
             if(tagRow != null)
             {
-                Tag tag = new Tag();
-                tag.Id = (int)tagRow["Id"];
-                tag.Name = (string)tagRow["Name"];
+                int id = (int)tagRow["Id"];
+
+                Tag tag = this.tagDao.GetTag(id);
 
                 int tagIndex = this.tagListTable.Rows.IndexOf(tagRow);
 
@@ -234,7 +234,10 @@ namespace MitoPlayer_2024.Presenters
             if (tagValueEditorView.ShowDialog((TagValueView)this.tagValueEditorView) == DialogResult.OK)
             {
                 this.tagDao.CreateTagValue(presenter.newTagValue);
-                this.tagValueListTable.Rows.Add(presenter.newTagValue.Id, presenter.newTagValue.Name);
+                this.tagValueListTable.Rows.Add(presenter.newTagValue.Id, presenter.newTagValue.Name, this.ColorToHex(presenter.newTagValue.Color));
+
+                this.tagValueListBindingSource.DataSource = this.tagValueListTable;
+                this.tagValueEditorView.SetTagValueListBindingSource(this.tagValueListBindingSource);
             }
         }
         private void EditTagValue(object sender, ListEventArgs e)

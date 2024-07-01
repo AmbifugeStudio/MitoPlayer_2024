@@ -78,7 +78,12 @@ namespace MitoPlayer_2024.Views
             {
                 for (int i = 0; i < this.dgvTagValueList.Rows.Count; i++)
                 {
-                    this.dgvTagValueList.Rows[i].DefaultCellStyle.BackColor = HexToColor(this.dgvTagValueList.Rows[i].Cells["Color"].Value.ToString());
+                    Color bgColor = HexToColor(this.dgvTagValueList.Rows[i].Cells["Color"].Value.ToString());
+                    this.dgvTagValueList.Rows[i].DefaultCellStyle.BackColor = bgColor;
+                    if (bgColor.R < 50)
+                    {
+                        this.dgvTagValueList.Rows[i].DefaultCellStyle.ForeColor = Color.White;
+                    }
                 }
             }));
         }

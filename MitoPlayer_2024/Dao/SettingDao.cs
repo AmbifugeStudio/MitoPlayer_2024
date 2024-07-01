@@ -86,6 +86,13 @@ namespace MitoPlayer_2024.Dao
                 }
             }
         }
+        public void InitializeKeys(ref String[] keyNameArray,ref String[] keyColorArray)
+        {
+            String keyNames = System.Configuration.ConfigurationManager.AppSettings[Settings.KeyCodes.ToString()];
+            String keyColors = System.Configuration.ConfigurationManager.AppSettings[Settings.KeyColors.ToString()];
+            keyNameArray = Array.ConvertAll(keyNames.Split(','), s => s);
+            keyColorArray = Array.ConvertAll(keyColors.Split(','), s => s);
+        }
         public void InitializeGlobalSettings()
         {
             this.InitializeIntegerSetting(Settings.LastGeneratedPlaylistId.ToString(), true);

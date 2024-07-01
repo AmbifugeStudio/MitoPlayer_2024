@@ -20,6 +20,7 @@ namespace MitoPlayer_2024.Presenters
         private bool isEditMode = false;
         public Tag newTag;
         private int lastGeneratedTagId;
+        private bool cellOnly;
 
         public TagEditorPresenter(ITagEditorView tagEditorView, ITagDao tagDao, ISettingDao settingDao)
         {
@@ -32,11 +33,13 @@ namespace MitoPlayer_2024.Presenters
 
             this.lastGeneratedTagId = this.lastGeneratedTagId + 1;
             ((TagEditorView)this.tagEditorView).SetTagName("New Tag " + this.lastGeneratedTagId.ToString());
+            ((TagEditorView)this.tagEditorView).SetCellOnly(false);
 
             this.settingDao.SetIntegerSetting(Settings.LastGeneratedTagId.ToString(), this.lastGeneratedTagId, true);
 
             this.tagEditorView.CreateOrEditTag += CreateOrEditTag;
             this.tagEditorView.CloseEditor += CloseEditor;
+            this.tagEditorView.ChangeCellOnly += ChangeCellOnly;
         }
         public TagEditorPresenter(ITagEditorView tagEditorView, ITagDao tagDao, ISettingDao settingDao, Tag tag)
         {
@@ -47,9 +50,15 @@ namespace MitoPlayer_2024.Presenters
             this.isEditMode = true;
 
             ((TagEditorView)this.tagEditorView).SetTagName(newTag.Name, true);
+            ((TagEditorView)this.tagEditorView).SetCellOnly(newTag.CellOnly);
 
             this.tagEditorView.CreateOrEditTag += CreateOrEditTag;
             this.tagEditorView.CloseEditor += CloseEditor;
+            this.tagEditorView.ChangeCellOnly += ChangeCellOnly;
+        }
+        private void ChangeCellOnly(object sender, ListEventArgs e)
+        {
+            this.cellOnly = e.BooleanField1;
         }
 
         private void CreateOrEditTag(object sender, Helpers.ListEventArgs e)
@@ -62,6 +71,7 @@ namespace MitoPlayer_2024.Presenters
                 {
                     if (e.StringField1.Equals(this.newTag.Name))
                     {
+                        this.newTag.CellOnly = e.BooleanField1;
                         ((TagEditorView)this.tagEditorView).DialogResult = DialogResult.OK;
                     }
                     else
@@ -74,6 +84,7 @@ namespace MitoPlayer_2024.Presenters
                         else
                         {
                             this.newTag.Name = e.StringField1;
+                            this.newTag.CellOnly = e.BooleanField1;
                             ((TagEditorView)this.tagEditorView).DialogResult = DialogResult.OK;
                         }
                     }
@@ -99,6 +110,7 @@ namespace MitoPlayer_2024.Presenters
                             Tag tag = new Tag();
                             tag.Id = this.tagDao.GetNextId(TableName.Tag.ToString());
                             tag.Name = e.StringField1;
+                            tag.CellOnly = e.BooleanField1;
                             this.newTag = tag;
                             ((TagEditorView)this.tagEditorView).DialogResult = DialogResult.OK;
                         }
@@ -108,6 +120,7 @@ namespace MitoPlayer_2024.Presenters
                         Tag tag = new Tag();
                         tag.Id = this.tagDao.GetNextId(TableName.Tag.ToString());
                         tag.Name = e.StringField1;
+                        tag.CellOnly = e.BooleanField1;
                         this.newTag = tag;
                         ((TagEditorView)this.tagEditorView).DialogResult = DialogResult.OK;
                     }

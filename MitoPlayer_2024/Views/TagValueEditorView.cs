@@ -23,6 +23,7 @@ namespace MitoPlayer_2024.Views
         public event EventHandler<ListEventArgs> CreateOrEditTagValue;
         public event EventHandler CloseEditor;
         public event EventHandler ChangeColor;
+       
 
         public void SetTagValueName(String name, bool edit = false)
         {
@@ -40,6 +41,7 @@ namespace MitoPlayer_2024.Views
         {
             this.pnlColor.BackColor = color;
         }
+       
         private void btnOk_Click(object sender, EventArgs e)
         {
             this.CreateOrEditTagValue?.Invoke(this, new ListEventArgs() { StringField1 = txtTagValueName.Text });
@@ -66,5 +68,6 @@ namespace MitoPlayer_2024.Views
         {
             this.ChangeColor?.Invoke(this, new EventArgs());
         }
+
     }
 }

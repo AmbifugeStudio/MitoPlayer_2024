@@ -143,7 +143,8 @@ namespace MitoPlayer_2024.Presenters
         }
         private void ChangeColoringByTagValues(String tagName)
         {
-            Dictionary<String, Color> tagCalueColor = null;
+            Dictionary<String, Color> tagValueColor = null;
+            //Dictionary<String, bool> tagValueCellOnly = null;
             List<TagValue> tagValueList = null;
             Tag tag = null;
 
@@ -155,15 +156,17 @@ namespace MitoPlayer_2024.Presenters
                     tagValueList = this.tagDao.GetTagValuesByTagId(tag.Id);
                     if (tagValueList != null && tagValueList.Count > 0)
                     {
-                        tagCalueColor = new Dictionary<String, Color>();
+                        tagValueColor = new Dictionary<String, Color>();
+                        //tagValueCellOnly = new Dictionary<String, bool>();
                         foreach (TagValue tv in tagValueList)
                         {
-                            tagCalueColor.Add(tv.Name, tv.Color);
+                            tagValueColor.Add(tv.Name, tv.Color);
+                           // tagValueCellOnly.Add(tv.Name, tv.CellOnly);
                         }
                     }
                 }
             }
-            ((PlaylistView)this.view).ChangeCurrentTagValueColors(tag, tagCalueColor);
+            ((PlaylistView)this.view).ChangeCurrentTagValueColors(tag, tagValueColor);
             this.SetTrackList(this.trackListTable);
         }
         private void InitializeDataTables()

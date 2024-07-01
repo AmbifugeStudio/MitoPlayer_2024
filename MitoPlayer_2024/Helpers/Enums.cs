@@ -43,7 +43,9 @@ namespace MitoPlayer_2024.Helpers
         TrackColumnVisibility,
         LastGeneratedProfileId,
         LastGeneratedTagId,
-        LastGeneratedTagValueId
+        LastGeneratedTagValueId,
+        KeyCodes,
+        KeyColors
     }
 
     public enum MediaPlayerUpdateState

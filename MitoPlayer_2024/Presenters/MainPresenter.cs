@@ -8,6 +8,7 @@ using NAudio.Wave;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -125,6 +126,8 @@ namespace MitoPlayer_2024.Presenters
             //lehet, hog yitt majd profilváltáskor lesz teendő
             this.settingDao.InitializeProfileSettings();
 
+           
+
             Playlist pls = this.trackDao.GetActivePlaylist();
             if (pls == null)
             {
@@ -136,8 +139,51 @@ namespace MitoPlayer_2024.Presenters
                 pls.IsActive = true;
                 pls.ProfileId = profile.Id;
                 this.trackDao.CreatePlaylist(pls);
+
+                this.CreateTestData(profile.Id);
             }
             this.ShowPlaylistView(this, new EventArgs());
+        }
+
+        private void CreateTestData(int profileId)
+        {
+            String[] keyNameArray = new String[0];
+            String[] keyColorArray = new String[0];
+            this.settingDao.InitializeKeys(ref keyNameArray,ref keyColorArray);
+
+            Tag tag = new Tag();
+            tag.Id = this.tagDao.GetNextId(TableName.Tag.ToString());
+            tag.Name = "Key";
+            tag.CellOnly = true;
+            tag.ProfileId = profileId;
+            this.tagDao.CreateTag(tag);
+
+            TrackProperty tp = new TrackProperty();
+            tp.Id = this.trackDao.GetNextId(TableName.TrackProperty.ToString());
+            tp.Name = tag.Name;
+            tp.Type = "System.String";
+            tp.IsEnabled = true;
+            tp.ColumnGroup = ColumnGroup.TracklistColumns.ToString();
+            tp.SortingId = this.settingDao.GetNextTrackPropertySortingId();
+            this.settingDao.CreateTrackProperty(tp);
+
+            for (int i = 0; i <= keyNameArray.Count() - 1; i++)
+            {
+                TagValue tv = new TagValue();
+                tv.TagId = tag.Id;
+                tv.TagName = tag.Name;
+                tv.Id = this.tagDao.GetNextId(TableName.TagValue.ToString());
+                tv.Name = keyNameArray[i];
+                tv.Color = this.HexToColor(keyColorArray[i]);
+                tv.ProfileId = profileId;
+
+                this.tagDao.CreateTagValue(tv);
+            }
+
+        }
+        private Color HexToColor(string hexValue)
+        {
+            return System.Drawing.ColorTranslator.FromHtml(hexValue);
         }
 
         private void ReloadMainView()

@@ -25,6 +25,7 @@ namespace MitoPlayer_2024.Presenters
         public TagValue newTagValue;
         private int lastGeneratedTagValueId;
         private Color tagValueColor;
+       
         public TagValueEditorPresenter(ITagValueEditorView tagValueEditorView,Tag tag, ITagDao tagDao, ISettingDao settingDao)
         {
             this.tagValueEditorView = tagValueEditorView;
@@ -38,12 +39,13 @@ namespace MitoPlayer_2024.Presenters
             this.lastGeneratedTagValueId = this.lastGeneratedTagValueId + 1;
             ((TagValueEditorView)this.tagValueEditorView).SetTagValueName("New Tag Value " + this.lastGeneratedTagValueId.ToString());
             ((TagValueEditorView)this.tagValueEditorView).SetColor(Color.White);
-
+            
             this.settingDao.SetIntegerSetting(Settings.LastGeneratedTagValueId.ToString(), this.lastGeneratedTagValueId, true);
 
             this.tagValueEditorView.CreateOrEditTagValue += CreateOrEditTagValue;
             this.tagValueEditorView.CloseEditor += CloseEditor;
             this.tagValueEditorView.ChangeColor += ChangeColor;
+            
         }
 
         public TagValueEditorPresenter(ITagValueEditorView tagValueEditorView, Tag tag, ITagDao tagDao, ISettingDao settingDao, TagValue tagValue)
@@ -58,10 +60,11 @@ namespace MitoPlayer_2024.Presenters
             this.tagValueColor = newTagValue.Color;
             ((TagValueEditorView)this.tagValueEditorView).SetTagValueName(newTagValue.Name, true);
             ((TagValueEditorView)this.tagValueEditorView).SetColor(this.tagValueColor);
-
+           
             this.tagValueEditorView.CreateOrEditTagValue += CreateOrEditTagValue;
             this.tagValueEditorView.CloseEditor += CloseEditor;
             this.tagValueEditorView.ChangeColor += ChangeColor;
+           
         }
 
         private void ChangeColor(object sender, EventArgs e)
@@ -75,6 +78,7 @@ namespace MitoPlayer_2024.Presenters
                 ((TagValueEditorView)this.tagValueEditorView).SetColor(this.tagValueColor);
             }
         }
+       
 
         private void CreateOrEditTagValue(object sender, Helpers.ListEventArgs e)
         {
@@ -128,6 +132,7 @@ namespace MitoPlayer_2024.Presenters
                             tagValue.TagId = this.currentTag.Id;
                             tagValue.TagName = this.currentTag.Name;
                             tagValue.Color = this.tagValueColor;
+                            
                             this.newTagValue = tagValue;
                             ((TagValueEditorView)this.tagValueEditorView).DialogResult = DialogResult.OK;
                         }
@@ -140,6 +145,7 @@ namespace MitoPlayer_2024.Presenters
                         tagValue.TagId = this.currentTag.Id;
                         tagValue.TagName = this.currentTag.Name;
                         tagValue.Color = this.tagValueColor;
+                       
                         this.newTagValue = tagValue;
                         ((TagValueEditorView)this.tagValueEditorView).DialogResult = DialogResult.OK;
                     }

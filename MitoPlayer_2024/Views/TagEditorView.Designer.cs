@@ -31,6 +31,7 @@
             this.btnOk = new System.Windows.Forms.Button();
             this.txtTagName = new System.Windows.Forms.TextBox();
             this.lblName = new System.Windows.Forms.Label();
+            this.chbCellOnly = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // btnOk
@@ -62,11 +63,23 @@
             this.lblName.TabIndex = 3;
             this.lblName.Text = "Enter name";
             // 
+            // chbCellOnly
+            // 
+            this.chbCellOnly.AutoSize = true;
+            this.chbCellOnly.Location = new System.Drawing.Point(79, 39);
+            this.chbCellOnly.Name = "chbCellOnly";
+            this.chbCellOnly.Size = new System.Drawing.Size(65, 17);
+            this.chbCellOnly.TabIndex = 12;
+            this.chbCellOnly.Text = "Cell only";
+            this.chbCellOnly.UseVisualStyleBackColor = true;
+            this.chbCellOnly.CheckedChanged += new System.EventHandler(this.chbCellOnly_CheckedChanged);
+            // 
             // TagEditorView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(407, 43);
+            this.ClientSize = new System.Drawing.Size(413, 64);
+            this.Controls.Add(this.chbCellOnly);
             this.Controls.Add(this.btnOk);
             this.Controls.Add(this.txtTagName);
             this.Controls.Add(this.lblName);
@@ -82,5 +95,6 @@
         private System.Windows.Forms.Button btnOk;
         private System.Windows.Forms.TextBox txtTagName;
         private System.Windows.Forms.Label lblName;
+        private System.Windows.Forms.CheckBox chbCellOnly;
     }
 }
