@@ -12,6 +12,7 @@ namespace MitoPlayer_2024.Views
         event EventHandler<ListEventArgs> CreateOrEditTag;
         event EventHandler CloseEditor;
         event EventHandler<ListEventArgs> ChangeCellOnly;
+        event EventHandler<ListEventArgs> ChangeHasMultipleValues;
         void Show();
     }
 }

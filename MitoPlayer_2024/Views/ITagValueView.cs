@@ -12,7 +12,7 @@ namespace MitoPlayer_2024.Views
     {
 
         void SetTagListBindingSource(BindingSource tagList);
-        void SetTagValueListBindingSource(BindingSource tagValueList);
+        void SetTagValueListBindingSource(BindingSource tagValueList, bool hasMultipleValues = false);
         event EventHandler CreateTag;
         event EventHandler<ListEventArgs> EditTag;
         event EventHandler<ListEventArgs> DeleteTag;

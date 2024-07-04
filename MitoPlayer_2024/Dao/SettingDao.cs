@@ -58,6 +58,10 @@ namespace MitoPlayer_2024.Dao
         {
             this.profileId = profileId;
         }
+        public int GetProfileId()
+        {
+            return this.profileId;
+        }
         public void InitializeFirstRun()
         {
             if (!this.databaseBuilderDao.TableIsExists(TableName.Setting.ToString()))
@@ -65,27 +69,34 @@ namespace MitoPlayer_2024.Dao
                 if (this.databaseBuilderDao.BuildDatabase())
                 {
                     this.CreateBooleanSetting(this.GetNextId(TableName.Setting.ToString()), Settings.FirstRun.ToString(), true, true);
-
                     this.InitializeGlobalSettings();
-
-                    String colNames = System.Configuration.ConfigurationManager.AppSettings[Settings.PlaylistColumnNames.ToString()];
-                    String colTypes = System.Configuration.ConfigurationManager.AppSettings[Settings.PlaylistColumnTypes.ToString()];
-                    String colVisibility = System.Configuration.ConfigurationManager.AppSettings[Settings.PlaylistColumnVisibility.ToString()];
-                    String[] colNameArray = Array.ConvertAll(colNames.Split(','), s => s);
-                    String[] colTypeArray = Array.ConvertAll(colTypes.Split(','), s => s);
-                    bool[] colVisibilityArray = Array.ConvertAll(colVisibility.Split(','), s => Boolean.Parse(s));
-                    this.InitializeColumns(colNameArray, colTypeArray, colVisibilityArray, ColumnGroup.PlaylistColumns.ToString());
-
-                    colNames = System.Configuration.ConfigurationManager.AppSettings[Settings.TrackColumnNames.ToString()];
-                    colTypes = System.Configuration.ConfigurationManager.AppSettings[Settings.TrackColumnTypes.ToString()];
-                    colVisibility = System.Configuration.ConfigurationManager.AppSettings[Settings.TrackColumnVisibility.ToString()];
-                    colNameArray = Array.ConvertAll(colNames.Split(','), s => s);
-                    colTypeArray = Array.ConvertAll(colTypes.Split(','), s => s);
-                    colVisibilityArray = Array.ConvertAll(colVisibility.Split(','), s => Boolean.Parse(s));
-                    this.InitializeColumns(colNameArray, colTypeArray, colVisibilityArray, ColumnGroup.TracklistColumns.ToString());
                 }
             }
         }
+        public void CreateColumns()
+        {
+            String colNames = System.Configuration.ConfigurationManager.AppSettings[Settings.PlaylistColumnNames.ToString()];
+            String colTypes = System.Configuration.ConfigurationManager.AppSettings[Settings.PlaylistColumnTypes.ToString()];
+            String colVisibility = System.Configuration.ConfigurationManager.AppSettings[Settings.PlaylistColumnVisibility.ToString()];
+            String[] colNameArray = Array.ConvertAll(colNames.Split(','), s => s);
+            String[] colTypeArray = Array.ConvertAll(colTypes.Split(','), s => s);
+            bool[] colVisibilityArray = Array.ConvertAll(colVisibility.Split(','), s => Boolean.Parse(s));
+
+            TrackProperty tp = this.GetTrackPropertyByNameAndGroup(colNameArray[0], ColumnGroup.PlaylistColumns.ToString());
+            if(tp == null || tp.Name == null)
+            {
+                this.InitializeColumns(colNameArray, colTypeArray, colVisibilityArray, ColumnGroup.PlaylistColumns.ToString());
+
+                colNames = System.Configuration.ConfigurationManager.AppSettings[Settings.TrackColumnNames.ToString()];
+                colTypes = System.Configuration.ConfigurationManager.AppSettings[Settings.TrackColumnTypes.ToString()];
+                colVisibility = System.Configuration.ConfigurationManager.AppSettings[Settings.TrackColumnVisibility.ToString()];
+                colNameArray = Array.ConvertAll(colNames.Split(','), s => s);
+                colTypeArray = Array.ConvertAll(colTypes.Split(','), s => s);
+                colVisibilityArray = Array.ConvertAll(colVisibility.Split(','), s => Boolean.Parse(s));
+                this.InitializeColumns(colNameArray, colTypeArray, colVisibilityArray, ColumnGroup.TracklistColumns.ToString());
+            }
+        }
+
         public void InitializeKeys(ref String[] keyNameArray,ref String[] keyColorArray)
         {
             String keyNames = System.Configuration.ConfigurationManager.AppSettings[Settings.KeyCodes.ToString()];
@@ -102,6 +113,7 @@ namespace MitoPlayer_2024.Dao
         }
         public void InitializeProfileSettings()
         {
+            this.CreateColumns();
             this.InitializeStringSetting(Settings.LastOpenDirectoryPath.ToString());
             this.InitializeStringSetting(Settings.PlaylistColumnVisibility.ToString());
             this.InitializeStringSetting(Settings.TrackColumnVisibility.ToString());
@@ -656,7 +668,7 @@ namespace MitoPlayer_2024.Dao
                 tp.IsEnabled = colVisibility[i];
                 tp.SortingId = i;
                 tp.ProfileId = -1;
-                this.CreateTrackProperty(tp, true);
+                this.CreateTrackProperty(tp);
             }
         }
 
@@ -671,8 +683,11 @@ namespace MitoPlayer_2024.Dao
                 command.CommandType = CommandType.Text;
                 command.CommandText = @"SELECT SortingId 
                                         FROM TrackProperty 
+                                        WHERE ProfileId = @ProfileId 
                                         ORDER BY SortingId  
                                         desc LIMIT 1";
+
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
 
                 using (var reader = command.ExecuteReader())
                 {
@@ -745,7 +760,7 @@ namespace MitoPlayer_2024.Dao
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
                 command.CommandText = @"SELECT * FROM TrackProperty 
-                                        WHERE Id = @Id ";
+                                        WHERE Id = @Id AND ProfileId = @ProfileId ";
 
                 command.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
 
@@ -783,7 +798,7 @@ namespace MitoPlayer_2024.Dao
                 command.CommandType = CommandType.Text;
                 command.CommandText = @"SELECT * FROM TrackProperty 
                                         WHERE Name = @Name 
-                                        AND ColumnGroup = @ColumnGroup ";
+                                        AND ColumnGroup = @ColumnGroup AND ProfileId = @ProfileId ";
 
                 command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = name;
                 command.Parameters.Add("@ColumnGroup", MySqlDbType.VarChar).Value = columnGroup;
@@ -820,18 +835,28 @@ namespace MitoPlayer_2024.Dao
                 connection.Open();
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * FROM TrackProperty 
-                                        WHERE ColumnGroup = @ColumnGroup ";
-
-                command.Parameters.Add("@ColumnGroup", MySqlDbType.VarChar).Value = columnGroup;
 
                 if (!withAndWithoutProfile)
                 {
+                    command.CommandText = @"SELECT * FROM TrackProperty 
+                                        WHERE ColumnGroup = @ColumnGroup AND ProfileId = @ProfileId ";
+                    command.Parameters.Add("@ColumnGroup", MySqlDbType.VarChar).Value = columnGroup;
                     if (!withoutProfile)
                         command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
                     else
                         command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = -1;
-                }              
+                }
+                else
+                {
+                    command.CommandText = @"SELECT * FROM TrackProperty 
+                                        WHERE ColumnGroup = @ColumnGroup ";
+                    command.Parameters.Add("@ColumnGroup", MySqlDbType.VarChar).Value = columnGroup;
+                    if (!withoutProfile)
+                        command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
+                    else
+                        command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = -1;
+                }
+      
 
                 using (var reader = command.ExecuteReader())
                 {

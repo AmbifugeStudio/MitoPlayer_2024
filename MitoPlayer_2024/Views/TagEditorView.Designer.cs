@@ -32,12 +32,17 @@
             this.txtTagName = new System.Windows.Forms.TextBox();
             this.lblName = new System.Windows.Forms.Label();
             this.chbCellOnly = new System.Windows.Forms.CheckBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.btnCancel = new System.Windows.Forms.Button();
+            this.chbHasMultipleValues = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // btnOk
             // 
+            this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOk.Location = new System.Drawing.Point(323, 11);
+            this.btnOk.Location = new System.Drawing.Point(160, 93);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(75, 23);
             this.btnOk.TabIndex = 5;
@@ -47,9 +52,9 @@
             // 
             // txtTagName
             // 
-            this.txtTagName.Location = new System.Drawing.Point(79, 13);
+            this.txtTagName.Location = new System.Drawing.Point(115, 13);
             this.txtTagName.Name = "txtTagName";
-            this.txtTagName.Size = new System.Drawing.Size(238, 20);
+            this.txtTagName.Size = new System.Drawing.Size(202, 20);
             this.txtTagName.TabIndex = 4;
             this.txtTagName.Text = "New Tag";
             this.txtTagName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtTagName_KeyDown);
@@ -66,7 +71,7 @@
             // chbCellOnly
             // 
             this.chbCellOnly.AutoSize = true;
-            this.chbCellOnly.Location = new System.Drawing.Point(79, 39);
+            this.chbCellOnly.Location = new System.Drawing.Point(115, 43);
             this.chbCellOnly.Name = "chbCellOnly";
             this.chbCellOnly.Size = new System.Drawing.Size(65, 17);
             this.chbCellOnly.TabIndex = 12;
@@ -74,12 +79,57 @@
             this.chbCellOnly.UseVisualStyleBackColor = true;
             this.chbCellOnly.CheckedChanged += new System.EventHandler(this.chbCellOnly_CheckedChanged);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(12, 43);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(97, 13);
+            this.label1.TabIndex = 15;
+            this.label1.Text = "Tag Value Coloring";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(12, 70);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(83, 13);
+            this.label2.TabIndex = 15;
+            this.label2.Text = "Tag Value Type";
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.btnCancel.Location = new System.Drawing.Point(241, 93);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(75, 23);
+            this.btnCancel.TabIndex = 5;
+            this.btnCancel.Text = "Cancel";
+            this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+            // 
+            // chbHasMultipleValues
+            // 
+            this.chbHasMultipleValues.AutoSize = true;
+            this.chbHasMultipleValues.Location = new System.Drawing.Point(115, 69);
+            this.chbHasMultipleValues.Name = "chbHasMultipleValues";
+            this.chbHasMultipleValues.Size = new System.Drawing.Size(119, 17);
+            this.chbHasMultipleValues.TabIndex = 12;
+            this.chbHasMultipleValues.Text = "Has Multiple Values";
+            this.chbHasMultipleValues.UseVisualStyleBackColor = true;
+            this.chbHasMultipleValues.CheckedChanged += new System.EventHandler(this.chbHasMultipleValues_CheckedChanged);
+            // 
             // TagEditorView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(413, 64);
+            this.ClientSize = new System.Drawing.Size(328, 126);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.chbHasMultipleValues);
             this.Controls.Add(this.chbCellOnly);
+            this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOk);
             this.Controls.Add(this.txtTagName);
             this.Controls.Add(this.lblName);
@@ -96,5 +146,9 @@
         private System.Windows.Forms.TextBox txtTagName;
         private System.Windows.Forms.Label lblName;
         private System.Windows.Forms.CheckBox chbCellOnly;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.CheckBox chbHasMultipleValues;
     }
 }

@@ -1,6 +1,5 @@
 SHOW CREATE TABLE tablename;
 
-
 drop table tracktagvalue;
 drop table trackproperty;
 drop table playlistcontent;

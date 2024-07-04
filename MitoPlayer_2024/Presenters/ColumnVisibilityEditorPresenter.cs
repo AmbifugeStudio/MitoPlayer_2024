@@ -45,14 +45,16 @@ namespace MitoPlayer_2024.Presenters
             this.trackPropertyTable.Columns.Add("Name", typeof(string));
             this.trackPropertyTable.Columns.Add("IsEnabled", typeof(bool));
 
-            this.TrackPropertyList = this.settingDao.GetTrackPropertyListByColumnGroup(ColumnGroup.TracklistColumns.ToString(),false,true);
-
-            if(this.TrackPropertyList != null && this.TrackPropertyList.Count > 0)
+            List<TrackProperty> tpList = new List<TrackProperty>();
+            tpList = this.settingDao.GetTrackPropertyListByColumnGroup(ColumnGroup.TracklistColumns.ToString());
+            if (tpList != null && tpList.Count > 0)
             {
-                this.TrackPropertyList = this.TrackPropertyList.OrderBy(x => x.SortingId).ToList();
-                foreach (TrackProperty tp in this.TrackPropertyList)
+                tpList = tpList.OrderBy(x => x.SortingId).ToList();
+                this.TrackPropertyList = tpList;
+
+                for (int i = 0; i <= this.TrackPropertyList.Count - 1; i++)
                 {
-                    this.trackPropertyTable.Rows.Add(tp.Id, tp.Name, tp.IsEnabled);
+                    this.trackPropertyTable.Rows.Add(this.TrackPropertyList[i].Id, this.TrackPropertyList[i].Name, this.TrackPropertyList[i].IsEnabled);
                 }
             }
 
@@ -133,16 +135,6 @@ namespace MitoPlayer_2024.Presenters
         }
         private void CloseViewWithOk(object sender, EventArgs e)
         {
-            if (this.TrackPropertyList != null && TrackPropertyList.Count > 0)
-            {
-                int sortingId = 0;
-                foreach (TrackProperty tp in this.TrackPropertyList)
-                {
-                    tp.SortingId = sortingId;
-                    sortingId++;
-                    this.settingDao.UpdateTrackProperty(tp);
-                }
-            }
 
             ((ColumnVisibilityEditorView)this.view).DialogResult = DialogResult.OK;
             ((ColumnVisibilityEditorView)this.view).Close();

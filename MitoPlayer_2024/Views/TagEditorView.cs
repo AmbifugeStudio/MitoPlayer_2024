@@ -23,6 +23,7 @@ namespace MitoPlayer_2024.Views
         public event EventHandler<ListEventArgs> CreateOrEditTag;
         public event EventHandler CloseEditor;
         public event EventHandler<ListEventArgs> ChangeCellOnly;
+        public event EventHandler<ListEventArgs> ChangeHasMultipleValues;
 
         public void SetTagName(String name, bool edit = false)
         {
@@ -56,6 +57,10 @@ namespace MitoPlayer_2024.Views
         public void SetCellOnly(bool value)
         {
             this.chbCellOnly.Checked = value;
+        }        
+        public void SetHasMultipleValues(bool hasMultipleValues)
+        {
+            this.chbHasMultipleValues.Checked = hasMultipleValues;
         }
         private void chbCellOnly_CheckedChanged(object sender, EventArgs e)
         {
@@ -64,5 +69,19 @@ namespace MitoPlayer_2024.Views
                 BooleanField1 = this.chbCellOnly.Checked
             });
         }
+        private void chbHasMultipleValues_CheckedChanged(object sender, EventArgs e)
+        {
+            this.ChangeHasMultipleValues?.Invoke(this, new ListEventArgs()
+            {
+                BooleanField1 = this.chbHasMultipleValues.Checked
+            });
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            this.CloseEditor?.Invoke(this, new EventArgs());
+        }
+
+        
     }
 }

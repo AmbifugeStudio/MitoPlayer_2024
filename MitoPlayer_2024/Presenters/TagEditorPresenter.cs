@@ -21,6 +21,7 @@ namespace MitoPlayer_2024.Presenters
         public Tag newTag;
         private int lastGeneratedTagId;
         private bool cellOnly;
+        private bool hasMultipleValues;
 
         public TagEditorPresenter(ITagEditorView tagEditorView, ITagDao tagDao, ISettingDao settingDao)
         {
@@ -28,6 +29,7 @@ namespace MitoPlayer_2024.Presenters
             this.tagDao = tagDao;
             this.settingDao = settingDao;
             this.isEditMode = false;
+            this.hasMultipleValues = false;
 
             this.lastGeneratedTagId = this.settingDao.GetIntegerSetting(Settings.LastGeneratedTagId.ToString(), true);
 
@@ -40,6 +42,7 @@ namespace MitoPlayer_2024.Presenters
             this.tagEditorView.CreateOrEditTag += CreateOrEditTag;
             this.tagEditorView.CloseEditor += CloseEditor;
             this.tagEditorView.ChangeCellOnly += ChangeCellOnly;
+            this.tagEditorView.ChangeHasMultipleValues += ChangeHasMultipleValues;
         }
         public TagEditorPresenter(ITagEditorView tagEditorView, ITagDao tagDao, ISettingDao settingDao, Tag tag)
         {
@@ -51,14 +54,20 @@ namespace MitoPlayer_2024.Presenters
 
             ((TagEditorView)this.tagEditorView).SetTagName(newTag.Name, true);
             ((TagEditorView)this.tagEditorView).SetCellOnly(newTag.CellOnly);
+            ((TagEditorView)this.tagEditorView).SetHasMultipleValues(newTag.HasMultipleValues);
 
             this.tagEditorView.CreateOrEditTag += CreateOrEditTag;
             this.tagEditorView.CloseEditor += CloseEditor;
             this.tagEditorView.ChangeCellOnly += ChangeCellOnly;
+            this.tagEditorView.ChangeHasMultipleValues += ChangeHasMultipleValues;
         }
         private void ChangeCellOnly(object sender, ListEventArgs e)
         {
             this.cellOnly = e.BooleanField1;
+        }
+        private void ChangeHasMultipleValues(object sender, ListEventArgs e)
+        {
+            this.hasMultipleValues = e.BooleanField1;
         }
 
         private void CreateOrEditTag(object sender, Helpers.ListEventArgs e)
@@ -72,6 +81,7 @@ namespace MitoPlayer_2024.Presenters
                     if (e.StringField1.Equals(this.newTag.Name))
                     {
                         this.newTag.CellOnly = e.BooleanField1;
+                        this.newTag.HasMultipleValues = this.hasMultipleValues;
                         ((TagEditorView)this.tagEditorView).DialogResult = DialogResult.OK;
                     }
                     else
@@ -85,6 +95,7 @@ namespace MitoPlayer_2024.Presenters
                         {
                             this.newTag.Name = e.StringField1;
                             this.newTag.CellOnly = e.BooleanField1;
+                            this.newTag.HasMultipleValues = this.hasMultipleValues;
                             ((TagEditorView)this.tagEditorView).DialogResult = DialogResult.OK;
                         }
                     }
@@ -111,6 +122,7 @@ namespace MitoPlayer_2024.Presenters
                             tag.Id = this.tagDao.GetNextId(TableName.Tag.ToString());
                             tag.Name = e.StringField1;
                             tag.CellOnly = e.BooleanField1;
+                            tag.HasMultipleValues = this.hasMultipleValues;
                             this.newTag = tag;
                             ((TagEditorView)this.tagEditorView).DialogResult = DialogResult.OK;
                         }
@@ -121,6 +133,7 @@ namespace MitoPlayer_2024.Presenters
                         tag.Id = this.tagDao.GetNextId(TableName.Tag.ToString());
                         tag.Name = e.StringField1;
                         tag.CellOnly = e.BooleanField1;
+                        tag.HasMultipleValues = this.hasMultipleValues;
                         this.newTag = tag;
                         ((TagEditorView)this.tagEditorView).DialogResult = DialogResult.OK;
                     }

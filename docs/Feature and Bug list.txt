@@ -1,6 +1,7 @@
 BUGS
-- BUGS: tracklist színezés fix
-- BUG: tagvalue táblában dupla kattra nem szerkeszti
+
+- BUG: tag edit-kor a multiple flag bekapcsolásakor kellene csinálni egy tagvalue-t, ha nincs, illetve törölni, ha van
+- BUG: ha lejár a szám, megfagy
 - BUG: tagvalue list létrehozásnál fehér szín beállításakor a szöveg is fehér lesz
 - BUG: tracklist drag and drop vs double click fix
 - BUG: betöltésre nem szinezi az aktuális playlist-et

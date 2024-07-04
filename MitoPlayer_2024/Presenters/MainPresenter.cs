@@ -116,7 +116,7 @@ namespace MitoPlayer_2024.Presenters
                 profile.Name = DefaultName.Profile.ToString();
                 profile.IsActive = true;
                 this.profileDao.CreateProfile(profile);
-                this.settingDao.InitializeGlobalSettings();
+               // this.settingDao.InitializeGlobalSettings();
             }
 
             this.settingDao.SetProfileId(profile.Id);
@@ -125,8 +125,6 @@ namespace MitoPlayer_2024.Presenters
 
             //lehet, hog yitt majd profilváltáskor lesz teendő
             this.settingDao.InitializeProfileSettings();
-
-           
 
             Playlist pls = this.trackDao.GetActivePlaylist();
             if (pls == null)
@@ -155,6 +153,8 @@ namespace MitoPlayer_2024.Presenters
             tag.Id = this.tagDao.GetNextId(TableName.Tag.ToString());
             tag.Name = "Key";
             tag.CellOnly = true;
+            tag.HasMultipleValues = false;
+            tag.Integrated = true;
             tag.ProfileId = profileId;
             this.tagDao.CreateTag(tag);
 
@@ -167,9 +167,10 @@ namespace MitoPlayer_2024.Presenters
             tp.SortingId = this.settingDao.GetNextTrackPropertySortingId();
             this.settingDao.CreateTrackProperty(tp);
 
+            TagValue tv = null;
             for (int i = 0; i <= keyNameArray.Count() - 1; i++)
             {
-                TagValue tv = new TagValue();
+                tv = new TagValue();
                 tv.TagId = tag.Id;
                 tv.TagName = tag.Name;
                 tv.Id = this.tagDao.GetNextId(TableName.TagValue.ToString());
@@ -180,6 +181,54 @@ namespace MitoPlayer_2024.Presenters
                 this.tagDao.CreateTagValue(tv);
             }
 
+            tag = new Tag();
+            tag.Id = this.tagDao.GetNextId(TableName.Tag.ToString());
+            tag.Name = "Bpm";
+            tag.CellOnly = true;
+            tag.HasMultipleValues =true;
+            tag.Integrated = true;
+            tag.ProfileId = profileId;
+            this.tagDao.CreateTag(tag);
+
+            tp = new TrackProperty();
+            tp.Id = this.trackDao.GetNextId(TableName.TrackProperty.ToString());
+            tp.Name = tag.Name;
+            tp.Type = "System.String";
+            tp.IsEnabled = true;
+            tp.ColumnGroup = ColumnGroup.TracklistColumns.ToString();
+            tp.SortingId = this.settingDao.GetNextTrackPropertySortingId();
+            this.settingDao.CreateTrackProperty(tp);
+
+            tv = new TagValue();
+            tv.TagId = tag.Id;
+            tv.TagName = tag.Name;
+            tv.Id = this.tagDao.GetNextId(TableName.TagValue.ToString());
+            tv.Name = "Bpm";
+            tv.Color = Color.White;
+            tv.ProfileId = profileId;
+
+            this.tagDao.CreateTagValue(tv);
+
+           /* List<TrackProperty> defaultTpList = new List<TrackProperty>();
+            List<TrackProperty> customTpList = new List<TrackProperty>();
+            defaultTpList = this.settingDao.GetTrackPropertyListByColumnGroup(ColumnGroup.TracklistColumns.ToString(), true);
+            customTpList = this.settingDao.GetTrackPropertyListByColumnGroup(ColumnGroup.TracklistColumns.ToString());
+            if (defaultTpList != null && defaultTpList.Count > 0)
+            {
+                if (customTpList != null && customTpList.Count > 0)
+                {
+                    defaultTpList.AddRange(customTpList);
+                }
+
+                if (defaultTpList != null && defaultTpList.Count > 0)
+                {
+                    defaultTpList = defaultTpList.OrderBy(x => x.SortingId).ToList();
+                    for (int i = 0; i <= defaultTpList.Count -1; i++)
+                    {
+                        this.settingDao.UpdateTrackProperty(defaultTpList[i], true);
+                    }
+                }
+            }*/
         }
         private Color HexToColor(string hexValue)
         {

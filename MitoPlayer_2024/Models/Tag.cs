@@ -12,8 +12,14 @@ namespace MitoPlayer_2024.Models
         public string Name { get; set; }
         public int ProfileId { get; set; }
         public bool CellOnly { get; set; }
+        public bool HasMultipleValues { get; set; }
+        public bool Integrated { get; set; }
 
-        public Tag(){ }
+        public Tag(){
+            this.Integrated = false;
+            this.CellOnly = false;
+            this.HasMultipleValues = false;
+        }
 
     }
 }

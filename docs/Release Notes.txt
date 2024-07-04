@@ -1,13 +1,19 @@
 
-v0.11.2.3
 
-- FEATURE: tagvalue létrehozás/szerkesztésre enter bezárja az ablakot
-- FEATURE: sor vagy cella szinezés
+v0.11.3.0
+OK - BUG: profil váltáskor megfelelő oszlopok megjelenése
+OK - FEATURE: BPM oszlop és egyedi értékadás
+OK - BUG: oszloprendezés elromlott
+OK - BUG: tracklist színezés fix
+OK - BUG: tagvalue táblában dupla kattra nem szerkeszti
+
+v0.11.2.3
+OK - FEATURE: tagvalue létrehozás/szerkesztésre enter bezárja az ablakot
+OK - FEATURE: sor vagy cella szinezés
 OK - FEATURE: TagValue coloring in tracklist
 OK - FEATURE: TagValue coloring in tagvalue list
 OK - BUG: tagvalue létrehozásakor valamikor nem szinezi a listában a tagvalue-t
 OK - BUG: drag and drop után kifehéredett a szines sor
-
 
 v0.11.2.2
 OK - FEATURE: playlist drag and drop

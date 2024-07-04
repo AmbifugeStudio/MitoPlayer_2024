@@ -66,11 +66,15 @@ namespace MitoPlayer_2024.Dao
                                         @Id, 
                                         @Name, 
                                         @CellOnly,
+                                        @HasMultipleValues,
+                                        @Integrated,
                                         @ProfileId)";
 
                 command.Parameters.Add("@Id", MySqlDbType.Int32).Value = tag.Id;
                 command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = tag.Name;
                 command.Parameters.Add("@CellOnly", MySqlDbType.Bit).Value = tag.CellOnly;
+                command.Parameters.Add("@HasMultipleValues", MySqlDbType.Bit).Value = tag.HasMultipleValues;
+                command.Parameters.Add("@Integrated", MySqlDbType.Bit).Value = tag.Integrated;
                 command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
 
                 try
@@ -109,7 +113,9 @@ namespace MitoPlayer_2024.Dao
                         tag.Id = (int)reader[0];
                         tag.Name = (string)reader[1];
                         tag.CellOnly = Convert.ToBoolean(reader[2]);
-                        tag.ProfileId = (int)reader[3];
+                        tag.HasMultipleValues = Convert.ToBoolean(reader[3]);
+                        tag.Integrated = Convert.ToBoolean(reader[4]);
+                        tag.ProfileId = (int)reader[5];
                         break;
                     }
                 }
@@ -140,7 +146,9 @@ namespace MitoPlayer_2024.Dao
                         tag.Id = (int)reader[0];
                         tag.Name = (string)reader[1];
                         tag.CellOnly = Convert.ToBoolean(reader[2]);
-                        tag.ProfileId = (int)reader[3];
+                        tag.HasMultipleValues = Convert.ToBoolean(reader[3]);
+                        tag.Integrated = Convert.ToBoolean(reader[4]);
+                        tag.ProfileId = (int)reader[5];
                         break;
                     }
                 }
@@ -172,7 +180,9 @@ namespace MitoPlayer_2024.Dao
                         tag.Id = (int)reader[0];
                         tag.Name = (string)reader[1];
                         tag.CellOnly = Convert.ToBoolean(reader[2]);
-                        tag.ProfileId = (int)reader[3];
+                        tag.HasMultipleValues = Convert.ToBoolean(reader[3]);
+                        tag.Integrated = Convert.ToBoolean(reader[4]);
+                        tag.ProfileId = (int)reader[5];
                         tagList.Add(tag);
                     }
                 }
@@ -190,13 +200,15 @@ namespace MitoPlayer_2024.Dao
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
                 command.CommandText = @"UPDATE Tag 
-                                        SET Name = @Name, CellOnly = @CellOnly 
+                                        SET Name = @Name, CellOnly = @CellOnly, HasMultipleValues = @HasMultipleValues, Integrated = @Integrated 
                                         WHERE Id = @Id 
                                         AND ProfileId = @ProfileId";
                 
                 command.Parameters.Add("@Id", MySqlDbType.Int32).Value = tag.Id;
                 command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = tag.Name;
                 command.Parameters.Add("@CellOnly", MySqlDbType.Bit).Value = tag.CellOnly;
+                command.Parameters.Add("@HasMultipleValues", MySqlDbType.Bit).Value = tag.HasMultipleValues;
+                command.Parameters.Add("@Integrated", MySqlDbType.Bit).Value = tag.Integrated;
                 command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
                 
                 try
@@ -298,12 +310,13 @@ namespace MitoPlayer_2024.Dao
                                         @Id, 
                                         @Name, 
                                         @TagId, 
-                                        @ProfileId,
-                                        @Color)";
+                                        @Color,
+                                        @ProfileId)";
 
                 command.Parameters.Add("@Id", MySqlDbType.Int32).Value = tagValue.Id;
                 command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = tagValue.Name;
                 command.Parameters.Add("@TagId", MySqlDbType.Int32).Value = tagValue.TagId;
+                command.Parameters.Add("@Color", MySqlDbType.VarChar).Value = ColorToHex(tagValue.Color);
                 command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
 
                 try
@@ -333,9 +346,17 @@ namespace MitoPlayer_2024.Dao
                 connection.Open();
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * FROM TagValue
-                                        WHERE TagId = @TagId 
-                                        AND ProfileId = @ProfileId ";
+                command.CommandText = @"SELECT
+                                        tv.Id,
+                                        tv.Name,
+                                        tv.TagId,
+                                        t.Name,
+                                        tv.Color,
+                                        tv.ProfileId 
+                                        FROM TagValue tv, Tag t 
+                                        WHERE tv.TagId = t.Id 
+                                        AND tv.TagId = @TagId 
+                                        AND tv.ProfileId = @ProfileId ";
 
                 command.Parameters.Add("@TagId", MySqlDbType.Int32).Value = tagId;
                 command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
@@ -349,8 +370,9 @@ namespace MitoPlayer_2024.Dao
                         tagValue.Id = (int)reader[0];
                         tagValue.Name = (string)reader[1];
                         tagValue.TagId = (int)reader[2];
-                        tagValue.ProfileId = (int)reader[3];
+                        tagValue.TagName = (string)reader[3];
                         tagValue.Color = HexToColor((string)reader[4]);
+                        tagValue.ProfileId = (int)reader[5];
                         tagValueList.Add(tagValue);
                     }
                 }
@@ -382,8 +404,8 @@ namespace MitoPlayer_2024.Dao
                         tagValue.Id = (int)reader[0];
                         tagValue.Name = (string)reader[1];
                         tagValue.TagId = (int)reader[2];
-                        tagValue.ProfileId = (int)reader[3];
-                        tagValue.Color = HexToColor((string)reader[4]);
+                        tagValue.Color = HexToColor((string)reader[3]);
+                        tagValue.ProfileId = (int)reader[4];
 
                         break;
                     }
@@ -423,8 +445,9 @@ namespace MitoPlayer_2024.Dao
                         tagValue.Id = (int)reader[0];
                         tagValue.Name = (string)reader[1];
                         tagValue.TagId = (int)reader[2];
-                        tagValue.ProfileId = (int)reader[3];
-                        tagValue.Color = HexToColor((string)reader[4]);
+                        tagValue.Color = HexToColor((string)reader[3]);
+                        tagValue.ProfileId = (int)reader[4];
+                        
                         break;
                     }
                 }
@@ -458,8 +481,9 @@ namespace MitoPlayer_2024.Dao
                         tagValue.Id = (int)reader[0];
                         tagValue.Name = (string)reader[1];
                         tagValue.TagId = (int)reader[2];
-                        tagValue.ProfileId = (int)reader[3];
-                        tagValue.Color = HexToColor((string)reader[4]);
+                        tagValue.Color = HexToColor((string)reader[3]);
+                        tagValue.ProfileId = (int)reader[4];
+                        
                         break;
                     }
                 }

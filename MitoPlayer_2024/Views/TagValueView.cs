@@ -65,7 +65,7 @@ namespace MitoPlayer_2024.Views
             this.dgvTagList.DataSource = this.tagListBindingSource.DataSource;
             this.dgvTagList.Columns["Id"].Visible = false;
         }
-        public void SetTagValueListBindingSource(BindingSource tagValueList)
+        public void SetTagValueListBindingSource(BindingSource tagValueList,bool hasMultipleValues = true)
         {
             this.tagValueListBindingSource = new BindingSource();
             this.tagValueListBindingSource.DataSource = tagValueList;
@@ -73,7 +73,17 @@ namespace MitoPlayer_2024.Views
             this.dgvTagValueList.Columns["Id"].Visible = false;
             this.dgvTagValueList.Columns["Color"].Visible = false;
 
-            
+            if (hasMultipleValues)
+            {
+                this.btnAddTagValue.Enabled = false;
+                this.btnDeleteTagValue.Enabled = false;
+            }
+            else
+            {
+                this.btnAddTagValue.Enabled = true;
+                this.btnDeleteTagValue.Enabled = true;
+            }
+
             this.BeginInvoke(new Action(() =>
             {
                 for (int i = 0; i < this.dgvTagValueList.Rows.Count; i++)
@@ -144,15 +154,7 @@ namespace MitoPlayer_2024.Views
             this.CloseWithCancel?.Invoke(this, EventArgs.Empty);
         }
 
-        private void dgvTagList_SelectionChanged(object sender, EventArgs e)
-        {
-            
-        }
 
-        private void dgvTagValueList_SelectionChanged(object sender, EventArgs e)
-        {
-           
-        }
         private void dgvTagList_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             if (this.dgvTagList.SelectedRows.Count > 0)
@@ -205,8 +207,20 @@ namespace MitoPlayer_2024.Views
             }
         }
 
-       
+        private void dgvTagList_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (this.dgvTagList.SelectedRows.Count > 0)
+            {
+                this.EditTag?.Invoke(this, new ListEventArgs() { IntegerField1 = Convert.ToInt32(this.dgvTagList.SelectedRows[0].Index) });
+            }
+        }
 
-        
+        private void dgvTagValueList_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (this.dgvTagValueList.SelectedRows.Count > 0)
+            {
+                this.EditTagValue?.Invoke(this, new ListEventArgs() { IntegerField1 = Convert.ToInt32(this.dgvTagValueList.SelectedRows[0].Index) });
+            }
+        }
     }
 }

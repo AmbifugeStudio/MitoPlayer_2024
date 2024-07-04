@@ -35,12 +35,14 @@
             this.pnlColor = new System.Windows.Forms.Panel();
             this.lblColor = new System.Windows.Forms.Label();
             this.btnColorChange = new System.Windows.Forms.Button();
+            this.btnCancel = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnOk
             // 
+            this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOk.Location = new System.Drawing.Point(323, 10);
+            this.btnOk.Location = new System.Drawing.Point(161, 84);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(75, 23);
             this.btnOk.TabIndex = 8;
@@ -94,14 +96,27 @@
             this.btnColorChange.UseVisualStyleBackColor = true;
             this.btnColorChange.Click += new System.EventHandler(this.btnColorChange_Click);
             // 
+            // btnCancel
+            // 
+            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.btnCancel.Location = new System.Drawing.Point(242, 84);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(75, 23);
+            this.btnCancel.TabIndex = 8;
+            this.btnCancel.Text = "Cancel";
+            this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+            // 
             // TagValueEditorView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(414, 76);
+            this.ClientSize = new System.Drawing.Size(329, 119);
             this.Controls.Add(this.lblColor);
             this.Controls.Add(this.pnlColor);
             this.Controls.Add(this.btnColorChange);
+            this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOk);
             this.Controls.Add(this.txtTagValueName);
             this.Controls.Add(this.lblName);
@@ -121,5 +136,6 @@
         private System.Windows.Forms.Panel pnlColor;
         private System.Windows.Forms.Label lblColor;
         private System.Windows.Forms.Button btnColorChange;
+        private System.Windows.Forms.Button btnCancel;
     }
 }

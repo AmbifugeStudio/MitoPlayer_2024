@@ -98,7 +98,7 @@ namespace MitoPlayer_2024.Presenters
                 }
 
                 this.tagValueListBindingSource.DataSource = tagValueListTable;
-                this.tagValueEditorView.SetTagValueListBindingSource(this.tagValueListBindingSource);
+                this.tagValueEditorView.SetTagValueListBindingSource(this.tagValueListBindingSource, this.currentTag.HasMultipleValues);
             }
         }
         private void SetCurrentTagValueId(object sender, ListEventArgs e)
@@ -152,6 +152,17 @@ namespace MitoPlayer_2024.Presenters
                 this.tagListTable.Rows.Add(presenter.newTag.Id, presenter.newTag.Name);
                 this.tagListBindingSource.DataSource = tagListTable;
                 this.tagValueEditorView.SetTagListBindingSource(this.tagListBindingSource);
+
+                if (this.currentTag.HasMultipleValues)
+                {
+                    TagValue tv = new TagValue();
+                    tv.TagId = this.currentTag.Id;
+                    tv.TagName = this.currentTag.Name;
+                    tv.Id = this.tagDao.GetNextId(TableName.TagValue.ToString());
+                    tv.Name = this.currentTag.Name;
+                    tv.Color = Color.White;
+                    this.tagDao.CreateTagValue(tv);
+                }
             }
         }
         private void EditTag(object sender, ListEventArgs e)

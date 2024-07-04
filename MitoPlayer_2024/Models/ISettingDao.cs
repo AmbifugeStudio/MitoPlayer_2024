@@ -10,6 +10,8 @@ namespace MitoPlayer_2024.Models
     {
         #region INITIALIZE
         void SetProfileId(int profileId);
+        void CreateColumns();
+        int GetProfileId();
         void InitializeFirstRun();
         void InitializeGlobalSettings();
         void InitializeProfileSettings();

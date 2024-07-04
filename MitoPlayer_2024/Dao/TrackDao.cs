@@ -942,12 +942,16 @@ namespace MitoPlayer_2024.Dao
                                         @TrackId, 
                                         @TagId, 
                                         @TagValueId, 
+                                        @HasValue, 
+                                        @Value, 
                                         @ProfileId )";
 
                 command.Parameters.Add("@Id", MySqlDbType.Int32).Value = ttv.Id;
                 command.Parameters.Add("@TrackId", MySqlDbType.VarChar).Value = ttv.TrackId;
                 command.Parameters.Add("@TagId", MySqlDbType.VarChar).Value = ttv.TagId;
                 command.Parameters.Add("@TagValueId", MySqlDbType.VarChar).Value = ttv.TagValueId;
+                command.Parameters.Add("@HasValue", MySqlDbType.Bit).Value = ttv.HasValue;
+                command.Parameters.Add("@Value", MySqlDbType.VarChar).Value = ttv.Value;
                 command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
 
                 try
@@ -980,6 +984,8 @@ namespace MitoPlayer_2024.Dao
                                                 ttv.TrackId, 
                                                 ttv.TagId,
                                                 ttv.TagValueId,
+                                                ttv.HasValue,
+                                                ttv.Value,
                                                 t.Name,
                                                 tv.Name,
                                                 ttv.ProfileId
@@ -1008,9 +1014,11 @@ namespace MitoPlayer_2024.Dao
                                 ttv.TrackId = (int)reader[1];
                                 ttv.TagId = (int)reader[2];
                                 ttv.TagValueId = (int)reader[3];
-                                ttv.TagName = (string)reader[4];
-                                ttv.TagValueName = Convert.ToString(reader[5]);
-                                ttv.ProfileId = (int)reader[6];
+                                ttv.HasValue = Convert.ToBoolean(reader[4]);
+                                ttv.Value = Convert.ToString(reader[5]);
+                                ttv.TagName = (string)reader[6];
+                                ttv.TagValueName = Convert.ToString(reader[7]);
+                                ttv.ProfileId = (int)reader[8];
                                 trackTagValueList.Add(ttv);
                             }
                         }
@@ -1028,7 +1036,9 @@ namespace MitoPlayer_2024.Dao
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
                 command.CommandText = @"UPDATE TrackTagValue 
-                                        SET TagValueId = @TagValueId 
+                                        SET TagValueId = @TagValueId, 
+                                        HasValue = @HasValue, 
+                                        Value = @Value  
 
                                         WHERE Id = @Id 
                                         AND TrackId = @TrackId 
@@ -1036,6 +1046,8 @@ namespace MitoPlayer_2024.Dao
 
                 command.Parameters.Add("@Id", MySqlDbType.Int32).Value = ttv.Id;
                 command.Parameters.Add("@TagValueId", MySqlDbType.Int32).Value = ttv.TagValueId;
+                command.Parameters.Add("@HasValue", MySqlDbType.Bit).Value = ttv.HasValue;
+                command.Parameters.Add("@Value", MySqlDbType.VarChar).Value = ttv.Value;
                 command.Parameters.Add("@TrackId", MySqlDbType.Int32).Value = ttv.TrackId;
                 command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
 
@@ -1064,7 +1076,9 @@ namespace MitoPlayer_2024.Dao
                     command.CommandText = @"UPDATE TrackTagValue 
                                             SET TrackId = @TrackId, 
                                             TagId = @TagId, 
-                                            TagValueId = @TagValueId 
+                                            TagValueId = @TagValueId, 
+                                            HasValue = @HasValue, 
+                                            Value = @Value  
 
                                             WHERE Id = @Id 
                                             AND ProfileId = @ProfileId";
@@ -1072,6 +1086,8 @@ namespace MitoPlayer_2024.Dao
                     command.Parameters.Add("@TrackId", MySqlDbType.Int32).Value = ttv.TrackId;
                     command.Parameters.Add("@TagId", MySqlDbType.Int32).Value = ttv.TagId;
                     command.Parameters.Add("@TagValueId", MySqlDbType.Int32).Value = ttv.TagValueId;
+                    command.Parameters.Add("@HasValue", MySqlDbType.Bit).Value = ttv.HasValue;
+                    command.Parameters.Add("@Value", MySqlDbType.VarChar).Value = ttv.Value;
                     command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
 
                     try

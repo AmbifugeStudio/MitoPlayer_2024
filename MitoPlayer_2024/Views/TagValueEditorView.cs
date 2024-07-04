@@ -69,5 +69,9 @@ namespace MitoPlayer_2024.Views
             this.ChangeColor?.Invoke(this, new EventArgs());
         }
 
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            this.CloseEditor?.Invoke(this, new EventArgs());
+        }
     }
 }

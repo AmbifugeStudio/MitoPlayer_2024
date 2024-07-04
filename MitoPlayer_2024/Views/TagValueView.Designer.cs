@@ -64,8 +64,8 @@
             this.dgvTagList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvTagList.Size = new System.Drawing.Size(668, 163);
             this.dgvTagList.TabIndex = 1;
+            this.dgvTagList.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTagList_CellDoubleClick);
             this.dgvTagList.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvTagList_CellMouseClick);
-            this.dgvTagList.SelectionChanged += new System.EventHandler(this.dgvTagList_SelectionChanged);
             this.dgvTagList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvTagList_KeyDown);
             // 
             // groupBox1
@@ -163,8 +163,8 @@
             this.dgvTagValueList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvTagValueList.Size = new System.Drawing.Size(668, 220);
             this.dgvTagValueList.TabIndex = 0;
+            this.dgvTagValueList.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTagValueList_CellDoubleClick);
             this.dgvTagValueList.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvTagValueList_CellMouseClick);
-            this.dgvTagValueList.SelectionChanged += new System.EventHandler(this.dgvTagValueList_SelectionChanged);
             this.dgvTagValueList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvTagValueList_KeyDown);
             // 
             // btnEditTagValue
