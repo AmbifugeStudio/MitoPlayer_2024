@@ -1,13 +1,19 @@
 
 
-v0.11.3.0
-OK - BUG: profil váltáskor megfelelő oszlopok megjelenése
+
+v0.11.6.1
+OK - FEATURE: complete file export to directory 
+OK - FEATURE: complete virtual dj bpm és key export
+OK - BUG: mintha nem kérné be minden számnak a key-et (pedig le vannak elemeztetve)
+
+v0.11.5.4
 OK - FEATURE: BPM oszlop és egyedi értékadás
+OK - BUG: profil váltáskor megfelelő oszlopok megjelenése
 OK - BUG: oszloprendezés elromlott
 OK - BUG: tracklist színezés fix
 OK - BUG: tagvalue táblában dupla kattra nem szerkeszti
 
-v0.11.2.3
+v0.11.4.2
 OK - FEATURE: tagvalue létrehozás/szerkesztésre enter bezárja az ablakot
 OK - FEATURE: sor vagy cella szinezés
 OK - FEATURE: TagValue coloring in tracklist
@@ -15,8 +21,9 @@ OK - FEATURE: TagValue coloring in tagvalue list
 OK - BUG: tagvalue létrehozásakor valamikor nem szinezi a listában a tagvalue-t
 OK - BUG: drag and drop után kifehéredett a szines sor
 
-v0.11.2.2
+v0.11.3.6
 OK - FEATURE: playlist drag and drop
+OK - FEATURE: aktuális playlist jó lenne zölddel megjelölve
 OK - BUG: playlist duplakatt vs. drag and drop conflict
 OK - BUG: törlök a végéről majd megint törlök a végéről, akkor kifagy
 OK - BUG: szám drag and drop hozzáadja-e az adatbázishoz a zenéket?
@@ -24,7 +31,7 @@ OK - BUG: drag and drop ne delete-tel, hanem copy-val
 OK - BUG: egy elem drag and drop hibája
 OK - BUG: drag and drop katt az utolsó elemre index miatt kifagy
 
-v0.11.2.1
+v0.11.2.6
 OK - BUG: nem hozzárendelt hotkey megnyomására elfagy
 OK - BUG: quicklist törlés
 OK - BUG: quicklist gombra nem íródik ki a másolásról a visszajelzés
@@ -32,7 +39,7 @@ OK - BUG: playlist rendezés tiltás felületről
 OK - BUG: playlist external drag and drop-ra elromlik a tracklist selection
 OK - BUG: playlist-be drag and drop-nál úgy marad a drag and drop kijelölés
 
-v0.11.2.0
+v0.11.2.1
 OK - FEATURE: Drag And Drop átalakítás
 OK - FEATURE: Playlist-be drag and drop
 OK - BUG: playing track drag and drop-ja utánnem szinezi a számot

@@ -6,6 +6,13 @@ using System.Threading.Tasks;
 
 namespace MitoPlayer_2024.Helpers
 {
+    public enum Extension
+    {
+        mp3,
+        wav,
+        flac,
+        ogg
+    }
     public enum DefaultName
     {
         Profile,
@@ -44,8 +51,24 @@ namespace MitoPlayer_2024.Helpers
         LastGeneratedProfileId,
         LastGeneratedTagId,
         LastGeneratedTagValueId,
+        Keys,
+        KeysAlter,
         KeyCodes,
-        KeyColors
+        KeyColors,
+
+        ExportPath,
+        IsRowNumberChecked,
+        IsKeyCodeChecked,
+        IsBpmNumberChecked,
+        IsTrunkedBpmChecked,
+        IsTrunkedArtistChecked,
+        IsTrunkedTitleChecked,
+        ArtistMinimumCharacter,
+        TitleMinimumCharacter,
+        LastExportDirectoryPath,
+
+        AutomaticBpmImport,
+        AutomaticKeyImport
     }
 
     public enum MediaPlayerUpdateState

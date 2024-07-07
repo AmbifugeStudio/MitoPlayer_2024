@@ -88,6 +88,7 @@ namespace MitoPlayer_2024.Presenters
             this.view.ChangeTracklistColorEvent += ChangeTracklistColorEvent;
 
             this.view.ShowColumnVisibilityEditorEvent += ShowColumnVisibilityEditorEvent;
+            this.view.ExportToDirectoryEvent += ExportToDirectoryEvent;
 
             //PLAYLIST
             this.view.ShowPlaylistEditorViewEvent += ShowPlaylistEditorViewEvent;
@@ -947,13 +948,22 @@ namespace MitoPlayer_2024.Presenters
                         args[8] = track.FileName;
                         args[9] = track.OrderInList;
                         args[10] = track.TrackIdInPlaylist;
-                        int i = 11;
+                        
 
                         if (track.TrackTagValues != null)
                         {
+                            int i = 11;
                             foreach (TrackTagValue ttv in track.TrackTagValues)
                             {
-                                args[i] = ttv.TagValueName;
+                                if (ttv.HasValue)
+                                {
+                                    args[i] = ttv.Value;
+                                }
+                                else
+                                {
+                                    args[i] = ttv.TagValueName;
+                                }
+                                i++;
                             }
                         }
                         
@@ -1454,6 +1464,24 @@ namespace MitoPlayer_2024.Presenters
                     }
                 }
             }
+        }
+        private void ExportToDirectoryEvent(object sender, ListEventArgs e)
+        {
+            ExportToDirectoryView exportToDirectoryView = new ExportToDirectoryView();
+
+            int playlistId = Convert.ToInt32(this.playlistListTable.Rows[e.IntegerField1]["Id"]);
+            List<Track> trackList = this.trackDao.GetTracklistByPlaylistId(playlistId, this.tagList);
+            if (trackList != null && trackList.Count > 0)
+            {
+                ExportToDirectoryPresenter presenter = new ExportToDirectoryPresenter(exportToDirectoryView, trackList, this.tagDao, this.settingDao);
+
+                if (exportToDirectoryView.ShowDialog((PlaylistView)this.view) == DialogResult.OK)
+                {
+
+                }
+            }
+
+                
         }
         #endregion
 

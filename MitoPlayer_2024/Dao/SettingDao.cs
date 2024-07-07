@@ -114,12 +114,27 @@ namespace MitoPlayer_2024.Dao
         public void InitializeProfileSettings()
         {
             this.CreateColumns();
+
             this.InitializeStringSetting(Settings.LastOpenDirectoryPath.ToString());
             this.InitializeStringSetting(Settings.PlaylistColumnVisibility.ToString());
             this.InitializeStringSetting(Settings.TrackColumnVisibility.ToString());
 
             this.InitializeIntegerSetting(Settings.Volume.ToString());
             this.InitializeIntegerSetting(Settings.LastOpenFilesFilterIndex.ToString());
+
+            this.InitializeBooleanSetting(Settings.AutomaticBpmImport.ToString());
+            this.InitializeBooleanSetting(Settings.AutomaticKeyImport.ToString());
+
+            this.InitializeStringSetting(Settings.LastExportDirectoryPath.ToString());
+            this.InitializeBooleanSetting(Settings.IsRowNumberChecked.ToString());
+            this.InitializeBooleanSetting(Settings.IsKeyCodeChecked.ToString());
+            this.InitializeBooleanSetting(Settings.IsBpmNumberChecked.ToString());
+            this.InitializeBooleanSetting(Settings.IsTrunkedBpmChecked.ToString());
+            this.InitializeBooleanSetting(Settings.IsTrunkedArtistChecked.ToString());
+            this.InitializeBooleanSetting(Settings.IsTrunkedTitleChecked.ToString());
+            this.InitializeDecimalSetting(Settings.ArtistMinimumCharacter.ToString());
+            this.InitializeDecimalSetting(Settings.TitleMinimumCharacter.ToString());
+            
         }
         private void InitializeStringSetting(String settingName, bool withoutProfile = false)
         {

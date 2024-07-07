@@ -33,6 +33,7 @@ namespace MitoPlayer_2024
         public event EventHandler DeletePlaylist;
         public event EventHandler ExportToM3U;
         public event EventHandler ExportToTXT;
+        public event EventHandler ExportToDirectory;
         public event EventHandler Preferences;
         public event EventHandler Exit;
 
@@ -131,6 +132,10 @@ namespace MitoPlayer_2024
         private void menuStripExportToM3U_Click(object sender, EventArgs e)
         {
             this.ExportToTXT?.Invoke(this, ListEventArgs.Empty);
+        }
+        private void menuStripExportToDirectory_Click(object sender, EventArgs e)
+        {
+            this.ExportToDirectory?.Invoke(this, ListEventArgs.Empty);
         }
         private void menuStripPreferences_Click(object sender, EventArgs e)
         {
@@ -345,6 +350,6 @@ namespace MitoPlayer_2024
             this.lblTrackStart.Text = currentPositionString;
         }
 
-
+        
     }
 }

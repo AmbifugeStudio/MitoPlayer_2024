@@ -20,6 +20,7 @@ namespace MitoPlayer_2024.Helpers
         public String StringField2 { get; set; }
         public int IntegerField1 { get; set; }
         public int IntegerField2 { get; set; }
+        public decimal DecimalField1 { get; set; }
         public bool BooleanField1 { get; set; }
         public bool BooleanField2 { get; set; }
         public bool BooleanField3 { get; set; }

@@ -40,6 +40,10 @@
             this.menuStripLoadPlaylist = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStripRenamePlaylist = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStripDeletePlaylist = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
+            this.menuStripExportToTXT = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStripExportToM3U = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStripExportToDirectory = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.menuStripPreferences = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStripExit = new System.Windows.Forms.ToolStripMenuItem();
@@ -87,9 +91,6 @@
             this.btnPrev = new System.Windows.Forms.Button();
             this.btnPlay = new System.Windows.Forms.Button();
             this.mediaPlayer = new AxWMPLib.AxWindowsMediaPlayer();
-            this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
-            this.menuStripExportToM3U = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuStripExportToTXT = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -125,6 +126,7 @@
             this.toolStripSeparator8,
             this.menuStripExportToTXT,
             this.menuStripExportToM3U,
+            this.menuStripExportToDirectory,
             this.toolStripSeparator3,
             this.menuStripPreferences,
             this.menuStripExit});
@@ -190,6 +192,32 @@
             this.menuStripDeletePlaylist.Size = new System.Drawing.Size(180, 22);
             this.menuStripDeletePlaylist.Text = "Delete playlist...";
             this.menuStripDeletePlaylist.Click += new System.EventHandler(this.menuStripDeletePlaylist_Click);
+            // 
+            // toolStripSeparator8
+            // 
+            this.toolStripSeparator8.Name = "toolStripSeparator8";
+            this.toolStripSeparator8.Size = new System.Drawing.Size(177, 6);
+            // 
+            // menuStripExportToTXT
+            // 
+            this.menuStripExportToTXT.Name = "menuStripExportToTXT";
+            this.menuStripExportToTXT.Size = new System.Drawing.Size(180, 22);
+            this.menuStripExportToTXT.Text = "Export to *.txt";
+            this.menuStripExportToTXT.Click += new System.EventHandler(this.menuStripExportToTXT_Click);
+            // 
+            // menuStripExportToM3U
+            // 
+            this.menuStripExportToM3U.Name = "menuStripExportToM3U";
+            this.menuStripExportToM3U.Size = new System.Drawing.Size(180, 22);
+            this.menuStripExportToM3U.Text = "Export to *.m3u";
+            this.menuStripExportToM3U.Click += new System.EventHandler(this.menuStripExportToM3U_Click);
+            // 
+            // menuStripExportToDirectory
+            // 
+            this.menuStripExportToDirectory.Name = "menuStripExportToDirectory";
+            this.menuStripExportToDirectory.Size = new System.Drawing.Size(180, 22);
+            this.menuStripExportToDirectory.Text = "Export to directory";
+            this.menuStripExportToDirectory.Click += new System.EventHandler(this.menuStripExportToDirectory_Click);
             // 
             // toolStripSeparator3
             // 
@@ -620,25 +648,6 @@
             this.mediaPlayer.Size = new System.Drawing.Size(10, 10);
             this.mediaPlayer.TabIndex = 1;
             // 
-            // toolStripSeparator8
-            // 
-            this.toolStripSeparator8.Name = "toolStripSeparator8";
-            this.toolStripSeparator8.Size = new System.Drawing.Size(177, 6);
-            // 
-            // menuStripExportToM3U
-            // 
-            this.menuStripExportToM3U.Name = "menuStripExportToM3U";
-            this.menuStripExportToM3U.Size = new System.Drawing.Size(180, 22);
-            this.menuStripExportToM3U.Text = "Export to *.m3u";
-            this.menuStripExportToM3U.Click += new System.EventHandler(this.menuStripExportToM3U_Click);
-            // 
-            // menuStripExportToTXT
-            // 
-            this.menuStripExportToTXT.Name = "menuStripExportToTXT";
-            this.menuStripExportToTXT.Size = new System.Drawing.Size(180, 22);
-            this.menuStripExportToTXT.Text = "Export to *.txt";
-            this.menuStripExportToTXT.Click += new System.EventHandler(this.menuStripExportToTXT_Click);
-            // 
             // MainView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -729,6 +738,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
         private System.Windows.Forms.ToolStripMenuItem menuStripExportToTXT;
         private System.Windows.Forms.ToolStripMenuItem menuStripExportToM3U;
+        private System.Windows.Forms.ToolStripMenuItem menuStripExportToDirectory;
     }
 }
 

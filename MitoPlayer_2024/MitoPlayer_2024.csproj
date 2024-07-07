@@ -24,8 +24,8 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <AutorunEnabled>true</AutorunEnabled>
-    <ApplicationRevision>2</ApplicationRevision>
-    <ApplicationVersion>0.11.2.2</ApplicationVersion>
+    <ApplicationRevision>1</ApplicationRevision>
+    <ApplicationVersion>0.11.6.1</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -171,6 +171,7 @@
     <Compile Include="Helpers\Enums.cs" />
     <Compile Include="Helpers\LabelTimer.cs" />
     <Compile Include="Helpers\ListEventArgs.cs" />
+    <Compile Include="Helpers\VirtualDJReader.cs" />
     <Compile Include="Models\IDataBaseBuilderDao.cs" />
     <Compile Include="Models\IProfileDao.cs" />
     <Compile Include="Models\ISettingDao.cs" />
@@ -184,6 +185,7 @@
     <Compile Include="Models\TrackProperty.cs" />
     <Compile Include="Models\TrackTagValue.cs" />
     <Compile Include="Presenters\AboutPresenter.cs" />
+    <Compile Include="Presenters\ExportToDirectoryPresenter.cs" />
     <Compile Include="Presenters\HarmonizerPresenter.cs" />
     <Compile Include="Presenters\MediaPlayerComponent.cs" />
     <Compile Include="Presenters\PlaylistEditorPresenter.cs" />
@@ -210,6 +212,12 @@
     <Compile Include="Views\ColumnVisibilityEditorView.Designer.cs">
       <DependentUpon>ColumnVisibilityEditorView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\ExportToDirectoryView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\ExportToDirectoryView.Designer.cs">
+      <DependentUpon>ExportToDirectoryView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\HarmonizerView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -217,6 +225,7 @@
       <DependentUpon>HarmonizerView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\IAboutView.cs" />
+    <Compile Include="Views\IExportToDirectoryView.cs" />
     <Compile Include="Views\IHarmonizerView.cs" />
     <Compile Include="Views\IPlaylistEditorView.cs" />
     <Compile Include="Views\IPlaylistView.cs" />
@@ -314,6 +323,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\ColumnVisibilityEditorView.resx">
       <DependentUpon>ColumnVisibilityEditorView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\ExportToDirectoryView.resx">
+      <DependentUpon>ExportToDirectoryView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\HarmonizerView.resx">
       <DependentUpon>HarmonizerView.cs</DependentUpon>

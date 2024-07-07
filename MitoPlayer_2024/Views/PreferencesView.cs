@@ -16,6 +16,8 @@ namespace MitoPlayer_2024.Views
         public event EventHandler CloseViewWithOkEvent;
         public event EventHandler CloseViewWithCancelEvent;
         public event EventHandler ClearDatabaseEvent;
+        public event EventHandler<ListEventArgs> SetAutomaticBpmImportEvent;
+        public event EventHandler<ListEventArgs> SetAutomaticKeyImportEvent;
 
 
 
@@ -40,6 +42,21 @@ namespace MitoPlayer_2024.Views
         private void btnCancel_Click(object sender, EventArgs e)
         {
             this.CloseViewWithCancelEvent?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void chbAutomaticBpmImport_CheckedChanged(object sender, EventArgs e)
+        {
+            this.SetAutomaticBpmImportEvent?.Invoke(this,new ListEventArgs { BooleanField1 = this.chbAutomaticBpmImport.Checked });
+        }
+
+        private void chbAutomaticKeyImport_CheckedChanged(object sender, EventArgs e)
+        {
+            this.SetAutomaticKeyImportEvent?.Invoke(this, new ListEventArgs { BooleanField1 = this.chbAutomaticKeyImport.Checked });
+        }
+        public void SetImportSettings(bool automaticBpmImport, bool automaticKeyImport)
+        {
+            this.chbAutomaticBpmImport.Checked = automaticBpmImport;
+            this.chbAutomaticKeyImport.Checked = automaticKeyImport;
         }
     }
 }

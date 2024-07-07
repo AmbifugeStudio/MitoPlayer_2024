@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MitoPlayer_2024.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,5 +12,9 @@ namespace MitoPlayer_2024.Views
         event EventHandler CloseViewWithOkEvent;
         event EventHandler CloseViewWithCancelEvent;
         event EventHandler ClearDatabaseEvent;
+        event EventHandler<ListEventArgs> SetAutomaticBpmImportEvent;
+        event EventHandler<ListEventArgs> SetAutomaticKeyImportEvent;
+
+        void SetImportSettings(bool automaticBpmImport, bool automaticKeyImport);
     }
 }

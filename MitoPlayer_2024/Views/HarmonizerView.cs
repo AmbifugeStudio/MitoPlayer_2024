@@ -85,5 +85,10 @@ namespace MitoPlayer_2024.Views
         internal void CallExportToTXTEvent()
         {
         }
+
+        internal void CallExportToDirectoryEvent()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

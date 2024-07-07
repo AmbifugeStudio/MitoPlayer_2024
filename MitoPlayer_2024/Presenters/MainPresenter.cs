@@ -71,6 +71,7 @@ namespace MitoPlayer_2024.Presenters
             this.mainView.DeletePlaylist += DeletePlaylist;
             this.mainView.ExportToM3U += ExportToM3U;
             this.mainView.ExportToTXT += ExportToTXT;
+            this.mainView.ExportToDirectory += ExportToDirectory;
             this.mainView.Preferences += Preferences;
             this.mainView.Exit += Exit;
             this.mainView.RemoveMissingTracks += RemoveMissingTracks;
@@ -441,6 +442,15 @@ namespace MitoPlayer_2024.Presenters
             else if (this.harmonizerView != null && this.actualView.GetType() == typeof(HarmonizerView))
                 ((HarmonizerView)this.harmonizerView).CallExportToTXTEvent();
         }
+        private void ExportToDirectory(object sender, EventArgs e)
+        {
+            if (this.playlistView != null && this.actualView.GetType() == typeof(PlaylistView))
+                ((PlaylistView)this.playlistView).CallExportToDirectoryEvent();
+            else if (this.trackEditorView != null && this.actualView.GetType() == typeof(TrackEditorView))
+                ((TrackEditorView)this.trackEditorView).CallExportToDirectoryEvent();
+            else if (this.harmonizerView != null && this.actualView.GetType() == typeof(HarmonizerView))
+                ((HarmonizerView)this.harmonizerView).CallExportToDirectoryEvent();
+        }
         private void Preferences(object sender, EventArgs e)
         {
             this.ShowPreferencesView(this, new EventArgs());
@@ -635,6 +645,8 @@ namespace MitoPlayer_2024.Presenters
         }
         private List<Track> ReadFiles(string[] fileNames)
         {
+            VirtualDJReader vdjReader = new VirtualDJReader(this.trackDao);
+
             List<String> filePathList = new List<String>();
             List<Track> trackList = new List<Track>();
             if (fileNames != null && fileNames.Length > 0)
@@ -729,12 +741,13 @@ namespace MitoPlayer_2024.Presenters
                         {
                             track.Artist = fileName;
                         }
+
+                        
                     }
 
                     if (track.Id == -1)
                     {
                         track.Id = this.trackDao.GetNextId(TableName.Track.ToString());
-
                         track.TrackTagValues = new List<TrackTagValue>();
 
                         this.trackDao.CreateTrack(track);
@@ -748,11 +761,60 @@ namespace MitoPlayer_2024.Presenters
                             ttv.TagName = tag.Name;
                             ttv.TagValueId = -1;
                             ttv.TagValueName = String.Empty;
+                            ttv.ProfileId = this.trackDao.GetProfileId();
+
+                            if (tag.Name == "Key")
+                            {
+                                List<TagValue> keyList = this.tagDao.GetTagValuesByTagId(tag.Id);
+                                if(keyList != null && keyList.Count > 0)
+                                {
+                                    vdjReader.ReadKeyFromVirtualDJDatabase(track.Path, ref ttv, keyList);
+                                }
+                            }
+                            else if (tag.Name == "Bpm")
+                            {
+                                List<TagValue> keyList = this.tagDao.GetTagValuesByTagId(tag.Id);
+                                if (keyList != null && keyList.Count > 0)
+                                {
+                                    vdjReader.ReadBpmFromVirtualDJDatabase(track.Path, ref ttv, keyList);
+                                }
+                            }
+
+                            track.TrackTagValues.Add(ttv);
                             this.trackDao.CreateTrackTagValue(ttv);
                         }
+                    }
+                    else
+                    {
+                        foreach (Tag tag in tagList)
+                        {
+                            if (tag.Name == "Key")
+                            {
+                                List<TagValue> keyList = this.tagDao.GetTagValuesByTagId(tag.Id);
+                                if (track.TrackTagValues != null)
+                                {
+                                    TrackTagValue ttv = track.TrackTagValues.Find(x => x.TagId == tag.Id);
+                                    if (keyList != null && keyList.Count > 0 && ttv != null)
+                                    {
+                                        vdjReader.ReadKeyFromVirtualDJDatabase(track.Path, ref ttv, keyList);
+                                    }
+                                }
 
-                       
+                            }
+                            else if (tag.Name == "Bpm")
+                            {
+                                List<TagValue> keyList = this.tagDao.GetTagValuesByTagId(tag.Id);
+                                if (track.TrackTagValues != null)
+                                {
+                                    TrackTagValue ttv = track.TrackTagValues.Find(x => x.TagId == tag.Id);
+                                    if (keyList != null && keyList.Count > 0)
+                                    {
+                                        vdjReader.ReadBpmFromVirtualDJDatabase(track.Path, ref ttv, keyList);
+                                    }
+                                }
 
+                            }
+                        }
                     }
                     trackList.Add(track);
 

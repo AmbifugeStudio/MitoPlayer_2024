@@ -1,26 +1,33 @@
 BUGS
 
-- BUG: tag edit-kor a multiple flag bekapcsolásakor kellene csinálni egy tagvalue-t, ha nincs, illetve törölni, ha van
+- FEATURE: virtual dj adatbázis megkeresése az első indításkor!!
+- FEATURE: vegyes minőségű fájlnevek kezelése az könyvtár export során
+- BUG: column reorder nem működik
 - BUG: ha lejár a szám, megfagy
-- BUG: tagvalue list létrehozásnál fehér szín beállításakor a szöveg is fehér lesz
-- BUG: tracklist drag and drop vs double click fix
-- BUG: betöltésre nem szinezi az aktuális playlist-et
-- tracklist play, törlés mind, hozzaáadás és next/prev nem jó
+- BUG: tag edit-kor a multiple flag bekapcsolásakor kellene csinálni egy tagvalue-t, ha nincs, illetve törölni, ha van
 
-
-- kellene length a flac-nak is
-- TagValue felületen is működjön a player gombjai
-
-FEATURE
-- BUG: a quicklist beállításnál ne váltson át az aktuális playlist-re a kijelölés
 - FEATURE: purge database
+- BUG: TagValue felületen is működjön a player gombjai
+- BUG: tracklist drag and drop vs double click fix
+- BUG: tagvalue list létrehozásnál fehér szín beállításakor a szöveg is fehér lesz
+- FEATURE: betöltéskor az automatikus zene lejátszás setting-gel állítható legyen
+- FEATURE: key szinezés csak a betűket érintse
+- FEATURE: fekete téma
+- BUG: betöltésre nem szinezi az aktuális playlist-ettracklist play, törlés mind, hozzaáadás és next/prev nem jó
+- BUG: betöltésre nem szinezi az aktuális playlist-et
+- FEATURE: flac, ogg fájlnevek trunk-olásának kezelése a könyvtár export során
+- FEATURE: loading screen a könyvtár export során
+- FEATURE: kellene length a flac-nak is
+- FEATURE: a quicklist beállításnál ne váltson át az aktuális playlist-re a kijelölés
+- BUG: könyvtár exportnál fájlnév szerinti rendezés letiltás
+
 
 
 
 FEATURE
 - elindítok egy zenét, leállítom, álkattintok, akkor a next/prev a kurzortól számolja a köv./előzőt
 - playlist hozzáadás/szerkesztésnél ne ugorjon a current-re a kijelölés
-- aktuális playlist jó lene zölddel megjelölve
+
 
 - törlés és hozzáadáskor teljes delete helyett adott elem törlése
 

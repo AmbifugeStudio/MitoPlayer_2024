@@ -57,6 +57,7 @@ namespace MitoPlayer_2024.Views
         public event EventHandler<ListEventArgs> SetQuickListEvent;
         public event EventHandler<ListEventArgs> ExportToM3UEvent;
         public event EventHandler<ListEventArgs> ExportToTXTEvent;
+        public event EventHandler<ListEventArgs> ExportToDirectoryEvent;
 
         //TAG EDITOR
         public event EventHandler DisplayTagEditorEvent;
@@ -1002,6 +1003,10 @@ namespace MitoPlayer_2024.Views
         {
             this.CallExportToTXTEvent();
         }
+        private void exportToDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.CallExportToDirectoryEvent();
+        }
         private void btnNewPlaylist_Click(object sender, EventArgs e)
         {
             this.CallCreatePlaylistEvent();
@@ -1069,6 +1074,11 @@ namespace MitoPlayer_2024.Views
         {
             if (this.dgvPlaylistList.SelectedRows.Count > 0)
                 this.ExportToTXTEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = this.dgvPlaylistList.SelectedRows[0].Index });
+        }
+        public void CallExportToDirectoryEvent()
+        {
+            if (this.dgvPlaylistList.SelectedRows.Count > 0)
+                this.ExportToDirectoryEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = this.dgvPlaylistList.SelectedRows[0].Index });
         }
         public void SetCurrentPlaylistColor(int playlistId)
         {
@@ -1532,6 +1542,6 @@ namespace MitoPlayer_2024.Views
             this.ChangeTracklistColorEvent?.Invoke(this, new ListEventArgs() { StringField1 = (String)this.cmbColor.SelectedItem });
         }
 
-       
+        
     }
 }
