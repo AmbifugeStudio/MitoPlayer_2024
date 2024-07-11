@@ -161,6 +161,7 @@
             this.txtBoxVirtualDjDatabasePath.Name = "txtBoxVirtualDjDatabasePath";
             this.txtBoxVirtualDjDatabasePath.Size = new System.Drawing.Size(337, 20);
             this.txtBoxVirtualDjDatabasePath.TabIndex = 3;
+            this.txtBoxVirtualDjDatabasePath.TextChanged += new System.EventHandler(this.txtBoxVirtualDjDatabasePath_TextChanged);
             // 
             // PreferencesView
             // 

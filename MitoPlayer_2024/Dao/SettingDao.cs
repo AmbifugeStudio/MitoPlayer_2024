@@ -136,7 +136,7 @@ namespace MitoPlayer_2024.Dao
             this.InitializeDecimalSetting(Settings.ArtistMinimumCharacter.ToString());
             this.InitializeDecimalSetting(Settings.TitleMinimumCharacter.ToString());
 
-            this.InitializeStringSetting(Settings.VirtualDjDefaultDatabasePath.ToString());
+            this.InitializeStringSetting(Settings.VirtualDjDatabasePath.ToString());
 
         }
         private void InitializeStringSetting(String settingName, bool withoutProfile = false)

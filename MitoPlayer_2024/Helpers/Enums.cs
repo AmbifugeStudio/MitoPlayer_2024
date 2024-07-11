@@ -69,7 +69,7 @@ namespace MitoPlayer_2024.Helpers
 
         AutomaticBpmImport,
         AutomaticKeyImport,
-        VirtualDjDefaultDatabasePath
+        VirtualDjDatabasePath
     }
 
     public enum MediaPlayerUpdateState

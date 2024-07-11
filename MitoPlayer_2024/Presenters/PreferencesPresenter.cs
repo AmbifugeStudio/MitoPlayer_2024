@@ -23,7 +23,7 @@ namespace MitoPlayer_2024.Presenters
 
         private bool automaticBpmImport; 
         private bool automaticKeyImport;
-        private String virtualDjDefaultDatabasePath;
+        private String virtualDjDatabasePath;
 
         public bool databaseCleared = false;
         public PreferencesPresenter(IPreferencesView view, ITrackDao trackDao,ITagDao tagDao, IProfileDao profileDao, ISettingDao settingDao)
@@ -36,15 +36,16 @@ namespace MitoPlayer_2024.Presenters
 
             this.automaticBpmImport = this.settingDao.GetBooleanSetting(Settings.AutomaticBpmImport.ToString()).Value;
             this.automaticKeyImport = this.settingDao.GetBooleanSetting(Settings.AutomaticKeyImport.ToString()).Value;
-            this.virtualDjDefaultDatabasePath = this.settingDao.GetStringSetting(Settings.VirtualDjDefaultDatabasePath.ToString());
+            this.virtualDjDatabasePath = this.settingDao.GetStringSetting(Settings.VirtualDjDatabasePath.ToString());
             
-            this.view.SetImportSettings(this.automaticBpmImport, this.automaticKeyImport, this.virtualDjDefaultDatabasePath);
+            this.view.SetImportSettings(this.automaticBpmImport, this.automaticKeyImport, this.virtualDjDatabasePath);
 
             this.view.CloseViewWithOkEvent += CloseViewWithOkEvent;
             this.view.CloseViewWithCancelEvent += CloseViewWithCancelEvent;
             this.view.ClearDatabaseEvent += ClearDatabaseEvent;
             this.view.SetAutomaticBpmImportEvent += SetAutomaticBpmImportEvent;
             this.view.SetAutomaticKeyImportEvent += SetAutomaticKeyImportEvent;
+            this.view.SetVirtualDjDatabasePathEvent += SetVirtualDjDatabasePathEvent;
         }
 
         private void ClearDatabaseEvent(object sender, EventArgs e)
@@ -71,17 +72,22 @@ namespace MitoPlayer_2024.Presenters
         {
             this.automaticKeyImport = e.BooleanField1;
         }
+        private void SetVirtualDjDatabasePathEvent(object sender, ListEventArgs e)
+        {
+            this.virtualDjDatabasePath = e.StringField1;
+        }
         private void CloseViewWithOkEvent(object sender, EventArgs e)
         {
-            if (!File.Exists(this.virtualDjDefaultDatabasePath))
+            if (!File.Exists(this.virtualDjDatabasePath))
             {
                 MessageBox.Show("VirtualDJ database file does not exists!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                this.view.SetImportSettings(this.automaticBpmImport, this.automaticKeyImport, this.virtualDjDatabasePath);
             }
             else
             {
                 this.settingDao.SetBooleanSetting(Settings.AutomaticBpmImport.ToString(), this.automaticBpmImport);
                 this.settingDao.SetBooleanSetting(Settings.AutomaticKeyImport.ToString(), this.automaticKeyImport);
-                this.settingDao.SetStringSetting(Settings.VirtualDjDefaultDatabasePath.ToString(), this.virtualDjDefaultDatabasePath);
+                this.settingDao.SetStringSetting(Settings.VirtualDjDatabasePath.ToString(), this.virtualDjDatabasePath);
 
                 ((PreferencesView)this.view).DialogResult = DialogResult.OK;
                 ((PreferencesView)this.view).Close();

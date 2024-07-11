@@ -12,6 +12,7 @@ using System.Runtime.CompilerServices;
 using MitoPlayer_2024.Dao;
 using System.Collections;
 using System.IO;
+using System.Windows.Forms;
 
 namespace MitoPlayer_2024.Helpers
 {
@@ -40,25 +41,34 @@ namespace MitoPlayer_2024.Helpers
             this.trackDao = trackDao;
             this.settingDao = settingDao;
 
+            this.VirtualDjDatabasePath = this.settingDao.GetStringSetting(Settings.VirtualDjDatabasePath.ToString());
 
-            this.VirtualDjDatabasePath = this.settingDao.GetStringSetting(Settings.VirtualDjDefaultDatabasePath.ToString());
-
-            String keyCodes = System.Configuration.ConfigurationManager.AppSettings[Settings.KeyCodes.ToString()];
-            String keys = System.Configuration.ConfigurationManager.AppSettings[Settings.Keys.ToString()];
-            String keysAlter = System.Configuration.ConfigurationManager.AppSettings[Settings.KeysAlter.ToString()];
-            this.KeyCodesArray = Array.ConvertAll(keyCodes.Split(','), s => s);
-            this.KeysArray = Array.ConvertAll(keys.Split(','), s => s);
-            this.KeysAlterArray = Array.ConvertAll(keysAlter.Split(','), s => s);
-
-            this.GetAttributeListFromVirtualDjDatabase(this.VirtualDjDatabasePath);
-            char[] alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
-
-            foreach (char c in alpha)
+            if (!File.Exists(this.VirtualDjDatabasePath))
             {
-                if (File.Exists(c + "://VirtualDJ//database.xml")){
-                    this.GetAttributeListFromVirtualDjDatabase(c + "://VirtualDJ//database.xml");
+                MessageBox.Show("VirtualDJ database file does not exists!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            else
+            {
+                String keyCodes = System.Configuration.ConfigurationManager.AppSettings[Settings.KeyCodes.ToString()];
+                String keys = System.Configuration.ConfigurationManager.AppSettings[Settings.Keys.ToString()];
+                String keysAlter = System.Configuration.ConfigurationManager.AppSettings[Settings.KeysAlter.ToString()];
+                this.KeyCodesArray = Array.ConvertAll(keyCodes.Split(','), s => s);
+                this.KeysArray = Array.ConvertAll(keys.Split(','), s => s);
+                this.KeysAlterArray = Array.ConvertAll(keysAlter.Split(','), s => s);
+
+                this.GetAttributeListFromVirtualDjDatabase(this.VirtualDjDatabasePath);
+                char[] alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
+
+                foreach (char c in alpha)
+                {
+                    if (File.Exists(c + "://VirtualDJ//database.xml"))
+                    {
+                        this.GetAttributeListFromVirtualDjDatabase(c + "://VirtualDJ//database.xml");
+                    }
                 }
             }
+
+            
            
         }
 
