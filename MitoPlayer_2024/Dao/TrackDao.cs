@@ -593,8 +593,8 @@ namespace MitoPlayer_2024.Dao
                         track.Path = (string)reader[1];
                         track.FileName = (string)reader[2];
                         track.Artist = (string)reader[3];
-                        track.Title =  (string)reader[4];
-                        track.Album = (string)reader[5];
+                        track.Title =  Convert.ToString(reader[4]);
+                        track.Album = Convert.ToString(reader[5]);
                         track.Year = (int)reader[6];
                         track.Length = (int)reader[7];
                         track.OrderInList = (int)reader[8];

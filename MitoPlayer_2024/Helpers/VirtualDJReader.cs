@@ -11,6 +11,7 @@ using System.Xml;
 using System.Runtime.CompilerServices;
 using MitoPlayer_2024.Dao;
 using System.Collections;
+using System.IO;
 
 namespace MitoPlayer_2024.Helpers
 {
@@ -47,17 +48,26 @@ namespace MitoPlayer_2024.Helpers
             this.KeysArray = Array.ConvertAll(keys.Split(','), s => s);
             this.KeysAlterArray = Array.ConvertAll(keysAlter.Split(','), s => s);
 
-            this.GetAttributeListFromVirtualDjDatabase();
+            this.GetAttributeListFromVirtualDjDatabase(this.VirtualDjDatabasePath);
+            char[] alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
+
+            foreach (char c in alpha)
+            {
+                if (File.Exists(c + "://VirtualDJ//database.xml")){
+                    this.GetAttributeListFromVirtualDjDatabase(c + "://VirtualDJ//database.xml");
+                }
+            }
+           
         }
 
-        public void GetAttributeListFromVirtualDjDatabase()
+        public void GetAttributeListFromVirtualDjDatabase(String databasePath)
         {
             this.VDJTracklist = new List<VDJTrack>();
 
             try
             {
                 XmlDocument xDoc = new XmlDocument();
-                xDoc.Load(this.VirtualDjDatabasePath);
+                xDoc.Load(databasePath);
 
                 String bpm = String.Empty;
                 String key = String.Empty;

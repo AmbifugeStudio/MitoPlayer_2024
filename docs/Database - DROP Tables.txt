@@ -9,10 +9,3 @@ drop table tag;
 drop table playlist;
 drop table setting;
 drop table profile;
-
-01A - A-Flat Minor	
-04A - F Minor		
-11A - F-Sharp Minor	
-01B - B Major		
-02B - F-Sharp Major	
-03B - D-Flat Major	

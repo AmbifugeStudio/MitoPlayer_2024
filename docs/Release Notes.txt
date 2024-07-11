@@ -1,4 +1,6 @@
 
+v0.11.6.2
+- BUG: lejátszott számot nem szinezi
 
 
 v0.11.6.1

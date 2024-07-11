@@ -147,6 +147,15 @@ namespace MitoPlayer_2024.Views
 
             int columnIndex = 0;
 
+            for (int i = 0; i < this.dgvTrackList.Rows.Count; i++)
+            {
+                for (int j = 0; j < this.dgvTrackList.Columns.Count; j++)
+                {
+                    this.dgvTrackList.Rows[i].Cells[j].Style.BackColor = Color.White;
+                    this.dgvTrackList.Rows[i].Cells[j].Style.ForeColor = Color.Black;
+                }
+            }
+
             if (this.currentTagForColors != null)
             {
                 for (int j = 0; j < this.dgvTrackList.Columns.Count; j++)
@@ -169,7 +178,10 @@ namespace MitoPlayer_2024.Views
                 }
                 else if(currentTrackIdInPlaylist != -1 && trackIdInPlaylist == currentTrackIdInPlaylist) 
                 {
-                    this.dgvTrackList.Rows[i].DefaultCellStyle.BackColor = Color.LightSeaGreen;
+                    for (int j = 0; j < this.dgvTrackList.Columns.Count; j++)
+                    {
+                        this.dgvTrackList.Rows[i].Cells[j].Style.BackColor = Color.LightSeaGreen;
+                    }
                 }
                 else
                 {
