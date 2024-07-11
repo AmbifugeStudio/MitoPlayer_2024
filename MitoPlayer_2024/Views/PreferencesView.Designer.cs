@@ -30,17 +30,19 @@
         {
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabGeneral = new System.Windows.Forms.TabPage();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.chbAutomaticKeyImport = new System.Windows.Forms.CheckBox();
+            this.chbAutomaticBpmImport = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.btnClear = new System.Windows.Forms.Button();
             this.btnOk = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.chbAutomaticBpmImport = new System.Windows.Forms.CheckBox();
-            this.chbAutomaticKeyImport = new System.Windows.Forms.CheckBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.txtBoxVirtualDjDatabasePath = new System.Windows.Forms.TextBox();
             this.tabControl1.SuspendLayout();
             this.tabGeneral.SuspendLayout();
-            this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -66,6 +68,41 @@
             this.tabGeneral.TabIndex = 0;
             this.tabGeneral.Text = "General";
             this.tabGeneral.UseVisualStyleBackColor = true;
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.txtBoxVirtualDjDatabasePath);
+            this.groupBox2.Controls.Add(this.label1);
+            this.groupBox2.Controls.Add(this.chbAutomaticKeyImport);
+            this.groupBox2.Controls.Add(this.chbAutomaticBpmImport);
+            this.groupBox2.Location = new System.Drawing.Point(6, 6);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(437, 100);
+            this.groupBox2.TabIndex = 1;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "VirtualDJ Import";
+            // 
+            // chbAutomaticKeyImport
+            // 
+            this.chbAutomaticKeyImport.AutoSize = true;
+            this.chbAutomaticKeyImport.Location = new System.Drawing.Point(6, 42);
+            this.chbAutomaticKeyImport.Name = "chbAutomaticKeyImport";
+            this.chbAutomaticKeyImport.Size = new System.Drawing.Size(126, 17);
+            this.chbAutomaticKeyImport.TabIndex = 0;
+            this.chbAutomaticKeyImport.Text = "Automatic Key Import";
+            this.chbAutomaticKeyImport.UseVisualStyleBackColor = true;
+            this.chbAutomaticKeyImport.CheckedChanged += new System.EventHandler(this.chbAutomaticKeyImport_CheckedChanged);
+            // 
+            // chbAutomaticBpmImport
+            // 
+            this.chbAutomaticBpmImport.AutoSize = true;
+            this.chbAutomaticBpmImport.Location = new System.Drawing.Point(6, 19);
+            this.chbAutomaticBpmImport.Name = "chbAutomaticBpmImport";
+            this.chbAutomaticBpmImport.Size = new System.Drawing.Size(129, 17);
+            this.chbAutomaticBpmImport.TabIndex = 0;
+            this.chbAutomaticBpmImport.Text = "Automatic Bpm Import";
+            this.chbAutomaticBpmImport.UseVisualStyleBackColor = true;
+            this.chbAutomaticBpmImport.CheckedChanged += new System.EventHandler(this.chbAutomaticBpmImport_CheckedChanged);
             // 
             // groupBox1
             // 
@@ -109,38 +146,21 @@
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
-            // groupBox2
+            // label1
             // 
-            this.groupBox2.Controls.Add(this.chbAutomaticKeyImport);
-            this.groupBox2.Controls.Add(this.chbAutomaticBpmImport);
-            this.groupBox2.Location = new System.Drawing.Point(6, 6);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(145, 78);
-            this.groupBox2.TabIndex = 1;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "VirtualDJ Import";
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(7, 65);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(81, 13);
+            this.label1.TabIndex = 2;
+            this.label1.Text = "Database Path:";
             // 
-            // chbAutomaticBpmImport
+            // txtBoxVirtualDjDatabasePath
             // 
-            this.chbAutomaticBpmImport.AutoSize = true;
-            this.chbAutomaticBpmImport.Location = new System.Drawing.Point(6, 19);
-            this.chbAutomaticBpmImport.Name = "chbAutomaticBpmImport";
-            this.chbAutomaticBpmImport.Size = new System.Drawing.Size(129, 17);
-            this.chbAutomaticBpmImport.TabIndex = 0;
-            this.chbAutomaticBpmImport.Text = "Automatic Bpm Import";
-            this.chbAutomaticBpmImport.UseVisualStyleBackColor = true;
-            this.chbAutomaticBpmImport.CheckedChanged += new System.EventHandler(this.chbAutomaticBpmImport_CheckedChanged);
-            // 
-            // chbAutomaticKeyImport
-            // 
-            this.chbAutomaticKeyImport.AutoSize = true;
-            this.chbAutomaticKeyImport.Location = new System.Drawing.Point(6, 42);
-            this.chbAutomaticKeyImport.Name = "chbAutomaticKeyImport";
-            this.chbAutomaticKeyImport.Size = new System.Drawing.Size(126, 17);
-            this.chbAutomaticKeyImport.TabIndex = 0;
-            this.chbAutomaticKeyImport.Text = "Automatic Key Import";
-            this.chbAutomaticKeyImport.UseVisualStyleBackColor = true;
-            this.chbAutomaticKeyImport.CheckedChanged += new System.EventHandler(this.chbAutomaticKeyImport_CheckedChanged);
+            this.txtBoxVirtualDjDatabasePath.Location = new System.Drawing.Point(94, 62);
+            this.txtBoxVirtualDjDatabasePath.Name = "txtBoxVirtualDjDatabasePath";
+            this.txtBoxVirtualDjDatabasePath.Size = new System.Drawing.Size(337, 20);
+            this.txtBoxVirtualDjDatabasePath.TabIndex = 3;
             // 
             // PreferencesView
             // 
@@ -154,9 +174,9 @@
             this.Text = "PreferencesView";
             this.tabControl1.ResumeLayout(false);
             this.tabGeneral.ResumeLayout(false);
-            this.groupBox1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -172,5 +192,7 @@
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.CheckBox chbAutomaticBpmImport;
         private System.Windows.Forms.CheckBox chbAutomaticKeyImport;
+        private System.Windows.Forms.TextBox txtBoxVirtualDjDatabasePath;
+        private System.Windows.Forms.Label label1;
     }
 }

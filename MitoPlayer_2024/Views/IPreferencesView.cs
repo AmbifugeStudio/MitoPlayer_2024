@@ -15,6 +15,6 @@ namespace MitoPlayer_2024.Views
         event EventHandler<ListEventArgs> SetAutomaticBpmImportEvent;
         event EventHandler<ListEventArgs> SetAutomaticKeyImportEvent;
 
-        void SetImportSettings(bool automaticBpmImport, bool automaticKeyImport);
+        void SetImportSettings(bool automaticBpmImport, bool automaticKeyImport, String virtualDjDefaultDatabasePath);
     }
 }

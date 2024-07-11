@@ -53,10 +53,11 @@ namespace MitoPlayer_2024.Views
         {
             this.SetAutomaticKeyImportEvent?.Invoke(this, new ListEventArgs { BooleanField1 = this.chbAutomaticKeyImport.Checked });
         }
-        public void SetImportSettings(bool automaticBpmImport, bool automaticKeyImport)
+        public void SetImportSettings(bool automaticBpmImport, bool automaticKeyImport, String virtualDjDefaultDatabasePath)
         {
             this.chbAutomaticBpmImport.Checked = automaticBpmImport;
             this.chbAutomaticKeyImport.Checked = automaticKeyImport;
+            this.txtBoxVirtualDjDatabasePath.Text = virtualDjDefaultDatabasePath;
         }
     }
 }

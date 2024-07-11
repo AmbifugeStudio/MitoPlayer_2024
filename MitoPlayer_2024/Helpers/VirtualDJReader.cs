@@ -33,13 +33,15 @@ namespace MitoPlayer_2024.Helpers
 
 
         private ITrackDao trackDao { get; set; }
+        private ISettingDao settingDao { get; set; }
 
-        public VirtualDJReader(ITrackDao trackDao)
+        public VirtualDJReader(ITrackDao trackDao, ISettingDao settingDao)
         {
             this.trackDao = trackDao;
+            this.settingDao = settingDao;
 
 
-            this.VirtualDjDatabasePath = "C:/Users/Szalas_Portable/AppData/Local/VirtualDJ/database.xml";
+            this.VirtualDjDatabasePath = this.settingDao.GetStringSetting(Settings.VirtualDjDefaultDatabasePath.ToString());
 
             String keyCodes = System.Configuration.ConfigurationManager.AppSettings[Settings.KeyCodes.ToString()];
             String keys = System.Configuration.ConfigurationManager.AppSettings[Settings.Keys.ToString()];

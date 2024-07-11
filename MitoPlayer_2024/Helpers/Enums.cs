@@ -68,7 +68,8 @@ namespace MitoPlayer_2024.Helpers
         LastExportDirectoryPath,
 
         AutomaticBpmImport,
-        AutomaticKeyImport
+        AutomaticKeyImport,
+        VirtualDjDefaultDatabasePath
     }
 
     public enum MediaPlayerUpdateState

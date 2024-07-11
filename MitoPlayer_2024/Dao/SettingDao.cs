@@ -118,6 +118,7 @@ namespace MitoPlayer_2024.Dao
             this.InitializeStringSetting(Settings.LastOpenDirectoryPath.ToString());
             this.InitializeStringSetting(Settings.PlaylistColumnVisibility.ToString());
             this.InitializeStringSetting(Settings.TrackColumnVisibility.ToString());
+           
 
             this.InitializeIntegerSetting(Settings.Volume.ToString());
             this.InitializeIntegerSetting(Settings.LastOpenFilesFilterIndex.ToString());
@@ -134,7 +135,9 @@ namespace MitoPlayer_2024.Dao
             this.InitializeBooleanSetting(Settings.IsTrunkedTitleChecked.ToString());
             this.InitializeDecimalSetting(Settings.ArtistMinimumCharacter.ToString());
             this.InitializeDecimalSetting(Settings.TitleMinimumCharacter.ToString());
-            
+
+            this.InitializeStringSetting(Settings.VirtualDjDefaultDatabasePath.ToString());
+
         }
         private void InitializeStringSetting(String settingName, bool withoutProfile = false)
         {

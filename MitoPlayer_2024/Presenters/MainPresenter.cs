@@ -645,7 +645,7 @@ namespace MitoPlayer_2024.Presenters
         }
         private List<Track> ReadFiles(string[] fileNames)
         {
-            VirtualDJReader vdjReader = new VirtualDJReader(this.trackDao);
+            VirtualDJReader vdjReader = new VirtualDJReader(this.trackDao, this.settingDao);
 
             List<String> filePathList = new List<String>();
             List<Track> trackList = new List<Track>();
