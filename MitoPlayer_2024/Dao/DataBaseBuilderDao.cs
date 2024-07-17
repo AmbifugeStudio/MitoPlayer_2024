@@ -212,7 +212,7 @@ namespace MitoPlayer_2024.Helpers
                                         Id int(11) NOT NULL, 
                                         Name varchar(50) NOT NULL, 
                                         OrderInList int(11) NOT NULL, 
-                                        QuickListGroup int(11) NOT NULL, 
+                                        Hotkey int(11) NOT NULL, 
                                         IsActive tinyint(4) NOT NULL, 
                                         ProfileId int(11) DEFAULT NULL, 
 
@@ -345,6 +345,7 @@ namespace MitoPlayer_2024.Helpers
                                         Name varchar(50) NOT NULL, 
                                         TagId int(11) NOT NULL, 
                                         Color varchar(25) NOT NULL,
+                                        Hotkey int(11) NOT NULL, 
                                         ProfileId int(11) NOT NULL, 
 
                                         PRIMARY KEY (Id), 

@@ -17,6 +17,7 @@ namespace MitoPlayer_2024.Models
         public int QuickListGroup { get; set; }
         public bool IsActive { get; set; }
         public int ProfileId { get; set; }
+        public int Hotkey { get; set; }
 
         public Playlist() { }
 

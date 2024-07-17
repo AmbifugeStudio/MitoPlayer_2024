@@ -19,26 +19,26 @@ namespace MitoPlayer_2024.Presenters
         private IPlaylistEditorView view;
         private ITrackDao trackDao;
         private ISettingDao settingDao;
-        private bool isEditMode = false;
+
         public Playlist newPlaylist;
-        private int lastGeneratedPlaylistId;
+        private String playlistName;
+        private int playlistHotkey;
 
         public PlaylistEditorPresenter(IPlaylistEditorView view, ITrackDao trackDao, ISettingDao settingDao)
         {
             this.view = view;
             this.trackDao = trackDao;
             this.settingDao = settingDao;
-            this.isEditMode = false;
 
-            this.lastGeneratedPlaylistId = this.settingDao.GetIntegerSetting(Settings.LastGeneratedPlaylistId.ToString(),true);
+            this.playlistName = "New Playlist " + this.settingDao.GetNextId(TableName.Playlist.ToString());
+            this.playlistHotkey = 0;
+            ((PlaylistEditorView)this.view).SetPlaylistName(this.playlistName);
+            ((PlaylistEditorView)this.view).SetHotkey(this.playlistHotkey);
 
-            this.lastGeneratedPlaylistId = this.lastGeneratedPlaylistId + 1;
-            ((PlaylistEditorView)this.view).SetPlaylistName("New Playlist " + this.lastGeneratedPlaylistId.ToString());
-
-            this.settingDao.SetIntegerSetting(Settings.LastGeneratedPlaylistId.ToString(), this.lastGeneratedPlaylistId, true);
-
-            this.view.CreateOrEditPlaylist += CreateOrEditPlaylist;
-            this.view.ClosePlaylistEditor += ClosePlaylistEditor;
+            this.view.ChangeName += ChangeName;
+            this.view.ChangeHotkey += ChangeHotkey;
+            this.view.CloseWithOk += CloseWithOk;
+            this.view.CloseWithCancel += CloseWithCancel;
         }
 
         public PlaylistEditorPresenter(IPlaylistEditorView view, ITrackDao trackDao, Playlist playlist)
@@ -46,78 +46,129 @@ namespace MitoPlayer_2024.Presenters
             this.view = view;
             this.trackDao = trackDao;
             this.newPlaylist = playlist;
-            this.isEditMode = true;
 
-            ((PlaylistEditorView)this.view).SetPlaylistName(playlist.Name, true);
-            
-            this.view.CreateOrEditPlaylist += CreateOrEditPlaylist;
-            this.view.ClosePlaylistEditor += ClosePlaylistEditor;
+            this.playlistName = this.newPlaylist.Name;
+            this.playlistHotkey = this.newPlaylist.Hotkey;
+
+            ((PlaylistEditorView)this.view).SetPlaylistName(this.playlistName, true);
+            ((PlaylistEditorView)this.view).SetHotkey(this.playlistHotkey);
+
+            this.view.ChangeName += ChangeName;
+            this.view.ChangeHotkey += ChangeHotkey;
+            this.view.CloseWithOk += CloseWithOk;
+            this.view.CloseWithCancel += CloseWithCancel;
         }
-        private void ClosePlaylistEditor(object sender, EventArgs e)
+        private void ChangeName(object sender, ListEventArgs e)
+        {
+            if(playlistName.Equals("Default Playlist"))
+            {
+                MessageBox.Show("Default playlist cannot be renamed!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                this.playlistName = e.StringField1;
+            }
+        }
+        private void ChangeHotkey(object sender, ListEventArgs e)
+        {
+            this.playlistHotkey = e.IntegerField1;
+        }
+        private void CloseWithOk(object sender, EventArgs e)
+        {
+            bool result = true;
+
+            List<Playlist> playlistList = this.trackDao.GetAllPlaylist();
+            if (playlistList != null && playlistList.Count > 0 && this.newPlaylist != null)
+            {
+                playlistList.Remove(this.newPlaylist);
+            }
+            if (result)
+            {
+                if (String.IsNullOrEmpty(this.playlistName))
+                {
+                    result = false;
+                    MessageBox.Show("Playlist name must be entered!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            if (result)
+            {
+                if (playlistList != null && playlistList.Count > 0 &&
+                    playlistList.Exists(x => x.Name == this.playlistName))
+                {
+                    result = false;
+                    MessageBox.Show("Playlist name already exists!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            if (result)
+            {
+                if (this.playlistHotkey != 0)
+                {
+                    if (playlistList.Exists(x => x.Hotkey == this.playlistHotkey))
+                    {
+                        DialogResult dr = MessageBox.Show("Hotkey is already used by another Playlist. Do you want to replace?", "Question", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+                        if (dr == DialogResult.OK)
+                        {
+                            Playlist playlist = playlistList.Find(x => x.Hotkey == this.playlistHotkey);
+                            if (playlist != null)
+                            {
+                                playlist.Hotkey = 0;
+                                this.trackDao.UpdatePlaylist(playlist);
+                            }
+                        }
+                    }
+                }
+            }
+            if (result)
+            {
+                if (this.newPlaylist == null)
+                {
+                    Playlist playlist = new Playlist();
+                    playlist.Id = this.trackDao.GetNextId(TableName.Playlist.ToString());
+                    playlist.Name = this.playlistName;
+                    playlist.OrderInList = playlistList.Count;
+                    playlist.QuickListGroup = 0;
+                    playlist.IsActive = false;
+                    playlist.Hotkey = this.playlistHotkey;
+                    this.newPlaylist = playlist;
+                    try
+                    {
+                        this.trackDao.CreatePlaylist(this.newPlaylist);
+                    }
+                    catch (Exception)
+                    {
+                        result = false;
+                    }
+                }
+                else
+                {
+                    this.newPlaylist.Name = this.playlistName;
+                    this.newPlaylist.Hotkey = this.playlistHotkey;
+                    try
+                    {
+                        this.trackDao.UpdatePlaylist(this.newPlaylist);
+                    }
+                    catch (Exception)
+                    {
+                        result = false;
+                    }
+                }
+            }
+
+            if (result)
+            {
+                ((PlaylistEditorView)this.view).DialogResult = DialogResult.OK;
+                ((PlaylistEditorView)this.view).Close();
+            }
+            else
+            {
+                ((PlaylistEditorView)this.view).DialogResult = DialogResult.None;
+            }
+
+        }
+        private void CloseWithCancel(object sender, EventArgs e)
         {
             ((PlaylistEditorView)this.view).DialogResult = DialogResult.Cancel;
             ((PlaylistEditorView)this.view).Close();
         }
-        private void CreateOrEditPlaylist(object sender, Helpers.ListEventArgs e)
-        {
-            ((PlaylistEditorView)this.view).DialogResult = DialogResult.None;
-
-            if (this.isEditMode)
-            {
-                if (!String.IsNullOrEmpty(e.StringField1))
-                {
-                    if (e.StringField1.Equals(this.newPlaylist.Name)){
-                        ((PlaylistEditorView)this.view).DialogResult = DialogResult.OK;
-                    }
-                    else
-                    {
-                        Playlist playlist = this.trackDao.GetPlaylistByName(e.StringField1);
-                        if(playlist != null)
-                        {
-                            MessageBox.Show("Playlist name already exists!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        }
-                        else
-                        {
-                            this.newPlaylist.Name = e.StringField1;
-                            ((PlaylistEditorView)this.view).DialogResult = DialogResult.OK;
-                        }
-                    }
-                }
-                else
-                {
-                    MessageBox.Show("Playlist name must be entered!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-            }
-            else
-            {
-                if (!String.IsNullOrEmpty(e.StringField1))
-                {
-                    List<Playlist> playlistList = this.trackDao.GetAllPlaylist();
-                    if (playlistList != null && playlistList.Count > 0)
-                    {
-                        if (playlistList.Exists(x => x.Name.Equals(e.StringField1)))
-                        {
-                            MessageBox.Show("Playlist name already exists!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        }
-                        else
-                        {
-                            Playlist playlist = new Playlist();
-                            playlist.Id = this.trackDao.GetNextId(TableName.Playlist.ToString());
-                            playlist.Name = e.StringField1;
-                            playlist.OrderInList = playlistList.Count;
-                            playlist.QuickListGroup = 0;
-                            playlist.IsActive = false;
-                            this.newPlaylist = playlist;
-                            ((PlaylistEditorView)this.view).DialogResult = DialogResult.OK;
-                        }
-                    }
-                }
-                else
-                {
-                    MessageBox.Show("Playlist name must be entered!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-            }            
-        }
-
     }
 }

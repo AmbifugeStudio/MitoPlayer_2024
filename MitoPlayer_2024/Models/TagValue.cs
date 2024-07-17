@@ -15,6 +15,7 @@ namespace MitoPlayer_2024.Models
         public int TagId { get; set; }
         public int ProfileId { get; set; }
         public Color Color { get; set; }
+        public int Hotkey { get; set; }
         public TagValue() { }
 
     }

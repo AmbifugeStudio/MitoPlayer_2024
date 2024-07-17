@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security.Principal;
 using System.Text;
 using System.Windows.Forms;
@@ -23,7 +24,7 @@ namespace MitoPlayer_2024.Presenters
     
     public class PlaylistPresenter
     {
-        private IPlaylistView view { get; set; }
+        private IPlaylistView playlistView { get; set; }
         private ITrackDao trackDao { get; set; }
         private ITagDao tagDao { get; set; }
         private ISettingDao settingDao { get; set; }
@@ -50,7 +51,7 @@ namespace MitoPlayer_2024.Presenters
         public PlaylistPresenter(IPlaylistView view, MediaPlayerComponent mediaPlayer, ITrackDao trackDao, ITagDao tagValueDao, ISettingDao settingDao)
         {
             //INITIALIZE
-            this.view = view;
+            this.playlistView = view;
             this.trackDao = trackDao;
             this.tagDao = tagValueDao;
             this.settingDao = settingDao;
@@ -67,44 +68,46 @@ namespace MitoPlayer_2024.Presenters
             this.InitializeVolume();
 
             //MEDIA PLAYER
-            this.view.SetCurrentTrackEvent += SetCurrentTrackEvent;
-            this.view.PlayTrackEvent += PlayTrackEvent;
-            this.view.PauseTrackEvent += PauseTrackEvent;
-            this.view.StopTrackEvent += StopTrackEvent;
-            this.view.PrevTrackEvent += PrevTrackEvent;
-            this.view.NextTrackEvent += NextTrackEvent;
-            this.view.RandomTrackEvent += RandomTrackEvent;
-            this.view.GetMediaPlayerProgressStatusEvent += GetMediaPlayerProgressStatusEvent;
-            this.view.SetCurrentTrackColorEvent += SetCurrentTrackColorEvent;
+            this.playlistView.SetCurrentTrackEvent += SetCurrentTrackEvent;
+            this.playlistView.PlayTrackEvent += PlayTrackEvent;
+            this.playlistView.PauseTrackEvent += PauseTrackEvent;
+            this.playlistView.StopTrackEvent += StopTrackEvent;
+            this.playlistView.PrevTrackEvent += PrevTrackEvent;
+            this.playlistView.NextTrackEvent += NextTrackEvent;
+            this.playlistView.RandomTrackEvent += RandomTrackEvent;
+            this.playlistView.GetMediaPlayerProgressStatusEvent += GetMediaPlayerProgressStatusEvent;
+            this.playlistView.SetCurrentTrackColorEvent += SetCurrentTrackColorEvent;
 
             //TRACKLIST
-            this.view.OrderByColumnEvent += OrderByColumnEvent;
-            this.view.DeleteTracksEvent += DeleteTracksEvent;
+            this.playlistView.OrderByColumnEvent += OrderByColumnEvent;
+            this.playlistView.DeleteTracksEvent += DeleteTracksEvent;
 
-            this.view.InternalDragAndDropIntoTracklistEvent += InternalDragAndDropIntoTracklistEvent;
-            this.view.InternalDragAndDropIntoPlaylistEvent += InternalDragAndDropIntoPlaylistEvent;
-            this.view.ExternalDragAndDropIntoTracklistEvent += ExternalDragAndDropIntoTracklistEvent;
-            this.view.ExternalDragAndDropIntoPlaylistEvent += ExternalDragAndDropIntoPlaylistEvent;
-            this.view.ChangeTracklistColorEvent += ChangeTracklistColorEvent;
+            this.playlistView.InternalDragAndDropIntoTracklistEvent += InternalDragAndDropIntoTracklistEvent;
+            this.playlistView.InternalDragAndDropIntoPlaylistEvent += InternalDragAndDropIntoPlaylistEvent;
+            this.playlistView.ExternalDragAndDropIntoTracklistEvent += ExternalDragAndDropIntoTracklistEvent;
+            this.playlistView.ExternalDragAndDropIntoPlaylistEvent += ExternalDragAndDropIntoPlaylistEvent;
+            this.playlistView.ChangeTracklistColorEvent += ChangeTracklistColorEvent;
 
-            this.view.ShowColumnVisibilityEditorEvent += ShowColumnVisibilityEditorEvent;
-            this.view.ExportToDirectoryEvent += ExportToDirectoryEvent;
+            this.playlistView.ShowColumnVisibilityEditorEvent += ShowColumnVisibilityEditorEvent;
+            this.playlistView.ScanBpmEvent += ScanBpmEvent;
+            this.playlistView.ExportToDirectoryEvent += ExportToDirectoryEvent;
 
             //PLAYLIST
-            this.view.ShowPlaylistEditorViewEvent += ShowPlaylistEditorViewEvent;
-            this.view.LoadPlaylistEvent += LoadPlaylistEvent;
-            this.view.MovePlaylistEvent += MovePlaylistEvent;
-            this.view.DeletePlaylistEvent += DeletePlaylistEvent;
-            this.view.SetQuickListEvent += SetQuickListEvent;
-            this.view.ExportToM3UEvent += ExportToM3UEvent;
-            this.view.ExportToTXTEvent += ExportToTXTEvent;
+            this.playlistView.CreatePlaylist += CreatePlaylist;
+            this.playlistView.EditPlaylist += EditPlaylist;
+            this.playlistView.LoadPlaylistEvent += LoadPlaylistEvent;
+            this.playlistView.MovePlaylistEvent += MovePlaylistEvent;
+            this.playlistView.DeletePlaylistEvent += DeletePlaylistEvent;
+            this.playlistView.SetQuickListEvent += SetQuickListEvent;
+            this.playlistView.ExportToM3UEvent += ExportToM3UEvent;
+            this.playlistView.ExportToTXTEvent += ExportToTXTEvent;
 
             //TAG EDITOR
-            this.view.DisplayTagEditorEvent += DisplayTagEditorEvent;
-            this.view.SelectTagEvent += SelectTagEvent;
-            this.view.SetTagValueEvent += SetTagValueEvent;
+            this.playlistView.DisplayTagEditorEvent += DisplayTagEditorEvent;
+            this.playlistView.SelectTagEvent += SelectTagEvent;
+            this.playlistView.SetTagValueEvent += SetTagValueEvent;
 
-            this.view.Show();
+            this.playlistView.Show();
         }
 
         private void ChangeTracklistColorEvent(object sender, ListEventArgs e)
@@ -127,20 +130,20 @@ namespace MitoPlayer_2024.Presenters
             int volume = this.settingDao.GetIntegerSetting(Settings.Volume.ToString());
             if (volume == -1)
                 volume = 50;
-            this.view.SetVolume(volume);
+            this.playlistView.SetVolume(volume);
             this.mediaPLayerComponent.MediaPlayer.settings.volume = volume;
         }
         private void InitializeTagEditor()
         {
             this.isTagEditorDisplayed = false;
             
-            ((PlaylistView)this.view).InitializeTagEditor(this.tagList);
-            ((PlaylistView)this.view).InitializeTagValueEditor(null);
-            ((PlaylistView)this.view).CallDisplayTagEditor(this.isTagEditorDisplayed);
+            ((PlaylistView)this.playlistView).InitializeTagEditor(this.tagList);
+            ((PlaylistView)this.playlistView).InitializeTagValueEditor(null);
+            ((PlaylistView)this.playlistView).CallDisplayTagEditor(this.isTagEditorDisplayed);
         }
         private void InitializeColoringByTagValues()
         {
-            ((PlaylistView)this.view).InitializeCurrentTagValueColors(this.tagList);
+            ((PlaylistView)this.playlistView).InitializeCurrentTagValueColors(this.tagList);
             this.SetTrackList(this.trackListTable);
         }
         private void ChangeColoringByTagValues(String tagName)
@@ -168,7 +171,7 @@ namespace MitoPlayer_2024.Presenters
                     }
                 }
             }
-            ((PlaylistView)this.view).ChangeCurrentTagValueColors(tag, tagValueColor);
+            ((PlaylistView)this.playlistView).ChangeCurrentTagValueColors(tag, tagValueColor);
             this.SetTrackList(this.trackListTable);
         }
         private void InitializeDataTables()
@@ -281,8 +284,8 @@ namespace MitoPlayer_2024.Presenters
                 }
                 this.SetTrackList(this.trackListTable);
             }
-            ((PlaylistView)this.view).SetCurrentPlaylistColor(pls.Id);
-            ((PlaylistView)this.view).UpdateTrackCountAndLength(this.currentPlaylistId);
+            ((PlaylistView)this.playlistView).SetCurrentPlaylistColor(pls.Id);
+            ((PlaylistView)this.playlistView).UpdateTrackCountAndLength(this.currentPlaylistId);
         }
         private String LengthToString(double length)
         {
@@ -313,7 +316,7 @@ namespace MitoPlayer_2024.Presenters
         private void SetPlaylistList(DataTable playlistListTable)
         {
             this.playlistListBindingSource.DataSource = playlistListTable;
-            this.view.SetPlaylistListBindingSource(this.playlistListBindingSource, this.PlaylistColumnVisibilityArray, this.currentPlaylistId);
+            this.playlistView.SetPlaylistListBindingSource(this.playlistListBindingSource, this.PlaylistColumnVisibilityArray, this.currentPlaylistId);
         }
         private void SetTrackList(DataTable trackListTable)
         {
@@ -324,12 +327,12 @@ namespace MitoPlayer_2024.Presenters
             }
 
             this.trackListBindingSource.DataSource = trackListTable;
-            this.view.SetTrackListBindingSource(this.trackListBindingSource, this.TrackColumnVisibilityArray, this.TrackColumnSortingIdArray, currentTrackIdInPlaylist);
+            this.playlistView.SetTrackListBindingSource(this.trackListBindingSource, this.TrackColumnVisibilityArray, this.TrackColumnSortingIdArray, currentTrackIdInPlaylist);
         }
         private void SetSelectedTrackList(DataTable trackListTable)
         {
             this.selectedTrackListBindingSource.DataSource = trackListTable;
-            this.view.SetSelectedTrackListBindingSource(this.selectedTrackListBindingSource);
+            this.playlistView.SetSelectedTrackListBindingSource(this.selectedTrackListBindingSource);
         }
         private void SavePlaylistList(DataTable playlistListTable)
         {
@@ -457,7 +460,7 @@ namespace MitoPlayer_2024.Presenters
 
                 this.SaveTrackList(this.trackListTable, this.currentPlaylistId);
                 this.SetTrackList(this.trackListTable);
-                ((PlaylistView)this.view).CallSetCurrentTrackColorEvent();
+                ((PlaylistView)this.playlistView).CallSetCurrentTrackColorEvent();
             }
         }
         public void Shuffle()
@@ -482,7 +485,7 @@ namespace MitoPlayer_2024.Presenters
 
                 this.SaveTrackList(trackListTable, this.currentPlaylistId);
                 this.SetTrackList(trackListTable);
-                ((PlaylistView)this.view).CallSetCurrentTrackColorEvent();
+                ((PlaylistView)this.playlistView).CallSetCurrentTrackColorEvent();
             }
             
         }
@@ -520,7 +523,7 @@ namespace MitoPlayer_2024.Presenters
 
                 this.SaveTrackList(this.trackListTable, this.currentPlaylistId);
                 this.SetTrackList(this.trackListTable);
-                ((PlaylistView)this.view).CallSetCurrentTrackColorEvent();
+                ((PlaylistView)this.playlistView).CallSetCurrentTrackColorEvent();
             }
         }
         #endregion
@@ -572,7 +575,7 @@ namespace MitoPlayer_2024.Presenters
                     if (sourceTrackList != null && sourceTrackList.Count > 0)
                     {
                         this.AddTracksToPlaylist(playlistId, sourceTrackList);
-                        ((PlaylistView)this.view).UpdateAfterCopyTracksToPlaylist(sourceTrackList.Count(), playlistRow["Name"].ToString());
+                        ((PlaylistView)this.playlistView).UpdateAfterCopyTracksToPlaylist(sourceTrackList.Count(), playlistRow["Name"].ToString());
                     }
                 }
             }
@@ -973,7 +976,7 @@ namespace MitoPlayer_2024.Presenters
 
                 this.SetTrackList(trackListTable);
                 this.SaveTrackList(trackListTable, this.currentPlaylistId);
-                ((PlaylistView)this.view).UpdateTrackCountAndLength(this.currentPlaylistId);
+                ((PlaylistView)this.playlistView).UpdateTrackCountAndLength(this.currentPlaylistId);
             }
         }
         #endregion
@@ -992,8 +995,8 @@ namespace MitoPlayer_2024.Presenters
                 }
                 this.SaveTrackList(trackListTable, this.currentPlaylistId);
                 this.SetTrackList(trackListTable);
-                ((PlaylistView)this.view).CallSetCurrentTrackColorEvent();
-                ((PlaylistView)this.view).UpdateTrackCountAndLength(this.currentPlaylistId);
+                ((PlaylistView)this.playlistView).CallSetCurrentTrackColorEvent();
+                ((PlaylistView)this.playlistView).UpdateTrackCountAndLength(this.currentPlaylistId);
             }
         }
         public void RemoveMissingTracks()
@@ -1010,8 +1013,8 @@ namespace MitoPlayer_2024.Presenters
 
                 this.SaveTrackList(this.trackListTable, this.currentPlaylistId);
                 this.SetTrackList(this.trackListTable);
-                ((PlaylistView)this.view).CallSetCurrentTrackColorEvent();
-                ((PlaylistView)this.view).UpdateTrackCountAndLength(this.currentPlaylistId);
+                ((PlaylistView)this.playlistView).CallSetCurrentTrackColorEvent();
+                ((PlaylistView)this.playlistView).UpdateTrackCountAndLength(this.currentPlaylistId);
             } 
         }
         public void RemoveDuplicatedTracks()
@@ -1056,8 +1059,8 @@ namespace MitoPlayer_2024.Presenters
 
                 this.SaveTrackList(this.trackListTable, this.currentPlaylistId);
                 this.SetTrackList(this.trackListTable);
-                ((PlaylistView)this.view).CallSetCurrentTrackColorEvent();
-                ((PlaylistView)this.view).UpdateTrackCountAndLength(this.currentPlaylistId);
+                ((PlaylistView)this.playlistView).CallSetCurrentTrackColorEvent();
+                ((PlaylistView)this.playlistView).UpdateTrackCountAndLength(this.currentPlaylistId);
             }
         }
         public void Clear()
@@ -1066,7 +1069,7 @@ namespace MitoPlayer_2024.Presenters
 
             this.SaveTrackList(this.trackListTable, this.currentPlaylistId);
             this.SetTrackList(this.trackListTable);
-            ((PlaylistView)this.view).UpdateTrackCountAndLength(this.currentPlaylistId);
+            ((PlaylistView)this.playlistView).UpdateTrackCountAndLength(this.currentPlaylistId);
         }
         #endregion
 
@@ -1086,22 +1089,22 @@ namespace MitoPlayer_2024.Presenters
             if (updateState == MediaPlayerUpdateState.AfterPlay)
             {
                 if (this.trackListTable != null && this.trackListTable.Rows != null && this.trackListTable.Rows.Count > 0)
-                    this.view.UpdateAfterPlayTrack(this.mediaPLayerComponent.GetCurrentTrackIndex(), this.mediaPLayerComponent.CurrentTrackIdInPlaylist);
+                    this.playlistView.UpdateAfterPlayTrack(this.mediaPLayerComponent.GetCurrentTrackIndex(), this.mediaPLayerComponent.CurrentTrackIdInPlaylist);
             }
             else if (updateState == MediaPlayerUpdateState.AfterPlayAfterPause)
             {
-                this.view.UpdateAfterPlayTrackAfterPause();
+                this.playlistView.UpdateAfterPlayTrackAfterPause();
             }
         }
         public void PauseTrackEvent(object sender, EventArgs e)
         {
             this.mediaPLayerComponent.PauseTrack();
-            this.view.UpdateAfterPauseTrack();
+            this.playlistView.UpdateAfterPauseTrack();
         }
         public void StopTrackEvent(object sender, EventArgs e)
         {
             this.mediaPLayerComponent.StopTrack();
-            this.view.UpdateAfterStopTrack();
+            this.playlistView.UpdateAfterStopTrack();
         }
         public void PrevTrackEvent(object sender, ListEventArgs e)
         {
@@ -1111,11 +1114,11 @@ namespace MitoPlayer_2024.Presenters
 
                 if (updateState == MediaPlayerUpdateState.AfterPlay)
                 {
-                    this.view.UpdateAfterPlayTrack(this.mediaPLayerComponent.GetCurrentTrackIndex(), this.mediaPLayerComponent.CurrentTrackIdInPlaylist);
+                    this.playlistView.UpdateAfterPlayTrack(this.mediaPLayerComponent.GetCurrentTrackIndex(), this.mediaPLayerComponent.CurrentTrackIdInPlaylist);
                 }
                 else if (updateState == MediaPlayerUpdateState.AfterPlayAfterPause)
                 {
-                    this.view.UpdateAfterPlayTrackAfterPause();
+                    this.playlistView.UpdateAfterPlayTrackAfterPause();
                 }
             }
             
@@ -1128,11 +1131,11 @@ namespace MitoPlayer_2024.Presenters
 
                 if (updateState == MediaPlayerUpdateState.AfterPlay)
                 {
-                    this.view.UpdateAfterPlayTrack(this.mediaPLayerComponent.GetCurrentTrackIndex(), this.mediaPLayerComponent.CurrentTrackIdInPlaylist);
+                    this.playlistView.UpdateAfterPlayTrack(this.mediaPLayerComponent.GetCurrentTrackIndex(), this.mediaPLayerComponent.CurrentTrackIdInPlaylist);
                 }
                 else if (updateState == MediaPlayerUpdateState.AfterPlayAfterPause)
                 {
-                    this.view.UpdateAfterPlayTrackAfterPause();
+                    this.playlistView.UpdateAfterPlayTrackAfterPause();
                 }
             }
             
@@ -1144,11 +1147,11 @@ namespace MitoPlayer_2024.Presenters
                 MediaPlayerUpdateState updateState = this.mediaPLayerComponent.RandomTrack();
                 if (updateState == MediaPlayerUpdateState.AfterPlay)
                 {
-                    this.view.UpdateAfterPlayTrack(this.mediaPLayerComponent.GetCurrentTrackIndex(), this.mediaPLayerComponent.CurrentTrackIdInPlaylist);
+                    this.playlistView.UpdateAfterPlayTrack(this.mediaPLayerComponent.GetCurrentTrackIndex(), this.mediaPLayerComponent.CurrentTrackIdInPlaylist);
                 }
                 else
                 {
-                    this.view.UpdateAfterPlayTrackAfterPause();
+                    this.playlistView.UpdateAfterPlayTrackAfterPause();
                 }
             }
              
@@ -1166,19 +1169,19 @@ namespace MitoPlayer_2024.Presenters
 
                 if (updateState == MediaPlayerUpdateState.AfterPlay)
                 {
-                    this.view.UpdateAfterPlayTrack(this.mediaPLayerComponent.GetCurrentTrackIndex(), this.mediaPLayerComponent.CurrentTrackIdInPlaylist);
+                    this.playlistView.UpdateAfterPlayTrack(this.mediaPLayerComponent.GetCurrentTrackIndex(), this.mediaPLayerComponent.CurrentTrackIdInPlaylist);
                 }
                 else if (updateState == MediaPlayerUpdateState.AfterPlayAfterPause)
                 {
-                    this.view.UpdateAfterPlayTrackAfterPause();
+                    this.playlistView.UpdateAfterPlayTrackAfterPause();
                 }
             }
 
-            this.view.UpdateMediaPlayerProgressStatus(duration, durationString, currentPosition, currentPositionString);
+            this.playlistView.UpdateMediaPlayerProgressStatus(duration, durationString, currentPosition, currentPositionString);
         }
         private void SetCurrentTrackColorEvent(object sender, ListEventArgs e)
         {
-            this.view.SetCurrentTrackColor(this.mediaPLayerComponent.CurrentTrackIdInPlaylist);
+            this.playlistView.SetCurrentTrackColor(this.mediaPLayerComponent.CurrentTrackIdInPlaylist);
         }
         internal void CallChangeProgressEvent(int currentPosX, int width)
         {
@@ -1192,64 +1195,45 @@ namespace MitoPlayer_2024.Presenters
         #endregion
 
         #region PLAYLIST
-        private void ShowPlaylistEditorViewEvent(object sender, ListEventArgs e)
+
+
+        private void CreatePlaylist(object sender, EventArgs e)
         {
-            if (e.IntegerField1 == -1)
+            PlaylistEditorView playlistEditorView = new PlaylistEditorView();
+            PlaylistEditorPresenter presenter = new PlaylistEditorPresenter(playlistEditorView, this.trackDao, this.settingDao);
+            if (playlistEditorView.ShowDialog((PlaylistView)this.playlistView) == DialogResult.OK)
             {
-                //CREATE PLAYLIST
-                PlaylistEditorView editorView = new PlaylistEditorView();
-                PlaylistEditorPresenter presenter = new PlaylistEditorPresenter(editorView, this.trackDao, this.settingDao);
-
-                if (editorView.ShowDialog((PlaylistView)this.view) == DialogResult.OK)
-                {
-                    Playlist newPlaylist = presenter.newPlaylist;
-                    if (newPlaylist != null)
-                    {
-                        this.trackDao.CreatePlaylist(newPlaylist);
-                        this.playlistListTable.Rows.Add(newPlaylist.Id, newPlaylist.QuickListGroup, newPlaylist.Name, newPlaylist.OrderInList, newPlaylist.ProfileId, newPlaylist.IsActive);
-                    }
-                    this.SavePlaylistList(playlistListTable);
-                    this.SetPlaylistList(playlistListTable);
-                    ((PlaylistView)this.view).SetCurrentPlaylistColor(this.currentPlaylistId);
-                }
-            }
-            else
-            {
-                //EDIT PLAYLIST
-                Playlist playlist = new Playlist();
-                playlist.Id = Convert.ToInt32(this.playlistListTable.Rows[e.IntegerField1]["Id"]);
-                playlist.Name = this.playlistListTable.Rows[e.IntegerField1]["Name"].ToString();
-                playlist.OrderInList = Convert.ToInt32(this.playlistListTable.Rows[e.IntegerField1]["OrderInList"]);
-                playlist.QuickListGroup = Convert.ToInt32(this.playlistListTable.Rows[e.IntegerField1]["G"]);
-                playlist.IsActive = Convert.ToBoolean(this.playlistListTable.Rows[e.IntegerField1]["IsActive"]);
-                playlist.ProfileId = Convert.ToInt32(this.playlistListTable.Rows[e.IntegerField1]["ProfileId"]);
-
-                if (playlist.Name.Equals("Default Playlist"))
-                {
-                    MessageBox.Show("Default playlist cannot be renamed!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                else
-                {
-                    PlaylistEditorView editorView = new PlaylistEditorView();
-                    PlaylistEditorPresenter presenter = new PlaylistEditorPresenter(editorView, this.trackDao, playlist);
-
-                    if (editorView.ShowDialog((PlaylistView)this.view) == DialogResult.OK)
-                    {
-                        Playlist newPlaylist = presenter.newPlaylist;
-                        if (newPlaylist != null)
-                        {
-                            this.trackDao.UpdatePlaylist(newPlaylist);
-                            this.playlistListTable.Rows[e.IntegerField1]["Name"] = newPlaylist.Name;
-                        }
-                        this.SavePlaylistList(this.playlistListTable);
-                        this.SetPlaylistList(this.playlistListTable);
-                        ((PlaylistView)this.view).SetCurrentPlaylistColor(this.currentPlaylistId);
-                    }
-                }
-
-
+                this.playlistListTable.Rows.Add(presenter.newPlaylist.Id, presenter.newPlaylist.QuickListGroup, presenter.newPlaylist.Name, presenter.newPlaylist.OrderInList, presenter.newPlaylist.ProfileId, presenter.newPlaylist.IsActive);
+                this.SavePlaylistList(playlistListTable);
+                this.SetPlaylistList(playlistListTable);
+                ((PlaylistView)this.playlistView).SetCurrentPlaylistColor(this.currentPlaylistId);
             }
         }
+        private void EditPlaylist(object sender, ListEventArgs e)
+        {
+            DataRow playlistRow = this.playlistListTable.Select("Id = " + Convert.ToInt32(this.playlistListTable.Rows[e.IntegerField1]["Id"])).First();
+            if (playlistRow != null)
+            {
+                int id = (int)playlistRow["Id"];
+
+                Playlist playlist  = this.trackDao.GetPlaylist(id);
+
+                int playlistIndex = this.playlistListTable.Rows.IndexOf(playlistRow);
+
+                PlaylistEditorView playlistEditorView = new PlaylistEditorView();
+                PlaylistEditorPresenter presenter = new PlaylistEditorPresenter(playlistEditorView, this.trackDao, this.settingDao);
+                if (playlistEditorView.ShowDialog((PlaylistView)this.playlistView) == DialogResult.OK)
+                {
+                    this.playlistListTable.Rows[playlistIndex]["Name"] = presenter.newPlaylist?.Name;
+                    //this.playlistListTable.Rows[playlistIndex]["Hotkey"] = presenter.newPlaylist?.Hotkey;
+
+                    this.SavePlaylistList(playlistListTable);
+                    this.SetPlaylistList(playlistListTable);
+                    ((PlaylistView)this.playlistView).SetCurrentPlaylistColor(this.currentPlaylistId);
+                }
+            }
+        }
+
         private void LoadPlaylistEvent(object sender, ListEventArgs e)
         {
             this.LoadPlaylist(e.IntegerField1);
@@ -1293,7 +1277,7 @@ namespace MitoPlayer_2024.Presenters
                         trackIdInPlaylist = Convert.ToInt32(trackListTable.Rows[i]["TrackIdInPlaylist"]);
                         if (trackIdInPlaylist == currentTrackIdInPlaylist)
                         {
-                            this.view.SetCurrentTrackColor(currentTrackIdInPlaylist);
+                            this.playlistView.SetCurrentTrackColor(currentTrackIdInPlaylist);
                             break;
                         }
                     }
@@ -1335,8 +1319,8 @@ namespace MitoPlayer_2024.Presenters
                             this.SetTrackList(this.trackListTable);
                             this.SetPlaylistAsCurrent(this.currentPlaylistId);
 
-                            ((PlaylistView)this.view).SetCurrentPlaylistColor(this.currentPlaylistId);
-                            ((PlaylistView)this.view).UpdateTrackCountAndLength(this.currentPlaylistId);
+                            ((PlaylistView)this.playlistView).SetCurrentPlaylistColor(this.currentPlaylistId);
+                            ((PlaylistView)this.playlistView).UpdateTrackCountAndLength(this.currentPlaylistId);
 
                         }
                     }
@@ -1475,7 +1459,7 @@ namespace MitoPlayer_2024.Presenters
             {
                 ExportToDirectoryPresenter presenter = new ExportToDirectoryPresenter(exportToDirectoryView, trackList, this.tagDao, this.settingDao);
 
-                if (exportToDirectoryView.ShowDialog((PlaylistView)this.view) == DialogResult.OK)
+                if (exportToDirectoryView.ShowDialog((PlaylistView)this.playlistView) == DialogResult.OK)
                 {
 
                 }
@@ -1490,7 +1474,7 @@ namespace MitoPlayer_2024.Presenters
             ColumnVisibilityEditorView columnVisibilityEditorView = new ColumnVisibilityEditorView();
             ColumnVisibilityEditorPresenter presenter = new ColumnVisibilityEditorPresenter(columnVisibilityEditorView,this.trackDao, this.settingDao);
  
-            if (columnVisibilityEditorView.ShowDialog((PlaylistView)this.view) == DialogResult.OK)
+            if (columnVisibilityEditorView.ShowDialog((PlaylistView)this.playlistView) == DialogResult.OK)
             {
                 this.TrackColumnVisibilityArray = presenter.TrackPropertyList.Select(x => x.IsEnabled).ToArray();
 
@@ -1502,7 +1486,63 @@ namespace MitoPlayer_2024.Presenters
                     i++;
                 }
                 this.InitializeDataTables();
-                ((PlaylistView)this.view).CallSetCurrentTrackColorEvent();
+                ((PlaylistView)this.playlistView).CallSetCurrentTrackColorEvent();
+            }
+        }
+        private void ScanBpmEvent(object sender, EventArgs e)
+        {
+            VirtualDJReader vdjReader = new VirtualDJReader(this.trackDao, this.settingDao);
+
+            if (this.trackListTable.Rows != null && this.trackListTable.Rows.Count > 0)
+            {
+
+                for (int i = 0; i <= this.trackListTable.Rows.Count - 1; i++) {
+
+                    String key = Convert.ToString(this.trackListTable.Rows[i]["Key"]);
+                    String bpm = Convert.ToString(this.trackListTable.Rows[i]["Bpm"]);
+
+                    if(String.IsNullOrEmpty(key) || String.IsNullOrEmpty(bpm))
+                    {
+                        int id = Convert.ToInt32(this.trackListTable.Rows[i]["Id"]);
+                        Track track = this.trackDao.GetTrack(id, this.tagList);
+                        if(track != null)
+                        {
+                            foreach (Tag tag in this.tagList)
+                            {
+                                if (tag.Name == "Key")
+                                {
+                                    List<TagValue> keyList = this.tagDao.GetTagValuesByTagId(tag.Id);
+                                    if (track.TrackTagValues != null)
+                                    {
+                                        TrackTagValue ttv = track.TrackTagValues.Find(x => x.TagId == tag.Id);
+                                        if (keyList != null && keyList.Count > 0 && ttv != null)
+                                        {
+                                            vdjReader.ReadKeyFromVirtualDJDatabase(track.Path, ref ttv, keyList);
+                                            this.trackListTable.Rows[i]["Key"] = ttv.TagValueName;
+                                            this.trackDao.UpdateTrackTagValue(ttv);
+                                        }
+                                    }
+
+                                }
+                                else if (tag.Name == "Bpm")
+                                {
+                                    List<TagValue> keyList = this.tagDao.GetTagValuesByTagId(tag.Id);
+                                    if (track.TrackTagValues != null)
+                                    {
+                                        TrackTagValue ttv = track.TrackTagValues.Find(x => x.TagId == tag.Id);
+                                        if (keyList != null && keyList.Count > 0)
+                                        {
+                                            vdjReader.ReadBpmFromVirtualDJDatabase(track.Path, ref ttv, keyList);
+                                            this.trackListTable.Rows[i]["Bpm"] = ttv.Value;
+                                            this.trackDao.UpdateTrackTagValue(ttv);
+                                        }
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
         private void DisplayTagEditorEvent(object sender, EventArgs e)
@@ -1514,7 +1554,7 @@ namespace MitoPlayer_2024.Presenters
             {
                 inputTextBoxEnabled = true;
             }
-            ((PlaylistView)this.view).CallDisplayTagEditor(this.isTagEditorDisplayed, inputTextBoxEnabled);
+            ((PlaylistView)this.playlistView).CallDisplayTagEditor(this.isTagEditorDisplayed, inputTextBoxEnabled);
         }
         private void SelectTagEvent(object sender, ListEventArgs e)
         {
@@ -1535,7 +1575,7 @@ namespace MitoPlayer_2024.Presenters
                             inputTextBoxEnabled = true;
                         }
 
-                        ((PlaylistView)this.view).InitializeTagValueEditor(tagValueList, inputTextBoxEnabled);
+                        ((PlaylistView)this.playlistView).InitializeTagValueEditor(tagValueList, inputTextBoxEnabled);
                     }
                 }
             }

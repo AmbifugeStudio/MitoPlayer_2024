@@ -92,7 +92,7 @@ namespace MitoPlayer_2024.Views
                     this.dgvTagValueList.Rows[i].DefaultCellStyle.BackColor = bgColor;
                     if ((bgColor.R < 100 && bgColor.G < 100) || (bgColor.R < 100 && bgColor.B < 100) || (bgColor.B < 100 && bgColor.G < 100))
                     {
-                        this.dgvTagValueList.Rows[i].DefaultCellStyle.ForeColor = Color.White;
+                       // this.dgvTagValueList.Rows[i].DefaultCellStyle.ForeColor = Color.White;
                     }
                 }
             }));

@@ -9,11 +9,11 @@ namespace MitoPlayer_2024.Views
 {
     public interface ITagValueEditorView
     {
-        event EventHandler<ListEventArgs> CreateOrEditTagValue;
-        event EventHandler CloseEditor;
+        event EventHandler<ListEventArgs> ChangeName;
         event EventHandler ChangeColor;
-        
+        event EventHandler<ListEventArgs> ChangeHotkey;
 
-        void Show();
+        event EventHandler CloseWithOk;
+        event EventHandler CloseWithCancel;
     }
 }

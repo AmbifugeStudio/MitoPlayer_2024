@@ -102,14 +102,14 @@ namespace MitoPlayer_2024.Dao
                                         @Id, 
                                         @Name, 
                                         @OrderInList, 
-                                        @QuickListGroup, 
+                                        @Hotkey, 
                                         @IsActive, 
                                         @ProfileId )";
 
                 command.Parameters.Add("@Id", MySqlDbType.Int32).Value = playlist.Id;
                 command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = playlist.Name;
                 command.Parameters.Add("@OrderInList", MySqlDbType.Int32).Value = playlist.OrderInList;
-                command.Parameters.Add("@QuickListGroup", MySqlDbType.Int32).Value = playlist.QuickListGroup;
+                command.Parameters.Add("@Hotkey", MySqlDbType.Int32).Value = playlist.Hotkey;
                 command.Parameters.Add("@IsActive", MySqlDbType.Bit).Value = playlist.IsActive;
                 command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
 
@@ -147,7 +147,7 @@ namespace MitoPlayer_2024.Dao
                         playlist.Id = (int)reader[0];
                         playlist.Name = (string)reader[1];
                         playlist.OrderInList = (int)reader[2];
-                        playlist.QuickListGroup = (int)reader[3];
+                        playlist.Hotkey = (int)reader[3];
                         playlist.IsActive = Convert.ToBoolean(reader[4]);
                         playlist.ProfileId = (int)reader[5];
                         break;
@@ -182,7 +182,7 @@ namespace MitoPlayer_2024.Dao
                         playlist.Id = (int)reader[0];
                         playlist.Name = (string)reader[1];
                         playlist.OrderInList = (int)reader[2];
-                        playlist.QuickListGroup = (int)reader[3];
+                        playlist.Hotkey = (int)reader[3];
                         playlist.IsActive = Convert.ToBoolean(reader[4]);
                         playlist.ProfileId = (int)reader[5];
                         break;
@@ -216,7 +216,7 @@ namespace MitoPlayer_2024.Dao
                         playlist.Id = (int)reader[0];
                         playlist.Name = (string)reader[1];
                         playlist.OrderInList = (int)reader[2];
-                        playlist.QuickListGroup = (int)reader[3];
+                        playlist.Hotkey = (int)reader[3];
                         playlist.IsActive = Convert.ToBoolean(reader[4]);
                         playlist.ProfileId = (int)reader[5];
                         break;
@@ -250,7 +250,7 @@ namespace MitoPlayer_2024.Dao
                         playlist.Id = (int)reader[0];
                         playlist.Name = (string)reader[1];
                         playlist.OrderInList = (int)reader[2];
-                        playlist.QuickListGroup = (int)reader[3];
+                        playlist.Hotkey = (int)reader[3];
                         playlist.IsActive = Convert.ToBoolean(reader[4]);
                         playlist.ProfileId = (int)reader[5];
                         playListList.Add(playlist);
@@ -326,7 +326,7 @@ namespace MitoPlayer_2024.Dao
 
                                         SET Name = @Name, 
                                         OrderInList = @OrderInList, 
-                                        QuickListGroup = @QuickListGroup, 
+                                        Hotkey = @Hotkey, 
                                         IsActive = @IsActive
 
                                         WHERE Id = @Id 
@@ -335,7 +335,7 @@ namespace MitoPlayer_2024.Dao
                 command.Parameters.Add("@Id", MySqlDbType.Int32).Value = playlist.Id;
                 command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = playlist.Name;
                 command.Parameters.Add("@OrderInList", MySqlDbType.Int32).Value = playlist.OrderInList;
-                command.Parameters.Add("@QuickListGroup", MySqlDbType.Int32).Value = playlist.QuickListGroup;
+                command.Parameters.Add("@Hotkey", MySqlDbType.Int32).Value = playlist.Hotkey;
                 command.Parameters.Add("@IsActive", MySqlDbType.Bit).Value = playlist.IsActive;
                 command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
 

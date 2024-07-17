@@ -35,9 +35,11 @@ namespace MitoPlayer_2024.Views
         event EventHandler<ListEventArgs> ExternalDragAndDropIntoPlaylistEvent;
         event EventHandler<ListEventArgs> ChangeTracklistColorEvent;
         event EventHandler ShowColumnVisibilityEditorEvent;
+        event EventHandler ScanBpmEvent;
         
         //PLAYLIST
-        event EventHandler<ListEventArgs> ShowPlaylistEditorViewEvent;
+        event EventHandler<ListEventArgs> CreatePlaylist;
+        event EventHandler<ListEventArgs> EditPlaylist;
         event EventHandler<ListEventArgs> LoadPlaylistEvent;
         event EventHandler<ListEventArgs> MovePlaylistEvent;
         event EventHandler<ListEventArgs> DeletePlaylistEvent;

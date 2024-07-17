@@ -4,6 +4,7 @@ using MitoPlayer_2024.Model;
 using MitoPlayer_2024.Models;
 using MitoPlayer_2024.Views;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -17,150 +18,188 @@ namespace MitoPlayer_2024.Presenters
 {
     public class TagValueEditorPresenter
     {
-        private ITagValueEditorView tagValueEditorView;
+        private ITagValueEditorView view;
         private ITagDao tagDao;
         private ISettingDao settingDao;
         private Tag currentTag;
-        private bool isEditMode = false;
+       
         public TagValue newTagValue;
-        private int lastGeneratedTagValueId;
+        private String tagValueName;
         private Color tagValueColor;
+        private int tagValueHotkey;
+        public TagValue oldTagValue;
        
         public TagValueEditorPresenter(ITagValueEditorView tagValueEditorView,Tag tag, ITagDao tagDao, ISettingDao settingDao)
         {
-            this.tagValueEditorView = tagValueEditorView;
+            this.view = tagValueEditorView;
             this.tagDao = tagDao;
             this.settingDao = settingDao;
             this.currentTag = tag;
-            this.isEditMode = false;
+            this.oldTagValue = null;
 
-            this.lastGeneratedTagValueId = this.settingDao.GetIntegerSetting(Settings.LastGeneratedTagValueId.ToString(), true);
-
-            this.lastGeneratedTagValueId = this.lastGeneratedTagValueId + 1;
-            ((TagValueEditorView)this.tagValueEditorView).SetTagValueName("New Tag Value " + this.lastGeneratedTagValueId.ToString());
-            ((TagValueEditorView)this.tagValueEditorView).SetColor(Color.White);
-            
-            this.settingDao.SetIntegerSetting(Settings.LastGeneratedTagValueId.ToString(), this.lastGeneratedTagValueId, true);
-
-            this.tagValueEditorView.CreateOrEditTagValue += CreateOrEditTagValue;
-            this.tagValueEditorView.CloseEditor += CloseEditor;
-            this.tagValueEditorView.ChangeColor += ChangeColor;
-            
+            this.tagValueName = "New Tag Value " + this.settingDao.GetNextId(TableName.TagValue.ToString());
+            this.tagValueColor = Color.White;
+            this.tagValueHotkey = 0;
+            ((TagValueEditorView)this.view).SetTagValueName(this.tagValueName);
+            ((TagValueEditorView)this.view).SetColor(this.tagValueColor);
+            ((TagValueEditorView)this.view).SetHotkey(this.tagValueHotkey);
+  
+            this.view.ChangeName += ChangeName;
+            this.view.ChangeColor += ChangeColor;
+            this.view.ChangeHotkey += ChangeHotkey;
+            this.view.CloseWithOk += CloseWithOk;
+            this.view.CloseWithCancel += CloseWithCancel;
         }
 
         public TagValueEditorPresenter(ITagValueEditorView tagValueEditorView, Tag tag, ITagDao tagDao, ISettingDao settingDao, TagValue tagValue)
         {
-            this.tagValueEditorView = tagValueEditorView;
+            this.view = tagValueEditorView;
             this.tagDao = tagDao;
             this.settingDao = settingDao;
             this.currentTag = tag;
             this.newTagValue = tagValue;
-            this.isEditMode = true;
+            this.oldTagValue = null;
 
+            this.tagValueName = newTagValue.Name;
             this.tagValueColor = newTagValue.Color;
-            ((TagValueEditorView)this.tagValueEditorView).SetTagValueName(newTagValue.Name, true);
-            ((TagValueEditorView)this.tagValueEditorView).SetColor(this.tagValueColor);
-           
-            this.tagValueEditorView.CreateOrEditTagValue += CreateOrEditTagValue;
-            this.tagValueEditorView.CloseEditor += CloseEditor;
-            this.tagValueEditorView.ChangeColor += ChangeColor;
-           
+            this.tagValueHotkey = newTagValue.Hotkey;
+            ((TagValueEditorView)this.view).SetTagValueName(newTagValue.Name, true);
+            ((TagValueEditorView)this.view).SetColor(this.tagValueColor);
+            ((TagValueEditorView)this.view).SetHotkey(this.tagValueHotkey);
+
+            this.view.ChangeName += ChangeName;
+            this.view.ChangeColor += ChangeColor;
+            this.view.ChangeHotkey += ChangeHotkey;
+            this.view.CloseWithOk += CloseWithOk;
+            this.view.CloseWithCancel += CloseWithCancel;
         }
 
+        private void ChangeName(object sender, ListEventArgs e)
+        {
+            this.tagValueName = e.StringField1;
+        }
         private void ChangeColor(object sender, EventArgs e)
         {
             ColorDialog clrDialog = new ColorDialog();
             clrDialog.Color = this.tagValueColor;
             if (clrDialog.ShowDialog() == DialogResult.OK)
             {
-                ((TagValueEditorView)this.tagValueEditorView).DialogResult = DialogResult.None;
+                ((TagValueEditorView)this.view).DialogResult = DialogResult.None;
                 this.tagValueColor = clrDialog.Color;
-                ((TagValueEditorView)this.tagValueEditorView).SetColor(this.tagValueColor);
+                ((TagValueEditorView)this.view).SetColor(this.tagValueColor);
             }
-        }
-       
-
-        private void CreateOrEditTagValue(object sender, Helpers.ListEventArgs e)
+        } 
+        private void ChangeHotkey(object sender, ListEventArgs e)
         {
-            ((TagValueEditorView)this.tagValueEditorView).DialogResult = DialogResult.None;
+            this.tagValueHotkey = e.IntegerField1;
+        }
 
-            if (this.isEditMode)
+        private void CloseWithOk(object sender, EventArgs e)
+        {
+            bool result = true;
+
+
+            String oldTagValueName = String.Empty;
+            List<TagValue> tagValueList = this.tagDao.GetTagValuesByTagId(this.currentTag.Id);
+            if (tagValueList != null && tagValueList.Count > 0 && this.newTagValue != null)
             {
-                if (!String.IsNullOrEmpty(e.StringField1))
+                tagValueList.RemoveAll(x => x.Name == this.newTagValue.Name);
+            }
+
+            if (result)
+            {
+                if (String.IsNullOrEmpty(this.tagValueName))
                 {
-                    if (e.StringField1.Equals(this.newTagValue.Name))
+                    result = false;
+                    MessageBox.Show("TagValue name must be entered!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            if (result)
+            {
+                if(this.newTagValue == null)
+                {
+                    if (tagValueList != null && tagValueList.Count > 0 && tagValueList.Exists(x => x.Name == this.tagValueName))
                     {
-                        this.newTagValue.Color = this.tagValueColor;
-                        ((TagValueEditorView)this.tagValueEditorView).DialogResult = DialogResult.OK;
+                        result = false;
+                        MessageBox.Show("TagValue name already exists!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
-                    else
+                }
+            }
+            if (result)
+            {
+                if (this.tagValueHotkey != 0)
+                {
+                    if (tagValueList.Exists(x => x.Hotkey == this.tagValueHotkey))
                     {
-                        TagValue TagValue = this.tagDao.GetTagValueByName(this.currentTag.Id, e.StringField1);
-                        if (TagValue != null)
+                        DialogResult dr = MessageBox.Show("Hotkey is already used by another TagValue. Do you want to replace?", "Question", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+                        if (dr == DialogResult.OK)
                         {
-                            MessageBox.Show("TagValue name already exists!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            TagValue tagValue = tagValueList.Find(x => x.Hotkey == this.tagValueHotkey);
+                            if (tagValue != null)
+                            {
+                                tagValue.Hotkey = 0;
+                                this.tagDao.UpdateTagValue(tagValue);
+                                oldTagValue = tagValue;
+                            }
                         }
                         else
                         {
-                            this.newTagValue.Name = e.StringField1;
-                            this.newTagValue.Color = this.tagValueColor;
-                            ((TagValueEditorView)this.tagValueEditorView).DialogResult = DialogResult.OK;
+                            return;
                         }
+                    }
+                }
+            }
+            if (result)
+            {
+                if(this.newTagValue == null)
+                {
+                    TagValue tagValue = new TagValue();
+                    tagValue.Id = this.tagDao.GetNextId(TableName.TagValue.ToString());
+                    tagValue.Name = this.tagValueName;
+                    tagValue.TagId = this.currentTag.Id;
+                    tagValue.TagName = this.currentTag.Name;
+                    tagValue.Color = this.tagValueColor;
+                    tagValue.Hotkey = this.tagValueHotkey;
+                    this.newTagValue = tagValue;
+                    try{
+                        this.tagDao.CreateTagValue(this.newTagValue);
+                    }
+                    catch (Exception)
+                    {
+                        result = false;
                     }
                 }
                 else
                 {
-                    MessageBox.Show("TagValue name must be entered!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    this.newTagValue.Name = this.tagValueName;
+                    this.newTagValue.Color = this.tagValueColor;
+                    this.newTagValue.Hotkey = this.tagValueHotkey;
+                    try
+                    {
+                        this.tagDao.UpdateTagValue(this.newTagValue);
+                    }
+                    catch (Exception)
+                    {
+                        result = false;
+                    }
                 }
+            }
+            
+            if (result)
+            {
+                ((TagValueEditorView)this.view).DialogResult = DialogResult.OK;
+                ((TagValueEditorView)this.view).Close();
             }
             else
             {
-                if (!String.IsNullOrEmpty(e.StringField1))
-                {
-                    List<TagValue> tagValueList = this.tagDao.GetTagValuesByTagId(this.currentTag.Id);
-                    if (tagValueList != null && tagValueList.Count > 0)
-                    {
-                        if (tagValueList.Exists(x => x.Name.Equals(e.StringField1)))
-                        {
-                            MessageBox.Show("TagValue name already exists in this Tag!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        }
-                        else
-                        {
-                            TagValue tagValue = new TagValue();
-                            tagValue.Id = this.tagDao.GetNextId(TableName.TagValue.ToString());
-                            tagValue.Name = e.StringField1;
-                            tagValue.TagId = this.currentTag.Id;
-                            tagValue.TagName = this.currentTag.Name;
-                            tagValue.Color = this.tagValueColor;
-                            
-                            this.newTagValue = tagValue;
-                            ((TagValueEditorView)this.tagValueEditorView).DialogResult = DialogResult.OK;
-                        }
-                    }
-                    else
-                    {
-                        TagValue tagValue = new TagValue();
-                        tagValue.Id = this.tagDao.GetNextId(TableName.TagValue.ToString());
-                        tagValue.Name = e.StringField1;
-                        tagValue.TagId = this.currentTag.Id;
-                        tagValue.TagName = this.currentTag.Name;
-                        tagValue.Color = this.tagValueColor;
-                       
-                        this.newTagValue = tagValue;
-                        ((TagValueEditorView)this.tagValueEditorView).DialogResult = DialogResult.OK;
-                    }
-                }
-                else
-                {
-                    MessageBox.Show("TagValue name must be entered!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
+                ((TagValueEditorView)this.view).DialogResult = DialogResult.None;
             }
         }
 
-        private void CloseEditor(object sender, EventArgs e)
+        private void CloseWithCancel(object sender, EventArgs e)
         {
-            ((TagValueEditorView)this.tagValueEditorView).DialogResult = DialogResult.Cancel;
-            ((TagValueEditorView)this.tagValueEditorView).Close();
+            ((TagValueEditorView)this.view).DialogResult = DialogResult.Cancel;
+            ((TagValueEditorView)this.view).Close();
         }
     }
 }

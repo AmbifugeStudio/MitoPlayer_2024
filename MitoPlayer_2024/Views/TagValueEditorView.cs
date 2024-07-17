@@ -15,16 +15,17 @@ namespace MitoPlayer_2024.Views
     {
         public TagValueEditorView()
         {
-            InitializeComponent();
+            this.InitializeComponent();
             this.txtTagValueName.Focus();
             this.CenterToScreen();
         }
 
-        public event EventHandler<ListEventArgs> CreateOrEditTagValue;
-        public event EventHandler CloseEditor;
+        public event EventHandler<ListEventArgs> ChangeName;
         public event EventHandler ChangeColor;
+        public event EventHandler<ListEventArgs> ChangeHotkey;
+        public event EventHandler CloseWithOk;
+        public event EventHandler CloseWithCancel;
        
-
         public void SetTagValueName(String name, bool edit = false)
         {
             this.txtTagValueName.Text = name;
@@ -41,37 +42,90 @@ namespace MitoPlayer_2024.Views
         {
             this.pnlColor.BackColor = color;
         }
-       
-        private void btnOk_Click(object sender, EventArgs e)
+
+        public void SetHotkey(int number)
         {
-            this.CreateOrEditTagValue?.Invoke(this, new ListEventArgs() { StringField1 = txtTagValueName.Text });
+            rdb1.Checked = false;
+            rdb2.Checked = false;
+            rdb3.Checked = false;
+            rdb4.Checked = false;
+            if (number == 1)
+            {
+                rdb1.Checked = true;
+            }
+            else if(number == 2)
+            {
+                rdb2.Checked = true;
+            }
+            else if (number == 3)
+            {
+                rdb3.Checked = true;
+            }
+            else if (number == 4)
+            {
+                rdb4.Checked = true;
+            }
+            else 
+            {
+                rdb0.Checked = true;
+            }
         }
 
-        private void txtTagValueName_KeyDown(object sender, KeyEventArgs e)
+        private void txtTagValueName_TextChanged(object sender, EventArgs e)
         {
-            if (e.KeyCode == Keys.Enter)
-            {
-                this.CreateOrEditTagValue?.Invoke(this, new ListEventArgs() { StringField1 = txtTagValueName.Text });
-            }
-            else if (e.KeyCode == Keys.Escape)
-            {
-                this.CloseEditor?.Invoke(this, new EventArgs());
-            }
+            this.ChangeName?.Invoke(this, new ListEventArgs() { StringField1 = txtTagValueName.Text });
         }
         private void btnColorChange_Click(object sender, EventArgs e)
         {
             this.ChangeColor?.Invoke(this, new EventArgs());
         }
-
-
         private void pnlColor_Click(object sender, EventArgs e)
         {
             this.ChangeColor?.Invoke(this, new EventArgs());
         }
+        private void rdb0_CheckedChanged(object sender, EventArgs e)
+        {
+            this.ChangeHotkey?.Invoke(this, new ListEventArgs() { IntegerField1 = 0 });
+        }
 
+        private void rdb1_CheckedChanged(object sender, EventArgs e)
+        {
+            this.ChangeHotkey?.Invoke(this, new ListEventArgs() { IntegerField1 = 1 });
+        }
+
+        private void rdb2_CheckedChanged(object sender, EventArgs e)
+        {
+            this.ChangeHotkey?.Invoke(this, new ListEventArgs() { IntegerField1 = 2 });
+        }
+
+        private void rdb3_CheckedChanged(object sender, EventArgs e)
+        {
+            this.ChangeHotkey?.Invoke(this, new ListEventArgs() { IntegerField1 = 3 });
+        }
+
+        private void rdb4_CheckedChanged(object sender, EventArgs e)
+        {
+            this.ChangeHotkey?.Invoke(this, new ListEventArgs() { IntegerField1 = 4 });
+        }
+        private void btnOk_Click(object sender, EventArgs e)
+        {
+            this.CloseWithOk?.Invoke(this, new EventArgs());
+        }
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            this.CloseEditor?.Invoke(this, new EventArgs());
+            this.CloseWithCancel.Invoke(this, new EventArgs());
         }
+        private void txtTagValueName_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                this.CloseWithOk?.Invoke(this, new EventArgs());
+            }
+            else if (e.KeyCode == Keys.Escape)
+            {
+                this.CloseWithCancel?.Invoke(this, new EventArgs());
+            }
+        }
+
     }
 }

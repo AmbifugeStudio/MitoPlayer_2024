@@ -41,6 +41,7 @@ namespace MitoPlayer_2024.Helpers
             this.trackDao = trackDao;
             this.settingDao = settingDao;
 
+            this.VDJTracklist = new List<VDJTrack>();
             this.VirtualDjDatabasePath = this.settingDao.GetStringSetting(Settings.VirtualDjDatabasePath.ToString());
 
             if (!File.Exists(this.VirtualDjDatabasePath))
@@ -59,12 +60,17 @@ namespace MitoPlayer_2024.Helpers
                 this.GetAttributeListFromVirtualDjDatabase(this.VirtualDjDatabasePath);
                 char[] alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
 
+                char drive = this.VirtualDjDatabasePath.ElementAt(0);
                 foreach (char c in alpha)
                 {
-                    if (File.Exists(c + "://VirtualDJ//database.xml"))
+                    if(drive != c)
                     {
-                        this.GetAttributeListFromVirtualDjDatabase(c + "://VirtualDJ//database.xml");
+                        if (File.Exists(c + "://VirtualDJ//database.xml"))
+                        {
+                            this.GetAttributeListFromVirtualDjDatabase(c + "://VirtualDJ//database.xml");
+                        }
                     }
+                   
                 }
             }
 
@@ -74,7 +80,7 @@ namespace MitoPlayer_2024.Helpers
 
         public void GetAttributeListFromVirtualDjDatabase(String databasePath)
         {
-            this.VDJTracklist = new List<VDJTrack>();
+            
 
             try
             {

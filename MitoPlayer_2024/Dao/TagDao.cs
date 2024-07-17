@@ -311,12 +311,14 @@ namespace MitoPlayer_2024.Dao
                                         @Name, 
                                         @TagId, 
                                         @Color,
+                                        @Hotkey,
                                         @ProfileId)";
 
                 command.Parameters.Add("@Id", MySqlDbType.Int32).Value = tagValue.Id;
                 command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = tagValue.Name;
                 command.Parameters.Add("@TagId", MySqlDbType.Int32).Value = tagValue.TagId;
                 command.Parameters.Add("@Color", MySqlDbType.VarChar).Value = ColorToHex(tagValue.Color);
+                command.Parameters.Add("@Hotkey", MySqlDbType.Int32).Value = tagValue.Hotkey;
                 command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
 
                 try
@@ -352,6 +354,7 @@ namespace MitoPlayer_2024.Dao
                                         tv.TagId,
                                         t.Name,
                                         tv.Color,
+                                        tv.Hotkey,
                                         tv.ProfileId 
                                         FROM TagValue tv, Tag t 
                                         WHERE tv.TagId = t.Id 
@@ -372,7 +375,8 @@ namespace MitoPlayer_2024.Dao
                         tagValue.TagId = (int)reader[2];
                         tagValue.TagName = (string)reader[3];
                         tagValue.Color = HexToColor((string)reader[4]);
-                        tagValue.ProfileId = (int)reader[5];
+                        tagValue.Hotkey = (int)reader[5];
+                        tagValue.ProfileId = (int)reader[6];
                         tagValueList.Add(tagValue);
                     }
                 }
@@ -405,7 +409,8 @@ namespace MitoPlayer_2024.Dao
                         tagValue.Name = (string)reader[1];
                         tagValue.TagId = (int)reader[2];
                         tagValue.Color = HexToColor((string)reader[3]);
-                        tagValue.ProfileId = (int)reader[4];
+                        tagValue.Hotkey = (int)reader[4];
+                        tagValue.ProfileId = (int)reader[5];
 
                         break;
                     }
@@ -446,7 +451,8 @@ namespace MitoPlayer_2024.Dao
                         tagValue.Name = (string)reader[1];
                         tagValue.TagId = (int)reader[2];
                         tagValue.Color = HexToColor((string)reader[3]);
-                        tagValue.ProfileId = (int)reader[4];
+                        tagValue.Hotkey = (int)reader[4];
+                        tagValue.ProfileId = (int)reader[5];
                         
                         break;
                     }
@@ -482,7 +488,8 @@ namespace MitoPlayer_2024.Dao
                         tagValue.Name = (string)reader[1];
                         tagValue.TagId = (int)reader[2];
                         tagValue.Color = HexToColor((string)reader[3]);
-                        tagValue.ProfileId = (int)reader[4];
+                        tagValue.Hotkey = (int)reader[4];
+                        tagValue.ProfileId = (int)reader[5];
                         
                         break;
                     }
@@ -502,7 +509,8 @@ namespace MitoPlayer_2024.Dao
                 command.CommandType = CommandType.Text;
                 command.CommandText = @"UPDATE TagValue 
                                         SET Name = @Name,
-                                        Color = @Color
+                                        Color = @Color, 
+                                        Hotkey = @Hotkey 
 
                                         WHERE Id = @Id 
                                         AND ProfileId = @ProfileId";
@@ -510,6 +518,7 @@ namespace MitoPlayer_2024.Dao
                 command.Parameters.Add("@Id", MySqlDbType.Int32).Value = tagValue.Id;
                 command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = tagValue.Name;
                 command.Parameters.Add("@Color", MySqlDbType.VarChar).Value = ColorToHex(tagValue.Color);
+                command.Parameters.Add("@Hotkey", MySqlDbType.Int32).Value = tagValue.Hotkey;
                 command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
                 
                 try

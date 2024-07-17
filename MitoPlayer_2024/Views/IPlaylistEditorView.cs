@@ -11,8 +11,10 @@ namespace MitoPlayer_2024.Views
     public interface IPlaylistEditorView
     {
 
-        event EventHandler<ListEventArgs> CreateOrEditPlaylist;
-        event EventHandler ClosePlaylistEditor;
+        event EventHandler<ListEventArgs> ChangeName;
+        event EventHandler<ListEventArgs> ChangeHotkey;
+        event EventHandler CloseWithOk;
+        event EventHandler CloseWithCancel;
 
     }
 }

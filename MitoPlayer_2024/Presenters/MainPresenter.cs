@@ -797,6 +797,7 @@ namespace MitoPlayer_2024.Presenters
                                     if (keyList != null && keyList.Count > 0 && ttv != null)
                                     {
                                         vdjReader.ReadKeyFromVirtualDJDatabase(track.Path, ref ttv, keyList);
+                                        this.trackDao.UpdateTrackTagValue(ttv);
                                     }
                                 }
 
@@ -810,6 +811,7 @@ namespace MitoPlayer_2024.Presenters
                                     if (keyList != null && keyList.Count > 0)
                                     {
                                         vdjReader.ReadBpmFromVirtualDJDatabase(track.Path, ref ttv, keyList);
+                                        this.trackDao.UpdateTrackTagValue(ttv);
                                     }
                                 }
 

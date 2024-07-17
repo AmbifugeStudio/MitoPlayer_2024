@@ -48,9 +48,11 @@ namespace MitoPlayer_2024.Views
         public event EventHandler<ListEventArgs> ExternalDragAndDropIntoPlaylistEvent;
         public event EventHandler<ListEventArgs> ChangeTracklistColorEvent;
         public event EventHandler ShowColumnVisibilityEditorEvent;
+        public event EventHandler ScanBpmEvent;
 
         //PLAYLIST
-        public event EventHandler<ListEventArgs> ShowPlaylistEditorViewEvent;
+        public event EventHandler<ListEventArgs> CreatePlaylist;
+        public event EventHandler<ListEventArgs> EditPlaylist;
         public event EventHandler<ListEventArgs> LoadPlaylistEvent;
         public event EventHandler<ListEventArgs> MovePlaylistEvent;
         public event EventHandler<ListEventArgs> DeletePlaylistEvent;
@@ -124,6 +126,8 @@ namespace MitoPlayer_2024.Views
             }
             this.dgvPlaylistList.Columns["G"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             this.dgvPlaylistList.Columns["G"].Width = 20;
+
+            this.dgvPlaylistList.CellBorderStyle = DataGridViewCellBorderStyle.None;
 
         }
         public void SetTrackListBindingSource(BindingSource trackList, bool[] columnVisibility, int[] displayIndex, int currentTrackIdInPlaylist)
@@ -199,21 +203,27 @@ namespace MitoPlayer_2024.Views
                                     {
                                         if(columnIndex == j)
                                         {
+                                            //this.dgvTrackList.Rows[i].Cells[j].Style.BackColor = color;
+                                           // this.dgvTrackList.Rows[i].Cells[j].Style.BackColor = Color.Black;
                                             this.dgvTrackList.Rows[i].Cells[j].Style.BackColor = color;
+
+                                            if ((color.R < 100 && color.G < 100) || (color.R < 100 && color.B < 100) || (color.B < 100 && color.G < 100))
+                                            {
+                                                this.dgvTrackList.Rows[i].Cells[j].Style.ForeColor = Color.White;
+                                            }
+                                            else
+                                            {
+                                                this.dgvTrackList.Rows[i].Cells[j].Style.ForeColor = Color.Black;
+                                            }
                                         }
                                         else
                                         {
-                                            this.dgvTrackList.Rows[i].Cells[j].Style.BackColor = Color.White;
+                                           // this.dgvTrackList.Rows[i].Cells[j].Style.BackColor = Color.White;
+                                           this.dgvTrackList.Rows[i].Cells[j].Style.BackColor = Color.White;
+                                           this.dgvTrackList.Rows[i].Cells[j].Style.ForeColor = Color.Black;
 
                                         }
-                                        if ((color.R < 100 && color.G < 100) || (color.R < 100 && color.B < 100) || (color.B < 100 && color.G < 100))
-                                        {
-                                            this.dgvTrackList.Rows[i].Cells[j].Style.ForeColor = Color.White;
-                                        }
-                                        else
-                                        {
-                                            this.dgvTrackList.Rows[i].Cells[j].Style.ForeColor = Color.Black;
-                                        }
+                                        
                                     }
 
                                 }
@@ -222,14 +232,14 @@ namespace MitoPlayer_2024.Views
                                     for (int j = 0; j < this.dgvTrackList.Columns.Count; j++)
                                     {
                                         this.dgvTrackList.Rows[i].Cells[j].Style.BackColor = color;
-                                        if ((color.R < 100 && color.G < 100) || (color.R < 100 && color.B < 100) || (color.B < 100 && color.G < 100))
+                                       /* if ((color.R < 100 && color.G < 100) || (color.R < 100 && color.B < 100) || (color.B < 100 && color.G < 100))
                                         {
                                             this.dgvTrackList.Rows[i].Cells[j].Style.ForeColor = Color.White;
                                         }
                                         else
                                         {
                                             this.dgvTrackList.Rows[i].Cells[j].Style.ForeColor = Color.Black;
-                                        }
+                                        }*/
                                     }
                                 }
                             }
@@ -247,6 +257,7 @@ namespace MitoPlayer_2024.Views
 
                 }
             }
+            this.dgvTrackList.CellBorderStyle = DataGridViewCellBorderStyle.None;
         }
 
 
@@ -255,6 +266,8 @@ namespace MitoPlayer_2024.Views
             this.selectedTrackListBindingSource = new BindingSource();
             this.selectedTrackListBindingSource.DataSource = selectedTrackList;
         }
+
+       
         #endregion
 
         #region TRACKLIST - ROW SELECTION
@@ -351,23 +364,53 @@ namespace MitoPlayer_2024.Views
                 this.CallPlayTrackEvent();
             }
 
-            //(1),(2),(3) or (4) - Set the group of the selected playlist 
-            if (this.dgvPlaylistList.SelectedRows.Count > 0 && e.KeyCode == Keys.D1)
+            if (rdbPlaylist.Checked)
             {
-                this.InternalDragAndDropIntoPlaylistEvent?.Invoke(this, new ListEventArgs() { SelectedRows = this.dgvTrackList.SelectedRows, IntegerField1 = this.GetPlaylistIndex(1) });
+                //(1),(2),(3) or (4) - Set the group of the selected playlist 
+                if (this.dgvPlaylistList.SelectedRows.Count > 0 && e.KeyCode == Keys.D1)
+                {
+                    this.InternalDragAndDropIntoPlaylistEvent?.Invoke(this, new ListEventArgs() { SelectedRows = this.dgvTrackList.SelectedRows, IntegerField1 = this.GetPlaylistIndex(1) });
+                }
+                if (this.dgvPlaylistList.SelectedRows.Count > 0 && e.KeyCode == Keys.D2)
+                {
+                    this.InternalDragAndDropIntoPlaylistEvent?.Invoke(this, new ListEventArgs() { SelectedRows = this.dgvTrackList.SelectedRows, IntegerField1 = this.GetPlaylistIndex(2) });
+                }
+                if (this.dgvPlaylistList.SelectedRows.Count > 0 && e.KeyCode == Keys.D3)
+                {
+                    this.InternalDragAndDropIntoPlaylistEvent?.Invoke(this, new ListEventArgs() { SelectedRows = this.dgvTrackList.SelectedRows, IntegerField1 = this.GetPlaylistIndex(2) });
+                }
+                if (this.dgvPlaylistList.SelectedRows.Count > 0 && e.KeyCode == Keys.D4)
+                {
+                    this.InternalDragAndDropIntoPlaylistEvent?.Invoke(this, new ListEventArgs() { SelectedRows = this.dgvTrackList.SelectedRows, IntegerField1 = this.GetPlaylistIndex(3) });
+                }
             }
-            if (this.dgvPlaylistList.SelectedRows.Count > 0 && e.KeyCode == Keys.D2)
-            {
-                this.InternalDragAndDropIntoPlaylistEvent?.Invoke(this, new ListEventArgs() { SelectedRows = this.dgvTrackList.SelectedRows, IntegerField1 = this.GetPlaylistIndex(2) });
+            else if (rdbTagValue.Checked){
+                if (this.dgvPlaylistList.SelectedRows.Count > 0)
+                {
+                    if (this.dgvPlaylistList.SelectedRows.Count > 0 && e.KeyCode == Keys.D1)
+                    {
+                        if(tgvHotkeyIndex1 > -1)
+                            this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = tgvHotkeyIndex1, Rows = this.dgvTrackList.Rows });
+                    }
+                    if (this.dgvPlaylistList.SelectedRows.Count > 0 && e.KeyCode == Keys.D2)
+                    {
+                        if (tgvHotkeyIndex2 > -1)
+                            this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = tgvHotkeyIndex2, Rows = this.dgvTrackList.Rows });
+                    }
+                    if (this.dgvPlaylistList.SelectedRows.Count > 0 && e.KeyCode == Keys.D3)
+                    {
+                        if (tgvHotkeyIndex3 > -1)
+                            this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = tgvHotkeyIndex3, Rows = this.dgvTrackList.Rows });
+                    }
+                    if (this.dgvPlaylistList.SelectedRows.Count > 0 && e.KeyCode == Keys.D4)
+                    {
+                        if (tgvHotkeyIndex4 > -1)
+                            this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = tgvHotkeyIndex4, Rows = this.dgvTrackList.Rows });
+                    }
+                }
+               
             }
-            if (this.dgvPlaylistList.SelectedRows.Count > 0 && e.KeyCode == Keys.D3)
-            {
-                this.InternalDragAndDropIntoPlaylistEvent?.Invoke(this, new ListEventArgs() { SelectedRows = this.dgvTrackList.SelectedRows, IntegerField1 = this.GetPlaylistIndex(2) });
-            }
-            if (this.dgvPlaylistList.SelectedRows.Count > 0 && e.KeyCode == Keys.D4)
-            {
-                this.InternalDragAndDropIntoPlaylistEvent?.Invoke(this, new ListEventArgs() { SelectedRows = this.dgvTrackList.SelectedRows, IntegerField1 = this.GetPlaylistIndex(3) });
-            }
+            
 
             //R - Play random track
             if (this.dgvPlaylistList.Rows.Count > 0 && e.KeyCode == Keys.R)
@@ -836,6 +879,10 @@ namespace MitoPlayer_2024.Views
 
 
         }
+        int tgvHotkeyIndex1 = -1;
+        int tgvHotkeyIndex2 = -1;
+        int tgvHotkeyIndex3 = -1;
+        int tgvHotkeyIndex4 = -1;
         public void InitializeTagValueEditor(List<TagValue> tagValueList, bool inputTextBoxEnabled = false)
         {
             List<Button> buttonList = new List<Button> { this.btnTagValue1, this.btnTagValue2, this.btnTagValue3,
@@ -852,6 +899,21 @@ namespace MitoPlayer_2024.Views
                 buttonList[i].Hide();
             }
 
+            if (tagValueList != null && tagValueList.Count > 0)
+            {
+                for (int i = 0; i <= tagValueList.Count - 1; i++)
+                {
+                    this.tgvHotkeyName1.Text = "(1) - ";
+                    this.tgvHotkeyName2.Text = "(2) - ";
+                    this.tgvHotkeyName3.Text = "(3) - ";
+                    this.tgvHotkeyName4.Text = "(4) - ";
+                    this.tgvHotkeyIndex1 = -1;
+                    this.tgvHotkeyIndex2 = -1;
+                    this.tgvHotkeyIndex3 = -1;
+                    this.tgvHotkeyIndex4 = -1;
+                }
+            }
+
             if (!inputTextBoxEnabled)
             {
                 if (tagValueList != null && tagValueList.Count > 0)
@@ -863,10 +925,31 @@ namespace MitoPlayer_2024.Views
 
                         if ((tagValueList[i].Color.R < 100 && tagValueList[i].Color.G < 100) || (tagValueList[i].Color.R < 100 && tagValueList[i].Color.B < 100) || (tagValueList[i].Color.B < 100 && tagValueList[i].Color.G < 100))
                         {
-                            buttonList[i].ForeColor = Color.White;
+                           // buttonList[i].ForeColor = Color.White;
                         }
 
                         buttonList[i].Show();
+
+                        if(tagValueList[i].Hotkey == 1)
+                        {
+                            this.tgvHotkeyIndex1 = i;
+                            this.tgvHotkeyName1.Text = "(1) " + tagValueList[i].Name;
+                        }
+                        else if (tagValueList[i].Hotkey == 2)
+                        {
+                            this.tgvHotkeyIndex2 = i;
+                            this.tgvHotkeyName2.Text = "(2) " + tagValueList[i].Name;
+                        }
+                        else if (tagValueList[i].Hotkey == 3)
+                        {
+                            this.tgvHotkeyIndex3 = i;
+                            this.tgvHotkeyName3.Text = "(3) " + tagValueList[i].Name;
+                        }
+                        else if (tagValueList[i].Hotkey == 4)
+                        {
+                            this.tgvHotkeyIndex4 = i;
+                            this.tgvHotkeyName4.Text = "(4) " + tagValueList[i].Name;
+                        }
                     }
                 }
                 this.txtBoxTagValueInput.Hide();
@@ -880,6 +963,7 @@ namespace MitoPlayer_2024.Views
 
             this.groupBoxTag.Show();
             this.groupBoxTagValue.Show();
+            this.groupBoxTagValueHotkeys.Show();
 
         }
         public void InitializeCurrentTagValueColors(List<Tag> tagList)
@@ -913,6 +997,7 @@ namespace MitoPlayer_2024.Views
                 this.btnDisplayTagEditor.Text = "<";
                 this.groupBoxTag.Hide();
                 this.groupBoxTagValue.Hide();
+                this.groupBoxTagValueHotkeys.Hide();
                 this.txtBoxTagValueInput.Hide();
                 this.btnSetTagValue.Hide();
                 this.dgvTrackList.Width = this.dgvTrackList.Width + 260;
@@ -922,6 +1007,7 @@ namespace MitoPlayer_2024.Views
                 this.btnDisplayTagEditor.Text = ">";
                 this.groupBoxTag.Show();
                 this.groupBoxTagValue.Show();
+                this.groupBoxTagValueHotkeys.Show();
 
                 if (!inputTextBoxEnabled)
                 {
@@ -1055,12 +1141,12 @@ namespace MitoPlayer_2024.Views
         //EVENT CALLINGS
         public void CallCreatePlaylistEvent()
         {
-            this.ShowPlaylistEditorViewEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = -1 });
+            this.CreatePlaylist?.Invoke(this, new ListEventArgs() { IntegerField1 = -1 });
         }
         public void CallRenamePlaylistEvent()
         {
             if (this.dgvPlaylistList.SelectedRows.Count > 0)
-                this.ShowPlaylistEditorViewEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = dgvPlaylistList.SelectedRows[0].Index });
+                this.EditPlaylist?.Invoke(this, new ListEventArgs() { IntegerField1 = dgvPlaylistList.SelectedRows[0].Index });
         }
         public void CallLoadPlaylistEvent()
         {
@@ -1554,6 +1640,39 @@ namespace MitoPlayer_2024.Views
             this.ChangeTracklistColorEvent?.Invoke(this, new ListEventArgs() { StringField1 = (String)this.cmbColor.SelectedItem });
         }
 
-        
+        private void lblCurrentTrack_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblTrackSumLength_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblSelectedItemsCount_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void rdbPlaylist_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void rdbTagValue_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnScanBpm_Click(object sender, EventArgs e)
+        {
+            this.ScanBpmEvent?.Invoke(this, new EventArgs());
+        }
     }
 }
