@@ -1,0 +1,5 @@
+
+2024.08.18. - 
+OK - Workflow test: playlist rename-re create plalyist jön fel
+ - Workflow test: külső winyón nem találta meg a vdj database fájlt, akkor sem, amikor a preference-s be átállítottam. Teljesen úgy megnyitást követően állt át csak.
+ 

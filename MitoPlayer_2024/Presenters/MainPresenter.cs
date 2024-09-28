@@ -14,6 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml.Linq;
+using static Mysqlx.Expect.Open.Types.Condition.Types;
 
 namespace MitoPlayer_2024.Presenters
 {
@@ -645,7 +646,7 @@ namespace MitoPlayer_2024.Presenters
         }
         private List<Track> ReadFiles(string[] fileNames)
         {
-            VirtualDJReader vdjReader = new VirtualDJReader(this.trackDao, this.settingDao);
+            VirtualDJReader vdjReader = new VirtualDJReader(this.trackDao, this.settingDao, fileNames);
 
             List<String> filePathList = new List<String>();
             List<Track> trackList = new List<Track>();
@@ -745,12 +746,18 @@ namespace MitoPlayer_2024.Presenters
                         
                     }
 
+                    String key = String.Empty;
+                    String bpm = String.Empty;
+
+                    VirtualDJReader.Instance.ReadKeyAndBpmFromVirtualDJDatabase(track.Path, ref key, ref bpm);
+
                     if (track.Id == -1)
                     {
                         track.Id = this.trackDao.GetNextId(TableName.Track.ToString());
                         track.TrackTagValues = new List<TrackTagValue>();
 
                         this.trackDao.CreateTrack(track);
+
 
                         foreach (Tag tag in tagList) 
                         {
@@ -761,22 +768,36 @@ namespace MitoPlayer_2024.Presenters
                             ttv.TagName = tag.Name;
                             ttv.TagValueId = -1;
                             ttv.TagValueName = String.Empty;
+                            ttv.Value = String.Empty;
+                            ttv.HasValue = false;
                             ttv.ProfileId = this.trackDao.GetProfileId();
 
                             if (tag.Name == "Key")
                             {
                                 List<TagValue> keyList = this.tagDao.GetTagValuesByTagId(tag.Id);
-                                if(keyList != null && keyList.Count > 0)
+                                if(keyList != null && keyList.Count > 0 && ttv != null)
                                 {
-                                    vdjReader.ReadKeyFromVirtualDJDatabase(track.Path, ref ttv, keyList);
+                                    TagValue keyTagValue = keyList.Find(x => x.Name == key);
+                                    if(keyTagValue != null)
+                                    {
+                                        ttv.TagValueId = keyTagValue.Id;
+                                        ttv.TagValueName = keyTagValue.Name;
+                                    }
                                 }
                             }
                             else if (tag.Name == "Bpm")
                             {
                                 List<TagValue> keyList = this.tagDao.GetTagValuesByTagId(tag.Id);
-                                if (keyList != null && keyList.Count > 0)
+                                if (keyList != null && keyList.Count > 0 && ttv != null)
                                 {
-                                    vdjReader.ReadBpmFromVirtualDJDatabase(track.Path, ref ttv, keyList);
+                                    TagValue keyTagValue = keyList.Find(x => x.Name == tag.Name);
+                                    if (keyTagValue != null)
+                                    {
+                                        ttv.TagValueId = keyTagValue.Id;
+                                        ttv.TagValueName = keyTagValue.Name;
+                                        ttv.Value = bpm;
+                                        ttv.HasValue = true;
+                                    }
                                 }
                             }
 
@@ -796,7 +817,13 @@ namespace MitoPlayer_2024.Presenters
                                     TrackTagValue ttv = track.TrackTagValues.Find(x => x.TagId == tag.Id);
                                     if (keyList != null && keyList.Count > 0 && ttv != null)
                                     {
-                                        vdjReader.ReadKeyFromVirtualDJDatabase(track.Path, ref ttv, keyList);
+                                        TagValue keyTagValue = keyList.Find(x => x.Name == key);
+                                        if (keyTagValue != null)
+                                        {
+                                            ttv.TagValueId = keyTagValue.Id;
+                                            ttv.TagValueName = keyTagValue.Name;
+                                        }
+
                                         this.trackDao.UpdateTrackTagValue(ttv);
                                     }
                                 }
@@ -810,7 +837,15 @@ namespace MitoPlayer_2024.Presenters
                                     TrackTagValue ttv = track.TrackTagValues.Find(x => x.TagId == tag.Id);
                                     if (keyList != null && keyList.Count > 0)
                                     {
-                                        vdjReader.ReadBpmFromVirtualDJDatabase(track.Path, ref ttv, keyList);
+                                        TagValue keyTagValue = keyList.Find(x => x.Name == tag.Name);
+                                        if (keyTagValue != null)
+                                        {
+                                            ttv.TagValueId = keyTagValue.Id;
+                                            ttv.TagValueName = keyTagValue.Name;
+                                            ttv.Value = bpm;
+                                            ttv.HasValue = true;
+                                        }
+
                                         this.trackDao.UpdateTrackTagValue(ttv);
                                     }
                                 }

@@ -41,10 +41,11 @@ namespace MitoPlayer_2024.Presenters
             this.view.CloseWithCancel += CloseWithCancel;
         }
 
-        public PlaylistEditorPresenter(IPlaylistEditorView view, ITrackDao trackDao, Playlist playlist)
+        public PlaylistEditorPresenter(IPlaylistEditorView view, ITrackDao trackDao, ISettingDao settingDao,Playlist playlist)
         {
             this.view = view;
             this.trackDao = trackDao;
+            this.settingDao = settingDao;
             this.newPlaylist = playlist;
 
             this.playlistName = this.newPlaylist.Name;

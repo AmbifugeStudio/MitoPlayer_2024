@@ -1221,7 +1221,7 @@ namespace MitoPlayer_2024.Presenters
                 int playlistIndex = this.playlistListTable.Rows.IndexOf(playlistRow);
 
                 PlaylistEditorView playlistEditorView = new PlaylistEditorView();
-                PlaylistEditorPresenter presenter = new PlaylistEditorPresenter(playlistEditorView, this.trackDao, this.settingDao);
+                PlaylistEditorPresenter presenter = new PlaylistEditorPresenter(playlistEditorView, this.trackDao, this.settingDao, playlist);
                 if (playlistEditorView.ShowDialog((PlaylistView)this.playlistView) == DialogResult.OK)
                 {
                     this.playlistListTable.Rows[playlistIndex]["Name"] = presenter.newPlaylist?.Name;
@@ -1491,7 +1491,7 @@ namespace MitoPlayer_2024.Presenters
         }
         private void ScanBpmEvent(object sender, EventArgs e)
         {
-            VirtualDJReader vdjReader = new VirtualDJReader(this.trackDao, this.settingDao);
+            VirtualDJReader vdjReader = new VirtualDJReader(this.trackDao, this.settingDao, null);
 
             if (this.trackListTable.Rows != null && this.trackListTable.Rows.Count > 0)
             {
@@ -1503,6 +1503,8 @@ namespace MitoPlayer_2024.Presenters
 
                     if(String.IsNullOrEmpty(key) || String.IsNullOrEmpty(bpm))
                     {
+                        VirtualDJReader.Instance.ReadKeyAndBpmFromVirtualDJDatabase(Convert.ToString(this.trackListTable.Rows[i]["Path"]), ref key, ref bpm);
+
                         int id = Convert.ToInt32(this.trackListTable.Rows[i]["Id"]);
                         Track track = this.trackDao.GetTrack(id, this.tagList);
                         if(track != null)
@@ -1517,7 +1519,15 @@ namespace MitoPlayer_2024.Presenters
                                         TrackTagValue ttv = track.TrackTagValues.Find(x => x.TagId == tag.Id);
                                         if (keyList != null && keyList.Count > 0 && ttv != null)
                                         {
-                                            vdjReader.ReadKeyFromVirtualDJDatabase(track.Path, ref ttv, keyList);
+                                            // vdjReader.ReadKeyFromVirtualDJDatabase(track.Path, ref ttv, keyList);
+
+                                            TagValue keyTagValue = keyList.Find(x => x.Name == key);
+                                            if (keyTagValue != null)
+                                            {
+                                                ttv.TagValueId = keyTagValue.Id;
+                                                ttv.TagValueName = keyTagValue.Name;
+                                            }
+
                                             this.trackListTable.Rows[i]["Key"] = ttv.TagValueName;
                                             this.trackDao.UpdateTrackTagValue(ttv);
                                         }
@@ -1532,7 +1542,15 @@ namespace MitoPlayer_2024.Presenters
                                         TrackTagValue ttv = track.TrackTagValues.Find(x => x.TagId == tag.Id);
                                         if (keyList != null && keyList.Count > 0)
                                         {
-                                            vdjReader.ReadBpmFromVirtualDJDatabase(track.Path, ref ttv, keyList);
+                                            TagValue keyTagValue = keyList.Find(x => x.Name == tag.Name);
+                                            if (keyTagValue != null)
+                                            {
+                                                ttv.TagValueId = keyTagValue.Id;
+                                                ttv.TagValueName = keyTagValue.Name;
+                                                ttv.Value = bpm;
+                                                ttv.HasValue = true;
+                                            }
+
                                             this.trackListTable.Rows[i]["Bpm"] = ttv.Value;
                                             this.trackDao.UpdateTrackTagValue(ttv);
                                         }

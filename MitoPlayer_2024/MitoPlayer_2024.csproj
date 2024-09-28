@@ -428,5 +428,8 @@
   <ItemGroup>
     <None Include="Resources\Screenshot_1.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Releases.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

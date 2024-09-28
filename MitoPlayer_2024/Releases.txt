@@ -1,0 +1,5 @@
+﻿
+BUGS
+
+- TagEditor: disable order by columns
+- Directory Scan: ha már állítottam be key-t meg bpm-et meg style-t, akkor nem tölti be, ha ugyanazt a számot törlöm majd beszkennelem.

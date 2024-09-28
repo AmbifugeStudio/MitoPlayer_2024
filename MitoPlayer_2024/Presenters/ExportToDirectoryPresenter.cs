@@ -80,6 +80,7 @@ namespace MitoPlayer_2024.Presenters
             String bpmNumber = String.Empty;
             String newFileName = String.Empty;
             String extension = String.Empty;
+            String hasVocal = String.Empty;
 
             if (this.trackList != null && this.trackList.Count > 0)
             {
@@ -89,6 +90,7 @@ namespace MitoPlayer_2024.Presenters
                     rowNumber = String.Empty;
                     keyCode = String.Empty;
                     bpmNumber = String.Empty;
+                    hasVocal = String.Empty;
 
                     if (newFileName.Contains("_"))
                     {
@@ -147,8 +149,6 @@ namespace MitoPlayer_2024.Presenters
                         newFileName = artist + " - " + title;
                     }
 
-                    
-                    
                     if (this.isRowNumberChecked)
                     {
                         if(this.trackList.Count < 100)
@@ -235,10 +235,30 @@ namespace MitoPlayer_2024.Presenters
                             }
                         }
                     }
+                    if (true)
+                    {
+                        TrackTagValue ttv = this.trackList[i].TrackTagValues.Find(x => x.TagName == "Vocal");
+                        if (ttv != null && !String.IsNullOrEmpty(ttv.TagValueName) && (ttv.TagValueName.Equals("Full vocal") || ttv.TagValueName.Equals("Partial vocal")))
+                        {
+                            hasVocal = "V";
+                        }
+                    }
 
+                    if (!String.IsNullOrEmpty(hasVocal))
+                    {
+                        newFileName = hasVocal + "_" + newFileName;
+                    }
                     if (!String.IsNullOrEmpty(bpmNumber))
                     {
-                        newFileName = bpmNumber + "_" + newFileName;
+                        if (!String.IsNullOrEmpty(hasVocal))
+                        {
+                            newFileName = bpmNumber + newFileName;
+                        }
+                        else
+                        {
+                            newFileName = bpmNumber + "_" + newFileName;
+                        }
+                           
                     }
                     if (!String.IsNullOrEmpty(keyCode))
                     {

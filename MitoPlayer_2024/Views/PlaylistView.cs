@@ -417,6 +417,12 @@ namespace MitoPlayer_2024.Views
             {
                 this.CallRandomTrackEvent();
             }
+
+            //B - Play next track
+            if (this.dgvPlaylistList.Rows.Count > 0 && e.KeyCode == Keys.B)
+            {
+                this.CallNextTrackEvent();
+            }
         }
         private int GetPlaylistIndex(int hotKeyNumber)
         {
@@ -1673,6 +1679,22 @@ namespace MitoPlayer_2024.Views
         private void btnScanBpm_Click(object sender, EventArgs e)
         {
             this.ScanBpmEvent?.Invoke(this, new EventArgs());
+        }
+
+        private void groupBoxTag_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+            if (this.dgvPlaylistList.Rows.Count > 0 && e.KeyCode == Keys.B)
+            {
+                this.CallNextTrackEvent();
+            }
+        }
+
+        private void groupBoxTagValue_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+            if (this.dgvPlaylistList.Rows.Count > 0 && e.KeyCode == Keys.B)
+            {
+                this.CallNextTrackEvent();
+            }
         }
     }
 }

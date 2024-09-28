@@ -31,6 +31,7 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PlaylistView));
             this.tabPagePlaylistDetail = new System.Windows.Forms.TabPage();
+            this.btnScanBpm = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.lblTrackCount = new System.Windows.Forms.Label();
             this.lblTrackSumLength = new System.Windows.Forms.Label();
@@ -77,15 +78,17 @@
             this.btnTag4 = new System.Windows.Forms.Button();
             this.btnTag3 = new System.Windows.Forms.Button();
             this.btnTag1 = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             this.btnDisplayTagEditor = new System.Windows.Forms.Button();
             this.btnColumnVisibility = new System.Windows.Forms.Button();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.rdbPlaylist = new System.Windows.Forms.RadioButton();
+            this.rdbTagValue = new System.Windows.Forms.RadioButton();
             this.groupBoxTagValueHotkeys = new System.Windows.Forms.GroupBox();
             this.tgvHotkeyName3 = new System.Windows.Forms.Label();
             this.tgvHotkeyName4 = new System.Windows.Forms.Label();
             this.tgvHotkeyName2 = new System.Windows.Forms.Label();
             this.tgvHotkeyName1 = new System.Windows.Forms.Label();
-            this.rdbTagValue = new System.Windows.Forms.RadioButton();
-            this.rdbPlaylist = new System.Windows.Forms.RadioButton();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.btnNewPlaylist = new System.Windows.Forms.Button();
             this.btnRenamePlaylist = new System.Windows.Forms.Button();
@@ -111,21 +114,18 @@
             this.exportToM3uToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportToTxtToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportToDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.button1 = new System.Windows.Forms.Button();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.btnScanBpm = new System.Windows.Forms.Button();
             this.tabPagePlaylistDetail.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBoxTagValue.SuspendLayout();
             this.groupBoxTag.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.groupBoxTagValueHotkeys.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPlaylistList)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTrackList)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabPagePlaylistDetail
@@ -153,6 +153,16 @@
             this.tabPagePlaylistDetail.TabIndex = 1;
             this.tabPagePlaylistDetail.Text = "Player";
             this.tabPagePlaylistDetail.UseVisualStyleBackColor = true;
+            // 
+            // btnScanBpm
+            // 
+            this.btnScanBpm.Location = new System.Drawing.Point(901, 4);
+            this.btnScanBpm.Name = "btnScanBpm";
+            this.btnScanBpm.Size = new System.Drawing.Size(75, 23);
+            this.btnScanBpm.TabIndex = 15;
+            this.btnScanBpm.Text = "Scan Bpm";
+            this.btnScanBpm.UseVisualStyleBackColor = true;
+            this.btnScanBpm.Click += new System.EventHandler(this.btnScanBpm_Click);
             // 
             // groupBox4
             // 
@@ -284,6 +294,7 @@
             this.groupBoxTagValue.TabIndex = 10;
             this.groupBoxTagValue.TabStop = false;
             this.groupBoxTagValue.Text = "TagValues";
+            this.groupBoxTagValue.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.groupBoxTagValue_PreviewKeyDown);
             // 
             // btnTagValue11
             // 
@@ -560,6 +571,7 @@
             this.groupBoxTag.TabIndex = 10;
             this.groupBoxTag.TabStop = false;
             this.groupBoxTag.Text = "Tags";
+            this.groupBoxTag.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.groupBoxTag_PreviewKeyDown);
             // 
             // btnTag9
             // 
@@ -651,6 +663,16 @@
             this.btnTag1.UseVisualStyleBackColor = true;
             this.btnTag1.Click += new System.EventHandler(this.btnTag1_Click);
             // 
+            // button1
+            // 
+            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button1.Location = new System.Drawing.Point(192, 4);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(31, 23);
+            this.button1.TabIndex = 9;
+            this.button1.Text = "<";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
             // btnDisplayTagEditor
             // 
             this.btnDisplayTagEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -673,6 +695,42 @@
             this.btnColumnVisibility.TabIndex = 9;
             this.btnColumnVisibility.UseVisualStyleBackColor = true;
             this.btnColumnVisibility.Click += new System.EventHandler(this.btnColumnVisibility_Click);
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox2.Controls.Add(this.rdbPlaylist);
+            this.groupBox2.Controls.Add(this.rdbTagValue);
+            this.groupBox2.Location = new System.Drawing.Point(762, 570);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(214, 79);
+            this.groupBox2.TabIndex = 8;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Hotkey mode";
+            // 
+            // rdbPlaylist
+            // 
+            this.rdbPlaylist.AutoSize = true;
+            this.rdbPlaylist.Location = new System.Drawing.Point(11, 18);
+            this.rdbPlaylist.Name = "rdbPlaylist";
+            this.rdbPlaylist.Size = new System.Drawing.Size(57, 17);
+            this.rdbPlaylist.TabIndex = 0;
+            this.rdbPlaylist.Text = "Playlist";
+            this.rdbPlaylist.UseVisualStyleBackColor = true;
+            this.rdbPlaylist.CheckedChanged += new System.EventHandler(this.rdbPlaylist_CheckedChanged);
+            // 
+            // rdbTagValue
+            // 
+            this.rdbTagValue.AutoSize = true;
+            this.rdbTagValue.Checked = true;
+            this.rdbTagValue.Location = new System.Drawing.Point(74, 18);
+            this.rdbTagValue.Name = "rdbTagValue";
+            this.rdbTagValue.Size = new System.Drawing.Size(71, 17);
+            this.rdbTagValue.TabIndex = 0;
+            this.rdbTagValue.TabStop = true;
+            this.rdbTagValue.Text = "TagValue";
+            this.rdbTagValue.UseVisualStyleBackColor = true;
+            this.rdbTagValue.CheckedChanged += new System.EventHandler(this.rdbTagValue_CheckedChanged);
             // 
             // groupBoxTagValueHotkeys
             // 
@@ -727,30 +785,6 @@
             this.tgvHotkeyName1.TabIndex = 1;
             this.tgvHotkeyName1.Text = "(1) -";
             this.tgvHotkeyName1.Click += new System.EventHandler(this.label1_Click);
-            // 
-            // rdbTagValue
-            // 
-            this.rdbTagValue.AutoSize = true;
-            this.rdbTagValue.Checked = true;
-            this.rdbTagValue.Location = new System.Drawing.Point(74, 18);
-            this.rdbTagValue.Name = "rdbTagValue";
-            this.rdbTagValue.Size = new System.Drawing.Size(71, 17);
-            this.rdbTagValue.TabIndex = 0;
-            this.rdbTagValue.TabStop = true;
-            this.rdbTagValue.Text = "TagValue";
-            this.rdbTagValue.UseVisualStyleBackColor = true;
-            this.rdbTagValue.CheckedChanged += new System.EventHandler(this.rdbTagValue_CheckedChanged);
-            // 
-            // rdbPlaylist
-            // 
-            this.rdbPlaylist.AutoSize = true;
-            this.rdbPlaylist.Location = new System.Drawing.Point(11, 18);
-            this.rdbPlaylist.Name = "rdbPlaylist";
-            this.rdbPlaylist.Size = new System.Drawing.Size(57, 17);
-            this.rdbPlaylist.TabIndex = 0;
-            this.rdbPlaylist.Text = "Playlist";
-            this.rdbPlaylist.UseVisualStyleBackColor = true;
-            this.rdbPlaylist.CheckedChanged += new System.EventHandler(this.rdbPlaylist_CheckedChanged);
             // 
             // groupBox1
             // 
@@ -1007,38 +1041,6 @@
             this.exportToDirectoryToolStripMenuItem.Text = "Export to directory";
             this.exportToDirectoryToolStripMenuItem.Click += new System.EventHandler(this.exportToDirectoryToolStripMenuItem_Click);
             // 
-            // button1
-            // 
-            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.Location = new System.Drawing.Point(192, 4);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(31, 23);
-            this.button1.TabIndex = 9;
-            this.button1.Text = "<";
-            this.button1.UseVisualStyleBackColor = true;
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox2.Controls.Add(this.rdbPlaylist);
-            this.groupBox2.Controls.Add(this.rdbTagValue);
-            this.groupBox2.Location = new System.Drawing.Point(762, 570);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(214, 79);
-            this.groupBox2.TabIndex = 8;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Hotkey mode";
-            // 
-            // btnScanBpm
-            // 
-            this.btnScanBpm.Location = new System.Drawing.Point(901, 4);
-            this.btnScanBpm.Name = "btnScanBpm";
-            this.btnScanBpm.Size = new System.Drawing.Size(75, 23);
-            this.btnScanBpm.TabIndex = 15;
-            this.btnScanBpm.Text = "Scan Bpm";
-            this.btnScanBpm.UseVisualStyleBackColor = true;
-            this.btnScanBpm.Click += new System.EventHandler(this.btnScanBpm_Click);
-            // 
             // PlaylistView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1056,6 +1058,8 @@
             this.groupBoxTagValue.ResumeLayout(false);
             this.groupBoxTagValue.PerformLayout();
             this.groupBoxTag.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.groupBoxTagValueHotkeys.ResumeLayout(false);
             this.groupBoxTagValueHotkeys.PerformLayout();
             this.groupBox1.ResumeLayout(false);
@@ -1063,8 +1067,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvTrackList)).EndInit();
             this.tabControl1.ResumeLayout(false);
             this.contextMenuStrip1.ResumeLayout(false);
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
 
         }

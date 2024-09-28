@@ -64,6 +64,12 @@ namespace MitoPlayer_2024.Views
             this.tagListBindingSource.DataSource = tagList;
             this.dgvTagList.DataSource = this.tagListBindingSource.DataSource;
             this.dgvTagList.Columns["Id"].Visible = false;
+
+            foreach (DataGridViewColumn column in dgvTagList.Columns)
+            {
+                column.SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
+
         }
         public void SetTagValueListBindingSource(BindingSource tagValueList,bool hasMultipleValues = true)
         {
@@ -72,6 +78,11 @@ namespace MitoPlayer_2024.Views
             this.dgvTagValueList.DataSource = this.tagValueListBindingSource.DataSource;
             this.dgvTagValueList.Columns["Id"].Visible = false;
             this.dgvTagValueList.Columns["Color"].Visible = false;
+
+            foreach (DataGridViewColumn column in dgvTagValueList.Columns)
+            {
+                column.SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
 
             if (hasMultipleValues)
             {
