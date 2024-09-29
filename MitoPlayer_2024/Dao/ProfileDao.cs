@@ -1,4 +1,5 @@
 ﻿
+using MitoPlayer_2024.Helpers;
 using MitoPlayer_2024.Models;
 using MySql.Data.MySqlClient;
 using System;
@@ -40,8 +41,9 @@ namespace MitoPlayer_2024.Dao
             }
             return lastId + 1;
         }
-        public void CreateProfile(Profile profile)
+        public ResultOrError CreateProfile(Profile profile)
         {
+            ResultOrError result = new ResultOrError();
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
             {
@@ -63,10 +65,11 @@ namespace MitoPlayer_2024.Dao
                 }
                 catch (MySqlException ex)
                 {
-                    MessageBox.Show("Profile is not inserted. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    result.AddError("Profile [" + profile.Name + "] is not inserted. \n" + ex.Message);
                 }
                 connection.Close();
             }
+            return result;
         }
 
         public Profile GetActiveProfile()

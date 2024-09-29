@@ -24,6 +24,7 @@ namespace MitoPlayer_2024.Presenters
         private bool automaticBpmImport; 
         private bool automaticKeyImport;
         private String virtualDjDatabasePath;
+        private bool playTrackAfterOpenFiles;
 
         public bool databaseCleared = false;
         public PreferencesPresenter(IPreferencesView view, ITrackDao trackDao,ITagDao tagDao, IProfileDao profileDao, ISettingDao settingDao)
@@ -37,8 +38,13 @@ namespace MitoPlayer_2024.Presenters
             this.automaticBpmImport = this.settingDao.GetBooleanSetting(Settings.AutomaticBpmImport.ToString()).Value;
             this.automaticKeyImport = this.settingDao.GetBooleanSetting(Settings.AutomaticKeyImport.ToString()).Value;
             this.virtualDjDatabasePath = this.settingDao.GetStringSetting(Settings.VirtualDjDatabasePath.ToString());
+            this.playTrackAfterOpenFiles = this.settingDao.GetBooleanSetting(Settings.PlayTrackAfterOpenFiles.ToString()).Value;
             
-            this.view.SetImportSettings(this.automaticBpmImport, this.automaticKeyImport, this.virtualDjDatabasePath);
+            this.view.SetImportSettings(
+                this.automaticBpmImport, 
+                this.automaticKeyImport, 
+                this.virtualDjDatabasePath,
+                this.playTrackAfterOpenFiles);
 
             this.view.CloseViewWithOkEvent += CloseViewWithOkEvent;
             this.view.CloseViewWithCancelEvent += CloseViewWithCancelEvent;
@@ -46,6 +52,7 @@ namespace MitoPlayer_2024.Presenters
             this.view.SetAutomaticBpmImportEvent += SetAutomaticBpmImportEvent;
             this.view.SetAutomaticKeyImportEvent += SetAutomaticKeyImportEvent;
             this.view.SetVirtualDjDatabasePathEvent += SetVirtualDjDatabasePathEvent;
+            this.view.SetPlayTrackAfterOpenFilesEvent += SetPlayTrackAfterOpenFilesEvent;
         }
 
         private void ClearDatabaseEvent(object sender, EventArgs e)
@@ -76,24 +83,29 @@ namespace MitoPlayer_2024.Presenters
         {
             this.virtualDjDatabasePath = e.StringField1;
         }
+        private void SetPlayTrackAfterOpenFilesEvent(object sender, ListEventArgs e)
+        {
+            this.playTrackAfterOpenFiles = e.BooleanField1;
+        }
         private void CloseViewWithOkEvent(object sender, EventArgs e)
         {
-            if (!File.Exists(this.virtualDjDatabasePath))
+           /* if (!File.Exists(this.virtualDjDatabasePath))
             {
                 MessageBox.Show("VirtualDJ database file does not exists!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                this.view.SetImportSettings(this.automaticBpmImport, this.automaticKeyImport, this.virtualDjDatabasePath);
+                this.view.SetImportSettings(this.automaticBpmImport, this.automaticKeyImport, this.virtualDjDatabasePath, this.playTrackAfterOpenFiles);
             }
             else
             {
-                this.settingDao.SetBooleanSetting(Settings.AutomaticBpmImport.ToString(), this.automaticBpmImport);
-                this.settingDao.SetBooleanSetting(Settings.AutomaticKeyImport.ToString(), this.automaticKeyImport);
-                this.settingDao.SetStringSetting(Settings.VirtualDjDatabasePath.ToString(), this.virtualDjDatabasePath);
+                
+            }*/
+            this.settingDao.SetBooleanSetting(Settings.AutomaticBpmImport.ToString(), this.automaticBpmImport);
+            this.settingDao.SetBooleanSetting(Settings.AutomaticKeyImport.ToString(), this.automaticKeyImport);
+            this.settingDao.SetStringSetting(Settings.VirtualDjDatabasePath.ToString(), this.virtualDjDatabasePath);
+            this.settingDao.SetBooleanSetting(Settings.PlayTrackAfterOpenFiles.ToString(), this.playTrackAfterOpenFiles);
 
-                ((PreferencesView)this.view).DialogResult = DialogResult.OK;
-                ((PreferencesView)this.view).Close();
-            }
+            ((PreferencesView)this.view).DialogResult = DialogResult.OK;
+            ((PreferencesView)this.view).Close();
 
-           
         }
         private void CloseViewWithCancelEvent(object sender, EventArgs e)
         {

@@ -90,8 +90,9 @@ namespace MitoPlayer_2024.Dao
                 return false;
             }
         }
-        public void CreatePlaylist(Playlist playlist)
+        public ResultOrError CreatePlaylist(Playlist playlist)
         {
+            ResultOrError result = new ResultOrError();
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
             {
@@ -119,10 +120,11 @@ namespace MitoPlayer_2024.Dao
                 }
                 catch (MySqlException ex)
                 {
-                    MessageBox.Show("Playlist is not inserted. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    result.AddError("Playlist [" + playlist.Name + "] is not inserted. \n" + ex.Message);
                 }
                 connection.Close();
             }
+            return result;
         }
         public Playlist GetPlaylist(int id)
         {

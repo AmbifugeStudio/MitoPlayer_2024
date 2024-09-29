@@ -1,4 +1,5 @@
-﻿using MitoPlayer_2024.Models;
+﻿using MitoPlayer_2024.Helpers;
+using MitoPlayer_2024.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace MitoPlayer_2024.Model
 
         #region PLAYLIST
         bool IsPlaylistNameAlreadyExists(String name);
-        void CreatePlaylist(Playlist playlist);
+        ResultOrError CreatePlaylist(Playlist playlist);
         Playlist GetPlaylist(int id);
         Playlist GetPlaylistByName(String name);
         Playlist GetActivePlaylist();

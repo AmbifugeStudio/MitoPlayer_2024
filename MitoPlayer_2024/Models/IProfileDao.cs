@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MitoPlayer_2024.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,7 @@ namespace MitoPlayer_2024.Models
     {
         #region PROFILE
         int GetNextId(String tableName);
-        void CreateProfile(Profile profile);
+        ResultOrError CreateProfile(Profile profile);
         Profile GetActiveProfile();
         Profile GetProfile(int id);
         Profile GetProfileByName(String name);

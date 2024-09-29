@@ -19,6 +19,7 @@ namespace MitoPlayer_2024.Views
         public event EventHandler<ListEventArgs> SetAutomaticBpmImportEvent;
         public event EventHandler<ListEventArgs> SetAutomaticKeyImportEvent;
         public event EventHandler<ListEventArgs> SetVirtualDjDatabasePathEvent;
+        public event EventHandler<ListEventArgs> SetPlayTrackAfterOpenFilesEvent;
 
 
 
@@ -54,16 +55,22 @@ namespace MitoPlayer_2024.Views
         {
             this.SetAutomaticKeyImportEvent?.Invoke(this, new ListEventArgs { BooleanField1 = this.chbAutomaticKeyImport.Checked });
         }
-        public void SetImportSettings(bool automaticBpmImport, bool automaticKeyImport, String virtualDjDatabasePath)
+        public void SetImportSettings(bool automaticBpmImport, bool automaticKeyImport, String virtualDjDatabasePath, bool playTrackAfterOpenFiles)
         {
             this.chbAutomaticBpmImport.Checked = automaticBpmImport;
             this.chbAutomaticKeyImport.Checked = automaticKeyImport;
             this.txtBoxVirtualDjDatabasePath.Text = virtualDjDatabasePath;
+            this.chbPlayTrackAfterOpenFiles.Checked = playTrackAfterOpenFiles;
         }
 
         private void txtBoxVirtualDjDatabasePath_TextChanged(object sender, EventArgs e)
         {
             this.SetVirtualDjDatabasePathEvent?.Invoke(this, new ListEventArgs { StringField1 = this.txtBoxVirtualDjDatabasePath.Text });
+        }
+
+        private void chbPlayTrackAfterOpenFiles_CheckedChanged(object sender, EventArgs e)
+        {
+            this.SetPlayTrackAfterOpenFilesEvent?.Invoke(this, new ListEventArgs { BooleanField1 = this.chbPlayTrackAfterOpenFiles.Checked });
         }
     }
 }

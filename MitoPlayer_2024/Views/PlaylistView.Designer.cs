@@ -74,9 +74,9 @@
             this.btnTagValue14 = new System.Windows.Forms.Button();
             this.btnTagValue13 = new System.Windows.Forms.Button();
             this.btnTagValue12 = new System.Windows.Forms.Button();
+            this.btnTagValue3 = new System.Windows.Forms.Button();
             this.btnTagValue9 = new System.Windows.Forms.Button();
             this.btnTagValue6 = new System.Windows.Forms.Button();
-            this.btnTagValue3 = new System.Windows.Forms.Button();
             this.btnTagValue10 = new System.Windows.Forms.Button();
             this.btnTagValue7 = new System.Windows.Forms.Button();
             this.btnTagValue4 = new System.Windows.Forms.Button();
@@ -93,7 +93,7 @@
             this.btnTag4 = new System.Windows.Forms.Button();
             this.btnTag3 = new System.Windows.Forms.Button();
             this.btnTag1 = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.btnDisplayPlaylistList = new System.Windows.Forms.Button();
             this.btnDisplayTagEditor = new System.Windows.Forms.Button();
             this.btnColumnVisibility = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -104,7 +104,7 @@
             this.tgvHotkeyName4 = new System.Windows.Forms.Label();
             this.tgvHotkeyName2 = new System.Windows.Forms.Label();
             this.tgvHotkeyName1 = new System.Windows.Forms.Label();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBoxPlaylist = new System.Windows.Forms.GroupBox();
             this.btnNewPlaylist = new System.Windows.Forms.Button();
             this.btnRenamePlaylist = new System.Windows.Forms.Button();
             this.btnLoadPlaylist = new System.Windows.Forms.Button();
@@ -112,6 +112,9 @@
             this.lblMessage = new System.Windows.Forms.Label();
             this.dgvPlaylistList = new System.Windows.Forms.DataGridView();
             this.dgvTrackList = new System.Windows.Forms.DataGridView();
+            this.btnDisplayPlaylistList2 = new System.Windows.Forms.Button();
+            this.btnDisplayTagEditor2 = new System.Windows.Forms.Button();
+            this.btnColumnVisibility2 = new System.Windows.Forms.Button();
             this.contextMenuStrip1.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -119,7 +122,7 @@
             this.groupBoxTag.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBoxTagValueHotkeys.SuspendLayout();
-            this.groupBox1.SuspendLayout();
+            this.groupBoxPlaylist.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPlaylistList)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTrackList)).BeginInit();
             this.SuspendLayout();
@@ -236,7 +239,7 @@
             // 
             // btnScanBpm
             // 
-            this.btnScanBpm.Location = new System.Drawing.Point(908, 17);
+            this.btnScanBpm.Location = new System.Drawing.Point(400, 17);
             this.btnScanBpm.Name = "btnScanBpm";
             this.btnScanBpm.Size = new System.Drawing.Size(75, 23);
             this.btnScanBpm.TabIndex = 31;
@@ -333,6 +336,7 @@
             this.cmbColor.Name = "cmbColor";
             this.cmbColor.Size = new System.Drawing.Size(121, 21);
             this.cmbColor.TabIndex = 27;
+            this.cmbColor.SelectedIndexChanged += new System.EventHandler(this.cmbColor_SelectedIndexChanged);
             // 
             // groupBoxTagValue
             // 
@@ -354,9 +358,9 @@
             this.groupBoxTagValue.Controls.Add(this.btnTagValue14);
             this.groupBoxTagValue.Controls.Add(this.btnTagValue13);
             this.groupBoxTagValue.Controls.Add(this.btnTagValue12);
+            this.groupBoxTagValue.Controls.Add(this.btnTagValue3);
             this.groupBoxTagValue.Controls.Add(this.btnTagValue9);
             this.groupBoxTagValue.Controls.Add(this.btnTagValue6);
-            this.groupBoxTagValue.Controls.Add(this.btnTagValue3);
             this.groupBoxTagValue.Controls.Add(this.btnTagValue10);
             this.groupBoxTagValue.Controls.Add(this.btnTagValue7);
             this.groupBoxTagValue.Controls.Add(this.btnTagValue4);
@@ -378,6 +382,7 @@
             this.btnTagValue11.TabIndex = 0;
             this.btnTagValue11.Text = "TagValue11";
             this.btnTagValue11.UseVisualStyleBackColor = true;
+            this.btnTagValue11.Click += new System.EventHandler(this.btnTagValue11_Click);
             // 
             // btnTagValue8
             // 
@@ -387,6 +392,7 @@
             this.btnTagValue8.TabIndex = 0;
             this.btnTagValue8.Text = "TagValue8";
             this.btnTagValue8.UseVisualStyleBackColor = true;
+            this.btnTagValue8.Click += new System.EventHandler(this.btnTagValue8_Click);
             // 
             // btnTagValue5
             // 
@@ -396,6 +402,7 @@
             this.btnTagValue5.TabIndex = 0;
             this.btnTagValue5.Text = "TagValue5";
             this.btnTagValue5.UseVisualStyleBackColor = true;
+            this.btnTagValue5.Click += new System.EventHandler(this.btnTagValue5_Click);
             // 
             // btnTagValue2
             // 
@@ -405,6 +412,7 @@
             this.btnTagValue2.TabIndex = 0;
             this.btnTagValue2.Text = "TagValue2";
             this.btnTagValue2.UseVisualStyleBackColor = true;
+            this.btnTagValue2.Click += new System.EventHandler(this.btnTagValue2_Click);
             // 
             // btnTagValue18
             // 
@@ -414,6 +422,7 @@
             this.btnTagValue18.TabIndex = 0;
             this.btnTagValue18.Text = "TagValue18";
             this.btnTagValue18.UseVisualStyleBackColor = true;
+            this.btnTagValue18.Click += new System.EventHandler(this.btnTagValue18_Click);
             // 
             // btnTagValue17
             // 
@@ -423,6 +432,7 @@
             this.btnTagValue17.TabIndex = 0;
             this.btnTagValue17.Text = "TagValue17";
             this.btnTagValue17.UseVisualStyleBackColor = true;
+            this.btnTagValue17.Click += new System.EventHandler(this.btnTagValue17_Click);
             // 
             // btnTagValue21
             // 
@@ -432,6 +442,7 @@
             this.btnTagValue21.TabIndex = 0;
             this.btnTagValue21.Text = "TagValue21";
             this.btnTagValue21.UseVisualStyleBackColor = true;
+            this.btnTagValue21.Click += new System.EventHandler(this.btnTagValue21_Click);
             // 
             // btnTagValue20
             // 
@@ -441,6 +452,7 @@
             this.btnTagValue20.TabIndex = 0;
             this.btnTagValue20.Text = "TagValue20";
             this.btnTagValue20.UseVisualStyleBackColor = true;
+            this.btnTagValue20.Click += new System.EventHandler(this.btnTagValue20_Click);
             // 
             // btnTagValue24
             // 
@@ -450,6 +462,7 @@
             this.btnTagValue24.TabIndex = 0;
             this.btnTagValue24.Text = "TagValue24";
             this.btnTagValue24.UseVisualStyleBackColor = true;
+            this.btnTagValue24.Click += new System.EventHandler(this.btnTagValue24_Click);
             // 
             // btnTagValue23
             // 
@@ -459,6 +472,7 @@
             this.btnTagValue23.TabIndex = 0;
             this.btnTagValue23.Text = "TagValue23";
             this.btnTagValue23.UseVisualStyleBackColor = true;
+            this.btnTagValue23.Click += new System.EventHandler(this.btnTagValue23_Click);
             // 
             // btnTagValue22
             // 
@@ -468,6 +482,7 @@
             this.btnTagValue22.TabIndex = 0;
             this.btnTagValue22.Text = "TagValue22";
             this.btnTagValue22.UseVisualStyleBackColor = true;
+            this.btnTagValue22.Click += new System.EventHandler(this.btnTagValue22_Click);
             // 
             // btnTagValue19
             // 
@@ -477,6 +492,7 @@
             this.btnTagValue19.TabIndex = 0;
             this.btnTagValue19.Text = "TagValue19";
             this.btnTagValue19.UseVisualStyleBackColor = true;
+            this.btnTagValue19.Click += new System.EventHandler(this.btnTagValue19_Click);
             // 
             // btnTagValue16
             // 
@@ -486,6 +502,7 @@
             this.btnTagValue16.TabIndex = 0;
             this.btnTagValue16.Text = "TagValue16";
             this.btnTagValue16.UseVisualStyleBackColor = true;
+            this.btnTagValue16.Click += new System.EventHandler(this.btnTagValue16_Click);
             // 
             // btnTagValue15
             // 
@@ -495,6 +512,7 @@
             this.btnTagValue15.TabIndex = 0;
             this.btnTagValue15.Text = "TagValue15";
             this.btnTagValue15.UseVisualStyleBackColor = true;
+            this.btnTagValue15.Click += new System.EventHandler(this.btnTagValue15_Click);
             // 
             // btnTagValue14
             // 
@@ -504,6 +522,7 @@
             this.btnTagValue14.TabIndex = 0;
             this.btnTagValue14.Text = "TagValue14";
             this.btnTagValue14.UseVisualStyleBackColor = true;
+            this.btnTagValue14.Click += new System.EventHandler(this.btnTagValue14_Click);
             // 
             // btnTagValue13
             // 
@@ -513,6 +532,7 @@
             this.btnTagValue13.TabIndex = 0;
             this.btnTagValue13.Text = "TagValue13";
             this.btnTagValue13.UseVisualStyleBackColor = true;
+            this.btnTagValue13.Click += new System.EventHandler(this.btnTagValue13_Click);
             // 
             // btnTagValue12
             // 
@@ -522,6 +542,17 @@
             this.btnTagValue12.TabIndex = 0;
             this.btnTagValue12.Text = "TagValue12";
             this.btnTagValue12.UseVisualStyleBackColor = true;
+            this.btnTagValue12.Click += new System.EventHandler(this.btnTagValue12_Click);
+            // 
+            // btnTagValue3
+            // 
+            this.btnTagValue3.Location = new System.Drawing.Point(168, 19);
+            this.btnTagValue3.Name = "btnTagValue3";
+            this.btnTagValue3.Size = new System.Drawing.Size(75, 23);
+            this.btnTagValue3.TabIndex = 0;
+            this.btnTagValue3.Text = "TagValue3";
+            this.btnTagValue3.UseVisualStyleBackColor = true;
+            this.btnTagValue3.Click += new System.EventHandler(this.btnTagValue3_Click);
             // 
             // btnTagValue9
             // 
@@ -531,6 +562,7 @@
             this.btnTagValue9.TabIndex = 0;
             this.btnTagValue9.Text = "TagValue9";
             this.btnTagValue9.UseVisualStyleBackColor = true;
+            this.btnTagValue9.Click += new System.EventHandler(this.btnTagValue9_Click);
             // 
             // btnTagValue6
             // 
@@ -540,15 +572,7 @@
             this.btnTagValue6.TabIndex = 0;
             this.btnTagValue6.Text = "TagValue6";
             this.btnTagValue6.UseVisualStyleBackColor = true;
-            // 
-            // btnTagValue3
-            // 
-            this.btnTagValue3.Location = new System.Drawing.Point(168, 20);
-            this.btnTagValue3.Name = "btnTagValue3";
-            this.btnTagValue3.Size = new System.Drawing.Size(75, 23);
-            this.btnTagValue3.TabIndex = 0;
-            this.btnTagValue3.Text = "TagValue3";
-            this.btnTagValue3.UseVisualStyleBackColor = true;
+            this.btnTagValue6.Click += new System.EventHandler(this.btnTagValue6_Click);
             // 
             // btnTagValue10
             // 
@@ -558,6 +582,7 @@
             this.btnTagValue10.TabIndex = 0;
             this.btnTagValue10.Text = "TagValue10";
             this.btnTagValue10.UseVisualStyleBackColor = true;
+            this.btnTagValue10.Click += new System.EventHandler(this.btnTagValue10_Click);
             // 
             // btnTagValue7
             // 
@@ -567,6 +592,7 @@
             this.btnTagValue7.TabIndex = 0;
             this.btnTagValue7.Text = "TagValue7";
             this.btnTagValue7.UseVisualStyleBackColor = true;
+            this.btnTagValue7.Click += new System.EventHandler(this.btnTagValue7_Click);
             // 
             // btnTagValue4
             // 
@@ -576,6 +602,7 @@
             this.btnTagValue4.TabIndex = 0;
             this.btnTagValue4.Text = "TagValue4";
             this.btnTagValue4.UseVisualStyleBackColor = true;
+            this.btnTagValue4.Click += new System.EventHandler(this.btnTagValue4_Click);
             // 
             // btnTagValue1
             // 
@@ -585,6 +612,7 @@
             this.btnTagValue1.TabIndex = 0;
             this.btnTagValue1.Text = "TagValue1";
             this.btnTagValue1.UseVisualStyleBackColor = true;
+            this.btnTagValue1.Click += new System.EventHandler(this.btnTagValue1_Click);
             // 
             // txtBoxTagValueInput
             // 
@@ -601,6 +629,7 @@
             this.btnSetTagValue.TabIndex = 13;
             this.btnSetTagValue.Text = "Set";
             this.btnSetTagValue.UseVisualStyleBackColor = true;
+            this.btnSetTagValue.Click += new System.EventHandler(this.btnSetTagValue_Click);
             // 
             // groupBoxTag
             // 
@@ -629,6 +658,7 @@
             this.btnTag9.TabIndex = 0;
             this.btnTag9.Text = "Tag9";
             this.btnTag9.UseVisualStyleBackColor = true;
+            this.btnTag9.Click += new System.EventHandler(this.btnTag9_Click);
             // 
             // btnTag8
             // 
@@ -638,6 +668,7 @@
             this.btnTag8.TabIndex = 0;
             this.btnTag8.Text = "Tag8";
             this.btnTag8.UseVisualStyleBackColor = true;
+            this.btnTag8.Click += new System.EventHandler(this.btnTag8_Click);
             // 
             // btnTag7
             // 
@@ -647,6 +678,7 @@
             this.btnTag7.TabIndex = 0;
             this.btnTag7.Text = "Tag7";
             this.btnTag7.UseVisualStyleBackColor = true;
+            this.btnTag7.Click += new System.EventHandler(this.btnTag7_Click);
             // 
             // btnTag6
             // 
@@ -656,6 +688,7 @@
             this.btnTag6.TabIndex = 0;
             this.btnTag6.Text = "Tag6";
             this.btnTag6.UseVisualStyleBackColor = true;
+            this.btnTag6.Click += new System.EventHandler(this.btnTag6_Click);
             // 
             // btnTag5
             // 
@@ -665,6 +698,7 @@
             this.btnTag5.TabIndex = 0;
             this.btnTag5.Text = "Tag5";
             this.btnTag5.UseVisualStyleBackColor = true;
+            this.btnTag5.Click += new System.EventHandler(this.btnTag5_Click);
             // 
             // btnTag2
             // 
@@ -674,6 +708,7 @@
             this.btnTag2.TabIndex = 0;
             this.btnTag2.Text = "Tag2";
             this.btnTag2.UseVisualStyleBackColor = true;
+            this.btnTag2.Click += new System.EventHandler(this.btnTag2_Click);
             // 
             // btnTag4
             // 
@@ -683,6 +718,7 @@
             this.btnTag4.TabIndex = 0;
             this.btnTag4.Text = "Tag4";
             this.btnTag4.UseVisualStyleBackColor = true;
+            this.btnTag4.Click += new System.EventHandler(this.btnTag4_Click);
             // 
             // btnTag3
             // 
@@ -692,6 +728,7 @@
             this.btnTag3.TabIndex = 0;
             this.btnTag3.Text = "Tag3";
             this.btnTag3.UseVisualStyleBackColor = true;
+            this.btnTag3.Click += new System.EventHandler(this.btnTag3_Click);
             // 
             // btnTag1
             // 
@@ -701,16 +738,18 @@
             this.btnTag1.TabIndex = 0;
             this.btnTag1.Text = "Tag1";
             this.btnTag1.UseVisualStyleBackColor = true;
+            this.btnTag1.Click += new System.EventHandler(this.btnTag1_Click);
             // 
-            // button1
+            // btnDisplayPlaylistList
             // 
-            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.Location = new System.Drawing.Point(199, 17);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(31, 23);
-            this.button1.TabIndex = 22;
-            this.button1.Text = "<";
-            this.button1.UseVisualStyleBackColor = true;
+            this.btnDisplayPlaylistList.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnDisplayPlaylistList.Location = new System.Drawing.Point(199, 17);
+            this.btnDisplayPlaylistList.Name = "btnDisplayPlaylistList";
+            this.btnDisplayPlaylistList.Size = new System.Drawing.Size(31, 23);
+            this.btnDisplayPlaylistList.TabIndex = 22;
+            this.btnDisplayPlaylistList.Text = "<";
+            this.btnDisplayPlaylistList.UseVisualStyleBackColor = true;
+            this.btnDisplayPlaylistList.Click += new System.EventHandler(this.btnDisplayPlaylistList_Click);
             // 
             // btnDisplayTagEditor
             // 
@@ -722,6 +761,7 @@
             this.btnDisplayTagEditor.TabIndex = 23;
             this.btnDisplayTagEditor.Text = "<";
             this.btnDisplayTagEditor.UseVisualStyleBackColor = true;
+            this.btnDisplayTagEditor.Click += new System.EventHandler(this.btnDisplayTagEditor_Click);
             // 
             // btnColumnVisibility
             // 
@@ -732,6 +772,7 @@
             this.btnColumnVisibility.Size = new System.Drawing.Size(31, 23);
             this.btnColumnVisibility.TabIndex = 24;
             this.btnColumnVisibility.UseVisualStyleBackColor = true;
+            this.btnColumnVisibility.Click += new System.EventHandler(this.btnColumnVisibility_Click);
             // 
             // groupBox2
             // 
@@ -817,19 +858,19 @@
             this.tgvHotkeyName1.TabIndex = 1;
             this.tgvHotkeyName1.Text = "(1) -";
             // 
-            // groupBox1
+            // groupBoxPlaylist
             // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.groupBox1.Controls.Add(this.btnNewPlaylist);
-            this.groupBox1.Controls.Add(this.btnRenamePlaylist);
-            this.groupBox1.Controls.Add(this.btnLoadPlaylist);
-            this.groupBox1.Controls.Add(this.btnDeletePlaylist);
-            this.groupBox1.Location = new System.Drawing.Point(10, 583);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(183, 79);
-            this.groupBox1.TabIndex = 19;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Playlist";
+            this.groupBoxPlaylist.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.groupBoxPlaylist.Controls.Add(this.btnNewPlaylist);
+            this.groupBoxPlaylist.Controls.Add(this.btnRenamePlaylist);
+            this.groupBoxPlaylist.Controls.Add(this.btnLoadPlaylist);
+            this.groupBoxPlaylist.Controls.Add(this.btnDeletePlaylist);
+            this.groupBoxPlaylist.Location = new System.Drawing.Point(10, 583);
+            this.groupBoxPlaylist.Name = "groupBoxPlaylist";
+            this.groupBoxPlaylist.Size = new System.Drawing.Size(183, 79);
+            this.groupBoxPlaylist.TabIndex = 19;
+            this.groupBoxPlaylist.TabStop = false;
+            this.groupBoxPlaylist.Text = "Playlist";
             // 
             // btnNewPlaylist
             // 
@@ -839,6 +880,7 @@
             this.btnNewPlaylist.TabIndex = 6;
             this.btnNewPlaylist.Text = "New";
             this.btnNewPlaylist.UseVisualStyleBackColor = true;
+            this.btnNewPlaylist.Click += new System.EventHandler(this.btnNewPlaylist_Click);
             // 
             // btnRenamePlaylist
             // 
@@ -848,6 +890,7 @@
             this.btnRenamePlaylist.TabIndex = 6;
             this.btnRenamePlaylist.Text = "Rename";
             this.btnRenamePlaylist.UseVisualStyleBackColor = true;
+            this.btnRenamePlaylist.Click += new System.EventHandler(this.btnRenamePlaylist_Click);
             // 
             // btnLoadPlaylist
             // 
@@ -857,6 +900,7 @@
             this.btnLoadPlaylist.TabIndex = 6;
             this.btnLoadPlaylist.Text = "Load";
             this.btnLoadPlaylist.UseVisualStyleBackColor = true;
+            this.btnLoadPlaylist.Click += new System.EventHandler(this.btnLoadPlaylist_Click);
             // 
             // btnDeletePlaylist
             // 
@@ -866,6 +910,7 @@
             this.btnDeletePlaylist.TabIndex = 6;
             this.btnDeletePlaylist.Text = "Delete";
             this.btnDeletePlaylist.UseVisualStyleBackColor = true;
+            this.btnDeletePlaylist.Click += new System.EventHandler(this.btnDeletePlaylist_Click);
             // 
             // lblMessage
             // 
@@ -916,11 +961,48 @@
             this.dgvTrackList.Size = new System.Drawing.Size(784, 531);
             this.dgvTrackList.TabIndex = 16;
             // 
+            // btnDisplayPlaylistList2
+            // 
+            this.btnDisplayPlaylistList2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnDisplayPlaylistList2.Location = new System.Drawing.Point(10, 17);
+            this.btnDisplayPlaylistList2.Name = "btnDisplayPlaylistList2";
+            this.btnDisplayPlaylistList2.Size = new System.Drawing.Size(31, 23);
+            this.btnDisplayPlaylistList2.TabIndex = 32;
+            this.btnDisplayPlaylistList2.Text = "<";
+            this.btnDisplayPlaylistList2.UseVisualStyleBackColor = true;
+            this.btnDisplayPlaylistList2.Click += new System.EventHandler(this.btnDisplayPlaylistList2_Click);
+            // 
+            // btnDisplayTagEditor2
+            // 
+            this.btnDisplayTagEditor2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnDisplayTagEditor2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnDisplayTagEditor2.Location = new System.Drawing.Point(952, 17);
+            this.btnDisplayTagEditor2.Name = "btnDisplayTagEditor2";
+            this.btnDisplayTagEditor2.Size = new System.Drawing.Size(31, 23);
+            this.btnDisplayTagEditor2.TabIndex = 33;
+            this.btnDisplayTagEditor2.Text = "<";
+            this.btnDisplayTagEditor2.UseVisualStyleBackColor = true;
+            this.btnDisplayTagEditor2.Click += new System.EventHandler(this.btnDisplayTagEditor2_Click);
+            // 
+            // btnColumnVisibility2
+            // 
+            this.btnColumnVisibility2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnColumnVisibility2.Image = ((System.Drawing.Image)(resources.GetObject("btnColumnVisibility2.Image")));
+            this.btnColumnVisibility2.Location = new System.Drawing.Point(915, 17);
+            this.btnColumnVisibility2.Name = "btnColumnVisibility2";
+            this.btnColumnVisibility2.Size = new System.Drawing.Size(31, 23);
+            this.btnColumnVisibility2.TabIndex = 34;
+            this.btnColumnVisibility2.UseVisualStyleBackColor = true;
+            this.btnColumnVisibility2.Click += new System.EventHandler(this.btnColumnVisibility2_Click);
+            // 
             // PlaylistView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1252, 678);
+            this.Controls.Add(this.btnColumnVisibility2);
+            this.Controls.Add(this.btnDisplayTagEditor2);
+            this.Controls.Add(this.btnDisplayPlaylistList2);
             this.Controls.Add(this.btnScanBpm);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
@@ -928,12 +1010,12 @@
             this.Controls.Add(this.cmbColor);
             this.Controls.Add(this.groupBoxTagValue);
             this.Controls.Add(this.groupBoxTag);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.btnDisplayPlaylistList);
             this.Controls.Add(this.btnDisplayTagEditor);
             this.Controls.Add(this.btnColumnVisibility);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBoxTagValueHotkeys);
-            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.groupBoxPlaylist);
             this.Controls.Add(this.lblMessage);
             this.Controls.Add(this.dgvPlaylistList);
             this.Controls.Add(this.dgvTrackList);
@@ -952,7 +1034,7 @@
             this.groupBox2.PerformLayout();
             this.groupBoxTagValueHotkeys.ResumeLayout(false);
             this.groupBoxTagValueHotkeys.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
+            this.groupBoxPlaylist.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvPlaylistList)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTrackList)).EndInit();
             this.ResumeLayout(false);
@@ -1025,7 +1107,7 @@
         private System.Windows.Forms.Button btnTag4;
         private System.Windows.Forms.Button btnTag3;
         private System.Windows.Forms.Button btnTag1;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnDisplayPlaylistList;
         private System.Windows.Forms.Button btnDisplayTagEditor;
         private System.Windows.Forms.Button btnColumnVisibility;
         private System.Windows.Forms.GroupBox groupBox2;
@@ -1036,7 +1118,7 @@
         private System.Windows.Forms.Label tgvHotkeyName4;
         private System.Windows.Forms.Label tgvHotkeyName2;
         private System.Windows.Forms.Label tgvHotkeyName1;
-        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox groupBoxPlaylist;
         private System.Windows.Forms.Button btnNewPlaylist;
         private System.Windows.Forms.Button btnRenamePlaylist;
         private System.Windows.Forms.Button btnLoadPlaylist;
@@ -1044,5 +1126,8 @@
         private System.Windows.Forms.Label lblMessage;
         private System.Windows.Forms.DataGridView dgvPlaylistList;
         private System.Windows.Forms.DataGridView dgvTrackList;
+        private System.Windows.Forms.Button btnDisplayPlaylistList2;
+        private System.Windows.Forms.Button btnDisplayTagEditor2;
+        private System.Windows.Forms.Button btnColumnVisibility2;
     }
 }

@@ -89,11 +89,6 @@ namespace MitoPlayer_2024.Dao
             ResultOrError result = this.databaseBuilderDao.CreateTableStructure();
             if (result.Success)
             {
-                result = this.CreateBooleanSetting(this.GetNextId(TableName.Setting.ToString()), Settings.FirstRun.ToString(), true, true);
-            }
-
-            if (result.Success)
-            {
                 result = this.InitializeGlobalSettings();
             }
             return result;
@@ -186,6 +181,17 @@ namespace MitoPlayer_2024.Dao
 
             if (result.Success)
                 this.InitializeStringSetting(Settings.VirtualDjDatabasePath.ToString());
+
+            if (result.Success)
+                this.InitializeBooleanSetting(Settings.IsTagEditorDisplayed.ToString());
+            if (result.Success)
+                this.InitializeIntegerSetting(Settings.CurrentTagIndexForTracklistColouring.ToString());
+            if (result.Success)
+                this.InitializeBooleanSetting(Settings.PlayTrackAfterOpenFiles.ToString());
+            
+            if (result.Success)
+                this.InitializeBooleanSetting(Settings.IsPlaylistListDisplayed.ToString());
+
             return result;
         }
         private ResultOrError InitializeStringSetting(String settingName, bool withoutProfile = false)
@@ -218,7 +224,7 @@ namespace MitoPlayer_2024.Dao
             bool boolData = false;
             boolData = Convert.ToBoolean(System.Configuration.ConfigurationManager.AppSettings[settingName]);
 
-            if (!this.IsSettingExists(settingName, true))
+            if (!this.IsSettingExists(settingName, withoutProfile))
             {
                 result = this.CreateBooleanSetting(this.GetNextId(TableName.Setting.ToString()), settingName, boolData, withoutProfile);
             }
@@ -230,7 +236,7 @@ namespace MitoPlayer_2024.Dao
             decimal decimalData = -1;
             decimalData = Convert.ToDecimal(System.Configuration.ConfigurationManager.AppSettings[settingName]);
 
-            if (!this.IsSettingExists(settingName, true))
+            if (!this.IsSettingExists(settingName, withoutProfile))
             {
                 result = this.CreateDecimalSetting(this.GetNextId(TableName.Setting.ToString()), settingName, decimalData, withoutProfile);
             }

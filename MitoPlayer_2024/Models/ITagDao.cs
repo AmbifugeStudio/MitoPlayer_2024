@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MitoPlayer_2024.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,7 +13,7 @@ namespace MitoPlayer_2024.Models
 
         #region TAG
         void SetProfileId(int profileId);
-        void CreateTag(Tag tag);
+        ResultOrError CreateTag(Tag tag);
         Tag GetTag(int id);
         Tag GetTagByName(String name);
         List<Tag> GetAllTag();
@@ -23,7 +24,7 @@ namespace MitoPlayer_2024.Models
         #endregion
 
         #region TAGVALUE
-        void CreateTagValue(TagValue tagValue);
+        ResultOrError CreateTagValue(TagValue tagValue);
         List<TagValue> GetTagValuesByTagId(int id);
         TagValue GetTagValue(int id);
         TagValue GetTagValueByTagId(int id, int tagId);

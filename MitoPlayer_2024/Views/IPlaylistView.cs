@@ -47,6 +47,7 @@ namespace MitoPlayer_2024.Views
         event EventHandler<ListEventArgs> ExportToM3UEvent;
         event EventHandler<ListEventArgs> ExportToTXTEvent;
         event EventHandler<ListEventArgs> ExportToDirectoryEvent;
+        event EventHandler DisplayPlaylistListEvent;
 
         //TAG EDITOR
         event EventHandler DisplayTagEditorEvent;

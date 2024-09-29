@@ -60,6 +60,7 @@ namespace MitoPlayer_2024.Views
         public event EventHandler<ListEventArgs> ExportToM3UEvent;
         public event EventHandler<ListEventArgs> ExportToTXTEvent;
         public event EventHandler<ListEventArgs> ExportToDirectoryEvent;
+        public event EventHandler DisplayPlaylistListEvent;
 
         //TAG EDITOR
         public event EventHandler DisplayTagEditorEvent;
@@ -83,7 +84,7 @@ namespace MitoPlayer_2024.Views
                 instance.parentView = parentView;
                 instance.MdiParent = parentView;
                 instance.FormBorderStyle = FormBorderStyle.None;
-                instance.Dock = DockStyle.Top;
+                instance.Dock = DockStyle.Fill;
             }
             else
             {
@@ -867,6 +868,9 @@ namespace MitoPlayer_2024.Views
         }
         public void InitializeTagEditor(List<Tag> tagList)
         {
+            //tag-eket mutató gombok jelennek meg először, 9db gomb
+            //induláskor minden megjelenne, ezért az összeset elhide-oljuk
+            //taglist-en végigmegyünk és az első x darab label-jét beállítjuk, illetve megjelenítjük (ahány tag, annyi gomb)
             List<Button> buttonList = new List<Button> { this.btnTag1, this.btnTag2, this.btnTag3, 
                                                         this.btnTag4, this.btnTag5, this.btnTag6,
                                                         this.btnTag7,this.btnTag8,this.btnTag9 };
@@ -882,15 +886,18 @@ namespace MitoPlayer_2024.Views
                     buttonList[i].Show();
                 }
             }
-
-
         }
+
         int tgvHotkeyIndex1 = -1;
         int tgvHotkeyIndex2 = -1;
         int tgvHotkeyIndex3 = -1;
         int tgvHotkeyIndex4 = -1;
-        public void InitializeTagValueEditor(List<TagValue> tagValueList, bool inputTextBoxEnabled = false)
+        public void InitializeTagValueEditor(List<TagValue> tagValueList, bool isTagEditorDisplayed, bool inputTextBoxEnabled = false)
         {
+            //van 24 tagvalue gomb, induláskor megjelennének, ezért elhideoljuk őket
+            //a hotkey text-eket inicializáljuk
+            //ha inputtextbox van, akkor egy textbox meg a gomb jelenik csak meg, ellenben végigmegyünk a gombokon és a tag-hez tartozó tagvalue-k neveit felrakjuk a gombokra, majd megjelenítjük őket, azaz megjelenik x db tagvalue gomb
+            //hotkey indexeket is inicializáljuk
             List<Button> buttonList = new List<Button> { this.btnTagValue1, this.btnTagValue2, this.btnTagValue3,
                                                         this.btnTagValue4, this.btnTagValue5, this.btnTagValue6,
                                                         this.btnTagValue7,this.btnTagValue8,this.btnTagValue9,
@@ -967,29 +974,47 @@ namespace MitoPlayer_2024.Views
                 this.btnSetTagValue.Show();
             }
 
-            this.groupBoxTag.Show();
-            this.groupBoxTagValue.Show();
-            this.groupBoxTagValueHotkeys.Show();
+            if (isTagEditorDisplayed)
+            {
+                this.dgvTrackList.Width = this.dgvTrackList.Width + 260;
+            }
 
         }
-        public void InitializeCurrentTagValueColors(List<Tag> tagList)
+        
+        
+        public void InitializeCurrentTagValueColors(List<Tag> tagList, int currentTagId)
         {
+            int selectedIndex = 0;
+
             this.cmbColor.Items.Clear();
             this.cmbColor.Items.Add("No Color");
 
             if (tagList != null && tagList.Count > 0)
             {
+                int comboboxContentCount = 0;
+                
+
                 for (int i = 0; i <= tagList.Count - 1; i++)
                 {
-                    if(!tagList[i].HasMultipleValues)
+                    if (!tagList[i].HasMultipleValues)
+                    {
                         this.cmbColor.Items.Add(tagList[i].Name);
+                        comboboxContentCount++;
+                        if (tagList[i].Id == currentTagId)
+                        {
+                            selectedIndex = comboboxContentCount;
+                        }
+                    }
+                       
                 }
-
-                this.cmbColor.SelectedIndex = 0;
             }
 
             this.currentTagForColors = null;
             this.currentTagValueColorDic = null;
+            //this.cmbColor.SelectedItem = this.cmbColor.Items[selectedIndex];
+
+           // this.ChangeTracklistColorEvent?.Invoke(this, new ListEventArgs() { StringField1 = (String)this.cmbColor.SelectedItem });
+
         }
         public void ChangeCurrentTagValueColors(Tag tag, Dictionary<String, Color> tagValueColors)
         {
@@ -998,9 +1023,17 @@ namespace MitoPlayer_2024.Views
         }
         public void CallDisplayTagEditor(bool isTagEditorDisplayed, bool inputTextBoxEnabled = false)
         {
+            //kikapcsolt állapotban a panelt elrejtjük, textboxot és gombot elrejtjük, grid szélessége nő
+            //bekapcsolt állapotban a panel látszik, ha textbox van, akkor az látzik, ellenben a gombok, grid szélessége csökken
             if (!isTagEditorDisplayed)
             {
                 this.btnDisplayTagEditor.Text = "<";
+                this.btnDisplayTagEditor2.Text = "<";
+                this.btnDisplayTagEditor.Show();
+                this.btnDisplayTagEditor2.Hide();
+                this.btnColumnVisibility.Show();
+                this.btnColumnVisibility2.Hide();
+
                 this.groupBoxTag.Hide();
                 this.groupBoxTagValue.Hide();
                 this.groupBoxTagValueHotkeys.Hide();
@@ -1011,6 +1044,12 @@ namespace MitoPlayer_2024.Views
             else
             {
                 this.btnDisplayTagEditor.Text = ">";
+                this.btnDisplayTagEditor2.Text = ">";
+                this.btnDisplayTagEditor.Hide();
+                this.btnDisplayTagEditor2.Show();
+                this.btnColumnVisibility.Hide();
+                this.btnColumnVisibility2.Show();
+
                 this.groupBoxTag.Show();
                 this.groupBoxTagValue.Show();
                 this.groupBoxTagValueHotkeys.Show();
@@ -1027,6 +1066,42 @@ namespace MitoPlayer_2024.Views
                 }
                
                 this.dgvTrackList.Width = this.dgvTrackList.Width - 260;
+            }
+        }
+
+        public void ResetPlaylistList(bool isPlaylistListDisplayed)
+        {
+            if (isPlaylistListDisplayed)
+            {
+                this.dgvTrackList.Left -= 190;
+                this.dgvTrackList.Width += 190;
+            }
+        }
+        public void CallDisplayPlaylistList(bool isPlaylistListDisplayed)
+        {
+            if (!isPlaylistListDisplayed)
+            {
+                this.btnDisplayPlaylistList.Text = ">";
+                this.btnDisplayPlaylistList2.Text = ">";
+                this.btnDisplayPlaylistList.Hide();
+                this.btnDisplayPlaylistList2.Show();
+
+                this.dgvPlaylistList.Hide();
+                this.groupBoxPlaylist.Hide();
+                this.dgvTrackList.Left -= 190;
+                this.dgvTrackList.Width += 190;
+            }
+            else
+            {
+                this.btnDisplayPlaylistList.Text = "<";
+                this.btnDisplayPlaylistList2.Text = "<";
+                this.btnDisplayPlaylistList.Show();
+                this.btnDisplayPlaylistList2.Hide();
+
+                this.dgvPlaylistList.Show();
+                this.groupBoxPlaylist.Show();
+                this.dgvTrackList.Left += 190;
+                this.dgvTrackList.Width -= 190;
             }
         }
 
@@ -1397,6 +1472,14 @@ namespace MitoPlayer_2024.Views
             }
             
         }
+        private void btnDisplayPlaylistList_Click(object sender, EventArgs e)
+        {
+            this.DisplayPlaylistListEvent?.Invoke(this, new EventArgs());
+        }
+        private void btnDisplayPlaylistList2_Click(object sender, EventArgs e)
+        {
+            this.DisplayPlaylistListEvent?.Invoke(this, new EventArgs());
+        }
 
         #endregion
 
@@ -1405,10 +1488,19 @@ namespace MitoPlayer_2024.Views
         {
             this.ShowColumnVisibilityEditorEvent?.Invoke(this, new EventArgs());
         }
+        private void btnColumnVisibility2_Click(object sender, EventArgs e)
+        {
+            this.ShowColumnVisibilityEditorEvent?.Invoke(this, new EventArgs());
+        }
         #endregion
 
         #region TAG EDITOR
+
         private void btnDisplayTagEditor_Click(object sender, EventArgs e)
+        {
+            this.DisplayTagEditorEvent?.Invoke(this, new EventArgs());
+        }
+        private void btnDisplayTagEditor2_Click(object sender, EventArgs e)
         {
             this.DisplayTagEditorEvent?.Invoke(this, new EventArgs());
         }
@@ -1539,7 +1631,6 @@ namespace MitoPlayer_2024.Views
                 this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 12, Rows = this.dgvTrackList.Rows });
             }
         }
-
         private void btnTagValue14_Click(object sender, EventArgs e)
         {
             if (this.dgvPlaylistList.SelectedRows.Count > 0)
@@ -1547,7 +1638,6 @@ namespace MitoPlayer_2024.Views
                 this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 13, Rows = this.dgvTrackList.Rows });
             }
         }
-
         private void btnTagValue15_Click(object sender, EventArgs e)
         {
             if (this.dgvPlaylistList.SelectedRows.Count > 0)
@@ -1555,7 +1645,6 @@ namespace MitoPlayer_2024.Views
                 this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 14, Rows = this.dgvTrackList.Rows });
             }
         }
-
         private void btnTagValue16_Click(object sender, EventArgs e)
         {
             if (this.dgvPlaylistList.SelectedRows.Count > 0)
@@ -1563,7 +1652,6 @@ namespace MitoPlayer_2024.Views
                 this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 15, Rows = this.dgvTrackList.Rows });
             }
         }
-
         private void btnTagValue17_Click(object sender, EventArgs e)
         {
             if (this.dgvPlaylistList.SelectedRows.Count > 0)
@@ -1571,7 +1659,6 @@ namespace MitoPlayer_2024.Views
                 this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 16, Rows = this.dgvTrackList.Rows });
             }
         }
-
         private void btnTagValue18_Click(object sender, EventArgs e)
         {
             if (this.dgvPlaylistList.SelectedRows.Count > 0)
@@ -1579,7 +1666,6 @@ namespace MitoPlayer_2024.Views
                 this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 17, Rows = this.dgvTrackList.Rows });
             }
         }
-
         private void btnTagValue19_Click(object sender, EventArgs e)
         {
             if (this.dgvPlaylistList.SelectedRows.Count > 0)
@@ -1587,7 +1673,6 @@ namespace MitoPlayer_2024.Views
                 this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 18, Rows = this.dgvTrackList.Rows });
             }
         }
-
         private void btnTagValue20_Click(object sender, EventArgs e)
         {
             if (this.dgvPlaylistList.SelectedRows.Count > 0)
@@ -1595,7 +1680,6 @@ namespace MitoPlayer_2024.Views
                 this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 19, Rows = this.dgvTrackList.Rows });
             }
         }
-
         private void btnTagValue21_Click(object sender, EventArgs e)
         {
             if (this.dgvPlaylistList.SelectedRows.Count > 0)
@@ -1603,7 +1687,6 @@ namespace MitoPlayer_2024.Views
                 this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 20, Rows = this.dgvTrackList.Rows });
             }
         }
-
         private void btnTagValue22_Click(object sender, EventArgs e)
         {
             if (this.dgvPlaylistList.SelectedRows.Count > 0)
@@ -1611,7 +1694,6 @@ namespace MitoPlayer_2024.Views
                 this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 21, Rows = this.dgvTrackList.Rows });
             }
         }
-
         private void btnTagValue23_Click(object sender, EventArgs e)
         {
             if (this.dgvPlaylistList.SelectedRows.Count > 0)
@@ -1619,7 +1701,6 @@ namespace MitoPlayer_2024.Views
                 this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 22, Rows = this.dgvTrackList.Rows });
             }
         }
-
         private void btnTagValue24_Click(object sender, EventArgs e)
         {
             if (this.dgvPlaylistList.SelectedRows.Count > 0)
@@ -1627,7 +1708,6 @@ namespace MitoPlayer_2024.Views
                 this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 23, Rows = this.dgvTrackList.Rows });
             }
         }
-
         private void btnSetTagValue_Click(object sender, EventArgs e)
         {
             if (this.dgvPlaylistList.SelectedRows.Count > 0)
@@ -1646,42 +1726,7 @@ namespace MitoPlayer_2024.Views
             this.ChangeTracklistColorEvent?.Invoke(this, new ListEventArgs() { StringField1 = (String)this.cmbColor.SelectedItem });
         }
 
-        private void lblCurrentTrack_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void lblTrackSumLength_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void lblSelectedItemsCount_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void rdbPlaylist_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void rdbTagValue_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void btnScanBpm_Click(object sender, EventArgs e)
-        {
-            this.ScanBpmEvent?.Invoke(this, new EventArgs());
-        }
-
-        private void groupBoxTag_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+         private void groupBoxTag_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
             if (this.dgvPlaylistList.Rows.Count > 0 && e.KeyCode == Keys.B)
             {
@@ -1696,5 +1741,7 @@ namespace MitoPlayer_2024.Views
                 this.CallNextTrackEvent();
             }
         }
+
+        
     }
 }

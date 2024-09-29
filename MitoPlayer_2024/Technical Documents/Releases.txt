@@ -1,7 +1,21 @@
 ﻿
 
 ======================
-v0.11.7.0
+v0.12.5.6
+======================
+OK - BUG: profile related settings unnecessary added to the setting table
+OK - BUG: Preferences - virtualdj database path missing
+OK - FEATURE: Playlist selector on/off from setting
+OK - FEATURE: TagValue selector on/off from setting
+OK - FEATURE: Playlist and Tagvalue on/off buttons change place
+OK - FEATURE: Play track after directory scan feature on/off from setting + preferences setting
+
+- FEATURE: quick tag and tagvalue import (write list into textfield)
+- FEATURE: Tag colouring dropdown value from setting
+- REFACTOR: Playlist view panel refactor
+
+======================
+v0.12.4.1
 ======================
 OK - BUG: Playlist View: TabControl slides up 
 OK - REFACTOR: Change to MySQL 8.0.39

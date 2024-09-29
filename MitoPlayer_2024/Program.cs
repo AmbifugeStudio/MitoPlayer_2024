@@ -29,7 +29,7 @@ namespace MitoPlayer_2024
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-           // ClearDatabaseSettings();
+
             SettingDao = new SettingDao();
 
             ResultOrError result = IsDatabasePrepared();
@@ -62,7 +62,7 @@ namespace MitoPlayer_2024
 
             //ha bármelyik hiányzik, be kell kérni új adatokat
             //ha mind ki van töltve, akkor ellenőrizni kell, hogy azok megfelelőek-e
-            //ha nem megfelelő, akkor b ekell kérni új adatokat
+            //ha nem megfelelő, akkor be kell kérni új adatokat
             if (String.IsNullOrEmpty(host) ||
                portNumber <= 0 ||
                String.IsNullOrEmpty(userName) ||
@@ -89,6 +89,7 @@ namespace MitoPlayer_2024
                 }
                 else
                 {
+                    ClearDatabaseSettings();
                     Application.Exit();
                 }
             }
@@ -114,6 +115,7 @@ namespace MitoPlayer_2024
                     }
                     else
                     {
+                        ClearDatabaseSettings();
                         Application.Exit();
                     }
                 }

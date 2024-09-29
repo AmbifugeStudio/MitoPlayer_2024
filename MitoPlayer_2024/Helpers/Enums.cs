@@ -69,7 +69,12 @@ namespace MitoPlayer_2024.Helpers
 
         AutomaticBpmImport,
         AutomaticKeyImport,
-        VirtualDjDatabasePath
+        VirtualDjDatabasePath,
+
+        IsTagEditorDisplayed,
+        CurrentTagIndexForTracklistColouring,
+        PlayTrackAfterOpenFiles,
+        IsPlaylistListDisplayed
     }
 
     public enum MediaPlayerUpdateState
