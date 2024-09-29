@@ -10,6 +10,7 @@ OK - FEATURE: TagValue selector on/off from setting
 OK - FEATURE: Playlist and Tagvalue on/off buttons change place
 OK - FEATURE: Play track after directory scan feature on/off from setting + preferences setting
 
+- BUG: window resize-ra a tracklist a ki/bekapcsoló gombokra elmászik
 - FEATURE: quick tag and tagvalue import (write list into textfield)
 - FEATURE: Tag colouring dropdown value from setting
 - REFACTOR: Playlist view panel refactor
