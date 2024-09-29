@@ -83,7 +83,7 @@ namespace MitoPlayer_2024.Views
                 instance.parentView = parentView;
                 instance.MdiParent = parentView;
                 instance.FormBorderStyle = FormBorderStyle.None;
-                instance.Dock = DockStyle.Fill;
+                instance.Dock = DockStyle.Top;
             }
             else
             {

@@ -3,10 +3,12 @@ using MitoPlayer_2024.Helpers;
 using MitoPlayer_2024.Model;
 using MitoPlayer_2024.Models;
 using MitoPlayer_2024.Views;
+using MySql.Data.MySqlClient;
 using MySqlX.XDevAPI.Common;
 using NAudio.Wave;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.IO;
@@ -15,18 +17,19 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using static Mysqlx.Expect.Open.Types.Condition.Types;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace MitoPlayer_2024.Presenters
 {
     public class MainPresenter
     {
+       
         private IMainView mainView { get; set; }
         private IProfileDao profileDao { get; set; }
         private ISettingDao settingDao { get; set; }
         private ITrackDao trackDao { get; set; }
         private ITagDao tagDao { get; set; }
         private MediaPlayerComponent mediaPlayerComponent { get; set; }
-        private string sqlConnectionString { get; set; }
         private object actualView { get; set; }
         private IProfileView profileView { get; set; }
         private IProfileEditorView profileEditorView { get; set; }
@@ -38,6 +41,7 @@ namespace MitoPlayer_2024.Presenters
         private IHarmonizerView harmonizerView { get; set; }
         private IPreferencesView preferencesView { get; set; }
         private IAboutView aboutView { get; set; }
+        private ISetupView setupView { get; set; }
         private ProfileEditorPresenter profileEditorPresenter { get; set; }
         private PlaylistPresenter playlistPresenter { get; set; }
         private TagValuePresenter tagValueEditorPresenter { get; set; }
@@ -48,12 +52,14 @@ namespace MitoPlayer_2024.Presenters
         private PreferencesPresenter preferencesPresenter { get; set; }
         private AboutPresenter aboutPresenter { get; set; }
         private string[] scannedFileNames { get; set; }
+        private string connectionString { get; set; }
 
-        public MainPresenter(IMainView mainView, string sqlConnectionString)
+        public MainPresenter(IMainView mainView, String connectionString, SettingDao settingDao)
         {
             this.mainView = mainView;
-            this.sqlConnectionString = sqlConnectionString;
+            this.connectionString = connectionString;
 
+            //VIEW CONTROLS
             this.mainView.ShowProfileEditorView += ShowProfileEditorView;
             this.mainView.ShowPlaylistView += ShowPlaylistView;
             this.mainView.ShowTagValueEditorView += ShowTagValueEditorView;
@@ -63,26 +69,11 @@ namespace MitoPlayer_2024.Presenters
             this.mainView.ShowHarmonizerView += ShowHarmonizerView;
             this.mainView.ShowPreferencesView += ShowPreferencesView;
             this.mainView.ShowAboutView += ShowAboutView;
-
-            this.mainView.OpenFiles += OpenFiles;
-            this.mainView.OpenDirectory += OpenDirectory;
-            this.mainView.CreatePlaylist += CreatePlaylist;
-            this.mainView.LoadPlaylist += LoadPlaylist;
-            this.mainView.RenamePlaylist += RenamePlaylist;
-            this.mainView.DeletePlaylist += DeletePlaylist;
-            this.mainView.ExportToM3U += ExportToM3U;
-            this.mainView.ExportToTXT += ExportToTXT;
-            this.mainView.ExportToDirectory += ExportToDirectory;
             this.mainView.Preferences += Preferences;
-            this.mainView.Exit += Exit;
-            this.mainView.RemoveMissingTracks += RemoveMissingTracks;
-            this.mainView.RemoveDuplicatedTracks += RemoveDuplicatedTracks;
-            this.mainView.OrderByTitle += OrderByTitle;
-            this.mainView.OrderByArtist += OrderByArtist;
-            this.mainView.OrderByFileName += OrderByFileName;
-            this.mainView.Reverse += Reverse;
-            this.mainView.Shuffle += Shuffle;
-            this.mainView.Clear += Clear;
+            this.mainView.About += About;
+
+            //FUNCTIONS
+            //Media Player
             this.mainView.PlayTrack += PlayTrack;
             this.mainView.PauseTrack += PauseTrack;
             this.mainView.StopTrack += StopTrack;
@@ -91,15 +82,33 @@ namespace MitoPlayer_2024.Presenters
             this.mainView.RandomTrack += RandomTrack;
             this.mainView.ChangeVolume += ChangeVolume;
             this.mainView.ChangeProgress += ChangeProgress;
-            this.mainView.About += About;
+            //Tracklist
+            this.mainView.OpenFiles += OpenFiles;
+            this.mainView.OpenDirectory += OpenDirectory;
             this.mainView.ScanFiles += ScanFiles;
+            this.mainView.RemoveMissingTracks += RemoveMissingTracks;
+            this.mainView.RemoveDuplicatedTracks += RemoveDuplicatedTracks;
+            this.mainView.OrderByTitle += OrderByTitle;
+            this.mainView.OrderByArtist += OrderByArtist;
+            this.mainView.OrderByFileName += OrderByFileName;
+            this.mainView.Reverse += Reverse;
+            this.mainView.Shuffle += Shuffle;
+            this.mainView.Clear += Clear;
+            //PLaylist
+            this.mainView.CreatePlaylist += CreatePlaylist;
+            this.mainView.LoadPlaylist += LoadPlaylist;
+            this.mainView.RenamePlaylist += RenamePlaylist;
+            this.mainView.DeletePlaylist += DeletePlaylist;
+            this.mainView.ExportToM3U += ExportToM3U;
+            this.mainView.ExportToTXT += ExportToTXT;
+            this.mainView.ExportToDirectory += ExportToDirectory;
+            //Other
+            this.mainView.Exit += Exit;
 
-            this.profileDao = new ProfileDao(sqlConnectionString);
-            this.settingDao = new SettingDao(sqlConnectionString);
-            this.trackDao = new TrackDao(sqlConnectionString);
-            this.tagDao = new TagDao(sqlConnectionString);
-
-            this.settingDao.InitializeFirstRun();
+            this.settingDao = settingDao;
+            this.profileDao = new ProfileDao(connectionString);
+            this.trackDao = new TrackDao(connectionString);
+            this.tagDao = new TagDao(connectionString);
 
             this.InitializeProfileAndPlaylist();
         }
@@ -262,7 +271,7 @@ namespace MitoPlayer_2024.Presenters
         }
         private void ShowPlaylistView(object sender, EventArgs e)
         {
-            PlaylistView.instance = null;
+            //PlaylistView.instance = null;
             this.playlistView = null;
             this.playlistPresenter = null;
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MitoPlayer_2024.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,11 @@ namespace MitoPlayer_2024.Models
 {
     public interface IDataBaseBuilderDao
     {
-        bool BuildDatabase();
+        bool IsConnectionStringValid(String preConnectionString);
+        bool IsDatabaseExists(String preConnectionString);
+        ResultOrError CreateDatabase(String preConnectionString);
+        ResultOrError CreateTableStructure();
+        ResultOrError DeleteDatabase();
+
     }
 }

@@ -2,23 +2,26 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="MitoPlayer_2024.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="DefaultPlaylistName" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Default</Value>
+    <Setting Name="Installed" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="LastOpenFilesFilterIndex" Type="System.Int32" Scope="User">
+    <Setting Name="DefaultDatabaseName" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="Host" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="Port" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
-    <Setting Name="PingPong" Type="System.String" Scope="User">
-      <Value Profile="(Default)">YUHEY</Value>
+    <Setting Name="UserName" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="CurrentPlaylistId" Type="System.String" Scope="User">
-      <Value Profile="(Default)">0</Value>
+    <Setting Name="Password" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="LastOpenDirectoryPath" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Empty</Value>
-    </Setting>
-    <Setting Name="LastGeneratedPlaylistId" Type="System.String" Scope="User">
-      <Value Profile="(Default)">0</Value>
+    <Setting Name="Database" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
     </Setting>
   </Settings>
 </SettingsFile>

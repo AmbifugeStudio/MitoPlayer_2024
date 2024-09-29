@@ -171,6 +171,7 @@
     <Compile Include="Helpers\Enums.cs" />
     <Compile Include="Helpers\LabelTimer.cs" />
     <Compile Include="Helpers\ListEventArgs.cs" />
+    <Compile Include="Helpers\ResultOrError.cs" />
     <Compile Include="Helpers\VirtualDJReader.cs" />
     <Compile Include="Models\IDataBaseBuilderDao.cs" />
     <Compile Include="Models\IProfileDao.cs" />
@@ -185,6 +186,7 @@
     <Compile Include="Models\TrackProperty.cs" />
     <Compile Include="Models\TrackTagValue.cs" />
     <Compile Include="Presenters\AboutPresenter.cs" />
+    <Compile Include="Presenters\SetupPresenter.cs" />
     <Compile Include="Presenters\ExportToDirectoryPresenter.cs" />
     <Compile Include="Presenters\HarmonizerPresenter.cs" />
     <Compile Include="Presenters\MediaPlayerComponent.cs" />
@@ -225,6 +227,7 @@
       <DependentUpon>HarmonizerView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\IAboutView.cs" />
+    <Compile Include="Views\ISetupView.cs" />
     <Compile Include="Views\IExportToDirectoryView.cs" />
     <Compile Include="Views\IHarmonizerView.cs" />
     <Compile Include="Views\IPlaylistEditorView.cs" />
@@ -287,6 +290,12 @@
     </Compile>
     <Compile Include="Views\RuleEditorView.Designer.cs">
       <DependentUpon>RuleEditorView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SetupView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\SetupView.Designer.cs">
+      <DependentUpon>SetupView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\TagEditorView.cs">
       <SubType>Form</SubType>
@@ -362,6 +371,9 @@
     <EmbeddedResource Include="Views\RuleEditorView.resx">
       <DependentUpon>RuleEditorView.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Views\SetupView.resx">
+      <DependentUpon>SetupView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\TagEditorView.resx">
       <DependentUpon>TagEditorView.cs</DependentUpon>
     </EmbeddedResource>
@@ -429,7 +441,9 @@
     <None Include="Resources\Screenshot_1.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Releases.txt" />
+    <Content Include="Technical Documents\Releases.txt" />
+    <Content Include="Technical Documents\DevProcess.txt" />
+    <Content Include="Technical Documents\TestCases.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

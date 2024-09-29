@@ -107,7 +107,7 @@
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1160, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1328, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -137,104 +137,104 @@
             // menuStripProfile
             // 
             this.menuStripProfile.Name = "menuStripProfile";
-            this.menuStripProfile.Size = new System.Drawing.Size(180, 22);
+            this.menuStripProfile.Size = new System.Drawing.Size(172, 22);
             this.menuStripProfile.Text = "Select profile";
             this.menuStripProfile.Click += new System.EventHandler(this.menuStripProfile_Click);
             // 
             // toolStripSeparator7
             // 
             this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator7.Size = new System.Drawing.Size(169, 6);
             // 
             // menuStripOpenFiles
             // 
             this.menuStripOpenFiles.Name = "menuStripOpenFiles";
-            this.menuStripOpenFiles.Size = new System.Drawing.Size(180, 22);
+            this.menuStripOpenFiles.Size = new System.Drawing.Size(172, 22);
             this.menuStripOpenFiles.Text = "Add files...";
             this.menuStripOpenFiles.Click += new System.EventHandler(this.menuStripOpenFiles_Click);
             // 
             // menuStripOpenDirectories
             // 
             this.menuStripOpenDirectories.Name = "menuStripOpenDirectories";
-            this.menuStripOpenDirectories.Size = new System.Drawing.Size(180, 22);
+            this.menuStripOpenDirectories.Size = new System.Drawing.Size(172, 22);
             this.menuStripOpenDirectories.Text = "Add folder...";
             this.menuStripOpenDirectories.Click += new System.EventHandler(this.menuStripOpenDirectory_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(169, 6);
             // 
             // menuStripCreatePlaylist
             // 
             this.menuStripCreatePlaylist.Name = "menuStripCreatePlaylist";
-            this.menuStripCreatePlaylist.Size = new System.Drawing.Size(180, 22);
+            this.menuStripCreatePlaylist.Size = new System.Drawing.Size(172, 22);
             this.menuStripCreatePlaylist.Text = "New playlist";
             this.menuStripCreatePlaylist.Click += new System.EventHandler(this.menuStripCreatePlaylist_Click);
             // 
             // menuStripLoadPlaylist
             // 
             this.menuStripLoadPlaylist.Name = "menuStripLoadPlaylist";
-            this.menuStripLoadPlaylist.Size = new System.Drawing.Size(180, 22);
+            this.menuStripLoadPlaylist.Size = new System.Drawing.Size(172, 22);
             this.menuStripLoadPlaylist.Text = "Load playlist...";
             this.menuStripLoadPlaylist.Click += new System.EventHandler(this.menuStripLoadPlaylist_Click);
             // 
             // menuStripRenamePlaylist
             // 
             this.menuStripRenamePlaylist.Name = "menuStripRenamePlaylist";
-            this.menuStripRenamePlaylist.Size = new System.Drawing.Size(180, 22);
+            this.menuStripRenamePlaylist.Size = new System.Drawing.Size(172, 22);
             this.menuStripRenamePlaylist.Text = "Rename playlist...";
             this.menuStripRenamePlaylist.Click += new System.EventHandler(this.menuStripRenamePlaylist_Click);
             // 
             // menuStripDeletePlaylist
             // 
             this.menuStripDeletePlaylist.Name = "menuStripDeletePlaylist";
-            this.menuStripDeletePlaylist.Size = new System.Drawing.Size(180, 22);
+            this.menuStripDeletePlaylist.Size = new System.Drawing.Size(172, 22);
             this.menuStripDeletePlaylist.Text = "Delete playlist...";
             this.menuStripDeletePlaylist.Click += new System.EventHandler(this.menuStripDeletePlaylist_Click);
             // 
             // toolStripSeparator8
             // 
             this.toolStripSeparator8.Name = "toolStripSeparator8";
-            this.toolStripSeparator8.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator8.Size = new System.Drawing.Size(169, 6);
             // 
             // menuStripExportToTXT
             // 
             this.menuStripExportToTXT.Name = "menuStripExportToTXT";
-            this.menuStripExportToTXT.Size = new System.Drawing.Size(180, 22);
+            this.menuStripExportToTXT.Size = new System.Drawing.Size(172, 22);
             this.menuStripExportToTXT.Text = "Export to *.txt";
             this.menuStripExportToTXT.Click += new System.EventHandler(this.menuStripExportToTXT_Click);
             // 
             // menuStripExportToM3U
             // 
             this.menuStripExportToM3U.Name = "menuStripExportToM3U";
-            this.menuStripExportToM3U.Size = new System.Drawing.Size(180, 22);
+            this.menuStripExportToM3U.Size = new System.Drawing.Size(172, 22);
             this.menuStripExportToM3U.Text = "Export to *.m3u";
             this.menuStripExportToM3U.Click += new System.EventHandler(this.menuStripExportToM3U_Click);
             // 
             // menuStripExportToDirectory
             // 
             this.menuStripExportToDirectory.Name = "menuStripExportToDirectory";
-            this.menuStripExportToDirectory.Size = new System.Drawing.Size(180, 22);
+            this.menuStripExportToDirectory.Size = new System.Drawing.Size(172, 22);
             this.menuStripExportToDirectory.Text = "Export to directory";
             this.menuStripExportToDirectory.Click += new System.EventHandler(this.menuStripExportToDirectory_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(169, 6);
             // 
             // menuStripPreferences
             // 
             this.menuStripPreferences.Name = "menuStripPreferences";
-            this.menuStripPreferences.Size = new System.Drawing.Size(180, 22);
+            this.menuStripPreferences.Size = new System.Drawing.Size(172, 22);
             this.menuStripPreferences.Text = "Preferences";
             this.menuStripPreferences.Click += new System.EventHandler(this.menuStripPreferences_Click);
             // 
             // menuStripExit
             // 
             this.menuStripExit.Name = "menuStripExit";
-            this.menuStripExit.Size = new System.Drawing.Size(180, 22);
+            this.menuStripExit.Size = new System.Drawing.Size(172, 22);
             this.menuStripExit.Text = "Exit";
             this.menuStripExit.Click += new System.EventHandler(this.menuStripExit_Click);
             // 
@@ -422,7 +422,7 @@
             this.panel2.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel2.Location = new System.Drawing.Point(0, 24);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(91, 458);
+            this.panel2.Size = new System.Drawing.Size(91, 721);
             this.panel2.TabIndex = 2;
             // 
             // btnHarmonizer
@@ -504,7 +504,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(91, 24);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1069, 47);
+            this.panel1.Size = new System.Drawing.Size(1237, 47);
             this.panel1.TabIndex = 4;
             // 
             // trackVolume
@@ -652,7 +652,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1160, 482);
+            this.ClientSize = new System.Drawing.Size(1328, 745);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.menuStrip1);

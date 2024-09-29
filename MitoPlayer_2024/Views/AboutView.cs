@@ -25,9 +25,6 @@ namespace MitoPlayer_2024.Views
         public AboutView()
         {
             InitializeComponent();
-
-            
-
             this.CenterToScreen();
         }
 

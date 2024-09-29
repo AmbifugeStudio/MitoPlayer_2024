@@ -30,7 +30,22 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PlaylistView));
-            this.tabPagePlaylistDetail = new System.Windows.Forms.TabPage();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.exportToTxtToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.menuStripCreatePlaylist = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStripLoadPlaylist = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStripRenamePlaylist = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStripDeletePlaylist = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportToDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportToM3uToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.menuStripSetQuickListGroup1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStripSetQuickListGroup2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStripSetQuickListGroup3 = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStripSetQuickListGroup4 = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStripSetQuickListGroup = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.btnScanBpm = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.lblTrackCount = new System.Windows.Forms.Label();
@@ -97,24 +112,7 @@
             this.lblMessage = new System.Windows.Forms.Label();
             this.dgvPlaylistList = new System.Windows.Forms.DataGridView();
             this.dgvTrackList = new System.Windows.Forms.DataGridView();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.menuStripCreatePlaylist = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuStripLoadPlaylist = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuStripRenamePlaylist = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuStripDeletePlaylist = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.menuStripSetQuickListGroup = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuStripSetQuickListGroup1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuStripSetQuickListGroup2 = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuStripSetQuickListGroup3 = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuStripSetQuickListGroup4 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.exportToM3uToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.exportToTxtToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.exportToDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.tabPagePlaylistDetail.SuspendLayout();
+            this.contextMenuStrip1.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBoxTagValue.SuspendLayout();
@@ -124,55 +122,136 @@
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPlaylistList)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTrackList)).BeginInit();
-            this.tabControl1.SuspendLayout();
-            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // tabPagePlaylistDetail
+            // timer1
             // 
-            this.tabPagePlaylistDetail.Controls.Add(this.btnScanBpm);
-            this.tabPagePlaylistDetail.Controls.Add(this.groupBox4);
-            this.tabPagePlaylistDetail.Controls.Add(this.groupBox3);
-            this.tabPagePlaylistDetail.Controls.Add(this.lblTagColor);
-            this.tabPagePlaylistDetail.Controls.Add(this.cmbColor);
-            this.tabPagePlaylistDetail.Controls.Add(this.groupBoxTagValue);
-            this.tabPagePlaylistDetail.Controls.Add(this.groupBoxTag);
-            this.tabPagePlaylistDetail.Controls.Add(this.button1);
-            this.tabPagePlaylistDetail.Controls.Add(this.btnDisplayTagEditor);
-            this.tabPagePlaylistDetail.Controls.Add(this.btnColumnVisibility);
-            this.tabPagePlaylistDetail.Controls.Add(this.groupBox2);
-            this.tabPagePlaylistDetail.Controls.Add(this.groupBoxTagValueHotkeys);
-            this.tabPagePlaylistDetail.Controls.Add(this.groupBox1);
-            this.tabPagePlaylistDetail.Controls.Add(this.lblMessage);
-            this.tabPagePlaylistDetail.Controls.Add(this.dgvPlaylistList);
-            this.tabPagePlaylistDetail.Controls.Add(this.dgvTrackList);
-            this.tabPagePlaylistDetail.Location = new System.Drawing.Point(4, 22);
-            this.tabPagePlaylistDetail.Name = "tabPagePlaylistDetail";
-            this.tabPagePlaylistDetail.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPagePlaylistDetail.Size = new System.Drawing.Size(1244, 652);
-            this.tabPagePlaylistDetail.TabIndex = 1;
-            this.tabPagePlaylistDetail.Text = "Player";
-            this.tabPagePlaylistDetail.UseVisualStyleBackColor = true;
+            this.timer1.Enabled = true;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
+            // exportToTxtToolStripMenuItem
+            // 
+            this.exportToTxtToolStripMenuItem.Name = "exportToTxtToolStripMenuItem";
+            this.exportToTxtToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.exportToTxtToolStripMenuItem.Text = "Export to txt";
+            this.exportToTxtToolStripMenuItem.Click += new System.EventHandler(this.menuStripExportToTxtToolStripMenuItem_Click);
+            // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.exportToTxtToolStripMenuItem});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(140, 26);
+            // 
+            // menuStripCreatePlaylist
+            // 
+            this.menuStripCreatePlaylist.Name = "menuStripCreatePlaylist";
+            this.menuStripCreatePlaylist.Size = new System.Drawing.Size(139, 22);
+            this.menuStripCreatePlaylist.Text = "New";
+            this.menuStripCreatePlaylist.Click += new System.EventHandler(this.menuStripCreatePlaylist_Click);
+            // 
+            // menuStripLoadPlaylist
+            // 
+            this.menuStripLoadPlaylist.Name = "menuStripLoadPlaylist";
+            this.menuStripLoadPlaylist.Size = new System.Drawing.Size(139, 22);
+            this.menuStripLoadPlaylist.Text = "Load";
+            this.menuStripLoadPlaylist.Click += new System.EventHandler(this.menuStripLoadPlaylist_Click);
+            // 
+            // menuStripRenamePlaylist
+            // 
+            this.menuStripRenamePlaylist.Name = "menuStripRenamePlaylist";
+            this.menuStripRenamePlaylist.Size = new System.Drawing.Size(139, 22);
+            this.menuStripRenamePlaylist.Text = "Rename";
+            this.menuStripRenamePlaylist.Click += new System.EventHandler(this.menuStripRenamePlaylist_Click);
+            // 
+            // menuStripDeletePlaylist
+            // 
+            this.menuStripDeletePlaylist.Name = "menuStripDeletePlaylist";
+            this.menuStripDeletePlaylist.Size = new System.Drawing.Size(139, 22);
+            this.menuStripDeletePlaylist.Text = "Remove";
+            this.menuStripDeletePlaylist.Click += new System.EventHandler(this.menuStripDeletePlaylist_Click);
+            // 
+            // exportToDirectoryToolStripMenuItem
+            // 
+            this.exportToDirectoryToolStripMenuItem.Name = "exportToDirectoryToolStripMenuItem";
+            this.exportToDirectoryToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+            this.exportToDirectoryToolStripMenuItem.Text = "Export to directory";
+            this.exportToDirectoryToolStripMenuItem.Click += new System.EventHandler(this.exportToDirectoryToolStripMenuItem_Click);
+            // 
+            // exportToM3uToolStripMenuItem
+            // 
+            this.exportToM3uToolStripMenuItem.Name = "exportToM3uToolStripMenuItem";
+            this.exportToM3uToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+            this.exportToM3uToolStripMenuItem.Text = "Export to m3u";
+            this.exportToM3uToolStripMenuItem.Click += new System.EventHandler(this.menuStripExportToM3uToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(169, 6);
+            // 
+            // menuStripSetQuickListGroup1
+            // 
+            this.menuStripSetQuickListGroup1.Name = "menuStripSetQuickListGroup1";
+            this.menuStripSetQuickListGroup1.Size = new System.Drawing.Size(167, 22);
+            this.menuStripSetQuickListGroup1.Text = "Quick list group 1";
+            this.menuStripSetQuickListGroup1.Click += new System.EventHandler(this.menuStripSetQuickListGroup1_Click);
+            // 
+            // menuStripSetQuickListGroup2
+            // 
+            this.menuStripSetQuickListGroup2.Name = "menuStripSetQuickListGroup2";
+            this.menuStripSetQuickListGroup2.Size = new System.Drawing.Size(167, 22);
+            this.menuStripSetQuickListGroup2.Text = "Quick list group 2";
+            this.menuStripSetQuickListGroup2.Click += new System.EventHandler(this.menuStripSetQuickListGroup2_Click);
+            // 
+            // menuStripSetQuickListGroup3
+            // 
+            this.menuStripSetQuickListGroup3.Name = "menuStripSetQuickListGroup3";
+            this.menuStripSetQuickListGroup3.Size = new System.Drawing.Size(167, 22);
+            this.menuStripSetQuickListGroup3.Text = "Quick list group 3";
+            this.menuStripSetQuickListGroup3.Click += new System.EventHandler(this.menuStripSetQuickListGroup3_Click);
+            // 
+            // menuStripSetQuickListGroup4
+            // 
+            this.menuStripSetQuickListGroup4.Name = "menuStripSetQuickListGroup4";
+            this.menuStripSetQuickListGroup4.Size = new System.Drawing.Size(167, 22);
+            this.menuStripSetQuickListGroup4.Text = "Quick list group 4";
+            this.menuStripSetQuickListGroup4.Click += new System.EventHandler(this.menuStripSetQuickListGroup4_Click);
+            // 
+            // menuStripSetQuickListGroup
+            // 
+            this.menuStripSetQuickListGroup.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuStripSetQuickListGroup1,
+            this.menuStripSetQuickListGroup2,
+            this.menuStripSetQuickListGroup3,
+            this.menuStripSetQuickListGroup4});
+            this.menuStripSetQuickListGroup.Name = "menuStripSetQuickListGroup";
+            this.menuStripSetQuickListGroup.Size = new System.Drawing.Size(175, 22);
+            this.menuStripSetQuickListGroup.Text = "Set quick list group";
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(172, 6);
             // 
             // btnScanBpm
             // 
-            this.btnScanBpm.Location = new System.Drawing.Point(901, 4);
+            this.btnScanBpm.Location = new System.Drawing.Point(908, 17);
             this.btnScanBpm.Name = "btnScanBpm";
             this.btnScanBpm.Size = new System.Drawing.Size(75, 23);
-            this.btnScanBpm.TabIndex = 15;
+            this.btnScanBpm.TabIndex = 31;
             this.btnScanBpm.Text = "Scan Bpm";
             this.btnScanBpm.UseVisualStyleBackColor = true;
-            this.btnScanBpm.Click += new System.EventHandler(this.btnScanBpm_Click);
             // 
             // groupBox4
             // 
             this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.groupBox4.Controls.Add(this.lblTrackCount);
             this.groupBox4.Controls.Add(this.lblTrackSumLength);
-            this.groupBox4.Location = new System.Drawing.Point(192, 570);
+            this.groupBox4.Location = new System.Drawing.Point(199, 583);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(183, 79);
-            this.groupBox4.TabIndex = 14;
+            this.groupBox4.TabIndex = 30;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Playlist";
             // 
@@ -195,7 +274,6 @@
             this.lblTrackSumLength.TabIndex = 3;
             this.lblTrackSumLength.Text = "Length: 00:00:00";
             this.lblTrackSumLength.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblTrackSumLength.Click += new System.EventHandler(this.lblTrackSumLength_Click);
             // 
             // groupBox3
             // 
@@ -204,10 +282,10 @@
             this.groupBox3.Controls.Add(this.lblSelectedItemsCount);
             this.groupBox3.Controls.Add(this.lblSelectedItemsLength);
             this.groupBox3.Controls.Add(this.lblCurrentTrack);
-            this.groupBox3.Location = new System.Drawing.Point(381, 570);
+            this.groupBox3.Location = new System.Drawing.Point(388, 583);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(375, 79);
-            this.groupBox3.TabIndex = 13;
+            this.groupBox3.TabIndex = 29;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Player";
             // 
@@ -221,7 +299,6 @@
             this.lblSelectedItemsCount.Size = new System.Drawing.Size(78, 13);
             this.lblSelectedItemsCount.TabIndex = 3;
             this.lblSelectedItemsCount.Text = "0 item selected";
-            this.lblSelectedItemsCount.Click += new System.EventHandler(this.lblSelectedItemsCount_Click);
             // 
             // lblSelectedItemsLength
             // 
@@ -239,25 +316,23 @@
             this.lblCurrentTrack.Size = new System.Drawing.Size(174, 13);
             this.lblCurrentTrack.TabIndex = 2;
             this.lblCurrentTrack.Text = "Playing: -";
-            this.lblCurrentTrack.Click += new System.EventHandler(this.lblCurrentTrack_Click);
             // 
             // lblTagColor
             // 
             this.lblTagColor.AutoSize = true;
-            this.lblTagColor.Location = new System.Drawing.Point(229, 9);
+            this.lblTagColor.Location = new System.Drawing.Point(236, 22);
             this.lblTagColor.Name = "lblTagColor";
             this.lblTagColor.Size = new System.Drawing.Size(31, 13);
-            this.lblTagColor.TabIndex = 12;
+            this.lblTagColor.TabIndex = 28;
             this.lblTagColor.Text = "Color";
             // 
             // cmbColor
             // 
             this.cmbColor.FormattingEnabled = true;
-            this.cmbColor.Location = new System.Drawing.Point(266, 6);
+            this.cmbColor.Location = new System.Drawing.Point(273, 19);
             this.cmbColor.Name = "cmbColor";
             this.cmbColor.Size = new System.Drawing.Size(121, 21);
-            this.cmbColor.TabIndex = 11;
-            this.cmbColor.SelectedIndexChanged += new System.EventHandler(this.cmbColor_SelectedIndexChanged);
+            this.cmbColor.TabIndex = 27;
             // 
             // groupBoxTagValue
             // 
@@ -288,13 +363,12 @@
             this.groupBoxTagValue.Controls.Add(this.btnTagValue1);
             this.groupBoxTagValue.Controls.Add(this.txtBoxTagValueInput);
             this.groupBoxTagValue.Controls.Add(this.btnSetTagValue);
-            this.groupBoxTagValue.Location = new System.Drawing.Point(982, 152);
+            this.groupBoxTagValue.Location = new System.Drawing.Point(989, 165);
             this.groupBoxTagValue.Name = "groupBoxTagValue";
             this.groupBoxTagValue.Size = new System.Drawing.Size(254, 255);
-            this.groupBoxTagValue.TabIndex = 10;
+            this.groupBoxTagValue.TabIndex = 25;
             this.groupBoxTagValue.TabStop = false;
             this.groupBoxTagValue.Text = "TagValues";
-            this.groupBoxTagValue.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.groupBoxTagValue_PreviewKeyDown);
             // 
             // btnTagValue11
             // 
@@ -304,7 +378,6 @@
             this.btnTagValue11.TabIndex = 0;
             this.btnTagValue11.Text = "TagValue11";
             this.btnTagValue11.UseVisualStyleBackColor = true;
-            this.btnTagValue11.Click += new System.EventHandler(this.btnTagValue11_Click);
             // 
             // btnTagValue8
             // 
@@ -314,7 +387,6 @@
             this.btnTagValue8.TabIndex = 0;
             this.btnTagValue8.Text = "TagValue8";
             this.btnTagValue8.UseVisualStyleBackColor = true;
-            this.btnTagValue8.Click += new System.EventHandler(this.btnTagValue8_Click);
             // 
             // btnTagValue5
             // 
@@ -324,7 +396,6 @@
             this.btnTagValue5.TabIndex = 0;
             this.btnTagValue5.Text = "TagValue5";
             this.btnTagValue5.UseVisualStyleBackColor = true;
-            this.btnTagValue5.Click += new System.EventHandler(this.btnTagValue5_Click);
             // 
             // btnTagValue2
             // 
@@ -334,7 +405,6 @@
             this.btnTagValue2.TabIndex = 0;
             this.btnTagValue2.Text = "TagValue2";
             this.btnTagValue2.UseVisualStyleBackColor = true;
-            this.btnTagValue2.Click += new System.EventHandler(this.btnTagValue2_Click);
             // 
             // btnTagValue18
             // 
@@ -344,7 +414,6 @@
             this.btnTagValue18.TabIndex = 0;
             this.btnTagValue18.Text = "TagValue18";
             this.btnTagValue18.UseVisualStyleBackColor = true;
-            this.btnTagValue18.Click += new System.EventHandler(this.btnTagValue18_Click);
             // 
             // btnTagValue17
             // 
@@ -354,7 +423,6 @@
             this.btnTagValue17.TabIndex = 0;
             this.btnTagValue17.Text = "TagValue17";
             this.btnTagValue17.UseVisualStyleBackColor = true;
-            this.btnTagValue17.Click += new System.EventHandler(this.btnTagValue17_Click);
             // 
             // btnTagValue21
             // 
@@ -364,7 +432,6 @@
             this.btnTagValue21.TabIndex = 0;
             this.btnTagValue21.Text = "TagValue21";
             this.btnTagValue21.UseVisualStyleBackColor = true;
-            this.btnTagValue21.Click += new System.EventHandler(this.btnTagValue21_Click);
             // 
             // btnTagValue20
             // 
@@ -374,7 +441,6 @@
             this.btnTagValue20.TabIndex = 0;
             this.btnTagValue20.Text = "TagValue20";
             this.btnTagValue20.UseVisualStyleBackColor = true;
-            this.btnTagValue20.Click += new System.EventHandler(this.btnTagValue20_Click);
             // 
             // btnTagValue24
             // 
@@ -384,7 +450,6 @@
             this.btnTagValue24.TabIndex = 0;
             this.btnTagValue24.Text = "TagValue24";
             this.btnTagValue24.UseVisualStyleBackColor = true;
-            this.btnTagValue24.Click += new System.EventHandler(this.btnTagValue24_Click);
             // 
             // btnTagValue23
             // 
@@ -394,7 +459,6 @@
             this.btnTagValue23.TabIndex = 0;
             this.btnTagValue23.Text = "TagValue23";
             this.btnTagValue23.UseVisualStyleBackColor = true;
-            this.btnTagValue23.Click += new System.EventHandler(this.btnTagValue23_Click);
             // 
             // btnTagValue22
             // 
@@ -404,7 +468,6 @@
             this.btnTagValue22.TabIndex = 0;
             this.btnTagValue22.Text = "TagValue22";
             this.btnTagValue22.UseVisualStyleBackColor = true;
-            this.btnTagValue22.Click += new System.EventHandler(this.btnTagValue22_Click);
             // 
             // btnTagValue19
             // 
@@ -414,7 +477,6 @@
             this.btnTagValue19.TabIndex = 0;
             this.btnTagValue19.Text = "TagValue19";
             this.btnTagValue19.UseVisualStyleBackColor = true;
-            this.btnTagValue19.Click += new System.EventHandler(this.btnTagValue19_Click);
             // 
             // btnTagValue16
             // 
@@ -424,7 +486,6 @@
             this.btnTagValue16.TabIndex = 0;
             this.btnTagValue16.Text = "TagValue16";
             this.btnTagValue16.UseVisualStyleBackColor = true;
-            this.btnTagValue16.Click += new System.EventHandler(this.btnTagValue16_Click);
             // 
             // btnTagValue15
             // 
@@ -434,7 +495,6 @@
             this.btnTagValue15.TabIndex = 0;
             this.btnTagValue15.Text = "TagValue15";
             this.btnTagValue15.UseVisualStyleBackColor = true;
-            this.btnTagValue15.Click += new System.EventHandler(this.btnTagValue15_Click);
             // 
             // btnTagValue14
             // 
@@ -444,7 +504,6 @@
             this.btnTagValue14.TabIndex = 0;
             this.btnTagValue14.Text = "TagValue14";
             this.btnTagValue14.UseVisualStyleBackColor = true;
-            this.btnTagValue14.Click += new System.EventHandler(this.btnTagValue14_Click);
             // 
             // btnTagValue13
             // 
@@ -454,7 +513,6 @@
             this.btnTagValue13.TabIndex = 0;
             this.btnTagValue13.Text = "TagValue13";
             this.btnTagValue13.UseVisualStyleBackColor = true;
-            this.btnTagValue13.Click += new System.EventHandler(this.btnTagValue13_Click);
             // 
             // btnTagValue12
             // 
@@ -464,7 +522,6 @@
             this.btnTagValue12.TabIndex = 0;
             this.btnTagValue12.Text = "TagValue12";
             this.btnTagValue12.UseVisualStyleBackColor = true;
-            this.btnTagValue12.Click += new System.EventHandler(this.btnTagValue12_Click);
             // 
             // btnTagValue9
             // 
@@ -474,7 +531,6 @@
             this.btnTagValue9.TabIndex = 0;
             this.btnTagValue9.Text = "TagValue9";
             this.btnTagValue9.UseVisualStyleBackColor = true;
-            this.btnTagValue9.Click += new System.EventHandler(this.btnTagValue9_Click);
             // 
             // btnTagValue6
             // 
@@ -484,7 +540,6 @@
             this.btnTagValue6.TabIndex = 0;
             this.btnTagValue6.Text = "TagValue6";
             this.btnTagValue6.UseVisualStyleBackColor = true;
-            this.btnTagValue6.Click += new System.EventHandler(this.btnTagValue6_Click);
             // 
             // btnTagValue3
             // 
@@ -494,7 +549,6 @@
             this.btnTagValue3.TabIndex = 0;
             this.btnTagValue3.Text = "TagValue3";
             this.btnTagValue3.UseVisualStyleBackColor = true;
-            this.btnTagValue3.Click += new System.EventHandler(this.btnTagValue3_Click);
             // 
             // btnTagValue10
             // 
@@ -504,7 +558,6 @@
             this.btnTagValue10.TabIndex = 0;
             this.btnTagValue10.Text = "TagValue10";
             this.btnTagValue10.UseVisualStyleBackColor = true;
-            this.btnTagValue10.Click += new System.EventHandler(this.btnTagValue10_Click);
             // 
             // btnTagValue7
             // 
@@ -514,7 +567,6 @@
             this.btnTagValue7.TabIndex = 0;
             this.btnTagValue7.Text = "TagValue7";
             this.btnTagValue7.UseVisualStyleBackColor = true;
-            this.btnTagValue7.Click += new System.EventHandler(this.btnTagValue7_Click);
             // 
             // btnTagValue4
             // 
@@ -524,7 +576,6 @@
             this.btnTagValue4.TabIndex = 0;
             this.btnTagValue4.Text = "TagValue4";
             this.btnTagValue4.UseVisualStyleBackColor = true;
-            this.btnTagValue4.Click += new System.EventHandler(this.btnTagValue4_Click);
             // 
             // btnTagValue1
             // 
@@ -534,7 +585,6 @@
             this.btnTagValue1.TabIndex = 0;
             this.btnTagValue1.Text = "TagValue1";
             this.btnTagValue1.UseVisualStyleBackColor = true;
-            this.btnTagValue1.Click += new System.EventHandler(this.btnTagValue1_Click);
             // 
             // txtBoxTagValueInput
             // 
@@ -551,7 +601,6 @@
             this.btnSetTagValue.TabIndex = 13;
             this.btnSetTagValue.Text = "Set";
             this.btnSetTagValue.UseVisualStyleBackColor = true;
-            this.btnSetTagValue.Click += new System.EventHandler(this.btnSetTagValue_Click);
             // 
             // groupBoxTag
             // 
@@ -565,13 +614,12 @@
             this.groupBoxTag.Controls.Add(this.btnTag4);
             this.groupBoxTag.Controls.Add(this.btnTag3);
             this.groupBoxTag.Controls.Add(this.btnTag1);
-            this.groupBoxTag.Location = new System.Drawing.Point(982, 33);
+            this.groupBoxTag.Location = new System.Drawing.Point(989, 46);
             this.groupBoxTag.Name = "groupBoxTag";
             this.groupBoxTag.Size = new System.Drawing.Size(254, 111);
-            this.groupBoxTag.TabIndex = 10;
+            this.groupBoxTag.TabIndex = 26;
             this.groupBoxTag.TabStop = false;
             this.groupBoxTag.Text = "Tags";
-            this.groupBoxTag.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.groupBoxTag_PreviewKeyDown);
             // 
             // btnTag9
             // 
@@ -581,7 +629,6 @@
             this.btnTag9.TabIndex = 0;
             this.btnTag9.Text = "Tag9";
             this.btnTag9.UseVisualStyleBackColor = true;
-            this.btnTag9.Click += new System.EventHandler(this.btnTag9_Click);
             // 
             // btnTag8
             // 
@@ -591,7 +638,6 @@
             this.btnTag8.TabIndex = 0;
             this.btnTag8.Text = "Tag8";
             this.btnTag8.UseVisualStyleBackColor = true;
-            this.btnTag8.Click += new System.EventHandler(this.btnTag8_Click);
             // 
             // btnTag7
             // 
@@ -601,7 +647,6 @@
             this.btnTag7.TabIndex = 0;
             this.btnTag7.Text = "Tag7";
             this.btnTag7.UseVisualStyleBackColor = true;
-            this.btnTag7.Click += new System.EventHandler(this.btnTag7_Click);
             // 
             // btnTag6
             // 
@@ -611,7 +656,6 @@
             this.btnTag6.TabIndex = 0;
             this.btnTag6.Text = "Tag6";
             this.btnTag6.UseVisualStyleBackColor = true;
-            this.btnTag6.Click += new System.EventHandler(this.btnTag6_Click);
             // 
             // btnTag5
             // 
@@ -621,7 +665,6 @@
             this.btnTag5.TabIndex = 0;
             this.btnTag5.Text = "Tag5";
             this.btnTag5.UseVisualStyleBackColor = true;
-            this.btnTag5.Click += new System.EventHandler(this.btnTag5_Click);
             // 
             // btnTag2
             // 
@@ -631,7 +674,6 @@
             this.btnTag2.TabIndex = 0;
             this.btnTag2.Text = "Tag2";
             this.btnTag2.UseVisualStyleBackColor = true;
-            this.btnTag2.Click += new System.EventHandler(this.btnTag2_Click);
             // 
             // btnTag4
             // 
@@ -641,7 +683,6 @@
             this.btnTag4.TabIndex = 0;
             this.btnTag4.Text = "Tag4";
             this.btnTag4.UseVisualStyleBackColor = true;
-            this.btnTag4.Click += new System.EventHandler(this.btnTag4_Click);
             // 
             // btnTag3
             // 
@@ -651,7 +692,6 @@
             this.btnTag3.TabIndex = 0;
             this.btnTag3.Text = "Tag3";
             this.btnTag3.UseVisualStyleBackColor = true;
-            this.btnTag3.Click += new System.EventHandler(this.btnTag3_Click);
             // 
             // btnTag1
             // 
@@ -661,15 +701,14 @@
             this.btnTag1.TabIndex = 0;
             this.btnTag1.Text = "Tag1";
             this.btnTag1.UseVisualStyleBackColor = true;
-            this.btnTag1.Click += new System.EventHandler(this.btnTag1_Click);
             // 
             // button1
             // 
             this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.Location = new System.Drawing.Point(192, 4);
+            this.button1.Location = new System.Drawing.Point(199, 17);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(31, 23);
-            this.button1.TabIndex = 9;
+            this.button1.TabIndex = 22;
             this.button1.Text = "<";
             this.button1.UseVisualStyleBackColor = true;
             // 
@@ -677,34 +716,32 @@
             // 
             this.btnDisplayTagEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnDisplayTagEditor.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDisplayTagEditor.Location = new System.Drawing.Point(1205, 6);
+            this.btnDisplayTagEditor.Location = new System.Drawing.Point(1212, 19);
             this.btnDisplayTagEditor.Name = "btnDisplayTagEditor";
             this.btnDisplayTagEditor.Size = new System.Drawing.Size(31, 23);
-            this.btnDisplayTagEditor.TabIndex = 9;
+            this.btnDisplayTagEditor.TabIndex = 23;
             this.btnDisplayTagEditor.Text = "<";
             this.btnDisplayTagEditor.UseVisualStyleBackColor = true;
-            this.btnDisplayTagEditor.Click += new System.EventHandler(this.btnDisplayTagEditor_Click);
             // 
             // btnColumnVisibility
             // 
             this.btnColumnVisibility.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnColumnVisibility.Image = ((System.Drawing.Image)(resources.GetObject("btnColumnVisibility.Image")));
-            this.btnColumnVisibility.Location = new System.Drawing.Point(1168, 6);
+            this.btnColumnVisibility.Location = new System.Drawing.Point(1175, 19);
             this.btnColumnVisibility.Name = "btnColumnVisibility";
             this.btnColumnVisibility.Size = new System.Drawing.Size(31, 23);
-            this.btnColumnVisibility.TabIndex = 9;
+            this.btnColumnVisibility.TabIndex = 24;
             this.btnColumnVisibility.UseVisualStyleBackColor = true;
-            this.btnColumnVisibility.Click += new System.EventHandler(this.btnColumnVisibility_Click);
             // 
             // groupBox2
             // 
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.Controls.Add(this.rdbPlaylist);
             this.groupBox2.Controls.Add(this.rdbTagValue);
-            this.groupBox2.Location = new System.Drawing.Point(762, 570);
+            this.groupBox2.Location = new System.Drawing.Point(769, 583);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(214, 79);
-            this.groupBox2.TabIndex = 8;
+            this.groupBox2.TabIndex = 20;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Hotkey mode";
             // 
@@ -717,7 +754,6 @@
             this.rdbPlaylist.TabIndex = 0;
             this.rdbPlaylist.Text = "Playlist";
             this.rdbPlaylist.UseVisualStyleBackColor = true;
-            this.rdbPlaylist.CheckedChanged += new System.EventHandler(this.rdbPlaylist_CheckedChanged);
             // 
             // rdbTagValue
             // 
@@ -730,7 +766,6 @@
             this.rdbTagValue.TabStop = true;
             this.rdbTagValue.Text = "TagValue";
             this.rdbTagValue.UseVisualStyleBackColor = true;
-            this.rdbTagValue.CheckedChanged += new System.EventHandler(this.rdbTagValue_CheckedChanged);
             // 
             // groupBoxTagValueHotkeys
             // 
@@ -739,10 +774,10 @@
             this.groupBoxTagValueHotkeys.Controls.Add(this.tgvHotkeyName4);
             this.groupBoxTagValueHotkeys.Controls.Add(this.tgvHotkeyName2);
             this.groupBoxTagValueHotkeys.Controls.Add(this.tgvHotkeyName1);
-            this.groupBoxTagValueHotkeys.Location = new System.Drawing.Point(982, 413);
+            this.groupBoxTagValueHotkeys.Location = new System.Drawing.Point(989, 426);
             this.groupBoxTagValueHotkeys.Name = "groupBoxTagValueHotkeys";
             this.groupBoxTagValueHotkeys.Size = new System.Drawing.Size(254, 64);
-            this.groupBoxTagValueHotkeys.TabIndex = 8;
+            this.groupBoxTagValueHotkeys.TabIndex = 21;
             this.groupBoxTagValueHotkeys.TabStop = false;
             this.groupBoxTagValueHotkeys.Text = "Hotkey";
             // 
@@ -754,7 +789,6 @@
             this.tgvHotkeyName3.Size = new System.Drawing.Size(25, 13);
             this.tgvHotkeyName3.TabIndex = 1;
             this.tgvHotkeyName3.Text = "(3) -";
-            this.tgvHotkeyName3.Click += new System.EventHandler(this.label1_Click);
             // 
             // tgvHotkeyName4
             // 
@@ -764,7 +798,6 @@
             this.tgvHotkeyName4.Size = new System.Drawing.Size(25, 13);
             this.tgvHotkeyName4.TabIndex = 1;
             this.tgvHotkeyName4.Text = "(4) -";
-            this.tgvHotkeyName4.Click += new System.EventHandler(this.label1_Click);
             // 
             // tgvHotkeyName2
             // 
@@ -774,7 +807,6 @@
             this.tgvHotkeyName2.Size = new System.Drawing.Size(25, 13);
             this.tgvHotkeyName2.TabIndex = 1;
             this.tgvHotkeyName2.Text = "(2) -";
-            this.tgvHotkeyName2.Click += new System.EventHandler(this.label1_Click);
             // 
             // tgvHotkeyName1
             // 
@@ -784,7 +816,6 @@
             this.tgvHotkeyName1.Size = new System.Drawing.Size(25, 13);
             this.tgvHotkeyName1.TabIndex = 1;
             this.tgvHotkeyName1.Text = "(1) -";
-            this.tgvHotkeyName1.Click += new System.EventHandler(this.label1_Click);
             // 
             // groupBox1
             // 
@@ -793,10 +824,10 @@
             this.groupBox1.Controls.Add(this.btnRenamePlaylist);
             this.groupBox1.Controls.Add(this.btnLoadPlaylist);
             this.groupBox1.Controls.Add(this.btnDeletePlaylist);
-            this.groupBox1.Location = new System.Drawing.Point(3, 570);
+            this.groupBox1.Location = new System.Drawing.Point(10, 583);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(183, 79);
-            this.groupBox1.TabIndex = 7;
+            this.groupBox1.TabIndex = 19;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Playlist";
             // 
@@ -808,7 +839,6 @@
             this.btnNewPlaylist.TabIndex = 6;
             this.btnNewPlaylist.Text = "New";
             this.btnNewPlaylist.UseVisualStyleBackColor = true;
-            this.btnNewPlaylist.Click += new System.EventHandler(this.btnNewPlaylist_Click);
             // 
             // btnRenamePlaylist
             // 
@@ -818,7 +848,6 @@
             this.btnRenamePlaylist.TabIndex = 6;
             this.btnRenamePlaylist.Text = "Rename";
             this.btnRenamePlaylist.UseVisualStyleBackColor = true;
-            this.btnRenamePlaylist.Click += new System.EventHandler(this.btnRenamePlaylist_Click);
             // 
             // btnLoadPlaylist
             // 
@@ -828,7 +857,6 @@
             this.btnLoadPlaylist.TabIndex = 6;
             this.btnLoadPlaylist.Text = "Load";
             this.btnLoadPlaylist.UseVisualStyleBackColor = true;
-            this.btnLoadPlaylist.Click += new System.EventHandler(this.btnLoadPlaylist_Click);
             // 
             // btnDeletePlaylist
             // 
@@ -838,16 +866,15 @@
             this.btnDeletePlaylist.TabIndex = 6;
             this.btnDeletePlaylist.Text = "Delete";
             this.btnDeletePlaylist.UseVisualStyleBackColor = true;
-            this.btnDeletePlaylist.Click += new System.EventHandler(this.btnDeletePlaylist_Click);
             // 
             // lblMessage
             // 
             this.lblMessage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblMessage.Location = new System.Drawing.Point(599, 626);
+            this.lblMessage.Location = new System.Drawing.Point(606, 639);
             this.lblMessage.Name = "lblMessage";
             this.lblMessage.Size = new System.Drawing.Size(424, 13);
-            this.lblMessage.TabIndex = 3;
+            this.lblMessage.TabIndex = 18;
             this.lblMessage.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lblMessage.Visible = false;
             // 
@@ -861,23 +888,14 @@
             | System.Windows.Forms.AnchorStyles.Left)));
             this.dgvPlaylistList.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvPlaylistList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            this.dgvPlaylistList.Location = new System.Drawing.Point(3, 6);
+            this.dgvPlaylistList.Location = new System.Drawing.Point(10, 19);
             this.dgvPlaylistList.MultiSelect = false;
             this.dgvPlaylistList.Name = "dgvPlaylistList";
             this.dgvPlaylistList.ReadOnly = true;
             this.dgvPlaylistList.RowHeadersVisible = false;
             this.dgvPlaylistList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvPlaylistList.Size = new System.Drawing.Size(183, 558);
-            this.dgvPlaylistList.TabIndex = 1;
-            this.dgvPlaylistList.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvPlaylistList_CellDoubleClick);
-            this.dgvPlaylistList.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.dgvPlaylistList_CellPainting);
-            this.dgvPlaylistList.DragDrop += new System.Windows.Forms.DragEventHandler(this.dgvPlaylistList_DragDrop);
-            this.dgvPlaylistList.DragOver += new System.Windows.Forms.DragEventHandler(this.dgvPlaylistList_DragOver);
-            this.dgvPlaylistList.QueryContinueDrag += new System.Windows.Forms.QueryContinueDragEventHandler(this.dgvPlaylistList_QueryContinueDrag);
-            this.dgvPlaylistList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvPlaylistList_KeyDown);
-            this.dgvPlaylistList.MouseClick += new System.Windows.Forms.MouseEventHandler(this.dgvPlaylistList_MouseClick);
-            this.dgvPlaylistList.MouseDown += new System.Windows.Forms.MouseEventHandler(this.dgvPlaylistList_MouseDown);
-            this.dgvPlaylistList.MouseMove += new System.Windows.Forms.MouseEventHandler(this.dgvPlaylistList_MouseMove);
+            this.dgvPlaylistList.TabIndex = 17;
             // 
             // dgvTrackList
             // 
@@ -890,168 +908,40 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvTrackList.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvTrackList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            this.dgvTrackList.Location = new System.Drawing.Point(192, 33);
+            this.dgvTrackList.Location = new System.Drawing.Point(199, 46);
             this.dgvTrackList.Name = "dgvTrackList";
             this.dgvTrackList.ReadOnly = true;
             this.dgvTrackList.RowHeadersVisible = false;
             this.dgvTrackList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvTrackList.Size = new System.Drawing.Size(784, 531);
-            this.dgvTrackList.TabIndex = 0;
-            this.dgvTrackList.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTrackList_CellClick);
-            this.dgvTrackList.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTrackList_CellDoubleClick);
-            this.dgvTrackList.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.dgvTrackList_CellPainting);
-            this.dgvTrackList.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvTrackList_ColumnHeaderMouseClick);
-            this.dgvTrackList.SelectionChanged += new System.EventHandler(this.dgvTrackList_SelectionChanged);
-            this.dgvTrackList.DragDrop += new System.Windows.Forms.DragEventHandler(this.dgvTrackList_DragDrop);
-            this.dgvTrackList.DragOver += new System.Windows.Forms.DragEventHandler(this.dgvTrackList_DragOver);
-            this.dgvTrackList.QueryContinueDrag += new System.Windows.Forms.QueryContinueDragEventHandler(this.dgvTrackList_QueryContinueDrag);
-            this.dgvTrackList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvTrackList_KeyDown);
-            this.dgvTrackList.KeyUp += new System.Windows.Forms.KeyEventHandler(this.dgvTrackList_KeyUp);
-            this.dgvTrackList.MouseDown += new System.Windows.Forms.MouseEventHandler(this.dgvTrackList_MouseDown);
-            this.dgvTrackList.MouseMove += new System.Windows.Forms.MouseEventHandler(this.dgvTrackList_MouseMove);
-            // 
-            // tabControl1
-            // 
-            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tabControl1.Controls.Add(this.tabPagePlaylistDetail);
-            this.tabControl1.Location = new System.Drawing.Point(0, 0);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(1252, 678);
-            this.tabControl1.TabIndex = 4;
-            // 
-            // timer1
-            // 
-            this.timer1.Enabled = true;
-            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
-            // contextMenuStrip1
-            // 
-            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.menuStripCreatePlaylist,
-            this.menuStripLoadPlaylist,
-            this.menuStripRenamePlaylist,
-            this.menuStripDeletePlaylist,
-            this.toolStripSeparator2,
-            this.menuStripSetQuickListGroup,
-            this.toolStripSeparator1,
-            this.exportToM3uToolStripMenuItem,
-            this.exportToTxtToolStripMenuItem,
-            this.exportToDirectoryToolStripMenuItem});
-            this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(176, 192);
-            // 
-            // menuStripCreatePlaylist
-            // 
-            this.menuStripCreatePlaylist.Name = "menuStripCreatePlaylist";
-            this.menuStripCreatePlaylist.Size = new System.Drawing.Size(175, 22);
-            this.menuStripCreatePlaylist.Text = "New";
-            this.menuStripCreatePlaylist.Click += new System.EventHandler(this.menuStripCreatePlaylist_Click);
-            // 
-            // menuStripLoadPlaylist
-            // 
-            this.menuStripLoadPlaylist.Name = "menuStripLoadPlaylist";
-            this.menuStripLoadPlaylist.Size = new System.Drawing.Size(175, 22);
-            this.menuStripLoadPlaylist.Text = "Load";
-            this.menuStripLoadPlaylist.Click += new System.EventHandler(this.menuStripLoadPlaylist_Click);
-            // 
-            // menuStripRenamePlaylist
-            // 
-            this.menuStripRenamePlaylist.Name = "menuStripRenamePlaylist";
-            this.menuStripRenamePlaylist.Size = new System.Drawing.Size(175, 22);
-            this.menuStripRenamePlaylist.Text = "Rename";
-            this.menuStripRenamePlaylist.Click += new System.EventHandler(this.menuStripRenamePlaylist_Click);
-            // 
-            // menuStripDeletePlaylist
-            // 
-            this.menuStripDeletePlaylist.Name = "menuStripDeletePlaylist";
-            this.menuStripDeletePlaylist.Size = new System.Drawing.Size(175, 22);
-            this.menuStripDeletePlaylist.Text = "Remove";
-            this.menuStripDeletePlaylist.Click += new System.EventHandler(this.menuStripDeletePlaylist_Click);
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(172, 6);
-            // 
-            // menuStripSetQuickListGroup
-            // 
-            this.menuStripSetQuickListGroup.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.menuStripSetQuickListGroup1,
-            this.menuStripSetQuickListGroup2,
-            this.menuStripSetQuickListGroup3,
-            this.menuStripSetQuickListGroup4});
-            this.menuStripSetQuickListGroup.Name = "menuStripSetQuickListGroup";
-            this.menuStripSetQuickListGroup.Size = new System.Drawing.Size(175, 22);
-            this.menuStripSetQuickListGroup.Text = "Set quick list group";
-            // 
-            // menuStripSetQuickListGroup1
-            // 
-            this.menuStripSetQuickListGroup1.Name = "menuStripSetQuickListGroup1";
-            this.menuStripSetQuickListGroup1.Size = new System.Drawing.Size(167, 22);
-            this.menuStripSetQuickListGroup1.Text = "Quick list group 1";
-            this.menuStripSetQuickListGroup1.Click += new System.EventHandler(this.menuStripSetQuickListGroup1_Click);
-            // 
-            // menuStripSetQuickListGroup2
-            // 
-            this.menuStripSetQuickListGroup2.Name = "menuStripSetQuickListGroup2";
-            this.menuStripSetQuickListGroup2.Size = new System.Drawing.Size(167, 22);
-            this.menuStripSetQuickListGroup2.Text = "Quick list group 2";
-            this.menuStripSetQuickListGroup2.Click += new System.EventHandler(this.menuStripSetQuickListGroup2_Click);
-            // 
-            // menuStripSetQuickListGroup3
-            // 
-            this.menuStripSetQuickListGroup3.Name = "menuStripSetQuickListGroup3";
-            this.menuStripSetQuickListGroup3.Size = new System.Drawing.Size(167, 22);
-            this.menuStripSetQuickListGroup3.Text = "Quick list group 3";
-            this.menuStripSetQuickListGroup3.Click += new System.EventHandler(this.menuStripSetQuickListGroup3_Click);
-            // 
-            // menuStripSetQuickListGroup4
-            // 
-            this.menuStripSetQuickListGroup4.Name = "menuStripSetQuickListGroup4";
-            this.menuStripSetQuickListGroup4.Size = new System.Drawing.Size(167, 22);
-            this.menuStripSetQuickListGroup4.Text = "Quick list group 4";
-            this.menuStripSetQuickListGroup4.Click += new System.EventHandler(this.menuStripSetQuickListGroup4_Click);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(172, 6);
-            // 
-            // exportToM3uToolStripMenuItem
-            // 
-            this.exportToM3uToolStripMenuItem.Name = "exportToM3uToolStripMenuItem";
-            this.exportToM3uToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
-            this.exportToM3uToolStripMenuItem.Text = "Export to m3u";
-            this.exportToM3uToolStripMenuItem.Click += new System.EventHandler(this.menuStripExportToM3uToolStripMenuItem_Click);
-            // 
-            // exportToTxtToolStripMenuItem
-            // 
-            this.exportToTxtToolStripMenuItem.Name = "exportToTxtToolStripMenuItem";
-            this.exportToTxtToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
-            this.exportToTxtToolStripMenuItem.Text = "Export to txt";
-            this.exportToTxtToolStripMenuItem.Click += new System.EventHandler(this.menuStripExportToTxtToolStripMenuItem_Click);
-            // 
-            // exportToDirectoryToolStripMenuItem
-            // 
-            this.exportToDirectoryToolStripMenuItem.Name = "exportToDirectoryToolStripMenuItem";
-            this.exportToDirectoryToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
-            this.exportToDirectoryToolStripMenuItem.Text = "Export to directory";
-            this.exportToDirectoryToolStripMenuItem.Click += new System.EventHandler(this.exportToDirectoryToolStripMenuItem_Click);
+            this.dgvTrackList.TabIndex = 16;
             // 
             // PlaylistView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1252, 678);
-            this.Controls.Add(this.tabControl1);
+            this.Controls.Add(this.btnScanBpm);
+            this.Controls.Add(this.groupBox4);
+            this.Controls.Add(this.groupBox3);
+            this.Controls.Add(this.lblTagColor);
+            this.Controls.Add(this.cmbColor);
+            this.Controls.Add(this.groupBoxTagValue);
+            this.Controls.Add(this.groupBoxTag);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.btnDisplayTagEditor);
+            this.Controls.Add(this.btnColumnVisibility);
+            this.Controls.Add(this.groupBox2);
+            this.Controls.Add(this.groupBoxTagValueHotkeys);
+            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.lblMessage);
+            this.Controls.Add(this.dgvPlaylistList);
+            this.Controls.Add(this.dgvTrackList);
             this.Name = "PlaylistView";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Player";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-            this.tabPagePlaylistDetail.ResumeLayout(false);
-            this.tabPagePlaylistDetail.PerformLayout();
+            this.contextMenuStrip1.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
@@ -1065,68 +955,44 @@
             this.groupBox1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvPlaylistList)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTrackList)).EndInit();
-            this.tabControl1.ResumeLayout(false);
-            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
-        private System.Windows.Forms.TabPage tabPagePlaylistDetail;
-        private System.Windows.Forms.TabControl tabControl1;
-        private System.Windows.Forms.DataGridView dgvTrackList;
-        private System.Windows.Forms.DataGridView dgvPlaylistList;
+
         private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.ToolStripMenuItem exportToTxtToolStripMenuItem;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem menuStripCreatePlaylist;
         private System.Windows.Forms.ToolStripMenuItem menuStripLoadPlaylist;
         private System.Windows.Forms.ToolStripMenuItem menuStripRenamePlaylist;
         private System.Windows.Forms.ToolStripMenuItem menuStripDeletePlaylist;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripMenuItem menuStripCreatePlaylist;
+        private System.Windows.Forms.ToolStripMenuItem exportToDirectoryToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exportToM3uToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem exportToTxtToolStripMenuItem;
-        private System.Windows.Forms.Button btnRenamePlaylist;
-        private System.Windows.Forms.Button btnLoadPlaylist;
-        private System.Windows.Forms.Button btnNewPlaylist;
-        private System.Windows.Forms.GroupBox groupBoxTagValueHotkeys;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Button btnDeletePlaylist;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private System.Windows.Forms.ToolStripMenuItem menuStripSetQuickListGroup;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem menuStripSetQuickListGroup1;
         private System.Windows.Forms.ToolStripMenuItem menuStripSetQuickListGroup2;
         private System.Windows.Forms.ToolStripMenuItem menuStripSetQuickListGroup3;
         private System.Windows.Forms.ToolStripMenuItem menuStripSetQuickListGroup4;
-        private System.Windows.Forms.Label lblMessage;
+        private System.Windows.Forms.ToolStripMenuItem menuStripSetQuickListGroup;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.Button btnScanBpm;
+        private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.Label lblTrackCount;
         private System.Windows.Forms.Label lblTrackSumLength;
-        private System.Windows.Forms.Button btnColumnVisibility;
-        private System.Windows.Forms.GroupBox groupBoxTag;
-        private System.Windows.Forms.Button btnTag7;
-        private System.Windows.Forms.Button btnTag2;
-        private System.Windows.Forms.Button btnTag1;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.Label lblSelectedItemsCount;
+        private System.Windows.Forms.Label lblSelectedItemsLength;
+        private System.Windows.Forms.Label lblCurrentTrack;
+        private System.Windows.Forms.Label lblTagColor;
+        private System.Windows.Forms.ComboBox cmbColor;
         private System.Windows.Forms.GroupBox groupBoxTagValue;
         private System.Windows.Forms.Button btnTagValue11;
         private System.Windows.Forms.Button btnTagValue8;
         private System.Windows.Forms.Button btnTagValue5;
         private System.Windows.Forms.Button btnTagValue2;
-        private System.Windows.Forms.Button btnTagValue12;
-        private System.Windows.Forms.Button btnTagValue9;
-        private System.Windows.Forms.Button btnTagValue6;
-        private System.Windows.Forms.Button btnTagValue3;
-        private System.Windows.Forms.Button btnTagValue10;
-        private System.Windows.Forms.Button btnTagValue7;
-        private System.Windows.Forms.Button btnTagValue4;
-        private System.Windows.Forms.Button btnTagValue1;
-        private System.Windows.Forms.Button btnTag9;
-        private System.Windows.Forms.Button btnTag8;
-        private System.Windows.Forms.Button btnTag6;
-        private System.Windows.Forms.Button btnTag5;
-        private System.Windows.Forms.Button btnTag4;
-        private System.Windows.Forms.Button btnTag3;
-        private System.Windows.Forms.Button btnDisplayTagEditor;
-        private System.Windows.Forms.Label lblTagColor;
-        private System.Windows.Forms.ComboBox cmbColor;
         private System.Windows.Forms.Button btnTagValue18;
         private System.Windows.Forms.Button btnTagValue17;
         private System.Windows.Forms.Button btnTagValue21;
@@ -1139,22 +1005,44 @@
         private System.Windows.Forms.Button btnTagValue15;
         private System.Windows.Forms.Button btnTagValue14;
         private System.Windows.Forms.Button btnTagValue13;
+        private System.Windows.Forms.Button btnTagValue12;
+        private System.Windows.Forms.Button btnTagValue9;
+        private System.Windows.Forms.Button btnTagValue6;
+        private System.Windows.Forms.Button btnTagValue3;
+        private System.Windows.Forms.Button btnTagValue10;
+        private System.Windows.Forms.Button btnTagValue7;
+        private System.Windows.Forms.Button btnTagValue4;
+        private System.Windows.Forms.Button btnTagValue1;
         private System.Windows.Forms.TextBox txtBoxTagValueInput;
         private System.Windows.Forms.Button btnSetTagValue;
-        private System.Windows.Forms.ToolStripMenuItem exportToDirectoryToolStripMenuItem;
-        private System.Windows.Forms.RadioButton rdbTagValue;
+        private System.Windows.Forms.GroupBox groupBoxTag;
+        private System.Windows.Forms.Button btnTag9;
+        private System.Windows.Forms.Button btnTag8;
+        private System.Windows.Forms.Button btnTag7;
+        private System.Windows.Forms.Button btnTag6;
+        private System.Windows.Forms.Button btnTag5;
+        private System.Windows.Forms.Button btnTag2;
+        private System.Windows.Forms.Button btnTag4;
+        private System.Windows.Forms.Button btnTag3;
+        private System.Windows.Forms.Button btnTag1;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnDisplayTagEditor;
+        private System.Windows.Forms.Button btnColumnVisibility;
+        private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.RadioButton rdbPlaylist;
-        private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.GroupBox groupBox4;
-        private System.Windows.Forms.Label tgvHotkeyName1;
-        private System.Windows.Forms.Label lblSelectedItemsCount;
-        private System.Windows.Forms.Label lblSelectedItemsLength;
-        private System.Windows.Forms.Label lblCurrentTrack;
+        private System.Windows.Forms.RadioButton rdbTagValue;
+        private System.Windows.Forms.GroupBox groupBoxTagValueHotkeys;
         private System.Windows.Forms.Label tgvHotkeyName3;
         private System.Windows.Forms.Label tgvHotkeyName4;
         private System.Windows.Forms.Label tgvHotkeyName2;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.Button btnScanBpm;
+        private System.Windows.Forms.Label tgvHotkeyName1;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Button btnNewPlaylist;
+        private System.Windows.Forms.Button btnRenamePlaylist;
+        private System.Windows.Forms.Button btnLoadPlaylist;
+        private System.Windows.Forms.Button btnDeletePlaylist;
+        private System.Windows.Forms.Label lblMessage;
+        private System.Windows.Forms.DataGridView dgvPlaylistList;
+        private System.Windows.Forms.DataGridView dgvTrackList;
     }
 }

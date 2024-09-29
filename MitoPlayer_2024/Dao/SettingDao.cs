@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -23,6 +24,11 @@ namespace MitoPlayer_2024.Dao
     {
         private int profileId = -1;
         private DataBaseBuilderDao databaseBuilderDao { get; set; }
+
+        public SettingDao()
+        {
+            this.databaseBuilderDao = new DataBaseBuilderDao();
+        }
         public SettingDao(string connectionString)
         {
             this.connectionString = connectionString;
@@ -62,19 +68,40 @@ namespace MitoPlayer_2024.Dao
         {
             return this.profileId;
         }
-        public void InitializeFirstRun()
+        public bool IsConnectionStringValid(String preConnectionString)
         {
-            if (!this.databaseBuilderDao.TableIsExists(TableName.Setting.ToString()))
-            {
-                if (this.databaseBuilderDao.BuildDatabase())
-                {
-                    this.CreateBooleanSetting(this.GetNextId(TableName.Setting.ToString()), Settings.FirstRun.ToString(), true, true);
-                    this.InitializeGlobalSettings();
-                }
-            }
+            return this.databaseBuilderDao.IsConnectionStringValid(preConnectionString);
         }
-        public void CreateColumns()
+        public bool IsDatabaseExists(String preConnectionString)
         {
+            return this.databaseBuilderDao.IsDatabaseExists(preConnectionString);
+        }
+        public ResultOrError CreateDatabase(String preConnectionString)
+        {
+            return this.databaseBuilderDao.CreateDatabase(preConnectionString);
+        }
+        public ResultOrError DeleteDatabase()
+        {
+            return this.databaseBuilderDao.DeleteDatabase();
+        }
+        public ResultOrError CreateTableStructure()
+        {
+            ResultOrError result = this.databaseBuilderDao.CreateTableStructure();
+            if (result.Success)
+            {
+                result = this.CreateBooleanSetting(this.GetNextId(TableName.Setting.ToString()), Settings.FirstRun.ToString(), true, true);
+            }
+
+            if (result.Success)
+            {
+                result = this.InitializeGlobalSettings();
+            }
+            return result;
+        }
+
+        public ResultOrError CreateColumns()
+        {
+            ResultOrError result = new ResultOrError();
             String colNames = System.Configuration.ConfigurationManager.AppSettings[Settings.PlaylistColumnNames.ToString()];
             String colTypes = System.Configuration.ConfigurationManager.AppSettings[Settings.PlaylistColumnTypes.ToString()];
             String colVisibility = System.Configuration.ConfigurationManager.AppSettings[Settings.PlaylistColumnVisibility.ToString()];
@@ -85,16 +112,19 @@ namespace MitoPlayer_2024.Dao
             TrackProperty tp = this.GetTrackPropertyByNameAndGroup(colNameArray[0], ColumnGroup.PlaylistColumns.ToString());
             if(tp == null || tp.Name == null)
             {
-                this.InitializeColumns(colNameArray, colTypeArray, colVisibilityArray, ColumnGroup.PlaylistColumns.ToString());
-
-                colNames = System.Configuration.ConfigurationManager.AppSettings[Settings.TrackColumnNames.ToString()];
-                colTypes = System.Configuration.ConfigurationManager.AppSettings[Settings.TrackColumnTypes.ToString()];
-                colVisibility = System.Configuration.ConfigurationManager.AppSettings[Settings.TrackColumnVisibility.ToString()];
-                colNameArray = Array.ConvertAll(colNames.Split(','), s => s);
-                colTypeArray = Array.ConvertAll(colTypes.Split(','), s => s);
-                colVisibilityArray = Array.ConvertAll(colVisibility.Split(','), s => Boolean.Parse(s));
-                this.InitializeColumns(colNameArray, colTypeArray, colVisibilityArray, ColumnGroup.TracklistColumns.ToString());
+                result = this.InitializeColumns(colNameArray, colTypeArray, colVisibilityArray, ColumnGroup.PlaylistColumns.ToString());
+                if (result.Success)
+                {
+                    colNames = System.Configuration.ConfigurationManager.AppSettings[Settings.TrackColumnNames.ToString()];
+                    colTypes = System.Configuration.ConfigurationManager.AppSettings[Settings.TrackColumnTypes.ToString()];
+                    colVisibility = System.Configuration.ConfigurationManager.AppSettings[Settings.TrackColumnVisibility.ToString()];
+                    colNameArray = Array.ConvertAll(colNames.Split(','), s => s);
+                    colTypeArray = Array.ConvertAll(colTypes.Split(','), s => s);
+                    colVisibilityArray = Array.ConvertAll(colVisibility.Split(','), s => Boolean.Parse(s));
+                    result = this.InitializeColumns(colNameArray, colTypeArray, colVisibilityArray, ColumnGroup.TracklistColumns.ToString());
+                } 
             }
+            return result;
         }
 
         public void InitializeKeys(ref String[] keyNameArray,ref String[] keyColorArray)
@@ -104,98 +134,109 @@ namespace MitoPlayer_2024.Dao
             keyNameArray = Array.ConvertAll(keyNames.Split(','), s => s);
             keyColorArray = Array.ConvertAll(keyColors.Split(','), s => s);
         }
-        public void InitializeGlobalSettings()
+        public ResultOrError InitializeGlobalSettings()
         {
-            this.InitializeIntegerSetting(Settings.LastGeneratedPlaylistId.ToString(), true);
-            this.InitializeIntegerSetting(Settings.LastGeneratedProfileId.ToString(), true);
-            this.InitializeIntegerSetting(Settings.LastGeneratedTagId.ToString(), true);
-            this.InitializeIntegerSetting(Settings.LastGeneratedTagValueId.ToString(), true);
+            ResultOrError result = this.InitializeIntegerSetting(Settings.LastGeneratedPlaylistId.ToString(), true);
+            if (result.Success)
+                this.InitializeIntegerSetting(Settings.LastGeneratedProfileId.ToString(), true);
+            if (result.Success)
+                this.InitializeIntegerSetting(Settings.LastGeneratedTagId.ToString(), true);
+            if (result.Success)
+                this.InitializeIntegerSetting(Settings.LastGeneratedTagValueId.ToString(), true);
+            return result;
         }
-        public void InitializeProfileSettings()
+        public ResultOrError InitializeProfileSettings()
         {
-            this.CreateColumns();
+            ResultOrError result = this.CreateColumns();
+            if(result.Success)
+                this.InitializeStringSetting(Settings.LastOpenDirectoryPath.ToString());
+            if (result.Success)
+                this.InitializeStringSetting(Settings.PlaylistColumnVisibility.ToString());
+            if (result.Success)
+                this.InitializeStringSetting(Settings.TrackColumnVisibility.ToString());
 
-            this.InitializeStringSetting(Settings.LastOpenDirectoryPath.ToString());
-            this.InitializeStringSetting(Settings.PlaylistColumnVisibility.ToString());
-            this.InitializeStringSetting(Settings.TrackColumnVisibility.ToString());
-           
+            if (result.Success)
+                this.InitializeIntegerSetting(Settings.Volume.ToString());
+            if (result.Success)
+                this.InitializeIntegerSetting(Settings.LastOpenFilesFilterIndex.ToString());
 
-            this.InitializeIntegerSetting(Settings.Volume.ToString());
-            this.InitializeIntegerSetting(Settings.LastOpenFilesFilterIndex.ToString());
+            if (result.Success)
+                this.InitializeBooleanSetting(Settings.AutomaticBpmImport.ToString());
+            if (result.Success)
+                this.InitializeBooleanSetting(Settings.AutomaticKeyImport.ToString());
 
-            this.InitializeBooleanSetting(Settings.AutomaticBpmImport.ToString());
-            this.InitializeBooleanSetting(Settings.AutomaticKeyImport.ToString());
+            if (result.Success)
+                this.InitializeStringSetting(Settings.LastExportDirectoryPath.ToString());
+            if (result.Success)
+                this.InitializeBooleanSetting(Settings.IsRowNumberChecked.ToString());
+            if (result.Success)
+                this.InitializeBooleanSetting(Settings.IsKeyCodeChecked.ToString());
+            if (result.Success)
+                this.InitializeBooleanSetting(Settings.IsBpmNumberChecked.ToString());
+            if (result.Success)
+                this.InitializeBooleanSetting(Settings.IsTrunkedBpmChecked.ToString());
+            if (result.Success)
+                this.InitializeBooleanSetting(Settings.IsTrunkedArtistChecked.ToString());
+            if (result.Success)
+                this.InitializeBooleanSetting(Settings.IsTrunkedTitleChecked.ToString());
+            if (result.Success)
+                this.InitializeDecimalSetting(Settings.ArtistMinimumCharacter.ToString());
+            if (result.Success)
+                this.InitializeDecimalSetting(Settings.TitleMinimumCharacter.ToString());
 
-            this.InitializeStringSetting(Settings.LastExportDirectoryPath.ToString());
-            this.InitializeBooleanSetting(Settings.IsRowNumberChecked.ToString());
-            this.InitializeBooleanSetting(Settings.IsKeyCodeChecked.ToString());
-            this.InitializeBooleanSetting(Settings.IsBpmNumberChecked.ToString());
-            this.InitializeBooleanSetting(Settings.IsTrunkedBpmChecked.ToString());
-            this.InitializeBooleanSetting(Settings.IsTrunkedArtistChecked.ToString());
-            this.InitializeBooleanSetting(Settings.IsTrunkedTitleChecked.ToString());
-            this.InitializeDecimalSetting(Settings.ArtistMinimumCharacter.ToString());
-            this.InitializeDecimalSetting(Settings.TitleMinimumCharacter.ToString());
-
-            this.InitializeStringSetting(Settings.VirtualDjDatabasePath.ToString());
-
+            if (result.Success)
+                this.InitializeStringSetting(Settings.VirtualDjDatabasePath.ToString());
+            return result;
         }
-        private void InitializeStringSetting(String settingName, bool withoutProfile = false)
+        private ResultOrError InitializeStringSetting(String settingName, bool withoutProfile = false)
         {
+            ResultOrError result = new ResultOrError();
             string stringData = String.Empty;
             stringData = System.Configuration.ConfigurationManager.AppSettings[settingName];
 
-            if (!this.SettingExists(settingName, withoutProfile))
+            if (!this.IsSettingExists(settingName, withoutProfile))
             {
-                this.CreateStringSetting(this.GetNextId(TableName.Setting.ToString()),settingName, stringData, withoutProfile);
+                result = this.CreateStringSetting(this.GetNextId(TableName.Setting.ToString()),settingName, stringData, withoutProfile);
             }
-            //else
-            //{
-            //    this.SetStringSetting(settingName, stringData, withoutProfile);
-            //}
+            return result;
         }
-        private void InitializeIntegerSetting(String settingName, bool withoutProfile = false)
+        private ResultOrError InitializeIntegerSetting(String settingName, bool withoutProfile = false)
         {
+            ResultOrError result = new ResultOrError();
             int integerData = -1;
             integerData = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings[settingName]);
 
-            if (!this.SettingExists(settingName, withoutProfile))
+            if (!this.IsSettingExists(settingName, withoutProfile))
             {
-                this.CreateIntegerSetting(this.GetNextId(TableName.Setting.ToString()),settingName, integerData, withoutProfile);
+                result = this.CreateIntegerSetting(this.GetNextId(TableName.Setting.ToString()),settingName, integerData, withoutProfile);
             }
-            //else
-            //{
-            //    this.SetIntegerSetting(settingName, integerData, withoutProfile);
-            //}
+            return result;
         }
-        private void InitializeBooleanSetting(String settingName, bool withoutProfile = false)
+        private ResultOrError InitializeBooleanSetting(String settingName, bool withoutProfile = false)
         {
+            ResultOrError result = new ResultOrError();
             bool boolData = false;
             boolData = Convert.ToBoolean(System.Configuration.ConfigurationManager.AppSettings[settingName]);
 
-            if (!this.SettingExists(settingName, true))
+            if (!this.IsSettingExists(settingName, true))
             {
-                this.CreateBooleanSetting(this.GetNextId(TableName.Setting.ToString()), settingName, boolData, withoutProfile);
+                result = this.CreateBooleanSetting(this.GetNextId(TableName.Setting.ToString()), settingName, boolData, withoutProfile);
             }
-            //else
-            //{
-            //    this.SetBooleanSetting(settingName, boolData, withoutProfile);
-            //}
+            return result;
         }
-        private void InitializeDecimalSetting(String settingName, bool withoutProfile = false)
+        private ResultOrError InitializeDecimalSetting(String settingName, bool withoutProfile = false)
         {
+            ResultOrError result = new ResultOrError();
             decimal decimalData = -1;
             decimalData = Convert.ToDecimal(System.Configuration.ConfigurationManager.AppSettings[settingName]);
 
-            if (!this.SettingExists(settingName, true))
+            if (!this.IsSettingExists(settingName, true))
             {
-                this.CreateDecimalSetting(this.GetNextId(TableName.Setting.ToString()), settingName, decimalData, withoutProfile);
+                result = this.CreateDecimalSetting(this.GetNextId(TableName.Setting.ToString()), settingName, decimalData, withoutProfile);
             }
-            //else
-            //{
-            //    this.SetDecimalSetting(settingName, decimalData, withoutProfile);
-            //}
+            return result;
         }
-        private bool SettingExists(string name, bool withoutProfile = false)
+        private bool IsSettingExists(string name, bool withoutProfile = false)
         {
             bool result = false;
 
@@ -225,9 +266,10 @@ namespace MitoPlayer_2024.Dao
 
             return result;
         }
-
-        public void CreateStringSetting(int id, String name, String value, bool withoutProfile = false)
+        public ResultOrError CreateStringSetting(int id, String name, String value, bool withoutProfile = false)
         {
+            ResultOrError result = new ResultOrError();
+
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
             {
@@ -261,13 +303,16 @@ namespace MitoPlayer_2024.Dao
                 }
                 catch (MySqlException ex)
                 {
-                    MessageBox.Show("Setting is not inserted. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    result.AddError("Setting [" + name + "] is not inserted. \n" + ex.Message + "\n");
                 }
                 connection.Close();
             }
+            return result;
         }
-        public void CreateIntegerSetting(int id, String name, Int32 value, bool withoutProfile = false)
+        public ResultOrError CreateIntegerSetting(int id, String name, Int32 value, bool withoutProfile = false)
         {
+            ResultOrError result = new ResultOrError();
+
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
             {
@@ -301,13 +346,17 @@ namespace MitoPlayer_2024.Dao
                 }
                 catch (MySqlException ex)
                 {
-                    MessageBox.Show("Setting is not inserted. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    result.AddError("Setting [" + name + "] is not inserted. \n" + ex.Message + "\n");
                 }
                 connection.Close();
             }
+
+            return result;
         }
-        public void CreateDecimalSetting(int id, String name, Decimal value, bool withoutProfile = false)
+        public ResultOrError CreateDecimalSetting(int id, String name, Decimal value, bool withoutProfile = false)
         {
+            ResultOrError result = new ResultOrError();
+
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
             {
@@ -342,13 +391,16 @@ namespace MitoPlayer_2024.Dao
                 }
                 catch (MySqlException ex)
                 {
-                    MessageBox.Show("Setting is not inserted. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    result.AddError("Setting [" + name + "] is not inserted. \n" + ex.Message + "\n");
                 }
                 connection.Close();
             }
+            return result;
         }
-        public void CreateBooleanSetting(int id, String name, Boolean value, bool withoutProfile = false)
+        public ResultOrError CreateBooleanSetting(int id, String name, Boolean value, bool withoutProfile = false)
         {
+            ResultOrError result = new ResultOrError();
+
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
             {
@@ -382,10 +434,12 @@ namespace MitoPlayer_2024.Dao
                 }
                 catch (MySqlException ex)
                 {
-                    MessageBox.Show("Setting is not inserted. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    result.AddError("Setting [" + name + "] is not inserted. \n" + ex.Message + "\n");
                 }
                 connection.Close();
             }
+
+            return result;
         }
 
         public string GetStringSetting(string name, bool withoutProfile = false)
@@ -522,8 +576,10 @@ namespace MitoPlayer_2024.Dao
 
             return result;
         }
-        public void SetStringSetting(String name, String value, bool withoutProfile = false)
+        public ResultOrError SetStringSetting(String name, String value, bool withoutProfile = false)
         {
+            ResultOrError result = new ResultOrError();
+
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
             {
@@ -549,13 +605,16 @@ namespace MitoPlayer_2024.Dao
                 }
                 catch (MySqlException ex)
                 {
-                    MessageBox.Show("Setting is not updated. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    result.AddError("Setting [" + name + "] is not updated. \n" + ex.Message + "\n");
                 }
                 connection.Close();
             }
+            return result;
         }
-        public void SetIntegerSetting(String name, Int32 value, bool withoutProfile = false)
+        public ResultOrError SetIntegerSetting(String name, Int32 value, bool withoutProfile = false)
         {
+            ResultOrError result = new ResultOrError();
+
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
             {
@@ -581,13 +640,16 @@ namespace MitoPlayer_2024.Dao
                 }
                 catch (MySqlException ex)
                 {
-                    MessageBox.Show("Setting is not updated. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    result.AddError("Setting [" + name + "] is not updated. \n" + ex.Message + "\n");
                 }
                 connection.Close();
             }
+            return result;
         }
-        public void SetDecimalSetting(String name, Decimal value, bool withoutProfile = false)
+        public ResultOrError SetDecimalSetting(String name, Decimal value, bool withoutProfile = false)
         {
+            ResultOrError result = new ResultOrError();
+
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
             {
@@ -613,13 +675,16 @@ namespace MitoPlayer_2024.Dao
                 }
                 catch (MySqlException ex)
                 {
-                    MessageBox.Show("Setting is not updated. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    result.AddError("Setting [" + name + "] is not updated. \n" + ex.Message + "\n");
                 }
                 connection.Close();
             }
+            return result;
         }
-        public void SetBooleanSetting(String name, Boolean value, bool withoutProfile = false)
+        public ResultOrError SetBooleanSetting(String name, Boolean value, bool withoutProfile = false)
         {
+            ResultOrError result = new ResultOrError();
+
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
             {
@@ -645,13 +710,16 @@ namespace MitoPlayer_2024.Dao
                 }
                 catch (MySqlException ex)
                 {
-                    MessageBox.Show("Setting is not updated. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    result.AddError("Setting [" + name + "] is not updated. \n" + ex.Message + "\n");
                 }
                 connection.Close();
             }
+            return result;
         }
-        public void DeleteSettings()
+        public ResultOrError DeleteSettings()
         {
+            ResultOrError result = new ResultOrError();
+
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
             {
@@ -668,14 +736,16 @@ namespace MitoPlayer_2024.Dao
                 }
                 catch (MySqlException ex)
                 {
-                    MessageBox.Show("Setting is not deleted. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    result.AddError("Settings [profileId" + this.profileId + "] are not deleted. \n" + ex.Message + "\n");
                 }
                 connection.Close();
             }
+            return result;
         }
 
-        private void InitializeColumns(string[] colNames, string[] colTypes, bool[] colVisibility, string columnGroup)
+        private ResultOrError InitializeColumns(string[] colNames, string[] colTypes, bool[] colVisibility, string columnGroup)
         {
+            ResultOrError result = new ResultOrError();
             for (int i = 0; i <= colNames.Length - 1; i++)
             {
                 TrackProperty tp = new TrackProperty();
@@ -686,8 +756,13 @@ namespace MitoPlayer_2024.Dao
                 tp.IsEnabled = colVisibility[i];
                 tp.SortingId = i;
                 tp.ProfileId = -1;
-                this.CreateTrackProperty(tp);
+                result = this.CreateTrackProperty(tp);
+                if (!result.Success)
+                {
+                    break;
+                }
             }
+            return result;
         }
 
         public int GetNextTrackPropertySortingId()
@@ -718,8 +793,9 @@ namespace MitoPlayer_2024.Dao
             }
             return lastId + 1;
         }
-        public void CreateTrackProperty(TrackProperty tp, bool withoutProfile = false)
+        public ResultOrError CreateTrackProperty(TrackProperty tp, bool withoutProfile = false)
         {
+            ResultOrError result = new ResultOrError();
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
             {
@@ -762,10 +838,11 @@ namespace MitoPlayer_2024.Dao
                 }
                 catch (MySqlException ex)
                 {
-                    MessageBox.Show("TrackProperty is not inserted. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    result.AddError("TrackProperty [" + tp.Name + "] is not inserted. \n" + ex.Message + "\n");
                 }
                 connection.Close();
             }
+            return result;
         }
         public TrackProperty GetTrackProperty(int id, bool withoutProfile = false)
         {
@@ -896,8 +973,9 @@ namespace MitoPlayer_2024.Dao
             return tpList;
         }
 
-        public void UpdateTrackProperty(TrackProperty tp, bool withoutProfile = false)
+        public ResultOrError UpdateTrackProperty(TrackProperty tp, bool withoutProfile = false)
         {
+            ResultOrError result = new ResultOrError();
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
             {
@@ -933,14 +1011,16 @@ namespace MitoPlayer_2024.Dao
                 }
                 catch (MySqlException ex)
                 {
-                    MessageBox.Show("TrackProperty is not updated. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    result.AddError("TrackProperty [" + tp.Name + "] is not updated. \n" + ex.Message + "\n");
                 }
                 connection.Close();
             }
+            return result;
         }
 
-        public void DeleteTrackProperty(int id, bool withoutProfile = false)
+        public ResultOrError DeleteTrackProperty(int id, bool withoutProfile = false)
         {
+            ResultOrError result = new ResultOrError();
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
             {
@@ -964,13 +1044,15 @@ namespace MitoPlayer_2024.Dao
                 }
                 catch (MySqlException ex)
                 {
-                    MessageBox.Show("TrackProperty is not updated. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    result.AddError("TrackProperty [" + id + "] is not deleted. \n" + ex.Message + "\n");
                 }
                 connection.Close();
             }
+            return result;
         }
-        public void DeleteAllTrackProperty()
+        public ResultOrError DeleteAllTrackProperty()
         {
+            ResultOrError result = new ResultOrError();
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
             {
@@ -987,13 +1069,15 @@ namespace MitoPlayer_2024.Dao
                 }
                 catch (MySqlException ex)
                 {
-                    MessageBox.Show("TrackProperty is not deleted. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    result.AddError("TrackProperties are not deleted. \n" + ex.Message + "\n");
                 }
                 connection.Close();
             }
+            return result;
         }
-        public void ClearSettingTable()
+        public ResultOrError ClearSettingTable()
         {
+            ResultOrError result = new ResultOrError();
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
             {
@@ -1008,13 +1092,15 @@ namespace MitoPlayer_2024.Dao
                 }
                 catch (MySqlException ex)
                 {
-                    MessageBox.Show("Setting is not deleted. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    result.AddError("Setting table has not been cleared. \n" + ex.Message + "\n");
                 }
                 connection.Close();
             }
+            return result;
         }
-        public void ClearTrackPropertyTable()
+        public ResultOrError ClearTrackPropertyTable()
         {
+            ResultOrError result = new ResultOrError();
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
             {
@@ -1029,33 +1115,36 @@ namespace MitoPlayer_2024.Dao
                 }
                 catch (MySqlException ex)
                 {
-                    MessageBox.Show("TrackProperty is not deleted. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    result.AddError("TrackProperty table has not been cleared. \n" + ex.Message + "\n");
                 }
                 connection.Close();
             }
+            return result;
         }
-        /*  public int GetNextSortingIdInColumnGroup()
-          {
-              int lastId = -1;
 
-              using (var connection = new MySqlConnection(connectionString))
-              using (var command = new MySqlCommand())
-              {
-                  connection.Open();
-                  command.Connection = connection;
-                  command.CommandType = CommandType.Text;
-                  command.CommandText = "SELECT SortingId FROM TrackProperty WHERE ColumnGroup = @ColumnGroup ORDER BY SortingId desc LIMIT 1";
-                  command.Parameters.Add("@ColumnGroup", MySqlDbType.VarChar).Value = ColumnGroup.TracklistColumns.ToString();
-                  using (var reader = command.ExecuteReader())
-                  {
-                      while (reader.Read())
-                      {
-                          lastId = (int)reader[0];
-                      }
-                  }
-              }
-              return lastId + 1;
-          }*/
+
+        /*  public int GetNextSortingIdInColumnGroup()
+ {
+     int lastId = -1;
+
+     using (var connection = new MySqlConnection(connectionString))
+     using (var command = new MySqlCommand())
+     {
+         connection.Open();
+         command.Connection = connection;
+         command.CommandType = CommandType.Text;
+         command.CommandText = "SELECT SortingId FROM TrackProperty WHERE ColumnGroup = @ColumnGroup ORDER BY SortingId desc LIMIT 1";
+         command.Parameters.Add("@ColumnGroup", MySqlDbType.VarChar).Value = ColumnGroup.TracklistColumns.ToString();
+         using (var reader = command.ExecuteReader())
+         {
+             while (reader.Read())
+             {
+                 lastId = (int)reader[0];
+             }
+         }
+     }
+     return lastId + 1;
+ }*/
 
         /* public void CreateTrackProperty(String name, String type, bool isEnable, string columnGroup, bool withoutProfile = false)
          {

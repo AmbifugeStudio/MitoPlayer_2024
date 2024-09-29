@@ -2,8 +2,10 @@
 using MitoPlayer_2024.Dao;
 using MitoPlayer_2024.Models;
 using MySql.Data.MySqlClient;
+using MySqlX.XDevAPI.Common;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
@@ -16,7 +18,10 @@ namespace MitoPlayer_2024.Helpers
 {
     public class DataBaseBuilderDao : BaseDao, IDataBaseBuilderDao
     {
-        public DataBaseBuilderDao(string connectionString)
+        public DataBaseBuilderDao()
+        {
+        }
+        public DataBaseBuilderDao(String connectionString)
         {
             this.connectionString = connectionString;
         }
@@ -46,33 +51,160 @@ namespace MitoPlayer_2024.Helpers
             }
             return lastId + 1;
         }
-        public bool BuildDatabase()
+
+        public bool IsConnectionStringValid(String preConnectionString)
         {
-            bool settingTableReady = false;
-
-            if(!this.TableIsExists(TableName.Profile.ToString()))
-                this.BuildProfileTable();
-            if (!this.TableIsExists(TableName.Setting.ToString()))
-                settingTableReady = this.BuildSettingTable();
-            if (!this.TableIsExists(TableName.TrackProperty.ToString()))
-                this.BuildTrackPropertyTable();
-
-            if (!this.TableIsExists(TableName.Playlist.ToString()))
-                this.BuildPlaylistTable();
-            if (!this.TableIsExists(TableName.Track.ToString()))
-                this.BuildTrackTable();
-            if (!this.TableIsExists(TableName.PlaylistContent.ToString()))
-                this.BuildPlaylistContentTable();
-
-            if (!this.TableIsExists(TableName.Tag.ToString()))
-                this.BuildTagTable();
-            if (!this.TableIsExists(TableName.TagValue.ToString()))
-                this.BuildTagValueTable();
-            if (!this.TableIsExists(TableName.TrackTagValue.ToString()))
-                this.BuildTagTrackValueTable();
-
-            return settingTableReady;
+            bool result = true;
+            try
+            {
+                using (var connection = new MySqlConnection(preConnectionString))
+                using (var command = new MySqlCommand())
+                {
+                    connection.Open();
+                    connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                result = false;
+            }
+            return result;
         }
+        public bool IsDatabaseExists(String preConnectionString)
+        {
+            String tableName = String.Empty;
+
+            using (var connection = new MySqlConnection(preConnectionString))
+            using (var command = new MySqlCommand())
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"SELECT schema_name FROM information_schema.schemata WHERE schema_name LIKE '" + Properties.Settings.Default.Database + "' ";
+
+                using (var reader = command.ExecuteReader())
+                {
+
+                    while (reader.Read())
+                    {
+                        tableName = Convert.ToString(reader[0]);
+                        break;
+                    }
+                }
+
+                connection.Close();
+            }
+            return !String.IsNullOrEmpty(tableName);
+        }
+        public ResultOrError CreateDatabase(String preConnectionString)
+        {
+            ResultOrError result = new ResultOrError();
+
+            using (var connection = new MySqlConnection(preConnectionString))
+            using (var command = new MySqlCommand())
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"CREATE DATABASE IF NOT EXISTS " + Properties.Settings.Default.Database + ";";
+
+                try
+                {
+                    command.ExecuteNonQuery();
+                }
+                catch (MySqlException ex)
+                {
+                    result.AddError("Database is not created. \n" + ex.Message);
+                }
+                connection.Close();
+            }
+            return result;
+        }
+        public ResultOrError DeleteDatabase()
+        {
+            ResultOrError result = new ResultOrError();
+
+            using (var connection = new MySqlConnection(this.connectionString))
+            using (var command = new MySqlCommand())
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"DROP DATABASE " + Properties.Settings.Default.Database + ";";
+
+                try
+                {
+                    command.ExecuteNonQuery();
+                }
+                catch (MySqlException ex)
+                {
+                    result.AddError("Database is not deleted. \n" + ex.Message);
+                }
+                connection.Close();
+            }
+            return result;
+        }
+        public ResultOrError CreateTableStructure()
+        {
+            ResultOrError result = new ResultOrError();
+
+            if (result.Success)
+            {
+                if (!this.TableIsExists(TableName.Profile.ToString()))
+                    result = this.BuildProfileTable();
+            }
+            if (result.Success)
+            {
+                if (!this.TableIsExists(TableName.Setting.ToString()))
+                    result = this.BuildSettingTable();
+            }
+
+            if (result.Success)
+            {
+                if (!this.TableIsExists(TableName.TrackProperty.ToString()))
+                    result = this.BuildTrackPropertyTable();
+            }
+               
+            if (result.Success)
+            {
+                if (!this.TableIsExists(TableName.Playlist.ToString()))
+                    result = this.BuildPlaylistTable();
+            }
+            
+            if (result.Success)
+            {
+                if (!this.TableIsExists(TableName.Track.ToString()))
+                    result = this.BuildTrackTable();
+            }
+           
+            if (result.Success)
+            {
+                if (!this.TableIsExists(TableName.PlaylistContent.ToString()))
+                    result = this.BuildPlaylistContentTable();
+            }
+           
+            if (result.Success)
+            {
+                if (!this.TableIsExists(TableName.Tag.ToString()))
+                    result = this.BuildTagTable();
+            }
+            
+            if (result.Success)
+            {
+                if (!this.TableIsExists(TableName.TagValue.ToString()))
+                    result = this.BuildTagValueTable();
+            }
+           
+            if (result.Success)
+            {
+                if (!this.TableIsExists(TableName.TrackTagValue.ToString()))
+                    result = this.BuildTagTrackValueTable();
+            }
+           
+
+            return result;
+        }
+
         public bool TableIsExists(string tableName)
         {
             long count = 0;
@@ -104,8 +236,9 @@ namespace MitoPlayer_2024.Helpers
             }
             return count > 0;
         }
-        private void BuildProfileTable()
+        private ResultOrError BuildProfileTable()
         {
+            ResultOrError result = new ResultOrError();
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
             {
@@ -127,14 +260,15 @@ namespace MitoPlayer_2024.Helpers
                 }
                 catch (MySqlException ex)
                 {
-                    MessageBox.Show("Profile table is not created. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    result.AddError("Profile table is not created. \n" + ex.Message);
                 }
                 connection.Close();
             }
+            return result;
         }
-        private bool BuildSettingTable()
+        private ResultOrError BuildSettingTable()
         {
-            bool success = true;
+            ResultOrError result = new ResultOrError();
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
             {
@@ -145,11 +279,11 @@ namespace MitoPlayer_2024.Helpers
 
                                         Id int(11) NOT NULL, 
                                         Name varchar(50) NOT NULL, 
-                                        StringValue varchar(255) NOT NULL, 
-                                        IntegerValue int(11) NOT NULL, 
-                                        DecimalValue decimal(10,0) NOT NULL, 
-                                        BooleanValue tinyint(4) NOT NULL, 
-                                        ProfileId int(11) NOT NULL, 
+                                        StringValue varchar(255), 
+                                        IntegerValue int(11), 
+                                        DecimalValue decimal(10,0), 
+                                        BooleanValue tinyint(4), 
+                                        ProfileId int(11), 
 
                                         PRIMARY KEY (Id)) 
 
@@ -160,15 +294,15 @@ namespace MitoPlayer_2024.Helpers
                 }
                 catch (MySqlException ex)
                 {
-                    success = false;
-                    MessageBox.Show("Setting table is not created. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    result.AddError("Setting table is not created. \n" + ex.Message);
                 }
                 connection.Close();
             }
-            return success;
+            return result;
         }
-        private void BuildTrackPropertyTable()
+        private ResultOrError BuildTrackPropertyTable()
         {
+            ResultOrError result = new ResultOrError();
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
             {
@@ -194,13 +328,15 @@ namespace MitoPlayer_2024.Helpers
                 }
                 catch (MySqlException ex)
                 {
-                    MessageBox.Show("TrackProperty table is not created. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    result.AddError("TrackProperty table is not created. \n" + ex.Message);
                 }
                 connection.Close();
             }
+            return result;
         }
-        private void BuildPlaylistTable()
+        private ResultOrError BuildPlaylistTable()
         {
+            ResultOrError result = new ResultOrError();
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
             {
@@ -225,13 +361,15 @@ namespace MitoPlayer_2024.Helpers
                 }
                 catch (MySqlException ex)
                 {
-                    MessageBox.Show("Playlist table is not created. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    result.AddError("Playlist table is not created. \n" + ex.Message);
                 }
                 connection.Close();
             }
+            return result;
         }
-        private void BuildTrackTable()
+        private ResultOrError BuildTrackTable()
         {
+            ResultOrError result = new ResultOrError();
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
             {
@@ -259,13 +397,15 @@ namespace MitoPlayer_2024.Helpers
                 }
                 catch (MySqlException ex)
                 {
-                    MessageBox.Show("Track table is not created. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    result.AddError("Track table table is not created. \n" + ex.Message);
                 }
                 connection.Close();
             }
+            return result;
         }
-        private void BuildPlaylistContentTable()
+        private ResultOrError BuildPlaylistContentTable()
         {
+            ResultOrError result = new ResultOrError();
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
             {
@@ -295,13 +435,15 @@ namespace MitoPlayer_2024.Helpers
                 }
                 catch (MySqlException ex)
                 {
-                    MessageBox.Show("PlaylistContent table is not created. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    result.AddError("PlaylistContent table is not created. \n" + ex.Message);
                 }
                 connection.Close();
             }
+            return result;
         }
-        private void BuildTagTable()
+        private ResultOrError BuildTagTable()
         {
+            ResultOrError result = new ResultOrError();
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
             {
@@ -326,13 +468,15 @@ namespace MitoPlayer_2024.Helpers
                 }
                 catch (MySqlException ex)
                 {
-                    MessageBox.Show("Tag table is not created. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    result.AddError("Tag table table is not created. \n" + ex.Message);
                 }
                 connection.Close();
             }
+            return result;
         }
-        private void BuildTagValueTable()
+        private ResultOrError BuildTagValueTable()
         {
+            ResultOrError result = new ResultOrError();
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
             {
@@ -360,13 +504,15 @@ namespace MitoPlayer_2024.Helpers
                 }
                 catch (MySqlException ex)
                 {
-                    MessageBox.Show("TagValue table is not created. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    result.AddError("TagValue table table is not created. \n" + ex.Message);
                 }
                 connection.Close();
             }
+            return result;
         }
-        private void BuildTagTrackValueTable()
+        private ResultOrError BuildTagTrackValueTable()
         {
+            ResultOrError result = new ResultOrError();
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
             {
@@ -397,10 +543,11 @@ namespace MitoPlayer_2024.Helpers
                 }
                 catch (MySqlException ex)
                 {
-                    MessageBox.Show("TrackProperty table is not created. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    result.AddError("TrackProperty table table is not created. \n" + ex.Message);
                 }
                 connection.Close();
             }
+            return result;
         }
 
 

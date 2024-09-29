@@ -25,73 +25,85 @@ namespace MitoPlayer_2024.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Default")]
-        public string DefaultPlaylistName {
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Installed {
             get {
-                return ((string)(this["DefaultPlaylistName"]));
+                return ((bool)(this["Installed"]));
             }
             set {
-                this["DefaultPlaylistName"] = value;
+                this["Installed"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string DefaultDatabaseName {
+            get {
+                return ((string)(this["DefaultDatabaseName"]));
+            }
+            set {
+                this["DefaultDatabaseName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Host {
+            get {
+                return ((string)(this["Host"]));
+            }
+            set {
+                this["Host"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int LastOpenFilesFilterIndex {
+        public int Port {
             get {
-                return ((int)(this["LastOpenFilesFilterIndex"]));
+                return ((int)(this["Port"]));
             }
             set {
-                this["LastOpenFilesFilterIndex"] = value;
+                this["Port"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("YUHEY")]
-        public string PingPong {
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string UserName {
             get {
-                return ((string)(this["PingPong"]));
+                return ((string)(this["UserName"]));
             }
             set {
-                this["PingPong"] = value;
+                this["UserName"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public string CurrentPlaylistId {
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Password {
             get {
-                return ((string)(this["CurrentPlaylistId"]));
+                return ((string)(this["Password"]));
             }
             set {
-                this["CurrentPlaylistId"] = value;
+                this["Password"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Empty")]
-        public string LastOpenDirectoryPath {
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Database {
             get {
-                return ((string)(this["LastOpenDirectoryPath"]));
+                return ((string)(this["Database"]));
             }
             set {
-                this["LastOpenDirectoryPath"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public string LastGeneratedPlaylistId {
-            get {
-                return ((string)(this["LastGeneratedPlaylistId"]));
-            }
-            set {
-                this["LastGeneratedPlaylistId"] = value;
+                this["Database"] = value;
             }
         }
     }

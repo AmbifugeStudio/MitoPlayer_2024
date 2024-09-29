@@ -18,6 +18,8 @@ namespace MitoPlayer_2024.Helpers
         public DataGridViewSelectedRowCollection SelectedRows { get; set; }
         public String StringField1 { get; set; }
         public String StringField2 { get; set; }
+        public String StringField3 { get; set; }
+        public String StringField4 { get; set; }
         public int IntegerField1 { get; set; }
         public int IntegerField2 { get; set; }
         public decimal DecimalField1 { get; set; }
