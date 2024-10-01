@@ -199,6 +199,7 @@
     <Compile Include="Presenters\RuleEditorPresenter.cs" />
     <Compile Include="Presenters\TagValueEditorPresenter.cs" />
     <Compile Include="Presenters\TagEditorPresenter.cs" />
+    <Compile Include="Presenters\TagValueImportPresenter.cs" />
     <Compile Include="Presenters\TagValuePresenter.cs" />
     <Compile Include="Presenters\TemplateEditorPresenter.cs" />
     <Compile Include="Presenters\TrackEditorPresenter.cs" />
@@ -239,6 +240,7 @@
     <Compile Include="Views\IRuleEditorView.cs" />
     <Compile Include="Views\ITagValueEditorView.cs" />
     <Compile Include="Views\ITagEditorView.cs" />
+    <Compile Include="Views\ITagValueImportView.cs" />
     <Compile Include="Views\ITagValueView.cs" />
     <Compile Include="Views\ITemplateEditorView.cs" />
     <Compile Include="Views\ITrackEditorView.cs" />
@@ -308,6 +310,12 @@
     </Compile>
     <Compile Include="Views\TagValueEditorView.Designer.cs">
       <DependentUpon>TagValueEditorView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TagValueImportView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\TagValueImportView.Designer.cs">
+      <DependentUpon>TagValueImportView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\TagValueView.cs">
       <SubType>Form</SubType>
@@ -379,6 +387,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\TagValueEditorView.resx">
       <DependentUpon>TagValueEditorView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\TagValueImportView.resx">
+      <DependentUpon>TagValueImportView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\TagValueView.resx">
       <DependentUpon>TagValueView.cs</DependentUpon>

@@ -33,6 +33,18 @@
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.exportToTxtToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.createPlaylistToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.renameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.exportToM3UToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.setQuicklistGroupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.setGroup1ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.setGroup2ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.setGroup3ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.setGroup4ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStripCreatePlaylist = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStripLoadPlaylist = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStripRenamePlaylist = new System.Windows.Forms.ToolStripMenuItem();
@@ -115,6 +127,7 @@
             this.btnDisplayPlaylistList2 = new System.Windows.Forms.Button();
             this.btnDisplayTagEditor2 = new System.Windows.Forms.Button();
             this.btnColumnVisibility2 = new System.Windows.Forms.Button();
+            this.exportToDirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -135,16 +148,109 @@
             // exportToTxtToolStripMenuItem
             // 
             this.exportToTxtToolStripMenuItem.Name = "exportToTxtToolStripMenuItem";
-            this.exportToTxtToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.exportToTxtToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exportToTxtToolStripMenuItem.Text = "Export to txt";
             this.exportToTxtToolStripMenuItem.Click += new System.EventHandler(this.menuStripExportToTxtToolStripMenuItem_Click);
             // 
             // contextMenuStrip1
             // 
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.exportToTxtToolStripMenuItem});
+            this.createPlaylistToolStripMenuItem,
+            this.loadToolStripMenuItem,
+            this.renameToolStripMenuItem,
+            this.deleteToolStripMenuItem,
+            this.toolStripSeparator3,
+            this.setQuicklistGroupToolStripMenuItem,
+            this.toolStripSeparator4,
+            this.exportToM3UToolStripMenuItem1,
+            this.exportToTxtToolStripMenuItem,
+            this.exportToDirToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(140, 26);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(181, 214);
+            // 
+            // createPlaylistToolStripMenuItem
+            // 
+            this.createPlaylistToolStripMenuItem.Name = "createPlaylistToolStripMenuItem";
+            this.createPlaylistToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.createPlaylistToolStripMenuItem.Text = "New";
+            this.createPlaylistToolStripMenuItem.Click += new System.EventHandler(this.menuStripCreatePlaylist_Click);
+            // 
+            // loadToolStripMenuItem
+            // 
+            this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
+            this.loadToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.loadToolStripMenuItem.Text = "Load";
+            this.loadToolStripMenuItem.Click += new System.EventHandler(this.menuStripLoadPlaylist_Click);
+            // 
+            // renameToolStripMenuItem
+            // 
+            this.renameToolStripMenuItem.Name = "renameToolStripMenuItem";
+            this.renameToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.renameToolStripMenuItem.Text = "Rename";
+            this.renameToolStripMenuItem.Click += new System.EventHandler(this.menuStripRenamePlaylist_Click);
+            // 
+            // deleteToolStripMenuItem
+            // 
+            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.deleteToolStripMenuItem.Text = "Remove";
+            this.deleteToolStripMenuItem.Click += new System.EventHandler(this.menuStripDeletePlaylist_Click);
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(177, 6);
+            // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(177, 6);
+            // 
+            // exportToM3UToolStripMenuItem1
+            // 
+            this.exportToM3UToolStripMenuItem1.Name = "exportToM3UToolStripMenuItem1";
+            this.exportToM3UToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.exportToM3UToolStripMenuItem1.Text = "Export to m3u";
+            this.exportToM3UToolStripMenuItem1.Click += new System.EventHandler(this.menuStripExportToM3uToolStripMenuItem_Click);
+            // 
+            // setQuicklistGroupToolStripMenuItem
+            // 
+            this.setQuicklistGroupToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.setGroup1ToolStripMenuItem1,
+            this.setGroup2ToolStripMenuItem1,
+            this.setGroup3ToolStripMenuItem1,
+            this.setGroup4ToolStripMenuItem1});
+            this.setQuicklistGroupToolStripMenuItem.Name = "setQuicklistGroupToolStripMenuItem";
+            this.setQuicklistGroupToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.setQuicklistGroupToolStripMenuItem.Text = "Set Quicklist Group";
+            // 
+            // setGroup1ToolStripMenuItem1
+            // 
+            this.setGroup1ToolStripMenuItem1.Name = "setGroup1ToolStripMenuItem1";
+            this.setGroup1ToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.setGroup1ToolStripMenuItem1.Text = "Set Group 1";
+            this.setGroup1ToolStripMenuItem1.Click += new System.EventHandler(this.menuStripSetQuickListGroup1_Click);
+            // 
+            // setGroup2ToolStripMenuItem1
+            // 
+            this.setGroup2ToolStripMenuItem1.Name = "setGroup2ToolStripMenuItem1";
+            this.setGroup2ToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.setGroup2ToolStripMenuItem1.Text = "Set Group 2";
+            this.setGroup2ToolStripMenuItem1.Click += new System.EventHandler(this.menuStripSetQuickListGroup2_Click);
+            // 
+            // setGroup3ToolStripMenuItem1
+            // 
+            this.setGroup3ToolStripMenuItem1.Name = "setGroup3ToolStripMenuItem1";
+            this.setGroup3ToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.setGroup3ToolStripMenuItem1.Text = "Set Group 3";
+            this.setGroup3ToolStripMenuItem1.Click += new System.EventHandler(this.menuStripSetQuickListGroup3_Click);
+            // 
+            // setGroup4ToolStripMenuItem1
+            // 
+            this.setGroup4ToolStripMenuItem1.Name = "setGroup4ToolStripMenuItem1";
+            this.setGroup4ToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.setGroup4ToolStripMenuItem1.Text = "Set Group 4";
+            this.setGroup4ToolStripMenuItem1.Click += new System.EventHandler(this.menuStripSetQuickListGroup4_Click);
             // 
             // menuStripCreatePlaylist
             // 
@@ -245,6 +351,7 @@
             this.btnScanBpm.TabIndex = 31;
             this.btnScanBpm.Text = "Scan Bpm";
             this.btnScanBpm.UseVisualStyleBackColor = true;
+            this.btnScanBpm.Click += new System.EventHandler(this.btnScanBpm_Click);
             // 
             // groupBox4
             // 
@@ -620,6 +727,7 @@
             this.txtBoxTagValueInput.Name = "txtBoxTagValueInput";
             this.txtBoxTagValueInput.Size = new System.Drawing.Size(156, 20);
             this.txtBoxTagValueInput.TabIndex = 0;
+            this.txtBoxTagValueInput.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtBoxTagValueInput_KeyDown);
             // 
             // btnSetTagValue
             // 
@@ -941,6 +1049,9 @@
             this.dgvPlaylistList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvPlaylistList.Size = new System.Drawing.Size(183, 558);
             this.dgvPlaylistList.TabIndex = 17;
+            this.dgvPlaylistList.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvPlaylistList_CellDoubleClick);
+            this.dgvPlaylistList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvPlaylistList_KeyDown);
+            this.dgvPlaylistList.MouseClick += new System.Windows.Forms.MouseEventHandler(this.dgvPlaylistList_MouseClick);
             // 
             // dgvTrackList
             // 
@@ -960,6 +1071,9 @@
             this.dgvTrackList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvTrackList.Size = new System.Drawing.Size(784, 531);
             this.dgvTrackList.TabIndex = 16;
+            this.dgvTrackList.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTrackList_CellClick);
+            this.dgvTrackList.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTrackList_CellDoubleClick);
+            this.dgvTrackList.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvTrackList_ColumnHeaderMouseClick);
             // 
             // btnDisplayPlaylistList2
             // 
@@ -994,6 +1108,13 @@
             this.btnColumnVisibility2.TabIndex = 34;
             this.btnColumnVisibility2.UseVisualStyleBackColor = true;
             this.btnColumnVisibility2.Click += new System.EventHandler(this.btnColumnVisibility2_Click);
+            // 
+            // exportToDirToolStripMenuItem
+            // 
+            this.exportToDirToolStripMenuItem.Name = "exportToDirToolStripMenuItem";
+            this.exportToDirToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exportToDirToolStripMenuItem.Text = "Export to directory";
+            this.exportToDirToolStripMenuItem.Click += new System.EventHandler(this.exportToDirectoryToolStripMenuItem_Click);
             // 
             // PlaylistView
             // 
@@ -1129,5 +1250,18 @@
         private System.Windows.Forms.Button btnDisplayPlaylistList2;
         private System.Windows.Forms.Button btnDisplayTagEditor2;
         private System.Windows.Forms.Button btnColumnVisibility2;
+        private System.Windows.Forms.ToolStripMenuItem createPlaylistToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem loadToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem renameToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+        private System.Windows.Forms.ToolStripMenuItem exportToM3UToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem setQuicklistGroupToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem setGroup1ToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem setGroup2ToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem setGroup3ToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem setGroup4ToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem exportToDirToolStripMenuItem;
     }
 }

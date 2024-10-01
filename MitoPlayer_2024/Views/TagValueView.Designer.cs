@@ -34,6 +34,7 @@
             this.btnEditTag = new System.Windows.Forms.Button();
             this.btnAddTag = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.btnImport = new System.Windows.Forms.Button();
             this.btnDeleteTagValue = new System.Windows.Forms.Button();
             this.dgvTagValueList = new System.Windows.Forms.DataGridView();
             this.btnEditTagValue = new System.Windows.Forms.Button();
@@ -72,11 +73,12 @@
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.btnImport);
             this.groupBox1.Controls.Add(this.btnDeleteTag);
             this.groupBox1.Controls.Add(this.dgvTagList);
             this.groupBox1.Controls.Add(this.btnEditTag);
             this.groupBox1.Controls.Add(this.btnAddTag);
-            this.groupBox1.Location = new System.Drawing.Point(18, 47);
+            this.groupBox1.Location = new System.Drawing.Point(18, 41);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(774, 190);
             this.groupBox1.TabIndex = 2;
@@ -125,12 +127,23 @@
             this.groupBox2.Controls.Add(this.dgvTagValueList);
             this.groupBox2.Controls.Add(this.btnEditTagValue);
             this.groupBox2.Controls.Add(this.btnAddTagValue);
-            this.groupBox2.Location = new System.Drawing.Point(18, 243);
+            this.groupBox2.Location = new System.Drawing.Point(18, 237);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(774, 254);
             this.groupBox2.TabIndex = 3;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Tag Values";
+            // 
+            // btnImport
+            // 
+            this.btnImport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnImport.Location = new System.Drawing.Point(680, 159);
+            this.btnImport.Name = "btnImport";
+            this.btnImport.Size = new System.Drawing.Size(88, 23);
+            this.btnImport.TabIndex = 4;
+            this.btnImport.Text = "Import";
+            this.btnImport.UseVisualStyleBackColor = true;
+            this.btnImport.Click += new System.EventHandler(this.btnImport_Click);
             // 
             // btnDeleteTagValue
             // 
@@ -220,5 +233,6 @@
         private System.Windows.Forms.Button btnDeleteTagValue;
         private System.Windows.Forms.Button btnEditTagValue;
         private System.Windows.Forms.Button btnAddTagValue;
+        private System.Windows.Forms.Button btnImport;
     }
 }

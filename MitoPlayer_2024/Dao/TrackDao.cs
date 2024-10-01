@@ -932,8 +932,9 @@ namespace MitoPlayer_2024.Dao
 
             return result;
         }
-        public void CreateTrackTagValue(TrackTagValue ttv)
+        public ResultOrError CreateTrackTagValue(TrackTagValue ttv)
         {
+            ResultOrError result = new ResultOrError();
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
             {
@@ -962,10 +963,11 @@ namespace MitoPlayer_2024.Dao
                 }
                 catch (MySqlException ex)
                 {
-                    MessageBox.Show("TrackTagValue is not inserted. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    result.AddError("TrackTagValue is not inserted. \n" + ex.Message);
                 }
                 connection.Close();
             }
+            return result;
         }
         public List<TrackTagValue> LoadTrackTagValuesByTrackId(int trackId, List<Tag> tagList)
         {

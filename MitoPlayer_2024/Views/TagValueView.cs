@@ -1,5 +1,7 @@
-﻿using MitoPlayer_2024.Helpers;
+﻿using MitoPlayer_2024.Dao;
+using MitoPlayer_2024.Helpers;
 using MitoPlayer_2024.Models;
+using MitoPlayer_2024.Presenters;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -28,6 +30,7 @@ namespace MitoPlayer_2024.Views
         public event EventHandler CloseWithCancel;
         public event EventHandler<ListEventArgs> SetCurrentTagId;
         public event EventHandler<ListEventArgs> SetCurrentTagValueId;
+        public event EventHandler OpenTagValueImportViewEvent;
 
         public TagValueView()
         {
@@ -233,5 +236,14 @@ namespace MitoPlayer_2024.Views
                 this.EditTagValue?.Invoke(this, new ListEventArgs() { IntegerField1 = Convert.ToInt32(this.dgvTagValueList.SelectedRows[0].Index) });
             }
         }
+
+        private ITagValueImportView tagValueImportView { get; set; }
+        private void btnImport_Click(object sender, EventArgs e)
+        {
+            this.OpenTagValueImportViewEvent?.Invoke(this, EventArgs.Empty);
+
+            
+        }
+
     }
 }

@@ -2,6 +2,7 @@
 using MitoPlayer_2024.Model;
 using MitoPlayer_2024.Models;
 using MitoPlayer_2024.Views;
+using MySqlX.XDevAPI.Common;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -16,6 +17,7 @@ namespace MitoPlayer_2024.Presenters
     public class TagValuePresenter
     {
         private ITagValueView tagValueEditorView;
+        private ITagValueImportView tagValueImportView;
         private ITagDao tagDao;
         private ITrackDao trackDao;
 
@@ -44,6 +46,7 @@ namespace MitoPlayer_2024.Presenters
             this.tagValueEditorView.CloseWithCancel += CloseWitCancel;
             this.tagValueEditorView.SetCurrentTagId += SetCurrentTagId;
             this.tagValueEditorView.SetCurrentTagValueId += SetCurrentTagValueId;
+            this.tagValueEditorView.OpenTagValueImportViewEvent += OpenTagValueImportViewEvent;
 
             this.InitializeDataTables();
             this.tagValueEditorView.Show();
@@ -81,6 +84,7 @@ namespace MitoPlayer_2024.Presenters
         {
             this.SetCurrentTagId(e.IntegerField1);
         }
+       
         private void SetCurrentTagId(int index)
         {
             if(this.tagListTable.Rows.Count > 0)
@@ -114,55 +118,24 @@ namespace MitoPlayer_2024.Presenters
         }
         private void CreateTag(object sender, EventArgs e)
         {
+            ResultOrError result = new ResultOrError();
             TagEditorView tagEditorView = new TagEditorView();
             TagEditorPresenter presenter = new TagEditorPresenter(tagEditorView, this.tagDao, this.settingDao);
             if (tagEditorView.ShowDialog((TagValueView)this.tagValueEditorView) == DialogResult.OK)
             {
-                this.tagDao.CreateTag(presenter.newTag);
 
-                List<int> trackIdList = this.trackDao.GetAllTrackIdInList();
-                if(trackIdList != null && trackIdList.Count > 0)
+                result = this.CreateTag(presenter.newTag);
+
+                if (result.Success)
                 {
-                    foreach(int trackId in trackIdList)
-                    {
-                        if(!this.trackDao.IsTrackTagValueAlreadyExists(trackId, presenter.newTag.Id))
-                        {
-                            TrackTagValue ttv = new TrackTagValue();
-                            ttv.Id = this.trackDao.GetNextId(TableName.TrackTagValue.ToString());
-                            ttv.TrackId = trackId;
-                            ttv.TagId = presenter.newTag.Id;
-                            ttv.TagName = presenter.newTag.Name;
-                            ttv.TagValueId = -1;
-                            ttv.TagValueName = String.Empty;
-                            this.trackDao.CreateTrackTagValue(ttv);
-                        }
-                    }
+                    this.currentTag = presenter.newTag;
+                    this.tagListTable.Rows.Add(presenter.newTag.Id, presenter.newTag.Name);
+                    this.tagListBindingSource.DataSource = tagListTable;
+                    this.tagValueEditorView.SetTagListBindingSource(this.tagListBindingSource);
                 }
-
-                TrackProperty tp = new TrackProperty();
-                tp.Id = this.trackDao.GetNextId(TableName.TrackProperty.ToString());
-                tp.Name = presenter.newTag.Name;
-                tp.Type = "System.String";
-                tp.IsEnabled = true;
-                tp.ColumnGroup = ColumnGroup.TracklistColumns.ToString();
-                tp.SortingId = this.settingDao.GetNextTrackPropertySortingId();
-                this.settingDao.CreateTrackProperty(tp);
-
-
-                this.currentTag = presenter.newTag;
-                this.tagListTable.Rows.Add(presenter.newTag.Id, presenter.newTag.Name);
-                this.tagListBindingSource.DataSource = tagListTable;
-                this.tagValueEditorView.SetTagListBindingSource(this.tagListBindingSource);
-
-                if (this.currentTag.HasMultipleValues)
+                else
                 {
-                    TagValue tv = new TagValue();
-                    tv.TagId = this.currentTag.Id;
-                    tv.TagName = this.currentTag.Name;
-                    tv.Id = this.tagDao.GetNextId(TableName.TagValue.ToString());
-                    tv.Name = this.currentTag.Name;
-                    tv.Color = Color.White;
-                    this.tagDao.CreateTagValue(tv);
+                    MessageBox.Show(result.ErrorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
@@ -298,6 +271,153 @@ namespace MitoPlayer_2024.Presenters
                 this.tagValueListBindingSource.DataSource = tagValueListTable;
                 this.tagValueEditorView.SetTagValueListBindingSource(this.tagValueListBindingSource);
             }
+        }
+       
+        private void OpenTagValueImportViewEvent(object sender, EventArgs e)
+        {
+            ResultOrError result = new ResultOrError();
+            TagValueImportView tagValueImportView = new TagValueImportView();
+            TagValueImportPresenter presenter = new TagValueImportPresenter(tagValueImportView, this.tagDao);
+            tagValueImportView.ShowDialog((TagValueImportView)this.tagValueImportView);
+
+            result = ImportTagsAndTagValues(presenter.tagNames, presenter.tagValueNames);
+           
+            if (!result.Success)
+            {
+                MessageBox.Show(result.ErrorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+        }
+        
+        private ResultOrError ImportTagsAndTagValues(List<String> tagNames, List<List<String>> tagValueNames)
+        {
+            ResultOrError result = new ResultOrError();
+            if (result.Success)
+            {
+                if (tagNames == null || tagNames.Count == 0)
+                {
+                    result.AddError("No tag to process!");
+                }
+            }
+            if (result.Success)
+            {
+                if (tagValueNames == null || tagValueNames.Count == 0)
+                {
+                    result.AddError("No tag value to process!");
+                }
+            }
+            if (result.Success)
+            {
+                for (int i = 0; i <= tagNames.Count - 1; i++)
+                {
+                    if (tagValueNames[i] == null || tagValueNames[i].Count == 0)
+                    {
+                        result.AddError("No tag value to process to this tag!");
+                        break;
+                    }
+                }
+            }
+            if (result.Success)
+            {
+                for (int i = 0; i <= tagNames.Count - 1; i++)
+                {
+                    Tag tag = new Tag();
+                    tag.Id = this.tagDao.GetNextId(TableName.Tag.ToString());
+                    tag.Name = tagNames[i];
+                    //future development
+                    tag.CellOnly = true;
+                    tag.HasMultipleValues = false;
+
+                    result = this.CreateTag(tag);
+
+                    if (result.Success)
+                    {
+                        for (int j = 0; j <= tagValueNames[i].Count - 1; j++)
+                        {
+                            TagValue tagValue = new TagValue();
+                            tagValue.Id = this.tagDao.GetNextId(TableName.TagValue.ToString());
+                            tagValue.Name = tagValueNames[i][j];
+                            tagValue.TagId = tag.Id;
+                            tagValue.TagName = tag.Name;
+                            //future development
+                            tagValue.Color = Color.White;
+                            tagValue.Hotkey = 0;
+
+                            result = this.tagDao.CreateTagValue(tagValue);
+                            if (!result.Success)
+                            {
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+
+            this.InitializeDataTables();
+
+            return result;
+        }
+        private ResultOrError CreateTag(Tag tag)
+        {
+            ResultOrError result = new ResultOrError();
+            result = this.tagDao.CreateTag(tag);
+
+            if (result.Success)
+            {
+                List<int> trackIdList = this.trackDao.GetAllTrackIdInList();
+                if (trackIdList != null && trackIdList.Count > 0)
+                {
+                    foreach (int trackId in trackIdList)
+                    {
+                        if (!this.trackDao.IsTrackTagValueAlreadyExists(trackId, tag.Id))
+                        {
+                            TrackTagValue ttv = new TrackTagValue();
+                            ttv.Id = this.trackDao.GetNextId(TableName.TrackTagValue.ToString());
+                            ttv.TrackId = trackId;
+                            ttv.TagId = tag.Id;
+                            ttv.TagName = tag.Name;
+                            ttv.TagValueId = -1;
+                            ttv.TagValueName = String.Empty;
+                            result = this.trackDao.CreateTrackTagValue(ttv);
+                            if (!result.Success)
+                            {
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (result.Success)
+            {
+                TrackProperty tp = new TrackProperty();
+                tp.Id = this.trackDao.GetNextId(TableName.TrackProperty.ToString());
+                tp.Name = tag.Name;
+                tp.Type = "System.String";
+                tp.IsEnabled = true;
+                tp.ColumnGroup = ColumnGroup.TracklistColumns.ToString();
+                tp.SortingId = this.settingDao.GetNextTrackPropertySortingId();
+                result = this.settingDao.CreateTrackProperty(tp);
+            }
+
+            if (result.Success)
+            {
+                if (tag.HasMultipleValues)
+                {
+                    TagValue tv = new TagValue();
+                    tv.TagId = tag.Id;
+                    tv.TagName = tag.Name;
+                    tv.Id = this.tagDao.GetNextId(TableName.TagValue.ToString());
+                    tv.Name = tag.Name;
+                    tv.Color = Color.White;
+                    result = this.tagDao.CreateTagValue(tv);
+                }
+            }
+            return result;
         }
         private void CloseWitOk(object sender, EventArgs e)
         {

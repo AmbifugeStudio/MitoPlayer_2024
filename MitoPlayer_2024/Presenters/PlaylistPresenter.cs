@@ -1758,7 +1758,7 @@ namespace MitoPlayer_2024.Presenters
                         }
 
                         ((PlaylistView)this.playlistView).InitializeTagValueEditor(tagValueList, this.isTagEditorDisplayed, inputTextBoxEnabled);
-                        ((PlaylistView)this.playlistView).CallDisplayTagEditor(this.isTagEditorDisplayed,true);
+                        ((PlaylistView)this.playlistView).CallDisplayTagEditor(this.isTagEditorDisplayed, inputTextBoxEnabled);
                     }
                 }
             }

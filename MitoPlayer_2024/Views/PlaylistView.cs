@@ -445,6 +445,10 @@ namespace MitoPlayer_2024.Views
                 controlKey = false;
             }   
         }
+        private void btnScanBpm_Click(object sender, EventArgs e)
+        {
+            this.ScanBpmEvent?.Invoke(this, EventArgs.Empty);
+        }
         #endregion
 
         #region TRACKLIST - DRAG AND DROP
@@ -669,7 +673,7 @@ namespace MitoPlayer_2024.Views
         {
             this.GetMediaPlayerProgressStatusEvent?.Invoke(this, EventArgs.Empty);
         }
-
+       
         //EVENT CALLINGS
         public void CallSetCurrentTrackEvent(int rowIndex = -1)
         {
@@ -1716,6 +1720,17 @@ namespace MitoPlayer_2024.Views
                 this.txtBoxTagValueInput.Text = null;
             }
         }
+        private void txtBoxTagValueInput_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                if (this.dgvPlaylistList.SelectedRows.Count > 0)
+                {
+                    this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { StringField1 = this.txtBoxTagValueInput.Text, Rows = this.dgvTrackList.Rows });
+                    this.txtBoxTagValueInput.Text = null;
+                }
+            }
+        }
 
         #endregion
 
@@ -1742,6 +1757,6 @@ namespace MitoPlayer_2024.Views
             }
         }
 
-        
+
     }
 }

@@ -23,6 +23,7 @@ namespace MitoPlayer_2024.Views
         event EventHandler CloseWithCancel;
         event EventHandler<ListEventArgs> SetCurrentTagId;
         event EventHandler<ListEventArgs> SetCurrentTagValueId;
+        event EventHandler OpenTagValueImportViewEvent;
         void Show();
     }
 }

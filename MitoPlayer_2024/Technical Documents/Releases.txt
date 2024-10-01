@@ -1,5 +1,11 @@
-﻿
-
+﻿======================
+v0.12.8.2
+======================
+OK - FEATURE: TagEditor - Enter key set value on the bpm textbox
+OK - FEATURE: TagEditor - Import tag and tagvalue by script
+OK - BUG: TagEditor - After add file, bpm textbox doesn't disappear, when change between key/bpm
+OK - BUG: TagEditor - after reordering, key/bpm changes the value sof the wrong line from the tracklist (when more track is the same)
+OK - REFACTOR: Playlist view panel refactor (except drag and drop)
 ======================
 v0.12.5.6
 ======================
@@ -9,12 +15,6 @@ OK - FEATURE: Playlist selector on/off from setting
 OK - FEATURE: TagValue selector on/off from setting
 OK - FEATURE: Playlist and Tagvalue on/off buttons change place
 OK - FEATURE: Play track after directory scan feature on/off from setting + preferences setting
-
-- BUG: window resize-ra a tracklist a ki/bekapcsoló gombokra elmászik
-- FEATURE: quick tag and tagvalue import (write list into textfield)
-- FEATURE: Tag colouring dropdown value from setting
-- REFACTOR: Playlist view panel refactor
-
 ======================
 v0.12.4.1
 ======================
@@ -24,6 +24,11 @@ OK - REFACTOR: SettingDao error handling
 OK - REFACTOR: MySQL connection view
 OK - REFACTOR: Database initialization
 
+
+
+
+v0.				12.									4.								1
+Main Release	Large Feature or Refactor			Small Features or Refactor		Small Bugs
 
 
 BUGS

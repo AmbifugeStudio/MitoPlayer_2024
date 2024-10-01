@@ -50,7 +50,7 @@ namespace MitoPlayer_2024.Model
 
         #region TRACKTAGVALUE
         bool IsTrackTagValueAlreadyExists(int trackId, int tagId);
-        void CreateTrackTagValue(TrackTagValue ttv);
+        ResultOrError CreateTrackTagValue(TrackTagValue ttv);
         List<TrackTagValue> LoadTrackTagValuesByTrackId(int trackId, List<Tag> tagList);
         void UpdateTrackTagValue(TrackTagValue trackTagValue);
         void UpdateTrackTagValues(List<TrackTagValue> trackTagValueList);
