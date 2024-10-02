@@ -16,6 +16,7 @@ using System.Windows.Forms;
 using MitoPlayer_2024.Views;
 using System.Management.Instrumentation;
 using static Mysqlx.Expect.Open.Types.Condition.Types;
+using System.Diagnostics;
 
 namespace MitoPlayer_2024.Helpers
 {
@@ -77,14 +78,13 @@ namespace MitoPlayer_2024.Helpers
         public List<VDJTrack> VDJTracklist { get; set; }
         public List<TagValue> KeyList { get; set; }
 
-        private ITrackDao trackDao { get; set; }
+
         private ISettingDao settingDao { get; set; }
 
         public VirtualDJReader(ITrackDao trackDao, ISettingDao settingDao, String[] filePaths)
         {
-          /*  this.trackDao = trackDao;
-            this.settingDao = settingDao;
-
+         
+            /*
             this.VDJTracklist = new List<VDJTrack>();
             this.VirtualDjDatabasePathList = new List<String>();
 
@@ -209,6 +209,226 @@ namespace MitoPlayer_2024.Helpers
             return result;
         }
 
+
+        public ResultOrError ReadKeyAndBpmFromVirtualDJDatabase(ref List<Track> trackList,ITrackDao trackDao, List<TagValue> keyTagValueList, List<TagValue> bpmTagValueList)
+        {
+            ResultOrError result = new ResultOrError();
+
+            String currentDrive = String.Empty;
+            List<String> driveList = new List<String>();
+            List<String> validDriveList = new List<String>();
+            List<Track> filteredTrackList = trackList.FindAll(x => x.IsNew);
+
+            try
+            {
+                for (int i = 0; i < filteredTrackList.Count; i++)
+                {
+                    filteredTrackList[i].IsNew = false;
+                    if (String.IsNullOrEmpty(currentDrive))
+                    {
+                        currentDrive = filteredTrackList[i].Path.Substring(0, 1);
+                        driveList.Add(currentDrive);
+                    }
+                    else
+                    {
+                        if (currentDrive != filteredTrackList[i].Path.Substring(0, 1))
+                        {
+                            currentDrive = filteredTrackList[i].Path.Substring(0, 1);
+                            driveList.Add(currentDrive);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                result.AddError(ex.Message);
+            }
+
+            List<List<String>> filePathsPerDrive = new List<List<String>>();
+
+            if (result.Success)
+            {
+                try
+                {
+                    foreach (String drive in driveList)
+                    {
+                        bool driveIsValid = true;
+                        List<String> filePaths = new List<String>();
+                        String vdjDatabaseFilePath = drive + ":\\VirtualDJ\\database.xml";
+                        if (File.Exists(vdjDatabaseFilePath))
+                        {
+                            validDriveList.Add(drive);
+                        }
+                        else
+                        {
+                            vdjDatabaseFilePath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\VirtualDJ\\database.xml";
+                            if (File.Exists(vdjDatabaseFilePath))
+                            {
+                                validDriveList.Add(drive);
+                            }
+                            else
+                            {
+                                driveIsValid = false;
+                            }
+                        }
+
+                        if (driveIsValid)
+                        {
+                            using (StreamReader sr = new StreamReader(vdjDatabaseFilePath))
+                            {
+                                String content = sr.ReadToEnd();
+
+                                for (int i = 0; i < filteredTrackList.Count; i++)
+                                {
+                                    if (content.Contains(filteredTrackList[i].Path
+                                        .Replace("&", "&amp;")
+                                        .Replace("'", "&apos;")))
+                                    {
+                                        filePaths.Add(filteredTrackList[i].Path);
+                                    }
+                                }
+                                sr.Close();
+                            }
+
+                            filePathsPerDrive.Add(filePaths);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    result.AddError(ex.Message);
+                }
+
+            }
+
+            List<String> filePathList = new List<String>();
+            List<String> keyList = new List<String>();
+            List<String> bpmList = new List<String>();
+
+            if (result.Success)
+            {
+                try
+                {
+                    String keyCodes = System.Configuration.ConfigurationManager.AppSettings[Settings.KeyCodes.ToString()];
+                    String keys = System.Configuration.ConfigurationManager.AppSettings[Settings.Keys.ToString()];
+                    String keysAlter = System.Configuration.ConfigurationManager.AppSettings[Settings.KeysAlter.ToString()];
+                    this.KeyCodesArray = Array.ConvertAll(keyCodes.Split(','), s => s);
+                    this.KeysArray = Array.ConvertAll(keys.Split(','), s => s);
+                    this.KeysAlterArray = Array.ConvertAll(keysAlter.Split(','), s => s);
+
+                    for (int i = 0; i < validDriveList.Count; i++)
+                    {
+                       
+
+                        String vdjDatabaseFilePath = validDriveList[i] + ":\\VirtualDJ\\database.xml";
+                        XmlDocument xmlDoc = new XmlDocument();
+                        xmlDoc.Load(vdjDatabaseFilePath);
+                        XmlNodeList nodeList = xmlDoc.DocumentElement.SelectNodes("Song");
+
+                        TrackTagValue ttv = new TrackTagValue();
+
+                        bool isEnabledKeyAndBpmReading = false;
+
+                        foreach (XmlNode node in nodeList)
+                        {
+                            if (node.Attributes["FilePath"].Value != null)
+                            {
+                                foreach (String filePath in filePathsPerDrive[i])
+                                {
+                                    if (node.Attributes["FilePath"].Value.Contains(filePath))
+                                    {
+                                        filePathList.Add(filePath);
+                                        isEnabledKeyAndBpmReading = true;
+                                    }
+                                }
+                            }
+                            if (isEnabledKeyAndBpmReading)
+                            {
+                                XmlNodeList list = node.SelectNodes("Scan");
+                                if (list != null && list.Count > 0)
+                                {
+                                    String key = list[0].Attributes["Key"].Value;
+                                    key = this.KeyToKeyCode(key);
+
+                                    String bpm = list[0].Attributes["Bpm"].Value;
+                                    Decimal bpmConverted = Convert.ToDecimal(bpm.Replace(".", ","));
+                                    if (bpmConverted > 0)
+                                    {
+                                        bpm = (60 / bpmConverted).ToString("N1");
+                                    }
+
+                                    keyList.Add(key);
+                                    bpmList.Add(bpm);
+
+                                    isEnabledKeyAndBpmReading = false;
+                                }
+                            }
+                            
+                        }
+
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    result.AddError(ex.Message);
+                }
+            }
+            
+            if (result.Success)
+            {
+                try
+                {
+                    
+                    for (int i = 0; i < filePathList.Count; i++)
+                    {
+                        Track currentTrack = trackList.Find(x => x.Path == filePathList[i]);
+                        int index = trackList.IndexOf(currentTrack);
+                        if (currentTrack != null)
+                        {
+                            foreach (TrackTagValue ttv in currentTrack.TrackTagValues)
+                            {
+                                if (ttv.TagName == "Key" && keyTagValueList != null && keyTagValueList.Count > 0)
+                                {
+                                    TagValue keyTagValue = keyTagValueList.Find(x => x.Name == keyList[i]);
+                                    if (keyTagValue != null)
+                                    {
+                                        ttv.TagValueId = keyTagValue.Id;
+                                        ttv.TagValueName = keyTagValue.Name;
+                                    }
+                                    trackDao.UpdateTrackTagValue(ttv);
+                                }
+                                if (ttv.TagName == "Bpm" && bpmTagValueList != null && bpmTagValueList.Count > 0)
+                                {
+                                    TagValue bpmTagValue = bpmTagValueList[0];
+                                    if (bpmTagValue != null)
+                                    {
+                                        ttv.TagValueId = bpmTagValue.Id;
+                                        ttv.TagValueName = bpmTagValue.Name;
+                                        ttv.Value = bpmList[i];
+                                        ttv.HasValue = true;
+                                    }
+                                    trackDao.UpdateTrackTagValue(ttv);
+                                }
+                            }
+                        }
+                        trackList[index] = currentTrack;
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    result.AddError(ex.Message);
+                }
+
+            }
+
+            return result;
+
+        }
+
+        //ez egy költséges xml olvasás
+        //az útvonal alapján azonosítjuk, hogy a vitualdj adatbázisa hol lehet
         public void ReadKeyAndBpmFromVirtualDJDatabase(String path, ref String key, ref String bpm)
         {
             String vdjDatabaseFilePath = this.DetectVdjDatabaseFile(path);
@@ -258,6 +478,10 @@ namespace MitoPlayer_2024.Helpers
                 }
             }
         }
+
+        //hol lehet a virtualdj adatbázisa
+        //path alapján megnézzük, hogy mi a meghajtó, majd azon a meghajtón megnézzük a sima virtualdj könyvtár alatt az adatbázist
+        //a path-ból kiszedjük a fájlnevet
         private String DetectVdjDatabaseFile(String path)
         {
             String drive = path.Substring(0, 1);
@@ -268,6 +492,9 @@ namespace MitoPlayer_2024.Helpers
             String fileName = path.Substring(startIndex, endIndex - startIndex);
 
             bool isExists = false;
+
+            //ha megvan a virtualdj adatbázis, megnézzük, hogy a fájlnév látezik-e benne
+            //REFACTOR: összeszedni a meghajtókat, és meghajtóként azonosítani az adatbázis és megnézni, hogy létezik-e benne a fájl és be is olvasni az adatait
 
             if (File.Exists(vdjDatabaseFilePath))
             {
@@ -321,7 +548,7 @@ namespace MitoPlayer_2024.Helpers
                         if (ttvBpm != null)
                         {
                             ttvBpm.Value = vdjTrack.Bpm.ToString("N1");
-                            trackDao.UpdateTrackTagValue(ttvBpm);
+                            //trackDao.UpdateTrackTagValue(ttvBpm);
                         }
 
                         TrackTagValue ttvKey = track.TrackTagValues.Find(x => x.TagName == "Key");
@@ -331,7 +558,7 @@ namespace MitoPlayer_2024.Helpers
                             ttvKey.TagValueId = keyTagValue.Id;
                             ttvKey.TagValueName = keyTagValue.Name;
                             ttvKey.HasValue = true;
-                            trackDao.UpdateTrackTagValue(ttvKey);
+                            //trackDao.UpdateTrackTagValue(ttvKey);
                         }
                     }
                 }
