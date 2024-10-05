@@ -53,6 +53,7 @@ namespace MitoPlayer_2024.Views
         event EventHandler DisplayTagEditorEvent;
         event EventHandler<ListEventArgs> SelectTagEvent;
         event EventHandler<ListEventArgs> SetTagValueEvent;
+        event EventHandler<ListEventArgs> ClearTagValueEvent;
 
         void SetPlaylistListBindingSource(BindingSource playlistList, bool[] columnVisibility, int currentPlaylistId);
         void SetTrackListBindingSource(BindingSource trackList, bool[] columnVisibility, int[] columnSortingId, int currentTrackIdInPlaylist);

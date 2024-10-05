@@ -66,11 +66,43 @@ namespace MitoPlayer_2024.Views
         public event EventHandler DisplayTagEditorEvent;
         public event EventHandler<ListEventArgs> SelectTagEvent;
         public event EventHandler<ListEventArgs> SetTagValueEvent;
+        public event EventHandler<ListEventArgs> ClearTagValueEvent;
         
+        Color BackgroundColor = System.Drawing.ColorTranslator.FromHtml("#363639");
+        Color FontColor = System.Drawing.ColorTranslator.FromHtml("#c6c6c6");
+        Color ButtonColor = System.Drawing.ColorTranslator.FromHtml("#292a2d");
+        Color ButtonBorderColor = System.Drawing.ColorTranslator.FromHtml("#1b1b1b"); 
 
         public PlaylistView()
         {
             InitializeComponent();
+
+            this.BackColor = this.BackgroundColor;
+            this.ForeColor = this.FontColor;
+
+            this.groupBoxPlaylist.ForeColor = this.FontColor;
+            this.groupBox4.ForeColor = this.FontColor;
+            this.groupBox3.ForeColor = this.FontColor;
+            this.groupBoxTagValueHotkeys.ForeColor = this.FontColor;
+
+            this.btnNewPlaylist.BackColor = this.ButtonColor;
+            this.btnNewPlaylist.ForeColor = this.FontColor;
+            this.btnNewPlaylist.FlatAppearance.BorderColor = this.ButtonBorderColor;
+
+            this.btnLoadPlaylist.BackColor = this.ButtonColor;
+            this.btnLoadPlaylist.ForeColor = this.FontColor;
+            this.btnLoadPlaylist.FlatAppearance.BorderColor = this.ButtonBorderColor;
+
+            this.btnRenamePlaylist.BackColor = this.ButtonColor;
+            this.btnRenamePlaylist.ForeColor = this.FontColor;
+            this.btnRenamePlaylist.FlatAppearance.BorderColor = this.ButtonBorderColor;
+
+
+            this.btnDeletePlaylist.BackColor = this.ButtonColor;
+            this.btnDeletePlaylist.ForeColor = this.FontColor;
+            this.btnDeletePlaylist.FlatAppearance.BorderColor = this.ButtonBorderColor;
+
+
         }
 
         #region SINGLETON
@@ -870,7 +902,7 @@ namespace MitoPlayer_2024.Views
             
             
         }
-        public void InitializeTagEditor(List<Tag> tagList)
+       /* public void InitializeTagEditor(List<Tag> tagList)
         {
             //tag-eket mutató gombok jelennek meg először, 9db gomb
             //induláskor minden megjelenne, ezért az összeset elhide-oljuk
@@ -890,12 +922,132 @@ namespace MitoPlayer_2024.Views
                     buttonList[i].Show();
                 }
             }
-        }
+        }*/
 
         int tgvHotkeyIndex1 = -1;
         int tgvHotkeyIndex2 = -1;
         int tgvHotkeyIndex3 = -1;
         int tgvHotkeyIndex4 = -1;
+
+        public void InitializeTagValueEditor2(List<Tag> tagList, List<List<TagValue>> tagValueListContainer, bool isTagEditorDisplayed)
+        {
+            int sumHeight = 0;
+            int height = 0;
+            for(int i = 0; i< tagList.Count; i++)
+            {
+                GroupBox gp = new GroupBox();
+                gp.Text = tagList[i].Name;
+                gp.ForeColor = this.FontColor;
+
+                if (tagValueListContainer != null && tagValueListContainer.Count > 0
+                        && tagValueListContainer[i] != null && tagValueListContainer[i].Count > 0)
+                {
+                    decimal heightFactor = (1 + (decimal)tagValueListContainer[i].Count) / (decimal)3;
+                    heightFactor = Math.Ceiling(heightFactor);
+                    height = 20 + (int)(heightFactor * 30);
+                    gp.Size = new Size(255, height);
+
+                    if (i == 0)
+                    {
+                        gp.Location = new Point(0, 0);
+                    }
+                    else
+                    {
+                        gp.Location = new Point(0, sumHeight);
+                    }
+                    sumHeight += height + 20;
+
+                    if (tagList[i].HasMultipleValues)
+                    {
+                        TextBox txtBox = new TextBox();
+                        txtBox.Size = new Size(156, 20);
+                        txtBox.Location = new Point(5, 20);
+
+                        Button btn = new Button();
+                        btn.Text = "Save";
+                        btn.Size = new Size(75, 23);
+                        btn.Location = new Point(165, 19);
+                        btn.FlatAppearance.BorderSize = 0;
+                        btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+                        btn.FlatAppearance.BorderColor = this.ButtonBorderColor;
+                        btn.UseVisualStyleBackColor = false;
+                        btn.BackColor = this.ButtonColor;
+                        btn.ForeColor = this.FontColor;
+
+                        btn.Click += new System.EventHandler(
+                             (sender, e) => this.btnSetTagValue_Click(sender, e, gp.Text, btn.Text, txtBox.Text));
+
+                        gp.Controls.Add(txtBox);
+                        gp.Controls.Add(btn);
+                    }
+                    else
+                    {
+                        int buttonLengthX = 75;
+                        int buttonLengthY = 23;
+                        int buttonsIntervalX = 5;
+                        int buttonsIntervalY = 20;
+
+                        Button btn = new Button();
+                        btn.Text = "-";
+                        btn.Size = new Size(buttonLengthX, buttonLengthY);
+                        btn.Click += new System.EventHandler(
+                                (sender, e) => this.btnClearTagValue_Click(sender, e, gp.Text));
+                        btn.Location = new Point(buttonsIntervalX, buttonsIntervalY);
+                        btn.FlatAppearance.BorderSize = 0;
+                        btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+                        btn.FlatAppearance.BorderColor = this.ButtonBorderColor;
+                        btn.UseVisualStyleBackColor = false;
+                        btn.BackColor = this.ButtonColor;
+                        btn.ForeColor = this.FontColor;
+
+                        gp.Controls.Add(btn);
+
+                        for (int j = 1; j <= tagValueListContainer[i].Count; j++)
+                        {
+
+                            btn = new Button();
+                            btn.Text = tagValueListContainer[i][j-1].Name;
+                            btn.Size = new Size(buttonLengthX, buttonLengthY);
+                            btn.Click += new System.EventHandler(
+                                    (sender, e) => this.btnSetTagValue_Click(sender, e, gp.Text, btn.Text, String.Empty));
+                            btn.FlatAppearance.BorderSize = 0;
+                            btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+                            btn.FlatAppearance.BorderColor = this.ButtonBorderColor;
+                            btn.UseVisualStyleBackColor = false;
+                            btn.BackColor = this.ButtonColor;
+                            btn.ForeColor = tagValueListContainer[i][j - 1].Color;
+
+                            if (j == 1 || j == 2)
+                            {
+                               btn.Location = new Point(buttonsIntervalX + (j * (buttonLengthX + buttonsIntervalX)), buttonsIntervalY);
+                               gp.Controls.Add(btn);
+                            }
+                            else if(j > 2 && j % 3 == 0)
+                            {
+                                buttonsIntervalY = buttonLengthY + buttonsIntervalY + 5;
+                                btn.Location = new Point(buttonsIntervalX, buttonsIntervalY);
+                                gp.Controls.Add(btn);
+                            }
+                            else if (j > 2 && (j % 3 == 1 || j % 3 == 2))
+                            {
+                                btn.Location = new Point(buttonsIntervalX + ((j % 3) * (buttonLengthX + buttonsIntervalX)), buttonsIntervalY);
+                                gp.Controls.Add(btn);
+                            }
+
+                        }
+                        
+                    }
+                }
+
+                this.tagValueEditorPanel.Controls.Add(gp);
+            }
+
+            if (isTagEditorDisplayed)
+            {
+                this.dgvTrackList.Width = this.dgvTrackList.Width + 260;
+            }
+        }
+        /*
         public void InitializeTagValueEditor(List<TagValue> tagValueList, bool isTagEditorDisplayed, bool inputTextBoxEnabled = false)
         {
             //van 24 tagvalue gomb, induláskor megjelennének, ezért elhideoljuk őket
@@ -984,7 +1136,7 @@ namespace MitoPlayer_2024.Views
             }
 
         }
-        
+        */
         
         public void InitializeCurrentTagValueColors(List<Tag> tagList, int currentTagId)
         {
@@ -1038,11 +1190,14 @@ namespace MitoPlayer_2024.Views
                 this.btnColumnVisibility.Show();
                 this.btnColumnVisibility2.Hide();
 
-                this.groupBoxTag.Hide();
-                this.groupBoxTagValue.Hide();
+                /*this.groupBoxTag.Hide();
+                this.groupBoxTagValue.Hide();*/
                 this.groupBoxTagValueHotkeys.Hide();
-                this.txtBoxTagValueInput.Hide();
-                this.btnSetTagValue.Hide();
+
+                this.tagValueEditorPanel.Hide();
+
+                //this.txtBoxTagValueInput.Hide();
+               // this.btnSetTagValue.Hide();
                 this.dgvTrackList.Width = this.dgvTrackList.Width + 260;
             }
             else
@@ -1054,11 +1209,12 @@ namespace MitoPlayer_2024.Views
                 this.btnColumnVisibility.Hide();
                 this.btnColumnVisibility2.Show();
 
-                this.groupBoxTag.Show();
-                this.groupBoxTagValue.Show();
+                /*this.groupBoxTag.Show();
+                this.groupBoxTagValue.Show();*/
                 this.groupBoxTagValueHotkeys.Show();
+                this.tagValueEditorPanel.Show();
 
-                if (!inputTextBoxEnabled)
+               /* if (!inputTextBoxEnabled)
                 {
                     this.txtBoxTagValueInput.Hide();
                     this.btnSetTagValue.Hide();
@@ -1067,8 +1223,8 @@ namespace MitoPlayer_2024.Views
                 {
                     this.txtBoxTagValueInput.Show();
                     this.btnSetTagValue.Show();
-                }
-               
+                }*/
+
                 this.dgvTrackList.Width = this.dgvTrackList.Width - 260;
             }
         }
@@ -1544,6 +1700,22 @@ namespace MitoPlayer_2024.Views
         {
             this.SelectTagEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 8 });
         }
+
+        private void btnSetTagValue_Click(object sender, EventArgs e, String tagName, String tagValueName, String tagValueValue)
+        {
+            if (this.dgvPlaylistList.SelectedRows.Count > 0)
+            {
+                this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { StringField1 = tagName, StringField2 = tagValueName, StringField3 = tagValueValue,  Rows = this.dgvTrackList.Rows });
+            }
+        }
+        private void btnClearTagValue_Click(object sender, EventArgs e, String tagName)
+        {
+            if (this.dgvPlaylistList.SelectedRows.Count > 0)
+            {
+                this.ClearTagValueEvent?.Invoke(this, new ListEventArgs() { StringField1 = tagName, Rows = this.dgvTrackList.Rows });
+            }
+        }
+
         private void btnTagValue1_Click(object sender, EventArgs e)
         {
             if(this.dgvPlaylistList.SelectedRows.Count > 0)
@@ -1712,7 +1884,7 @@ namespace MitoPlayer_2024.Views
                 this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 23, Rows = this.dgvTrackList.Rows });
             }
         }
-        private void btnSetTagValue_Click(object sender, EventArgs e)
+      /*  private void btnSetTagValue_Click(object sender, EventArgs e)
         {
             if (this.dgvPlaylistList.SelectedRows.Count > 0)
             {
@@ -1730,7 +1902,7 @@ namespace MitoPlayer_2024.Views
                     this.txtBoxTagValueInput.Text = null;
                 }
             }
-        }
+        }*/
 
         #endregion
 

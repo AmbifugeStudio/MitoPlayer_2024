@@ -1,4 +1,5 @@
-﻿using MitoPlayer_2024.Dao;
+﻿using FlacLibSharp;
+using MitoPlayer_2024.Dao;
 using MitoPlayer_2024.Helpers;
 using MitoPlayer_2024.Model;
 using MitoPlayer_2024.Models;
@@ -813,7 +814,62 @@ namespace MitoPlayer_2024.Presenters
                             }
                             else if (path.Contains(".flac"))
                             {
-                                track.Artist = fileName;
+                                using (FlacFile file = new FlacFile(path))
+                                {
+                                    
+                                    var vorbisComment = file.VorbisComment;
+                                    if (vorbisComment != null)
+                                    {
+                                        foreach (var value in vorbisComment.Artist)
+                                        {
+                                            if (value != null)
+                                            {
+                                                track.Artist = value;
+                                                break;
+                                            }
+                                        }
+                                        foreach (var value in vorbisComment.Album)
+                                        {
+                                            if (value != null)
+                                            {
+                                                track.Album = value;
+                                                break;
+                                            }
+                                        }
+                                        foreach (var value in vorbisComment.Title)
+                                        {
+                                            if (value != null)
+                                            {
+                                                track.Title = value;
+                                                break;
+                                            }
+                                        }
+                                        foreach (var value in vorbisComment.Date)
+                                        {
+                                            if (value != null)
+                                            {
+                                                String date = ""; 
+                                                if (value.Length > 4)
+                                                {
+                                                    date = value.Substring(0, 4);
+                                                    track.Year = Int32.Parse(date);
+                                                }
+                                                else
+                                                {
+                                                    track.Year = Int32.Parse(value);
+                                                }
+                                               
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    track.Length = file.StreamInfo.Duration;
+                                }
+                                if (String.IsNullOrEmpty(track.Artist))
+                                {
+                                    track.Artist = fileName;
+                                }
+                               
                             }
                             track.IsNew = true;
 
