@@ -69,9 +69,9 @@
             this.lblCurrentTrack = new System.Windows.Forms.Label();
             this.lblTagColor = new System.Windows.Forms.Label();
             this.cmbColor = new System.Windows.Forms.ComboBox();
-            this.btnDisplayPlaylistList = new System.Windows.Forms.Button();
+            this.btnHidePlaylistList = new System.Windows.Forms.Button();
             this.btnDisplayTagEditor = new System.Windows.Forms.Button();
-            this.btnColumnVisibility = new System.Windows.Forms.Button();
+            this.btnColumnVisibilityWithTagEditor = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.rdbPlaylist = new System.Windows.Forms.RadioButton();
             this.rdbTagValue = new System.Windows.Forms.RadioButton();
@@ -88,9 +88,9 @@
             this.lblMessage = new System.Windows.Forms.Label();
             this.dgvPlaylistList = new System.Windows.Forms.DataGridView();
             this.dgvTrackList = new System.Windows.Forms.DataGridView();
-            this.btnDisplayPlaylistList2 = new System.Windows.Forms.Button();
-            this.btnDisplayTagEditor2 = new System.Windows.Forms.Button();
-            this.btnColumnVisibility2 = new System.Windows.Forms.Button();
+            this.btnDisplayPlaylistList = new System.Windows.Forms.Button();
+            this.btnHideTagEditor = new System.Windows.Forms.Button();
+            this.btnColumnVisibility = new System.Windows.Forms.Button();
             this.tagValueEditorPanel = new System.Windows.Forms.Panel();
             this.contextMenuStrip1.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -314,7 +314,7 @@
             // 
             // btnScanBpm
             // 
-            this.btnScanBpm.Location = new System.Drawing.Point(400, 17);
+            this.btnScanBpm.Location = new System.Drawing.Point(400, 12);
             this.btnScanBpm.Name = "btnScanBpm";
             this.btnScanBpm.Size = new System.Drawing.Size(75, 23);
             this.btnScanBpm.TabIndex = 31;
@@ -399,7 +399,7 @@
             // lblTagColor
             // 
             this.lblTagColor.AutoSize = true;
-            this.lblTagColor.Location = new System.Drawing.Point(236, 22);
+            this.lblTagColor.Location = new System.Drawing.Point(236, 17);
             this.lblTagColor.Name = "lblTagColor";
             this.lblTagColor.Size = new System.Drawing.Size(31, 13);
             this.lblTagColor.TabIndex = 28;
@@ -408,28 +408,30 @@
             // cmbColor
             // 
             this.cmbColor.FormattingEnabled = true;
-            this.cmbColor.Location = new System.Drawing.Point(273, 19);
+            this.cmbColor.Location = new System.Drawing.Point(273, 14);
             this.cmbColor.Name = "cmbColor";
             this.cmbColor.Size = new System.Drawing.Size(121, 21);
             this.cmbColor.TabIndex = 27;
             this.cmbColor.SelectedIndexChanged += new System.EventHandler(this.cmbColor_SelectedIndexChanged);
             // 
-            // btnDisplayPlaylistList
+            // btnHidePlaylistList
             // 
-            this.btnDisplayPlaylistList.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDisplayPlaylistList.Location = new System.Drawing.Point(199, 17);
-            this.btnDisplayPlaylistList.Name = "btnDisplayPlaylistList";
-            this.btnDisplayPlaylistList.Size = new System.Drawing.Size(31, 23);
-            this.btnDisplayPlaylistList.TabIndex = 22;
-            this.btnDisplayPlaylistList.Text = "<";
-            this.btnDisplayPlaylistList.UseVisualStyleBackColor = true;
-            this.btnDisplayPlaylistList.Click += new System.EventHandler(this.btnDisplayPlaylistList_Click);
+            this.btnHidePlaylistList.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnHidePlaylistList.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnHidePlaylistList.Location = new System.Drawing.Point(199, 12);
+            this.btnHidePlaylistList.Name = "btnHidePlaylistList";
+            this.btnHidePlaylistList.Size = new System.Drawing.Size(31, 23);
+            this.btnHidePlaylistList.TabIndex = 22;
+            this.btnHidePlaylistList.Text = "<";
+            this.btnHidePlaylistList.UseVisualStyleBackColor = true;
+            this.btnHidePlaylistList.Click += new System.EventHandler(this.btnDisplayPlaylistList_Click);
             // 
             // btnDisplayTagEditor
             // 
             this.btnDisplayTagEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnDisplayTagEditor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnDisplayTagEditor.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDisplayTagEditor.Location = new System.Drawing.Point(1212, 19);
+            this.btnDisplayTagEditor.Location = new System.Drawing.Point(1212, 14);
             this.btnDisplayTagEditor.Name = "btnDisplayTagEditor";
             this.btnDisplayTagEditor.Size = new System.Drawing.Size(31, 23);
             this.btnDisplayTagEditor.TabIndex = 23;
@@ -437,16 +439,17 @@
             this.btnDisplayTagEditor.UseVisualStyleBackColor = true;
             this.btnDisplayTagEditor.Click += new System.EventHandler(this.btnDisplayTagEditor_Click);
             // 
-            // btnColumnVisibility
+            // btnColumnVisibilityWithTagEditor
             // 
-            this.btnColumnVisibility.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnColumnVisibility.Image = ((System.Drawing.Image)(resources.GetObject("btnColumnVisibility.Image")));
-            this.btnColumnVisibility.Location = new System.Drawing.Point(1175, 19);
-            this.btnColumnVisibility.Name = "btnColumnVisibility";
-            this.btnColumnVisibility.Size = new System.Drawing.Size(31, 23);
-            this.btnColumnVisibility.TabIndex = 24;
-            this.btnColumnVisibility.UseVisualStyleBackColor = true;
-            this.btnColumnVisibility.Click += new System.EventHandler(this.btnColumnVisibility_Click);
+            this.btnColumnVisibilityWithTagEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnColumnVisibilityWithTagEditor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnColumnVisibilityWithTagEditor.Image = ((System.Drawing.Image)(resources.GetObject("btnColumnVisibilityWithTagEditor.Image")));
+            this.btnColumnVisibilityWithTagEditor.Location = new System.Drawing.Point(1175, 14);
+            this.btnColumnVisibilityWithTagEditor.Name = "btnColumnVisibilityWithTagEditor";
+            this.btnColumnVisibilityWithTagEditor.Size = new System.Drawing.Size(31, 23);
+            this.btnColumnVisibilityWithTagEditor.TabIndex = 24;
+            this.btnColumnVisibilityWithTagEditor.UseVisualStyleBackColor = true;
+            this.btnColumnVisibilityWithTagEditor.Click += new System.EventHandler(this.btnColumnVisibility_Click);
             // 
             // groupBox2
             // 
@@ -611,13 +614,13 @@
             | System.Windows.Forms.AnchorStyles.Left)));
             this.dgvPlaylistList.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvPlaylistList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            this.dgvPlaylistList.Location = new System.Drawing.Point(10, 19);
+            this.dgvPlaylistList.Location = new System.Drawing.Point(10, 12);
             this.dgvPlaylistList.MultiSelect = false;
             this.dgvPlaylistList.Name = "dgvPlaylistList";
             this.dgvPlaylistList.ReadOnly = true;
             this.dgvPlaylistList.RowHeadersVisible = false;
             this.dgvPlaylistList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvPlaylistList.Size = new System.Drawing.Size(183, 558);
+            this.dgvPlaylistList.Size = new System.Drawing.Size(183, 565);
             this.dgvPlaylistList.TabIndex = 17;
             this.dgvPlaylistList.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvPlaylistList_CellDoubleClick);
             this.dgvPlaylistList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvPlaylistList_KeyDown);
@@ -634,60 +637,63 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvTrackList.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvTrackList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            this.dgvTrackList.Location = new System.Drawing.Point(199, 46);
+            this.dgvTrackList.Location = new System.Drawing.Point(199, 41);
             this.dgvTrackList.Name = "dgvTrackList";
             this.dgvTrackList.ReadOnly = true;
             this.dgvTrackList.RowHeadersVisible = false;
             this.dgvTrackList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvTrackList.Size = new System.Drawing.Size(761, 531);
+            this.dgvTrackList.Size = new System.Drawing.Size(761, 536);
             this.dgvTrackList.TabIndex = 16;
             this.dgvTrackList.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTrackList_CellClick);
             this.dgvTrackList.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTrackList_CellDoubleClick);
             this.dgvTrackList.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvTrackList_ColumnHeaderMouseClick);
             this.dgvTrackList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvTrackList_KeyDown);
             // 
-            // btnDisplayPlaylistList2
+            // btnDisplayPlaylistList
             // 
-            this.btnDisplayPlaylistList2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDisplayPlaylistList2.Location = new System.Drawing.Point(10, 17);
-            this.btnDisplayPlaylistList2.Name = "btnDisplayPlaylistList2";
-            this.btnDisplayPlaylistList2.Size = new System.Drawing.Size(31, 23);
-            this.btnDisplayPlaylistList2.TabIndex = 32;
-            this.btnDisplayPlaylistList2.Text = "<";
-            this.btnDisplayPlaylistList2.UseVisualStyleBackColor = true;
-            this.btnDisplayPlaylistList2.Click += new System.EventHandler(this.btnDisplayPlaylistList2_Click);
+            this.btnDisplayPlaylistList.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDisplayPlaylistList.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnDisplayPlaylistList.Location = new System.Drawing.Point(10, 12);
+            this.btnDisplayPlaylistList.Name = "btnDisplayPlaylistList";
+            this.btnDisplayPlaylistList.Size = new System.Drawing.Size(31, 23);
+            this.btnDisplayPlaylistList.TabIndex = 32;
+            this.btnDisplayPlaylistList.Text = "<";
+            this.btnDisplayPlaylistList.UseVisualStyleBackColor = true;
+            this.btnDisplayPlaylistList.Click += new System.EventHandler(this.btnDisplayPlaylistList2_Click);
             // 
-            // btnDisplayTagEditor2
+            // btnHideTagEditor
             // 
-            this.btnDisplayTagEditor2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDisplayTagEditor2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDisplayTagEditor2.Location = new System.Drawing.Point(929, 17);
-            this.btnDisplayTagEditor2.Name = "btnDisplayTagEditor2";
-            this.btnDisplayTagEditor2.Size = new System.Drawing.Size(31, 23);
-            this.btnDisplayTagEditor2.TabIndex = 33;
-            this.btnDisplayTagEditor2.Text = "<";
-            this.btnDisplayTagEditor2.UseVisualStyleBackColor = true;
-            this.btnDisplayTagEditor2.Click += new System.EventHandler(this.btnDisplayTagEditor2_Click);
+            this.btnHideTagEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnHideTagEditor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnHideTagEditor.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnHideTagEditor.Location = new System.Drawing.Point(929, 12);
+            this.btnHideTagEditor.Name = "btnHideTagEditor";
+            this.btnHideTagEditor.Size = new System.Drawing.Size(31, 23);
+            this.btnHideTagEditor.TabIndex = 33;
+            this.btnHideTagEditor.Text = "<";
+            this.btnHideTagEditor.UseVisualStyleBackColor = true;
+            this.btnHideTagEditor.Click += new System.EventHandler(this.btnDisplayTagEditor2_Click);
             // 
-            // btnColumnVisibility2
+            // btnColumnVisibility
             // 
-            this.btnColumnVisibility2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnColumnVisibility2.Image = ((System.Drawing.Image)(resources.GetObject("btnColumnVisibility2.Image")));
-            this.btnColumnVisibility2.Location = new System.Drawing.Point(892, 17);
-            this.btnColumnVisibility2.Name = "btnColumnVisibility2";
-            this.btnColumnVisibility2.Size = new System.Drawing.Size(31, 23);
-            this.btnColumnVisibility2.TabIndex = 34;
-            this.btnColumnVisibility2.UseVisualStyleBackColor = true;
-            this.btnColumnVisibility2.Click += new System.EventHandler(this.btnColumnVisibility2_Click);
+            this.btnColumnVisibility.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnColumnVisibility.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnColumnVisibility.Image = ((System.Drawing.Image)(resources.GetObject("btnColumnVisibility.Image")));
+            this.btnColumnVisibility.Location = new System.Drawing.Point(892, 12);
+            this.btnColumnVisibility.Name = "btnColumnVisibility";
+            this.btnColumnVisibility.Size = new System.Drawing.Size(31, 23);
+            this.btnColumnVisibility.TabIndex = 34;
+            this.btnColumnVisibility.UseVisualStyleBackColor = true;
+            this.btnColumnVisibility.Click += new System.EventHandler(this.btnColumnVisibility2_Click);
             // 
             // tagValueEditorPanel
             // 
             this.tagValueEditorPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tagValueEditorPanel.AutoScroll = true;
-            this.tagValueEditorPanel.Location = new System.Drawing.Point(966, 46);
+            this.tagValueEditorPanel.Location = new System.Drawing.Point(966, 41);
             this.tagValueEditorPanel.Name = "tagValueEditorPanel";
-            this.tagValueEditorPanel.Size = new System.Drawing.Size(277, 305);
+            this.tagValueEditorPanel.Size = new System.Drawing.Size(274, 536);
             this.tagValueEditorPanel.TabIndex = 36;
             // 
             // PlaylistView
@@ -696,17 +702,17 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1252, 678);
             this.Controls.Add(this.tagValueEditorPanel);
-            this.Controls.Add(this.btnColumnVisibility2);
-            this.Controls.Add(this.btnDisplayTagEditor2);
-            this.Controls.Add(this.btnDisplayPlaylistList2);
+            this.Controls.Add(this.btnColumnVisibility);
+            this.Controls.Add(this.btnHideTagEditor);
+            this.Controls.Add(this.btnDisplayPlaylistList);
             this.Controls.Add(this.btnScanBpm);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.lblTagColor);
             this.Controls.Add(this.cmbColor);
-            this.Controls.Add(this.btnDisplayPlaylistList);
+            this.Controls.Add(this.btnHidePlaylistList);
             this.Controls.Add(this.btnDisplayTagEditor);
-            this.Controls.Add(this.btnColumnVisibility);
+            this.Controls.Add(this.btnColumnVisibilityWithTagEditor);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBoxTagValueHotkeys);
             this.Controls.Add(this.groupBoxPlaylist);
@@ -716,7 +722,6 @@
             this.Name = "PlaylistView";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Player";
-            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.contextMenuStrip1.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
@@ -761,9 +766,9 @@
         private System.Windows.Forms.Label lblCurrentTrack;
         private System.Windows.Forms.Label lblTagColor;
         private System.Windows.Forms.ComboBox cmbColor;
-        private System.Windows.Forms.Button btnDisplayPlaylistList;
+        private System.Windows.Forms.Button btnHidePlaylistList;
         private System.Windows.Forms.Button btnDisplayTagEditor;
-        private System.Windows.Forms.Button btnColumnVisibility;
+        private System.Windows.Forms.Button btnColumnVisibilityWithTagEditor;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.RadioButton rdbPlaylist;
         private System.Windows.Forms.RadioButton rdbTagValue;
@@ -780,9 +785,9 @@
         private System.Windows.Forms.Label lblMessage;
         private System.Windows.Forms.DataGridView dgvPlaylistList;
         private System.Windows.Forms.DataGridView dgvTrackList;
-        private System.Windows.Forms.Button btnDisplayPlaylistList2;
-        private System.Windows.Forms.Button btnDisplayTagEditor2;
-        private System.Windows.Forms.Button btnColumnVisibility2;
+        private System.Windows.Forms.Button btnDisplayPlaylistList;
+        private System.Windows.Forms.Button btnHideTagEditor;
+        private System.Windows.Forms.Button btnColumnVisibility;
         private System.Windows.Forms.ToolStripMenuItem createPlaylistToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem renameToolStripMenuItem;

@@ -27,7 +27,7 @@ namespace MitoPlayer_2024
         [STAThread]
         static void Main()
         {
-            Application.EnableVisualStyles();
+           // Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
             SettingDao = new SettingDao();

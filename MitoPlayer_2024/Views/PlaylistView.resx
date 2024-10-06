@@ -124,7 +124,7 @@
     <value>105, 17</value>
   </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="btnColumnVisibility.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="btnColumnVisibilityWithTagEditor.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABkAAAAZCAYAAADE6YVjAAABg2lDQ1BJQ0MgcHJvZmlsZQAAKM+VkU0o
         RFEcxX8ziKaRhVGSxVsgCzZIlhoiZUpj1AwW3ntjhpr3TO/NZGOpbJWFj42vhY01WwtbpZSPkrWFFbGR
@@ -140,7 +140,7 @@
         Mw30Rc8fPv5NvpEHePwAAHVnalBegg0AAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="btnColumnVisibility2.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="btnColumnVisibility.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABkAAAAZCAYAAADE6YVjAAABg2lDQ1BJQ0MgcHJvZmlsZQAAKM+VkU0o
         RFEcxX8ziKaRhVGSxVsgCzZIlhoiZUpj1AwW3ntjhpr3TO/NZGOpbJWFj42vhY01WwtbpZSPkrWFFbGR

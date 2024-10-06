@@ -50,11 +50,12 @@ namespace MitoPlayer_2024.Views
                 instance.MdiParent = parentView;
                 instance.FormBorderStyle = FormBorderStyle.None;
                 instance.Dock = DockStyle.Fill;
+                instance.WindowState = FormWindowState.Normal;
             }
             else
             {
-                if (instance.WindowState == FormWindowState.Minimized)
-                    instance.WindowState = FormWindowState.Normal;
+             /*   if (instance.WindowState == FormWindowState.Minimized)
+                    instance.WindowState = FormWindowState.Normal;*/
                 instance.BringToFront();
             }
             return instance;

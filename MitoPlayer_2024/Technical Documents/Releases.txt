@@ -23,6 +23,11 @@
 - FEATURE: puase button play music after pause
 - FEATURE: shuffle enable/disable
 - BUG: selected item section does not update after track selection 
+
+======================
+v0.12.10.2
+======================
+OK - FEATURE: dark theme (in progress)
 ======================
 v0.12.10.1
 ======================

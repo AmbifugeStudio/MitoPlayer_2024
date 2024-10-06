@@ -3,6 +3,7 @@ using MitoPlayer_2024.Views;
 using NAudio.CoreAudioApi;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Reflection;
 using System.Windows.Forms;
 
@@ -10,11 +11,6 @@ namespace MitoPlayer_2024
 {
     public partial class MainView : Form, IMainView
     {
-        public MainView()
-        {
-            InitializeComponent();
-        }
-
         public event EventHandler ShowProfileEditorView;
         public event EventHandler ShowPlaylistView;
         public event EventHandler ShowTagValueEditorView;
@@ -58,6 +54,75 @@ namespace MitoPlayer_2024
         public event EventHandler About;
 
         public event EventHandler<ListEventArgs> ScanFiles;
+
+        Color BackgroundColor = System.Drawing.ColorTranslator.FromHtml("#363639");
+        Color FontColor = System.Drawing.ColorTranslator.FromHtml("#c6c6c6");
+        Color ButtonColor = System.Drawing.ColorTranslator.FromHtml("#292a2d");
+        Color ButtonBorderColor = System.Drawing.ColorTranslator.FromHtml("#1b1b1b");
+
+        public MainView()
+        {
+            InitializeComponent();
+
+            
+
+            this.strMenu.BackColor = this.BackgroundColor;
+            this.strMenu.ForeColor = this.FontColor;
+
+            this.pnlMainMenu.BackColor = this.BackgroundColor;
+            this.pnlMainMenu.ForeColor = this.FontColor;
+
+            this.btnPlaylist.BackColor = this.ButtonColor;
+            this.btnPlaylist.ForeColor = this.FontColor;
+            this.btnPlaylist.FlatAppearance.BorderColor = this.ButtonBorderColor;
+            this.btnTagValues.BackColor = this.ButtonColor;
+            this.btnTagValues.ForeColor = this.FontColor;
+            this.btnTagValues.FlatAppearance.BorderColor = this.ButtonBorderColor;
+            this.btnTracks.BackColor = this.ButtonColor;
+            this.btnTracks.ForeColor = this.FontColor;
+            this.btnTracks.FlatAppearance.BorderColor = this.ButtonBorderColor;
+            this.btnRules.BackColor = this.ButtonColor;
+            this.btnRules.ForeColor = this.FontColor;
+            this.btnRules.FlatAppearance.BorderColor = this.ButtonBorderColor;
+            this.btnTemplates.BackColor = this.ButtonColor;
+            this.btnTemplates.ForeColor = this.FontColor;
+            this.btnTemplates.FlatAppearance.BorderColor = this.ButtonBorderColor;
+            this.btnHarmonizer.BackColor = this.ButtonColor;
+            this.btnHarmonizer.ForeColor = this.FontColor;
+            this.btnHarmonizer.FlatAppearance.BorderColor = this.ButtonBorderColor;
+
+            this.pnlMediaPlayer.BackColor = this.BackgroundColor;
+            this.pnlMediaPlayer.ForeColor = this.FontColor;
+
+            this.btnStop.BackColor = this.ButtonColor;
+            this.btnStop.ForeColor = this.FontColor;
+            this.btnStop.FlatAppearance.BorderColor = this.ButtonBorderColor;
+            this.btnPause.BackColor = this.ButtonColor;
+            this.btnPause.ForeColor = this.FontColor;
+            this.btnPause.FlatAppearance.BorderColor = this.ButtonBorderColor;
+            this.btnPlay.BackColor = this.ButtonColor;
+            this.btnPlay.ForeColor = this.FontColor;
+            this.btnPlay.FlatAppearance.BorderColor = this.ButtonBorderColor;
+            this.btnPrev.BackColor = this.ButtonColor;
+            this.btnPrev.ForeColor = this.FontColor;
+            this.btnPrev.FlatAppearance.BorderColor = this.ButtonBorderColor;
+            this.btnNext.BackColor = this.ButtonColor;
+            this.btnNext.ForeColor = this.FontColor;
+            this.btnNext.FlatAppearance.BorderColor = this.ButtonBorderColor;
+            this.btnOpen.BackColor = this.ButtonColor;
+            this.btnOpen.ForeColor = this.FontColor;
+            this.btnOpen.FlatAppearance.BorderColor = this.ButtonBorderColor;
+            this.btnOpenDirectory.BackColor = this.ButtonColor;
+            this.btnOpenDirectory.ForeColor = this.FontColor;
+            this.btnOpenDirectory.FlatAppearance.BorderColor = this.ButtonBorderColor;
+
+            this.pbrTrackProgress.BackColor = this.FontColor;
+            this.pbrTrackProgress.ForeColor = this.BackgroundColor;
+
+            this.pbrTrackProgress.Hide();
+        }
+
+        
 
         private void MainView_Load(object sender, EventArgs e)
         {
@@ -188,9 +253,11 @@ namespace MitoPlayer_2024
         private void menuStripStop_Click(object sender, EventArgs e)
         {
             this.StopTrack?.Invoke(this, EventArgs.Empty);
+
             this.lblTrackStart.Text = "";
             this.lblTrackEnd.Text = "";
-            this.pBar.Value = 0;
+            this.pbrTrackProgress.Value = 0;
+            this.pbrTrackProgress.Hide();
         }
         private void menuStripPause_Click(object sender, EventArgs e)
         {
@@ -301,7 +368,8 @@ namespace MitoPlayer_2024
             this.StopTrack?.Invoke(this, EventArgs.Empty);
             this.lblTrackStart.Text = "";
             this.lblTrackEnd.Text = "";
-            this.pBar.Value = 0;
+            this.pbrTrackProgress.Value = 0;
+            this.pbrTrackProgress.Hide();
         }
         private void btnPause_Click(object sender, EventArgs e)
         {
@@ -317,7 +385,7 @@ namespace MitoPlayer_2024
         }
         private void pBar_MouseDown(object sender, MouseEventArgs e)
         {
-            this.ChangeProgress?.Invoke(this, new ListEventArgs() { IntegerField1 = e.X, IntegerField2 = pBar.Width });
+            this.ChangeProgress?.Invoke(this, new ListEventArgs() { IntegerField1 = e.X, IntegerField2 = pbrTrackProgress.Width });
         }
         private void trackVolume_Scroll(object sender, EventArgs e)
         {
@@ -344,8 +412,12 @@ namespace MitoPlayer_2024
         //UPDATE ELAPSED DATE, DURATION AND PROGRESS BAR VIA TIMER
         public void UpdateMediaPlayerProgressStatus(double duration, String durationString, double currentPosition, String currentPositionString)
         {
-            this.pBar.Maximum = (int)duration;
-            this.pBar.Value = (int)currentPosition;
+            if((int)currentPosition > 0)
+            {
+                this.pbrTrackProgress.Show();
+            }
+            this.pbrTrackProgress.Maximum = (int)duration;
+            this.pbrTrackProgress.Value = (int)currentPosition;
             this.lblTrackEnd.Text = durationString;
             this.lblTrackStart.Text = currentPositionString;
         }

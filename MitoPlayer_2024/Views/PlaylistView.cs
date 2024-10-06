@@ -71,7 +71,9 @@ namespace MitoPlayer_2024.Views
         Color BackgroundColor = System.Drawing.ColorTranslator.FromHtml("#363639");
         Color FontColor = System.Drawing.ColorTranslator.FromHtml("#c6c6c6");
         Color ButtonColor = System.Drawing.ColorTranslator.FromHtml("#292a2d");
-        Color ButtonBorderColor = System.Drawing.ColorTranslator.FromHtml("#1b1b1b"); 
+        Color ButtonBorderColor = System.Drawing.ColorTranslator.FromHtml("#1b1b1b");
+        int TrackListLeftOffset = 190;
+        int TrackListRightOffset = 285;
 
         public PlaylistView()
         {
@@ -102,7 +104,25 @@ namespace MitoPlayer_2024.Views
             this.btnDeletePlaylist.ForeColor = this.FontColor;
             this.btnDeletePlaylist.FlatAppearance.BorderColor = this.ButtonBorderColor;
 
+            this.btnDisplayPlaylistList.BackColor = this.ButtonColor;
+            this.btnDisplayPlaylistList.ForeColor = this.FontColor;
+            this.btnDisplayPlaylistList.FlatAppearance.BorderColor = this.ButtonBorderColor;
+            this.btnHidePlaylistList.BackColor = this.ButtonColor;
+            this.btnHidePlaylistList.ForeColor = this.FontColor;
+            this.btnHidePlaylistList.FlatAppearance.BorderColor = this.ButtonBorderColor;
+            this.btnDisplayTagEditor.BackColor = this.ButtonColor;
+            this.btnDisplayTagEditor.ForeColor = this.FontColor;
+            this.btnDisplayTagEditor.FlatAppearance.BorderColor = this.ButtonBorderColor;
+            this.btnHideTagEditor.BackColor = this.ButtonColor;
+            this.btnHideTagEditor.ForeColor = this.FontColor;
+            this.btnHideTagEditor.FlatAppearance.BorderColor = this.ButtonBorderColor;
 
+            this.btnColumnVisibilityWithTagEditor.BackColor = this.ButtonColor;
+            this.btnColumnVisibilityWithTagEditor.ForeColor = this.FontColor;
+            this.btnColumnVisibilityWithTagEditor.FlatAppearance.BorderColor = this.ButtonBorderColor;
+            this.btnColumnVisibility.BackColor = this.ButtonColor;
+            this.btnColumnVisibility.ForeColor = this.FontColor;
+            this.btnColumnVisibility.FlatAppearance.BorderColor = this.ButtonBorderColor;
         }
 
         #region SINGLETON
@@ -117,11 +137,12 @@ namespace MitoPlayer_2024.Views
                 instance.MdiParent = parentView;
                 instance.FormBorderStyle = FormBorderStyle.None;
                 instance.Dock = DockStyle.Fill;
+                instance.WindowState = FormWindowState.Normal;
             }
             else
             {
-                if (instance.WindowState == FormWindowState.Minimized)
-                    instance.WindowState = FormWindowState.Normal;
+               /* if (instance.WindowState == FormWindowState.Minimized)
+                    instance.WindowState = FormWindowState.Maximized;*/
                 instance.BringToFront();
             }
             return instance;
@@ -955,7 +976,7 @@ namespace MitoPlayer_2024.Views
                     {
                         gp.Location = new Point(0, sumHeight);
                     }
-                    sumHeight += height + 20;
+                    sumHeight += height + 10;
 
                     if (tagList[i].HasMultipleValues)
                     {
@@ -1044,7 +1065,7 @@ namespace MitoPlayer_2024.Views
 
             if (isTagEditorDisplayed)
             {
-                this.dgvTrackList.Width = this.dgvTrackList.Width + 260;
+                this.dgvTrackList.Width = this.dgvTrackList.Width + this.TrackListRightOffset;
             }
         }
         /*
@@ -1184,11 +1205,11 @@ namespace MitoPlayer_2024.Views
             if (!isTagEditorDisplayed)
             {
                 this.btnDisplayTagEditor.Text = "<";
-                this.btnDisplayTagEditor2.Text = "<";
+                this.btnHideTagEditor.Text = "<";
                 this.btnDisplayTagEditor.Show();
-                this.btnDisplayTagEditor2.Hide();
-                this.btnColumnVisibility.Show();
-                this.btnColumnVisibility2.Hide();
+                this.btnHideTagEditor.Hide();
+                this.btnColumnVisibilityWithTagEditor.Show();
+                this.btnColumnVisibility.Hide();
 
                 /*this.groupBoxTag.Hide();
                 this.groupBoxTagValue.Hide();*/
@@ -1198,16 +1219,16 @@ namespace MitoPlayer_2024.Views
 
                 //this.txtBoxTagValueInput.Hide();
                // this.btnSetTagValue.Hide();
-                this.dgvTrackList.Width = this.dgvTrackList.Width + 260;
+                this.dgvTrackList.Width = this.dgvTrackList.Width + this.TrackListRightOffset;
             }
             else
             {
                 this.btnDisplayTagEditor.Text = ">";
-                this.btnDisplayTagEditor2.Text = ">";
+                this.btnHideTagEditor.Text = ">";
                 this.btnDisplayTagEditor.Hide();
-                this.btnDisplayTagEditor2.Show();
-                this.btnColumnVisibility.Hide();
-                this.btnColumnVisibility2.Show();
+                this.btnHideTagEditor.Show();
+                this.btnColumnVisibilityWithTagEditor.Hide();
+                this.btnColumnVisibility.Show();
 
                 /*this.groupBoxTag.Show();
                 this.groupBoxTagValue.Show();*/
@@ -1225,7 +1246,7 @@ namespace MitoPlayer_2024.Views
                     this.btnSetTagValue.Show();
                 }*/
 
-                this.dgvTrackList.Width = this.dgvTrackList.Width - 260;
+                this.dgvTrackList.Width = this.dgvTrackList.Width - this.TrackListRightOffset;
             }
         }
 
@@ -1233,35 +1254,35 @@ namespace MitoPlayer_2024.Views
         {
             if (isPlaylistListDisplayed)
             {
-                this.dgvTrackList.Left -= 190;
-                this.dgvTrackList.Width += 190;
+                this.dgvTrackList.Left -= this.TrackListLeftOffset;
+                this.dgvTrackList.Width += this.TrackListLeftOffset;
             }
         }
         public void CallDisplayPlaylistList(bool isPlaylistListDisplayed)
         {
             if (!isPlaylistListDisplayed)
             {
+                this.btnHidePlaylistList.Text = ">";
                 this.btnDisplayPlaylistList.Text = ">";
-                this.btnDisplayPlaylistList2.Text = ">";
-                this.btnDisplayPlaylistList.Hide();
-                this.btnDisplayPlaylistList2.Show();
+                this.btnHidePlaylistList.Hide();
+                this.btnDisplayPlaylistList.Show();
 
                 this.dgvPlaylistList.Hide();
                 this.groupBoxPlaylist.Hide();
-                this.dgvTrackList.Left -= 190;
-                this.dgvTrackList.Width += 190;
+                this.dgvTrackList.Left -= this.TrackListLeftOffset;
+                this.dgvTrackList.Width += this.TrackListLeftOffset;
             }
             else
             {
+                this.btnHidePlaylistList.Text = "<";
                 this.btnDisplayPlaylistList.Text = "<";
-                this.btnDisplayPlaylistList2.Text = "<";
-                this.btnDisplayPlaylistList.Show();
-                this.btnDisplayPlaylistList2.Hide();
+                this.btnHidePlaylistList.Show();
+                this.btnDisplayPlaylistList.Hide();
 
                 this.dgvPlaylistList.Show();
                 this.groupBoxPlaylist.Show();
-                this.dgvTrackList.Left += 190;
-                this.dgvTrackList.Width -= 190;
+                this.dgvTrackList.Left += this.TrackListLeftOffset;
+                this.dgvTrackList.Width -= this.TrackListLeftOffset;
             }
         }
 
