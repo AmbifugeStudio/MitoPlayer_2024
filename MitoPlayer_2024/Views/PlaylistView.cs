@@ -1,4 +1,5 @@
-﻿using MitoPlayer_2024.Helpers;
+﻿using FlacLibSharp.Exceptions;
+using MitoPlayer_2024.Helpers;
 using MitoPlayer_2024.Models;
 using NAudio.SoundFont;
 using System;
@@ -8,6 +9,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 
 using static System.Windows.Forms.DataGridView;
@@ -72,8 +74,19 @@ namespace MitoPlayer_2024.Views
         Color FontColor = System.Drawing.ColorTranslator.FromHtml("#c6c6c6");
         Color ButtonColor = System.Drawing.ColorTranslator.FromHtml("#292a2d");
         Color ButtonBorderColor = System.Drawing.ColorTranslator.FromHtml("#1b1b1b");
+        Color GridHeaderColor = System.Drawing.ColorTranslator.FromHtml("#36373a");
+        Color GridLineColor1 = System.Drawing.ColorTranslator.FromHtml("#131315");
+        Color GridLineColor2 = System.Drawing.ColorTranslator.FromHtml("#212224");
+        Color WhiteColor = System.Drawing.ColorTranslator.FromHtml("#FFFFFF");
+        
+        Color GridPlayingColor = System.Drawing.ColorTranslator.FromHtml("#4d4d4d");
+        Color GridSelectionColor = System.Drawing.ColorTranslator.FromHtml("#626262");
+
+
         int TrackListLeftOffset = 190;
         int TrackListRightOffset = 285;
+
+        bool Displayed = false;
 
         public PlaylistView()
         {
@@ -123,6 +136,20 @@ namespace MitoPlayer_2024.Views
             this.btnColumnVisibility.BackColor = this.ButtonColor;
             this.btnColumnVisibility.ForeColor = this.FontColor;
             this.btnColumnVisibility.FlatAppearance.BorderColor = this.ButtonBorderColor;
+
+            this.dgvPlaylistList.BackgroundColor = this.ButtonColor;
+            this.dgvPlaylistList.ColumnHeadersDefaultCellStyle.BackColor = this.ButtonColor;
+            this.dgvPlaylistList.ColumnHeadersDefaultCellStyle.ForeColor = this.FontColor;
+            this.dgvPlaylistList.EnableHeadersVisualStyles = false;
+            this.dgvPlaylistList.ColumnHeadersDefaultCellStyle.SelectionBackColor = this.ButtonColor;
+            this.dgvPlaylistList.DefaultCellStyle.SelectionBackColor = this.GridSelectionColor;
+
+            this.dgvTrackList.BackgroundColor = this.ButtonColor;
+            this.dgvTrackList.ColumnHeadersDefaultCellStyle.BackColor = this.ButtonColor;
+            this.dgvTrackList.ColumnHeadersDefaultCellStyle.ForeColor = this.FontColor;
+            this.dgvTrackList.EnableHeadersVisualStyles = false;
+            this.dgvTrackList.ColumnHeadersDefaultCellStyle.SelectionBackColor = this.ButtonColor;
+            this.dgvTrackList.DefaultCellStyle.SelectionBackColor = this.GridSelectionColor;
         }
 
         #region SINGLETON
@@ -195,7 +222,53 @@ namespace MitoPlayer_2024.Views
                 this.dgvTrackList.Columns[i].DisplayIndex = displayIndex[i];
             }
 
-            this.SetColorAndSelection(currentTrackIdInPlaylist);
+            this.SetColorAndSelection2(currentTrackIdInPlaylist);
+        }
+
+      
+
+        public void SetColorAndSelection2(int currentTrackIdInPlaylist = -1)
+        {
+
+            bool isMissing = false;
+            int trackIdInPlaylist = -1;
+
+            if (this.dgvTrackList != null && this.dgvTrackList.Rows != null && this.dgvTrackList.Rows.Count > 0)
+            {
+                for (int i = 0; i < this.dgvTrackList.Rows.Count; i++)
+                {
+                    trackIdInPlaylist = (int)this.dgvTrackList.Rows[i].Cells["TrackIdInPlaylist"].Value;
+                    isMissing = (bool)this.dgvTrackList.Rows[i].Cells["IsMissing"].Value;
+                    if (isMissing)
+                    {
+                        this.dgvTrackList.Rows[i].DefaultCellStyle.ForeColor = Color.Salmon;
+                    }
+                    else
+                    {
+                        if (currentTrackIdInPlaylist != -1 && trackIdInPlaylist == currentTrackIdInPlaylist)
+                        {
+                            this.dgvTrackList.Rows[i].DefaultCellStyle.BackColor = this.GridPlayingColor;
+                        }
+                        else
+                        {
+                            if (i == 0 || i % 2 == 0)
+                            {
+                                this.dgvTrackList.Rows[i].DefaultCellStyle.BackColor = this.GridLineColor1;
+                            }
+                            else
+                            {
+                                this.dgvTrackList.Rows[i].DefaultCellStyle.BackColor = this.GridLineColor2;
+                            }
+                        }
+                    }
+                }
+
+            }
+
+            
+
+            
+            
         }
 
         public void SetColorAndSelection(int currentTrackIdInPlaylist = -1)
@@ -438,7 +511,7 @@ namespace MitoPlayer_2024.Views
                     this.InternalDragAndDropIntoPlaylistEvent?.Invoke(this, new ListEventArgs() { SelectedRows = this.dgvTrackList.SelectedRows, IntegerField1 = this.GetPlaylistIndex(3) });
                 }
             }
-            else if (rdbTagValue.Checked){
+           /* else if (rdbTagValue.Checked){
                 if (this.dgvPlaylistList.SelectedRows.Count > 0)
                 {
                     if (this.dgvPlaylistList.SelectedRows.Count > 0 && e.KeyCode == Keys.D1)
@@ -463,7 +536,7 @@ namespace MitoPlayer_2024.Views
                     }
                 }
                
-            }
+            }*/
             
 
             //R - Play random track
@@ -778,7 +851,7 @@ namespace MitoPlayer_2024.Views
             }
             this.lblCurrentTrack.Text = artist;
             //this.CallSetCurrentTrackColorEvent(currentTrackIndex);
-            this.SetColorAndSelection(currentTrackId);
+            this.SetColorAndSelection2(currentTrackId);
         }
         public void UpdateAfterPlayTrackAfterPause()
         {
@@ -950,8 +1023,13 @@ namespace MitoPlayer_2024.Views
         int tgvHotkeyIndex3 = -1;
         int tgvHotkeyIndex4 = -1;
 
+  
+
         public void InitializeTagValueEditor2(List<Tag> tagList, List<List<TagValue>> tagValueListContainer, bool isTagEditorDisplayed)
         {
+
+            this.tagValueEditorPanel.Controls.Clear();
+
             int sumHeight = 0;
             int height = 0;
             for(int i = 0; i< tagList.Count; i++)
@@ -984,19 +1062,25 @@ namespace MitoPlayer_2024.Views
                         txtBox.Size = new Size(156, 20);
                         txtBox.Location = new Point(5, 20);
 
-                        Button btn = new Button();
+                        TagValueButton btn = new TagValueButton();
                         btn.Text = "Save";
                         btn.Size = new Size(75, 23);
                         btn.Location = new Point(165, 19);
-                        btn.FlatAppearance.BorderSize = 0;
+
+                        btn.FlatAppearance.BorderSize = 1;
                         btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-                        btn.FlatAppearance.BorderColor = this.ButtonBorderColor;
                         btn.UseVisualStyleBackColor = false;
+
                         btn.BackColor = this.ButtonColor;
                         btn.ForeColor = this.FontColor;
+                        btn.FlatAppearance.BorderColor = this.ButtonBorderColor;
+
+                        btn.TagName = gp.Text;
+                        btn.TagValueName = btn.Text;
+                        btn.TextBox = txtBox;
 
                         btn.Click += new System.EventHandler(
-                             (sender, e) => this.btnSetTagValue_Click(sender, e, gp.Text, btn.Text, txtBox.Text));
+                             (sender, e) => this.btnSetTagValue_Click(sender, e));
 
                         gp.Controls.Add(txtBox);
                         gp.Controls.Add(btn);
@@ -1008,35 +1092,46 @@ namespace MitoPlayer_2024.Views
                         int buttonsIntervalX = 5;
                         int buttonsIntervalY = 20;
 
-                        Button btn = new Button();
+                        TagValueButton btn = new TagValueButton();
                         btn.Text = "-";
                         btn.Size = new Size(buttonLengthX, buttonLengthY);
+
+                        btn.TagName = gp.Text;
+
                         btn.Click += new System.EventHandler(
-                                (sender, e) => this.btnClearTagValue_Click(sender, e, gp.Text));
+                                (sender, e) => this.btnClearTagValue_Click(sender, e));
                         btn.Location = new Point(buttonsIntervalX, buttonsIntervalY);
-                        btn.FlatAppearance.BorderSize = 0;
+
+                        btn.FlatAppearance.BorderSize = 1;
                         btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-                        btn.FlatAppearance.BorderColor = this.ButtonBorderColor;
                         btn.UseVisualStyleBackColor = false;
+                        
                         btn.BackColor = this.ButtonColor;
                         btn.ForeColor = this.FontColor;
+                        btn.FlatAppearance.BorderColor = this.ButtonBorderColor;
 
                         gp.Controls.Add(btn);
 
                         for (int j = 1; j <= tagValueListContainer[i].Count; j++)
                         {
 
-                            btn = new Button();
+                            btn = new TagValueButton();
                             btn.Text = tagValueListContainer[i][j-1].Name;
                             btn.Size = new Size(buttonLengthX, buttonLengthY);
+
+                            btn.TagName = gp.Text;
+                            btn.TagValueName = btn.Text;
+
                             btn.Click += new System.EventHandler(
-                                    (sender, e) => this.btnSetTagValue_Click(sender, e, gp.Text, btn.Text, String.Empty));
-                            btn.FlatAppearance.BorderSize = 0;
+                                    (sender, e) => this.btnSetTagValue_Click(sender, e));
+
+                            btn.FlatAppearance.BorderSize = 1;
                             btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-                            btn.FlatAppearance.BorderColor = this.ButtonBorderColor;
                             btn.UseVisualStyleBackColor = false;
+
                             btn.BackColor = this.ButtonColor;
                             btn.ForeColor = tagValueListContainer[i][j - 1].Color;
+                            btn.FlatAppearance.BorderColor = this.ButtonBorderColor;
 
                             if (j == 1 || j == 2)
                             {
@@ -1722,208 +1817,30 @@ namespace MitoPlayer_2024.Views
             this.SelectTagEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 8 });
         }
 
-        private void btnSetTagValue_Click(object sender, EventArgs e, String tagName, String tagValueName, String tagValueValue)
+        private void btnSetTagValue_Click(object sender, EventArgs e)
         {
-            if (this.dgvPlaylistList.SelectedRows.Count > 0)
-            {
-                this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { StringField1 = tagName, StringField2 = tagValueName, StringField3 = tagValueValue,  Rows = this.dgvTrackList.Rows });
-            }
-        }
-        private void btnClearTagValue_Click(object sender, EventArgs e, String tagName)
-        {
-            if (this.dgvPlaylistList.SelectedRows.Count > 0)
-            {
-                this.ClearTagValueEvent?.Invoke(this, new ListEventArgs() { StringField1 = tagName, Rows = this.dgvTrackList.Rows });
-            }
-        }
+            TagValueButton button = (sender as TagValueButton);
 
-        private void btnTagValue1_Click(object sender, EventArgs e)
-        {
-            if(this.dgvPlaylistList.SelectedRows.Count > 0)
-            {
-                this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 0, Rows = this.dgvTrackList.Rows });
-            }
-        }
-        private void btnTagValue2_Click(object sender, EventArgs e)
-        {
             if (this.dgvPlaylistList.SelectedRows.Count > 0)
             {
-                this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 1, Rows = this.dgvTrackList.Rows });
-            }
-        }
-        private void btnTagValue3_Click(object sender, EventArgs e)
-        {
-            if (this.dgvPlaylistList.SelectedRows.Count > 0)
-            {
-                this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 2, Rows = this.dgvTrackList.Rows });
-            }
-        }
-        private void btnTagValue4_Click(object sender, EventArgs e)
-        {
-            if (this.dgvPlaylistList.SelectedRows.Count > 0)
-            {
-                this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 3, Rows = this.dgvTrackList.Rows });
-            }
-        }
-        private void btnTagValue5_Click(object sender, EventArgs e)
-        {
-            if (this.dgvPlaylistList.SelectedRows.Count > 0)
-            {
-                this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 4, Rows = this.dgvTrackList.Rows });
-            }
-        }
-        private void btnTagValue6_Click(object sender, EventArgs e)
-        {
-            if (this.dgvPlaylistList.SelectedRows.Count > 0)
-            {
-                this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 5, Rows = this.dgvTrackList.Rows });
-            }
-        }
-        private void btnTagValue7_Click(object sender, EventArgs e)
-        {
-            if (this.dgvPlaylistList.SelectedRows.Count > 0)
-            {
-                this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 6, Rows = this.dgvTrackList.Rows });
-            }
-        }
-        private void btnTagValue8_Click(object sender, EventArgs e)
-        {
-            if (this.dgvPlaylistList.SelectedRows.Count > 0)
-            {
-                this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 7, Rows = this.dgvTrackList.Rows });
-            }
-        }
-        private void btnTagValue9_Click(object sender, EventArgs e)
-        {
-            if (this.dgvPlaylistList.SelectedRows.Count > 0)
-            {
-                this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 8, Rows = this.dgvTrackList.Rows });
-            }
-        }
-        private void btnTagValue10_Click(object sender, EventArgs e)
-        {
-            if (this.dgvPlaylistList.SelectedRows.Count > 0)
-            {
-                this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 9, Rows = this.dgvTrackList.Rows });
-            }
-        }
-        private void btnTagValue11_Click(object sender, EventArgs e)
-        {
-            if (this.dgvPlaylistList.SelectedRows.Count > 0)
-            {
-                this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 10, Rows = this.dgvTrackList.Rows });
-            }
-        }
-        private void btnTagValue12_Click(object sender, EventArgs e)
-        {
-            if (this.dgvPlaylistList.SelectedRows.Count > 0)
-            {
-                this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 11, Rows = this.dgvTrackList.Rows });
-            }
-        }
-        private void btnTagValue13_Click(object sender, EventArgs e)
-        {
-            if (this.dgvPlaylistList.SelectedRows.Count > 0)
-            {
-                this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 12, Rows = this.dgvTrackList.Rows });
-            }
-        }
-        private void btnTagValue14_Click(object sender, EventArgs e)
-        {
-            if (this.dgvPlaylistList.SelectedRows.Count > 0)
-            {
-                this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 13, Rows = this.dgvTrackList.Rows });
-            }
-        }
-        private void btnTagValue15_Click(object sender, EventArgs e)
-        {
-            if (this.dgvPlaylistList.SelectedRows.Count > 0)
-            {
-                this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 14, Rows = this.dgvTrackList.Rows });
-            }
-        }
-        private void btnTagValue16_Click(object sender, EventArgs e)
-        {
-            if (this.dgvPlaylistList.SelectedRows.Count > 0)
-            {
-                this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 15, Rows = this.dgvTrackList.Rows });
-            }
-        }
-        private void btnTagValue17_Click(object sender, EventArgs e)
-        {
-            if (this.dgvPlaylistList.SelectedRows.Count > 0)
-            {
-                this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 16, Rows = this.dgvTrackList.Rows });
-            }
-        }
-        private void btnTagValue18_Click(object sender, EventArgs e)
-        {
-            if (this.dgvPlaylistList.SelectedRows.Count > 0)
-            {
-                this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 17, Rows = this.dgvTrackList.Rows });
-            }
-        }
-        private void btnTagValue19_Click(object sender, EventArgs e)
-        {
-            if (this.dgvPlaylistList.SelectedRows.Count > 0)
-            {
-                this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 18, Rows = this.dgvTrackList.Rows });
-            }
-        }
-        private void btnTagValue20_Click(object sender, EventArgs e)
-        {
-            if (this.dgvPlaylistList.SelectedRows.Count > 0)
-            {
-                this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 19, Rows = this.dgvTrackList.Rows });
-            }
-        }
-        private void btnTagValue21_Click(object sender, EventArgs e)
-        {
-            if (this.dgvPlaylistList.SelectedRows.Count > 0)
-            {
-                this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 20, Rows = this.dgvTrackList.Rows });
-            }
-        }
-        private void btnTagValue22_Click(object sender, EventArgs e)
-        {
-            if (this.dgvPlaylistList.SelectedRows.Count > 0)
-            {
-                this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 21, Rows = this.dgvTrackList.Rows });
-            }
-        }
-        private void btnTagValue23_Click(object sender, EventArgs e)
-        {
-            if (this.dgvPlaylistList.SelectedRows.Count > 0)
-            {
-                this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 22, Rows = this.dgvTrackList.Rows });
-            }
-        }
-        private void btnTagValue24_Click(object sender, EventArgs e)
-        {
-            if (this.dgvPlaylistList.SelectedRows.Count > 0)
-            {
-                this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 23, Rows = this.dgvTrackList.Rows });
-            }
-        }
-      /*  private void btnSetTagValue_Click(object sender, EventArgs e)
-        {
-            if (this.dgvPlaylistList.SelectedRows.Count > 0)
-            {
-                this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { StringField1 = this.txtBoxTagValueInput.Text, Rows = this.dgvTrackList.Rows });
-                this.txtBoxTagValueInput.Text = null;
-            }
-        }
-        private void txtBoxTagValueInput_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter)
-            {
-                if (this.dgvPlaylistList.SelectedRows.Count > 0)
+                String tagValueValue = String.Empty;
+                if(button.TextBox != null)
                 {
-                    this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { StringField1 = this.txtBoxTagValueInput.Text, Rows = this.dgvTrackList.Rows });
-                    this.txtBoxTagValueInput.Text = null;
+                    tagValueValue = button.TextBox.Text;
+                    button.TextBox.Text = String.Empty;
                 }
+                this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { StringField1 = button.TagName, StringField2 = button.TagValueName, StringField3 = tagValueValue,  Rows = this.dgvTrackList.Rows });
             }
-        }*/
+        }
+        private void btnClearTagValue_Click(object sender, EventArgs e)
+        {
+            TagValueButton button = (sender as TagValueButton);
+
+            if (this.dgvPlaylistList.SelectedRows.Count > 0)
+            {
+                this.ClearTagValueEvent?.Invoke(this, new ListEventArgs() { StringField1 = button.TagName, Rows = this.dgvTrackList.Rows });
+            }
+        }
 
         #endregion
 

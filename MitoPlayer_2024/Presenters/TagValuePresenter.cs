@@ -28,6 +28,7 @@ namespace MitoPlayer_2024.Presenters
         private DataTable tagValueListTable { get; set; }
         private Tag currentTag { get; set; }
         private TagValue currentTagValue { get; set; }
+        private bool IsInitialized { get; set; }
 
         public TagValuePresenter(ITagValueView tagValueEditorView, ITagDao tagDao, ITrackDao trackDao, ISettingDao settingDao)
         {
@@ -47,11 +48,13 @@ namespace MitoPlayer_2024.Presenters
             this.tagValueEditorView.SetCurrentTagId += SetCurrentTagId;
             this.tagValueEditorView.SetCurrentTagValueId += SetCurrentTagValueId;
             this.tagValueEditorView.OpenTagValueImportViewEvent += OpenTagValueImportViewEvent;
-
-            this.InitializeDataTables();
-            this.tagValueEditorView.Show();
         }
-        private void InitializeDataTables()
+
+        public void SelectFirstTagValue()
+        {
+            this.SetCurrentTagId(0);
+        }
+        public void InitializeTagDataTable()
         {
             this.tagListBindingSource = new BindingSource();
             this.tagListTable = new DataTable();
@@ -77,8 +80,6 @@ namespace MitoPlayer_2024.Presenters
 
             this.tagListBindingSource.DataSource = tagListTable;
             this.tagValueEditorView.SetTagListBindingSource(this.tagListBindingSource);
-
-            this.SetCurrentTagId(0);
         }
         private void SetCurrentTagId(object sender, ListEventArgs e)
         {
@@ -357,7 +358,8 @@ namespace MitoPlayer_2024.Presenters
                 }
             }
 
-            this.InitializeDataTables();
+            this.InitializeTagDataTable();
+            this.SelectFirstTagValue();
 
             return result;
         }

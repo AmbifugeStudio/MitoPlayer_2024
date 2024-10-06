@@ -79,7 +79,6 @@
             this.btnPlaylist = new System.Windows.Forms.Button();
             this.pnlMediaPlayer = new System.Windows.Forms.Panel();
             this.trackVolume = new System.Windows.Forms.TrackBar();
-            this.pbrTrackProgress = new System.Windows.Forms.ProgressBar();
             this.lblVolume = new System.Windows.Forms.Label();
             this.lblTrackEnd = new System.Windows.Forms.Label();
             this.lblTrackStart = new System.Windows.Forms.Label();
@@ -91,6 +90,7 @@
             this.btnPrev = new System.Windows.Forms.Button();
             this.btnPlay = new System.Windows.Forms.Button();
             this.mediaPlayer = new AxWMPLib.AxWindowsMediaPlayer();
+            this.pbrTrackProgress = new System.Windows.Forms.ProgressBar();
             this.strMenu.SuspendLayout();
             this.pnlMainMenu.SuspendLayout();
             this.pnlMediaPlayer.SuspendLayout();
@@ -422,7 +422,7 @@
             this.pnlMainMenu.Dock = System.Windows.Forms.DockStyle.Left;
             this.pnlMainMenu.Location = new System.Drawing.Point(0, 24);
             this.pnlMainMenu.Name = "pnlMainMenu";
-            this.pnlMainMenu.Size = new System.Drawing.Size(91, 721);
+            this.pnlMainMenu.Size = new System.Drawing.Size(91, 744);
             this.pnlMainMenu.TabIndex = 2;
             // 
             // btnHarmonizer
@@ -494,9 +494,9 @@
             // 
             // pnlMediaPlayer
             // 
+            this.pnlMediaPlayer.Controls.Add(this.lblVolume);
             this.pnlMediaPlayer.Controls.Add(this.trackVolume);
             this.pnlMediaPlayer.Controls.Add(this.pbrTrackProgress);
-            this.pnlMediaPlayer.Controls.Add(this.lblVolume);
             this.pnlMediaPlayer.Controls.Add(this.lblTrackEnd);
             this.pnlMediaPlayer.Controls.Add(this.lblTrackStart);
             this.pnlMediaPlayer.Controls.Add(this.btnOpenDirectory);
@@ -516,7 +516,7 @@
             // trackVolume
             // 
             this.trackVolume.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.trackVolume.Location = new System.Drawing.Point(1030, 3);
+            this.trackVolume.Location = new System.Drawing.Point(1030, 10);
             this.trackVolume.Maximum = 100;
             this.trackVolume.Name = "trackVolume";
             this.trackVolume.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -525,21 +525,9 @@
             this.trackVolume.TickFrequency = 10;
             this.trackVolume.Scroll += new System.EventHandler(this.trackVolume_Scroll);
             // 
-            // pbrTrackProgress
-            // 
-            this.pbrTrackProgress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pbrTrackProgress.Location = new System.Drawing.Point(411, 10);
-            this.pbrTrackProgress.Name = "pbrTrackProgress";
-            this.pbrTrackProgress.Size = new System.Drawing.Size(527, 23);
-            this.pbrTrackProgress.Step = 1;
-            this.pbrTrackProgress.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
-            this.pbrTrackProgress.TabIndex = 45;
-            this.pbrTrackProgress.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pBar_MouseDown);
-            // 
             // lblVolume
             // 
-            this.lblVolume.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblVolume.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblVolume.AutoSize = true;
             this.lblVolume.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.lblVolume.Location = new System.Drawing.Point(1175, 13);
@@ -669,11 +657,23 @@
             this.mediaPlayer.Size = new System.Drawing.Size(10, 10);
             this.mediaPlayer.TabIndex = 1;
             // 
+            // pbrTrackProgress
+            // 
+            this.pbrTrackProgress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pbrTrackProgress.Location = new System.Drawing.Point(411, 10);
+            this.pbrTrackProgress.Name = "pbrTrackProgress";
+            this.pbrTrackProgress.Size = new System.Drawing.Size(527, 23);
+            this.pbrTrackProgress.Step = 1;
+            this.pbrTrackProgress.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            this.pbrTrackProgress.TabIndex = 45;
+            this.pbrTrackProgress.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pBar_MouseDown);
+            // 
             // MainView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1328, 745);
+            this.ClientSize = new System.Drawing.Size(1328, 768);
             this.Controls.Add(this.pnlMediaPlayer);
             this.Controls.Add(this.pnlMainMenu);
             this.Controls.Add(this.strMenu);
@@ -743,7 +743,6 @@
         public AxWMPLib.AxWindowsMediaPlayer mediaPlayer;
         private System.Windows.Forms.Panel pnlMediaPlayer;
         private System.Windows.Forms.TrackBar trackVolume;
-        private System.Windows.Forms.ProgressBar pbrTrackProgress;
         private System.Windows.Forms.Label lblVolume;
         private System.Windows.Forms.Label lblTrackEnd;
         private System.Windows.Forms.Label lblTrackStart;
@@ -761,6 +760,7 @@
         private System.Windows.Forms.ToolStripMenuItem menuStripExportToTXT;
         private System.Windows.Forms.ToolStripMenuItem menuStripExportToM3U;
         private System.Windows.Forms.ToolStripMenuItem menuStripExportToDirectory;
+        private System.Windows.Forms.ProgressBar pbrTrackProgress;
     }
 }
 

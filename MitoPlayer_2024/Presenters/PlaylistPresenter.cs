@@ -52,38 +52,14 @@ namespace MitoPlayer_2024.Presenters
         private Tag currentTag { get; set; }
         private TagValue currentTagValue { get; set; }
 
-        public PlaylistPresenter(IPlaylistView view, MediaPlayerComponent mediaPlayer, ITrackDao trackDao, ITagDao tagValueDao, ISettingDao settingDao)
+        private bool IsInitialized { get; set; }
+        public PlaylistPresenter(IPlaylistView view, ITrackDao trackDao, ITagDao tagValueDao, ISettingDao settingDao)
         {
-            ResultOrError result = new ResultOrError();
-
             //INITIALIZE
             this.playlistView = view;
             this.trackDao = trackDao;
             this.tagDao = tagValueDao;
             this.settingDao = settingDao;
-
-            if (result.Success)
-                result = this.InitializeTaglist();
-            if (result.Success)
-                result = this.InitializeDataTables();
-            if (result.Success)
-            {
-                this.mediaPLayerComponent = mediaPlayer;
-                this.mediaPLayerComponent.Initialize(this.trackListTable);
-            }
-            if (result.Success)
-                result= this.InitializeTagEditor();
-            if (result.Success)
-                result= this.ResetPlaylistList();
-            if (result.Success)
-                result = InitializeColoringByTagValues();
-            if (result.Success)
-                result= this.InitializeVolume();
-
-            if (!result.Success)
-            {
-                MessageBox.Show(result.ErrorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
 
             //MEDIA PLAYER
             this.playlistView.SetCurrentTrackEvent += SetCurrentTrackEvent;
@@ -126,13 +102,39 @@ namespace MitoPlayer_2024.Presenters
             this.playlistView.SelectTagEvent += SelectTagEvent;
             this.playlistView.SetTagValueEvent += SetTagValueEvent;
             this.playlistView.ClearTagValueEvent += ClearTagValueEvent;
-
-            this.playlistView.Show();
         }
 
         
 
         #region INITIALIZE
+
+        public void Initialize(MediaPlayerComponent mediaPlayer)
+        {
+            ResultOrError result = new ResultOrError();
+            if (result.Success)
+                result = this.InitializeTaglist();
+            if (result.Success)
+                result = this.InitializeDataTables();
+            if (result.Success)
+            {
+                this.mediaPLayerComponent = mediaPlayer;
+                this.mediaPLayerComponent.Initialize(this.trackListTable);
+            }
+            if (result.Success)
+                result = this.InitializeTagEditor();
+            if (result.Success)
+                result = this.ResetPlaylistList();
+            if (result.Success)
+                result = InitializeColoringByTagValues();
+            if (result.Success)
+                result = this.InitializeVolume();
+
+            if (!result.Success)
+            {
+                MessageBox.Show(result.ErrorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+        }
 
         private ResultOrError InitializeTaglist()
         {
@@ -1812,7 +1814,11 @@ namespace MitoPlayer_2024.Presenters
                                         {
                                             if (ttv.TagId == currentTag.Id)
                                             {
+
+                                                ttv.TagValueId = -1;
                                                 ttv.TagValueName = String.Empty;
+                                               
+
                                                 this.trackDao.UpdateTrackTagValue(ttv);
                                                 break;
                                             }

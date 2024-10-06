@@ -171,6 +171,9 @@
     <Compile Include="Dao\SettingDao.cs" />
     <Compile Include="Dao\TagDao.cs" />
     <Compile Include="Dao\DataBaseBuilderDao.cs" />
+    <Compile Include="Helpers\ButtonExtension.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Helpers\Enums.cs" />
     <Compile Include="Helpers\LabelTimer.cs" />
     <Compile Include="Helpers\ListEventArgs.cs" />

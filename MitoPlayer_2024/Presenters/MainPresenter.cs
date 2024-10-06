@@ -34,7 +34,7 @@ namespace MitoPlayer_2024.Presenters
         private IProfileView profileView { get; set; }
         private IProfileEditorView profileEditorView { get; set; }
         private IPlaylistView playlistView { get; set; }
-        private ITagValueView tagValueEditorView { get; set; }
+        private ITagValueView tagValueView { get; set; }
         private IRuleEditorView ruleEditorView { get; set; }
         private ITrackEditorView trackEditorView { get; set; }
         private ITemplateEditorView templateEditorView { get; set; }
@@ -111,6 +111,17 @@ namespace MitoPlayer_2024.Presenters
             this.tagDao = new TagDao(connectionString);
 
             this.InitializeProfileAndPlaylist();
+            this.InitializeViewsAndPresenters();
+        }
+        public void InitializeViewsAndPresenters()
+        {
+            this.playlistView = PlaylistView.GetInstance((MainView)this.mainView);
+            this.playlistPresenter = new PlaylistPresenter(this.playlistView, this.trackDao, this.tagDao, this.settingDao);
+
+            this.tagValueView = TagValueView.GetInstance((MainView)this.mainView);
+            this.tagValueEditorPresenter = new TagValuePresenter(this.tagValueView, this.tagDao, this.trackDao, this.settingDao);
+
+            this.ShowPlaylistView(this, new EventArgs());
         }
 
         public void InitializeProfileAndPlaylist()
@@ -165,7 +176,7 @@ namespace MitoPlayer_2024.Presenters
             }
             if (result.Success)
             {
-                this.ShowPlaylistView(this, new EventArgs());
+                //this.ShowPlaylistView(this, new EventArgs());
             }
             else
             {
@@ -330,17 +341,36 @@ namespace MitoPlayer_2024.Presenters
                 this.ReloadMainView();
             }
         }
+        private void HideAllForm()
+        {
+            ((PlaylistView)this.playlistView).Hide();
+            ((TagValueView)this.tagValueView).Hide();
+           /* ((TrackEditorView)this.trackEditorView).Hide();
+            ((RuleEditorView)this.ruleEditorView).Hide();
+            ((TemplateEditorView)this.templateEditorView).Hide();
+            ((HarmonizerView)this.harmonizerView).Hide();*/
+        }
         private void ShowPlaylistView(object sender, EventArgs e)
         {
-            this.actualView = PlaylistView.GetInstance((MainView)mainView); 
+            this.HideAllForm();
+
+            this.playlistPresenter.Initialize(this.mediaPlayerComponent);
+            ((PlaylistView)this.playlistView).Show();
+
+            this.actualView = this.playlistView;
             ((MainView)mainView).SetMenuStripAccessibility(this.actualView);
-            this.playlistPresenter = new PlaylistPresenter((IPlaylistView)this.actualView, this.mediaPlayerComponent, this.trackDao, this.tagDao, this.settingDao);
         }
+        
         private void ShowTagValueEditorView(object sender, EventArgs e)
         {
-            this.actualView = TagValueView.GetInstance((MainView)mainView);
+            this.actualView = this.tagValueView;
+            this.tagValueEditorPresenter.InitializeTagDataTable();
+            ((TagValueView)this.tagValueView).Show();
+
+            this.tagValueEditorPresenter.SelectFirstTagValue();
+
+            this.actualView = this.playlistView;
             ((MainView)mainView).SetMenuStripAccessibility(this.actualView);
-            this.tagValueEditorPresenter = new TagValuePresenter((ITagValueView)this.actualView, this.tagDao, this.trackDao, this.settingDao);
         }
         private void ShowTrackEditorView(object sender, EventArgs e)
         {

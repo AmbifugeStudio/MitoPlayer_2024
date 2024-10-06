@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            bool isDialogEventAttached = false;
             this.dgvTagList = new System.Windows.Forms.DataGridView();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.btnDeleteTag = new System.Windows.Forms.Button();
@@ -189,7 +190,14 @@
             this.btnEditTagValue.TabIndex = 4;
             this.btnEditTagValue.Text = "Edit";
             this.btnEditTagValue.UseVisualStyleBackColor = true;
-            this.btnEditTagValue.Click += new System.EventHandler(this.btnEditTagValue_Click);
+
+
+            if (!isDialogEventAttached)
+            {
+                this.btnEditTagValue.Click += new System.EventHandler(this.btnEditTagValue_Click);
+                isDialogEventAttached = true;
+            }
+               
             // 
             // btnAddTagValue
             // 
