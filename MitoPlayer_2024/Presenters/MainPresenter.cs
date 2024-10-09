@@ -82,6 +82,8 @@ namespace MitoPlayer_2024.Presenters
             this.mainView.RandomTrack += RandomTrack;
             this.mainView.ChangeVolume += ChangeVolume;
             this.mainView.ChangeProgress += ChangeProgress;
+            this.mainView.ChangeMute += ChangeMute;
+            this.mainView.ChangeShuffle += ChangeShuffle;
             //Tracklist
             this.mainView.OpenFiles += OpenFiles;
             this.mainView.OpenDirectory += OpenDirectory;
@@ -354,8 +356,10 @@ namespace MitoPlayer_2024.Presenters
         {
             this.HideAllForm();
 
-            this.playlistPresenter.Initialize(this.mediaPlayerComponent);
+            this.playlistPresenter.Initialize();
             ((PlaylistView)this.playlistView).Show();
+
+            this.playlistPresenter.ReloadData(this.mediaPlayerComponent);
 
             this.actualView = this.playlistView;
             ((MainView)mainView).SetMenuStripAccessibility(this.actualView);
@@ -363,13 +367,14 @@ namespace MitoPlayer_2024.Presenters
         
         private void ShowTagValueEditorView(object sender, EventArgs e)
         {
-            this.actualView = this.tagValueView;
+            this.HideAllForm();
+
             this.tagValueEditorPresenter.InitializeTagDataTable();
             ((TagValueView)this.tagValueView).Show();
 
             this.tagValueEditorPresenter.SelectFirstTagValue();
 
-            this.actualView = this.playlistView;
+            this.actualView = this.tagValueView;
             ((MainView)mainView).SetMenuStripAccessibility(this.actualView);
         }
         private void ShowTrackEditorView(object sender, EventArgs e)
@@ -679,6 +684,27 @@ namespace MitoPlayer_2024.Presenters
                 this.trackEditorPresenter.CallChangeVolumeEvent(e.IntegerField1);
             else if (this.actualView != null && this.actualView.GetType() == typeof(HarmonizerView))
                 this.harmonizerPresenter.CallChangeVolumeEvent(e.IntegerField1);
+        }
+        private void ChangeMute(object sender, ListEventArgs e)
+        {
+
+
+
+            if (this.actualView != null && this.actualView.GetType() == typeof(PlaylistView))
+                this.playlistPresenter.CallChangeMuteEvent(e.BooleanField1);
+            else if (this.actualView != null && this.actualView.GetType() == typeof(TrackEditorView))
+                this.trackEditorPresenter.CallChangeMuteEvent(e.BooleanField1);
+            else if (this.actualView != null && this.actualView.GetType() == typeof(HarmonizerView))
+                this.harmonizerPresenter.CallChangeMuteEvent(e.BooleanField1);
+        }
+        private void ChangeShuffle(object sender, ListEventArgs e)
+        {
+            if (this.actualView != null && this.actualView.GetType() == typeof(PlaylistView))
+                this.playlistPresenter.CallChangeShuffleEvent(e.BooleanField1);
+            else if (this.actualView != null && this.actualView.GetType() == typeof(TrackEditorView))
+                this.trackEditorPresenter.CallChangeShuffleEvent(e.BooleanField1);
+            else if (this.actualView != null && this.actualView.GetType() == typeof(HarmonizerView))
+                this.harmonizerPresenter.CallChangeShuffleEvent(e.BooleanField1);
         }
 
         //HELP

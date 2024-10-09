@@ -1,24 +1,32 @@
 ﻿
 
-
-
-- BUG: Play a track, navigate to tag values view, create tag and tag value, navigate back to playlist, no actual playing colouring
-- BUG: navigate to tag values view, add color to tagvalue, navigate back to playlist, select tag color - tagvalues has not been updated
+- REFACTOR: tagvalue editor - tagvalue change speed optimization
+- FEATURE: tag value editor - "tagvalue change of current playing track or selected track" option
 - BUG: tag color dropdown is empty
 - FEATURE: tag import - color definition in script
-- FEATURE: next track button - change selection to the current playing track
 - FEATURE: tag editor - one selection fills bpm and select key (and the custom tagvalues)
-- FEATURE: tag editor - keys: 01A,01B,02A,02B + color fix
 - FEATURE: tag editor - export/import key/bpm and custom tag values
 - FEATURE: tagvalue - custom order like: Style:Liquid,Deep,Roller,Stadion,Neuro (order by column)
 - BUG: automatic next track stops - after list reorder and the current playing track was at the end of the original list (list has not been updated in the player?) - or not. Objectiv - Fighting Chance stops at the end
 - FEATURE: preview setting (music start at certain point on the next track button)
 - FEATURE: reorder tags and tagvalues
 - FEATURE: tag editor - display according to tag/tagvalue order
-- FEATURE: puase button play music after pause
-- FEATURE: shuffle enable/disable
+- FEATURE: progress bar for long loading time
 
-
+======================
+v0.12.11.4
+======================
+OK - REFACTOR: pages reload refactor and source code purifying (in progress)
+OK - FEATURE: dark theme (in progress)
+OK - BUG: Play a track, navigate to tag values view, create tag and tag value, navigate back to playlist, no actual playing colouring
+OK - BUG: navigate to tag values view, add color to tagvalue, navigate back to playlist, select tag color - tagvalues has not been updated
+OK - FEATURE: pause button play music after pause
+======================
+v0.12.10.15
+======================
+OK - FEATURE: shuffle enable/disable
+OK - FEATURE: mute button
+OK - FEATURE: tag editor - keys: 01A,01B,02A,02B + color fix
 ======================
 v0.12.10.12
 ======================
@@ -72,7 +80,8 @@ OK - REFACTOR: MySQL connection view
 OK - REFACTOR: Database initialization
 
 
-
+v0.				12.									4.								1
+Main Release	Very Large Feature or Refactor		Large Feature, Refactor or Bug	Small Feature, Refactor or Bug
 
 v0.				12.									4.								1
 Main Release	Large Feature or Refactor			Small Features or Refactor		Small Bugs

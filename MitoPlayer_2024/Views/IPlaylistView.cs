@@ -24,7 +24,6 @@ namespace MitoPlayer_2024.Views
         event EventHandler RandomTrackEvent;
         event EventHandler<ListEventArgs> ChangeVolumeEvent;
         event EventHandler GetMediaPlayerProgressStatusEvent;
-        event EventHandler<ListEventArgs> SetCurrentTrackColorEvent;
 
         //TRACKLIST
         event EventHandler<ListEventArgs> OrderByColumnEvent;
@@ -33,7 +32,7 @@ namespace MitoPlayer_2024.Views
         event EventHandler<ListEventArgs> InternalDragAndDropIntoPlaylistEvent;
         event EventHandler<ListEventArgs> ExternalDragAndDropIntoTracklistEvent;
         event EventHandler<ListEventArgs> ExternalDragAndDropIntoPlaylistEvent;
-        event EventHandler<ListEventArgs> ChangeTracklistColorEvent;
+       // event EventHandler<ListEventArgs> ChangeTracklistColorEvent;
         event EventHandler ShowColumnVisibilityEditorEvent;
         event EventHandler ScanBpmEvent;
         
@@ -55,16 +54,19 @@ namespace MitoPlayer_2024.Views
         event EventHandler<ListEventArgs> SetTagValueEvent;
         event EventHandler<ListEventArgs> ClearTagValueEvent;
 
-        void SetPlaylistListBindingSource(BindingSource playlistList, bool[] columnVisibility, int currentPlaylistId);
-        void SetTrackListBindingSource(BindingSource trackList, bool[] columnVisibility, int[] columnSortingId, int currentTrackIdInPlaylist);
-        void SetSelectedTrackListBindingSource(BindingSource selectedTrackList);
+        void InitializePlaylistListBindingSource(BindingSource playlistList, bool[] columnVisibility, int currentPlaylistId);
+        void ReloadPlaylistListBindingSource(BindingSource playlistList, bool[] columnVisibility, int currentPlaylistId);
+        void InitializeTrackListBindingSource(BindingSource trackList, bool[] columnVisibility, int[] columnSortingId);
+        void ReloadTrackListBindingSource(BindingSource trackList, bool[] columnVisibility, int[] columnSortingId, int currentTrackIdInPlaylist);
         void UpdateAfterPlayTrack(int currentTrackIndex, int currentTrackId);
         void UpdateAfterPlayTrackAfterPause();
         void UpdateAfterStopTrack();
         void UpdateAfterPauseTrack();
         void UpdateMediaPlayerProgressStatus(double duration, String durationString, double currentPosition, String currentPositionString);
         void SetCurrentTrackColor(int trackIdInPlaylist);
+        void UpdateTracklistColor(int trackIdInPlaylist);
         void SetVolume(int volume);
+        void SetMuted(bool isMuted);
         void Show();
     }
 }

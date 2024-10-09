@@ -78,19 +78,21 @@
             this.btnTagValues = new System.Windows.Forms.Button();
             this.btnPlaylist = new System.Windows.Forms.Button();
             this.pnlMediaPlayer = new System.Windows.Forms.Panel();
-            this.trackVolume = new System.Windows.Forms.TrackBar();
             this.lblVolume = new System.Windows.Forms.Label();
-            this.lblTrackEnd = new System.Windows.Forms.Label();
-            this.lblTrackStart = new System.Windows.Forms.Label();
             this.btnOpenDirectory = new System.Windows.Forms.Button();
             this.btnOpen = new System.Windows.Forms.Button();
+            this.pbrTrackProgress = new System.Windows.Forms.ProgressBar();
+            this.chbShuffle = new System.Windows.Forms.CheckBox();
+            this.lblTrackEnd = new System.Windows.Forms.Label();
+            this.trackVolume = new System.Windows.Forms.TrackBar();
+            this.chbMute = new System.Windows.Forms.CheckBox();
+            this.lblTrackStart = new System.Windows.Forms.Label();
             this.btnNext = new System.Windows.Forms.Button();
             this.btnStop = new System.Windows.Forms.Button();
             this.btnPause = new System.Windows.Forms.Button();
             this.btnPrev = new System.Windows.Forms.Button();
             this.btnPlay = new System.Windows.Forms.Button();
             this.mediaPlayer = new AxWMPLib.AxWindowsMediaPlayer();
-            this.pbrTrackProgress = new System.Windows.Forms.ProgressBar();
             this.strMenu.SuspendLayout();
             this.pnlMainMenu.SuspendLayout();
             this.pnlMediaPlayer.SuspendLayout();
@@ -357,43 +359,43 @@
             // menuStripStop
             // 
             this.menuStripStop.Name = "menuStripStop";
-            this.menuStripStop.Size = new System.Drawing.Size(119, 22);
+            this.menuStripStop.Size = new System.Drawing.Size(187, 22);
             this.menuStripStop.Text = "Stop";
             this.menuStripStop.Click += new System.EventHandler(this.menuStripStop_Click);
             // 
             // menuStripPause
             // 
             this.menuStripPause.Name = "menuStripPause";
-            this.menuStripPause.Size = new System.Drawing.Size(119, 22);
+            this.menuStripPause.Size = new System.Drawing.Size(187, 22);
             this.menuStripPause.Text = "Pause";
             this.menuStripPause.Click += new System.EventHandler(this.menuStripPause_Click);
             // 
             // menuStripPlay
             // 
             this.menuStripPlay.Name = "menuStripPlay";
-            this.menuStripPlay.Size = new System.Drawing.Size(119, 22);
+            this.menuStripPlay.Size = new System.Drawing.Size(187, 22);
             this.menuStripPlay.Text = "Play";
             this.menuStripPlay.Click += new System.EventHandler(this.menuStripPlay_Click);
             // 
             // menuStripPrev
             // 
             this.menuStripPrev.Name = "menuStripPrev";
-            this.menuStripPrev.Size = new System.Drawing.Size(119, 22);
+            this.menuStripPrev.Size = new System.Drawing.Size(187, 22);
             this.menuStripPrev.Text = "Previous";
             this.menuStripPrev.Click += new System.EventHandler(this.menuStripPrev_Click);
             // 
             // menuStripNext
             // 
             this.menuStripNext.Name = "menuStripNext";
-            this.menuStripNext.Size = new System.Drawing.Size(119, 22);
-            this.menuStripNext.Text = "Next";
+            this.menuStripNext.Size = new System.Drawing.Size(186, 22);
+            this.menuStripNext.Text = "Next (B)";
             this.menuStripNext.Click += new System.EventHandler(this.menuStripNext_Click);
             // 
             // menuStripRandom
             // 
             this.menuStripRandom.Name = "menuStripRandom";
-            this.menuStripRandom.Size = new System.Drawing.Size(119, 22);
-            this.menuStripRandom.Text = "Random";
+            this.menuStripRandom.Size = new System.Drawing.Size(180, 22);
+            this.menuStripRandom.Text = "Random (R)";
             this.menuStripRandom.Click += new System.EventHandler(this.menuStripRandom_Click);
             // 
             // helpToolStripMenuItem
@@ -495,12 +497,14 @@
             // pnlMediaPlayer
             // 
             this.pnlMediaPlayer.Controls.Add(this.lblVolume);
-            this.pnlMediaPlayer.Controls.Add(this.trackVolume);
-            this.pnlMediaPlayer.Controls.Add(this.pbrTrackProgress);
-            this.pnlMediaPlayer.Controls.Add(this.lblTrackEnd);
-            this.pnlMediaPlayer.Controls.Add(this.lblTrackStart);
             this.pnlMediaPlayer.Controls.Add(this.btnOpenDirectory);
             this.pnlMediaPlayer.Controls.Add(this.btnOpen);
+            this.pnlMediaPlayer.Controls.Add(this.pbrTrackProgress);
+            this.pnlMediaPlayer.Controls.Add(this.chbShuffle);
+            this.pnlMediaPlayer.Controls.Add(this.lblTrackEnd);
+            this.pnlMediaPlayer.Controls.Add(this.trackVolume);
+            this.pnlMediaPlayer.Controls.Add(this.chbMute);
+            this.pnlMediaPlayer.Controls.Add(this.lblTrackStart);
             this.pnlMediaPlayer.Controls.Add(this.btnNext);
             this.pnlMediaPlayer.Controls.Add(this.btnStop);
             this.pnlMediaPlayer.Controls.Add(this.btnPause);
@@ -513,53 +517,16 @@
             this.pnlMediaPlayer.Size = new System.Drawing.Size(1237, 47);
             this.pnlMediaPlayer.TabIndex = 4;
             // 
-            // trackVolume
-            // 
-            this.trackVolume.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.trackVolume.Location = new System.Drawing.Point(1030, 10);
-            this.trackVolume.Maximum = 100;
-            this.trackVolume.Name = "trackVolume";
-            this.trackVolume.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.trackVolume.Size = new System.Drawing.Size(139, 45);
-            this.trackVolume.TabIndex = 46;
-            this.trackVolume.TickFrequency = 10;
-            this.trackVolume.Scroll += new System.EventHandler(this.trackVolume_Scroll);
-            // 
             // lblVolume
             // 
-            this.lblVolume.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblVolume.AutoSize = true;
             this.lblVolume.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.lblVolume.Location = new System.Drawing.Point(1175, 13);
+            this.lblVolume.Location = new System.Drawing.Point(511, 15);
             this.lblVolume.Name = "lblVolume";
             this.lblVolume.Size = new System.Drawing.Size(50, 20);
             this.lblVolume.TabIndex = 42;
             this.lblVolume.Text = "100%";
-            // 
-            // lblTrackEnd
-            // 
-            this.lblTrackEnd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblTrackEnd.AutoSize = true;
-            this.lblTrackEnd.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.lblTrackEnd.Location = new System.Drawing.Point(944, 10);
-            this.lblTrackEnd.Name = "lblTrackEnd";
-            this.lblTrackEnd.Size = new System.Drawing.Size(80, 24);
-            this.lblTrackEnd.TabIndex = 43;
-            this.lblTrackEnd.Text = "00:00:00";
-            // 
-            // lblTrackStart
-            // 
-            this.lblTrackStart.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblTrackStart.AutoSize = true;
-            this.lblTrackStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.lblTrackStart.Location = new System.Drawing.Point(325, 10);
-            this.lblTrackStart.Name = "lblTrackStart";
-            this.lblTrackStart.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.lblTrackStart.Size = new System.Drawing.Size(80, 24);
-            this.lblTrackStart.TabIndex = 44;
-            this.lblTrackStart.Text = "00:00:00";
-            this.lblTrackStart.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.lblVolume.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // btnOpenDirectory
             // 
@@ -586,6 +553,76 @@
             this.btnOpen.Text = "⏏";
             this.btnOpen.UseVisualStyleBackColor = true;
             this.btnOpen.Click += new System.EventHandler(this.btnOpen_Click);
+            // 
+            // pbrTrackProgress
+            // 
+            this.pbrTrackProgress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pbrTrackProgress.Location = new System.Drawing.Point(707, 14);
+            this.pbrTrackProgress.Name = "pbrTrackProgress";
+            this.pbrTrackProgress.Size = new System.Drawing.Size(432, 23);
+            this.pbrTrackProgress.Step = 1;
+            this.pbrTrackProgress.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            this.pbrTrackProgress.TabIndex = 45;
+            this.pbrTrackProgress.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pBar_MouseDown);
+            // 
+            // chbShuffle
+            // 
+            this.chbShuffle.AutoSize = true;
+            this.chbShuffle.Location = new System.Drawing.Point(565, 17);
+            this.chbShuffle.Name = "chbShuffle";
+            this.chbShuffle.Size = new System.Drawing.Size(59, 17);
+            this.chbShuffle.TabIndex = 47;
+            this.chbShuffle.Text = "Shuffle";
+            this.chbShuffle.UseVisualStyleBackColor = true;
+            this.chbShuffle.CheckedChanged += new System.EventHandler(this.chbShuffle_CheckedChanged);
+            // 
+            // lblTrackEnd
+            // 
+            this.lblTrackEnd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblTrackEnd.AutoSize = true;
+            this.lblTrackEnd.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.lblTrackEnd.Location = new System.Drawing.Point(1145, 13);
+            this.lblTrackEnd.Name = "lblTrackEnd";
+            this.lblTrackEnd.Size = new System.Drawing.Size(80, 24);
+            this.lblTrackEnd.TabIndex = 43;
+            this.lblTrackEnd.Text = "00:00:00";
+            // 
+            // trackVolume
+            // 
+            this.trackVolume.Location = new System.Drawing.Point(369, 13);
+            this.trackVolume.Maximum = 100;
+            this.trackVolume.Name = "trackVolume";
+            this.trackVolume.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.trackVolume.Size = new System.Drawing.Size(139, 45);
+            this.trackVolume.TabIndex = 46;
+            this.trackVolume.TickFrequency = 10;
+            this.trackVolume.Scroll += new System.EventHandler(this.trackVolume_Scroll);
+            // 
+            // chbMute
+            // 
+            this.chbMute.AutoSize = true;
+            this.chbMute.Location = new System.Drawing.Point(325, 16);
+            this.chbMute.Name = "chbMute";
+            this.chbMute.Size = new System.Drawing.Size(50, 17);
+            this.chbMute.TabIndex = 47;
+            this.chbMute.Text = "Mute";
+            this.chbMute.UseVisualStyleBackColor = true;
+            this.chbMute.CheckedChanged += new System.EventHandler(this.chbMute_CheckedChanged);
+            // 
+            // lblTrackStart
+            // 
+            this.lblTrackStart.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblTrackStart.AutoSize = true;
+            this.lblTrackStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.lblTrackStart.Location = new System.Drawing.Point(621, 13);
+            this.lblTrackStart.Name = "lblTrackStart";
+            this.lblTrackStart.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.lblTrackStart.Size = new System.Drawing.Size(80, 24);
+            this.lblTrackStart.TabIndex = 44;
+            this.lblTrackStart.Text = "00:00:00";
+            this.lblTrackStart.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // btnNext
             // 
@@ -656,18 +693,6 @@
             this.mediaPlayer.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("mediaPlayer.OcxState")));
             this.mediaPlayer.Size = new System.Drawing.Size(10, 10);
             this.mediaPlayer.TabIndex = 1;
-            // 
-            // pbrTrackProgress
-            // 
-            this.pbrTrackProgress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pbrTrackProgress.Location = new System.Drawing.Point(411, 10);
-            this.pbrTrackProgress.Name = "pbrTrackProgress";
-            this.pbrTrackProgress.Size = new System.Drawing.Size(527, 23);
-            this.pbrTrackProgress.Step = 1;
-            this.pbrTrackProgress.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
-            this.pbrTrackProgress.TabIndex = 45;
-            this.pbrTrackProgress.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pBar_MouseDown);
             // 
             // MainView
             // 
@@ -743,7 +768,6 @@
         public AxWMPLib.AxWindowsMediaPlayer mediaPlayer;
         private System.Windows.Forms.Panel pnlMediaPlayer;
         private System.Windows.Forms.TrackBar trackVolume;
-        private System.Windows.Forms.Label lblVolume;
         private System.Windows.Forms.Label lblTrackEnd;
         private System.Windows.Forms.Label lblTrackStart;
         private System.Windows.Forms.Button btnOpenDirectory;
@@ -761,6 +785,9 @@
         private System.Windows.Forms.ToolStripMenuItem menuStripExportToM3U;
         private System.Windows.Forms.ToolStripMenuItem menuStripExportToDirectory;
         private System.Windows.Forms.ProgressBar pbrTrackProgress;
+        private System.Windows.Forms.CheckBox chbShuffle;
+        private System.Windows.Forms.CheckBox chbMute;
+        private System.Windows.Forms.Label lblVolume;
     }
 }
 

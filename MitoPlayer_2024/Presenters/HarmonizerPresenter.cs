@@ -71,6 +71,14 @@ namespace MitoPlayer_2024.Presenters
         public void Clear()
         {
         }
-       
+        internal void CallChangeMuteEvent(bool booleanField1)
+        {
+            throw new NotImplementedException();
+        }
+        internal void CallChangeShuffleEvent(bool booleanField1)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

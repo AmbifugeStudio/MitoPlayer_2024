@@ -19,6 +19,7 @@ namespace MitoPlayer_2024.Presenters
         public int CurrentTrackIdInPlaylist { get; set; }
         private int selectedRowIndex { get; set; }
         private double currentPlayPosition { get; set; }
+        public bool IsShuffleEnabled { get; set; }
 
         public MediaPlayerComponent(AxWindowsMediaPlayer mediaPLayer)
         {
@@ -36,11 +37,16 @@ namespace MitoPlayer_2024.Presenters
             this.selectedRowIndex = -1;
             this.currentPlayPosition = 0;
         }
-        public void Initialize2(DataTable workingTable)
+        public void LoadPlaylist(DataTable workingTable)
         {
             this.workingTable = workingTable;
 
            // this.selectedRowIndex = -1;
+            this.currentPlayPosition = 0;
+        }
+        public void ClearPlaylist(DataTable workingTable)
+        {
+            this.workingTable = workingTable;
             this.currentPlayPosition = 0;
         }
 
@@ -302,6 +308,16 @@ namespace MitoPlayer_2024.Presenters
         {
             this.MediaPlayer.settings.volume = volume;
         }
+
+        public void ChangeShuffle(bool isShuffleEnabled)
+        {
+            this.IsShuffleEnabled = isShuffleEnabled;
+
+            this.initialTrackIdInPlaylistList = new List<int>();
+            this.playedTrackIdInPlaylistList = new List<int>();
+        }
+
+
         public void ChangeProgress(int position, int length)
         {
             if (this.MediaPlayer != null && this.MediaPlayer.Ctlcontrols != null && this.MediaPlayer.Ctlcontrols.currentItem != null)

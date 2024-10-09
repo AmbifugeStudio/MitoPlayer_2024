@@ -50,6 +50,8 @@ namespace MitoPlayer_2024
         public event EventHandler RandomTrack;
         public event EventHandler<ListEventArgs> ChangeProgress;
         public event EventHandler<ListEventArgs> ChangeVolume;
+        public event EventHandler<ListEventArgs> ChangeShuffle;
+        public event EventHandler<ListEventArgs> ChangeMute;
 
         public event EventHandler About;
 
@@ -118,6 +120,8 @@ namespace MitoPlayer_2024
 
             this.pbrTrackProgress.BackColor = this.FontColor;
             this.pbrTrackProgress.ForeColor = this.BackgroundColor;
+
+            this.lblVolume.FlatStyle = FlatStyle.Flat;
 
             this.pbrTrackProgress.Hide();
         }
@@ -387,11 +391,23 @@ namespace MitoPlayer_2024
         {
             this.ChangeProgress?.Invoke(this, new ListEventArgs() { IntegerField1 = e.X, IntegerField2 = pbrTrackProgress.Width });
         }
+
         private void trackVolume_Scroll(object sender, EventArgs e)
         {
+            this.chbMute.Checked = false;
             this.ChangeVolume?.Invoke(this, new ListEventArgs() { IntegerField1 = this.trackVolume.Value });
-            this.lblVolume.Text = this.trackVolume.Value.ToString() + "%";
+            //this.lblVolume.Text = this.trackVolume.Value.ToString() + "%";
         }
+        private void chbMute_CheckedChanged(object sender, EventArgs e)
+        {
+            this.ChangeMute?.Invoke(this, new ListEventArgs() { BooleanField1 = this.chbMute.Checked }); 
+        }
+
+        private void chbShuffle_CheckedChanged(object sender, EventArgs e)
+        {
+            this.ChangeShuffle?.Invoke(this, new ListEventArgs() { BooleanField1 = this.chbShuffle.Checked });
+        }
+       
         private void btnOpen_Click(object sender, EventArgs e)
         {
             this.OpenFiles?.Invoke(this, EventArgs.Empty);
@@ -400,6 +416,7 @@ namespace MitoPlayer_2024
         {
             this.OpenDirectory?.Invoke(this, EventArgs.Empty);
         }
+       
 
         //CALL FROM PLAYLIST VIEW 
         //SETVOLUME - INIT VOLUME FROM SETTING
@@ -408,6 +425,13 @@ namespace MitoPlayer_2024
             trackVolume.Value = volume;
             lblVolume.Text = volume.ToString() + "%";
         }
+        public void SetMuted(bool isMuted)
+        {
+            this.chbMute.Checked = isMuted;
+        }
+
+
+
         //CALL FROM PLAYLIST VIEW 
         //UPDATE ELAPSED DATE, DURATION AND PROGRESS BAR VIA TIMER
         public void UpdateMediaPlayerProgressStatus(double duration, String durationString, double currentPosition, String currentPositionString)
@@ -421,6 +445,8 @@ namespace MitoPlayer_2024
             this.lblTrackEnd.Text = durationString;
             this.lblTrackStart.Text = currentPositionString;
         }
+
+        
 
         
     }

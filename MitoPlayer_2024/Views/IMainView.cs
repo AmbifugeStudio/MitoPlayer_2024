@@ -51,6 +51,8 @@ namespace MitoPlayer_2024.Views
         event EventHandler RandomTrack;
         event EventHandler<ListEventArgs> ChangeProgress;
         event EventHandler<ListEventArgs> ChangeVolume;
+        event EventHandler<ListEventArgs> ChangeShuffle;
+        event EventHandler<ListEventArgs> ChangeMute;
         //HELP
         event EventHandler About;
 

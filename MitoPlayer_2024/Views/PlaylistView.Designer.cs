@@ -393,7 +393,7 @@
             // 
             this.lblCurrentTrack.Location = new System.Drawing.Point(6, 23);
             this.lblCurrentTrack.Name = "lblCurrentTrack";
-            this.lblCurrentTrack.Size = new System.Drawing.Size(174, 13);
+            this.lblCurrentTrack.Size = new System.Drawing.Size(363, 13);
             this.lblCurrentTrack.TabIndex = 2;
             this.lblCurrentTrack.Text = "Playing: -";
             // 
@@ -625,6 +625,7 @@
             this.dgvPlaylistList.Size = new System.Drawing.Size(183, 565);
             this.dgvPlaylistList.TabIndex = 17;
             this.dgvPlaylistList.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvPlaylistList_CellDoubleClick);
+            this.dgvPlaylistList.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this.dgvPlaylistList_DataBindingComplete);
             this.dgvPlaylistList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvPlaylistList_KeyDown);
             this.dgvPlaylistList.MouseClick += new System.Windows.Forms.MouseEventHandler(this.dgvPlaylistList_MouseClick);
             // 
@@ -651,6 +652,7 @@
             this.dgvTrackList.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTrackList_CellClick);
             this.dgvTrackList.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTrackList_CellDoubleClick);
             this.dgvTrackList.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvTrackList_ColumnHeaderMouseClick);
+            this.dgvTrackList.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this.dgvTrackList_DataBindingComplete);
             this.dgvTrackList.SelectionChanged += new System.EventHandler(this.dgvTrackList_SelectionChanged);
             this.dgvTrackList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvTrackList_KeyDown);
             // 

@@ -151,7 +151,11 @@ namespace MitoPlayer_2024.Dao
                 this.InitializeStringSetting(Settings.TrackColumnVisibility.ToString());
 
             if (result.Success)
+                this.InitializeBooleanSetting(Settings.IsShuffleEnabled.ToString());
+            if (result.Success)
                 this.InitializeIntegerSetting(Settings.Volume.ToString());
+            if (result.Success)
+                this.InitializeBooleanSetting(Settings.IsMuteEnabled.ToString());
             if (result.Success)
                 this.InitializeIntegerSetting(Settings.LastOpenFilesFilterIndex.ToString());
 
@@ -191,6 +195,9 @@ namespace MitoPlayer_2024.Dao
             
             if (result.Success)
                 this.InitializeBooleanSetting(Settings.IsPlaylistListDisplayed.ToString());
+            
+            if (result.Success)
+                this.InitializeIntegerSetting(Settings.CurrentPlaylistId.ToString());
 
             return result;
         }

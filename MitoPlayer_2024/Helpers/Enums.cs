@@ -38,7 +38,9 @@ namespace MitoPlayer_2024.Helpers
     public enum Settings
     {
         FirstRun,
-        Volume,       
+        Volume,   
+        IsMuteEnabled,
+        IsShuffleEnabled,
         LastOpenFilesFilterIndex,
         LastOpenDirectoryPath,
         LastGeneratedPlaylistId,
@@ -74,7 +76,10 @@ namespace MitoPlayer_2024.Helpers
         IsTagEditorDisplayed,
         CurrentTagIndexForTracklistColouring,
         PlayTrackAfterOpenFiles,
-        IsPlaylistListDisplayed
+        IsPlaylistListDisplayed,
+
+        CurrentPlaylistId,
+        CurrentTrackIdInPlaylist
     }
 
     public enum MediaPlayerUpdateState

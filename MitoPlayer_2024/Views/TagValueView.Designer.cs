@@ -190,14 +190,6 @@
             this.btnEditTagValue.TabIndex = 4;
             this.btnEditTagValue.Text = "Edit";
             this.btnEditTagValue.UseVisualStyleBackColor = true;
-
-
-            if (!isDialogEventAttached)
-            {
-                this.btnEditTagValue.Click += new System.EventHandler(this.btnEditTagValue_Click);
-                isDialogEventAttached = true;
-            }
-               
             // 
             // btnAddTagValue
             // 
