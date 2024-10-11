@@ -25,6 +25,7 @@ namespace MitoPlayer_2024.Presenters
         private bool automaticKeyImport;
         private String virtualDjDatabasePath;
         private bool playTrackAfterOpenFiles;
+        private bool hasVirtualDj;
 
         public bool databaseCleared = false;
         public PreferencesPresenter(IPreferencesView view, ITrackDao trackDao,ITagDao tagDao, IProfileDao profileDao, ISettingDao settingDao)
@@ -39,12 +40,15 @@ namespace MitoPlayer_2024.Presenters
             this.automaticKeyImport = this.settingDao.GetBooleanSetting(Settings.AutomaticKeyImport.ToString()).Value;
             this.virtualDjDatabasePath = this.settingDao.GetStringSetting(Settings.VirtualDjDatabasePath.ToString());
             this.playTrackAfterOpenFiles = this.settingDao.GetBooleanSetting(Settings.PlayTrackAfterOpenFiles.ToString()).Value;
-            
+
+            this.hasVirtualDj = this.HasVirtualDj();
+
             this.view.SetImportSettings(
                 this.automaticBpmImport, 
                 this.automaticKeyImport, 
                 this.virtualDjDatabasePath,
-                this.playTrackAfterOpenFiles);
+                this.playTrackAfterOpenFiles,
+                this.hasVirtualDj);
 
             this.view.CloseViewWithOkEvent += CloseViewWithOkEvent;
             this.view.CloseViewWithCancelEvent += CloseViewWithCancelEvent;
@@ -53,6 +57,32 @@ namespace MitoPlayer_2024.Presenters
             this.view.SetAutomaticKeyImportEvent += SetAutomaticKeyImportEvent;
             this.view.SetVirtualDjDatabasePathEvent += SetVirtualDjDatabasePathEvent;
             this.view.SetPlayTrackAfterOpenFilesEvent += SetPlayTrackAfterOpenFilesEvent;
+        }
+
+        private bool HasVirtualDj()
+        {
+            bool result = false;
+
+            String letters = "ABCDEFGHIJKLMNOPQRSTIJKLMNOPQRSTUVWXYZ";
+            String vdjDatabaseFilePath = String.Empty;
+
+            foreach (char drive in letters)
+            {
+                vdjDatabaseFilePath = drive + ":\\VirtualDJ\\database.xml";
+                if (File.Exists(vdjDatabaseFilePath))
+                {
+                    result = true;
+                    break;
+                }
+            }
+            
+            vdjDatabaseFilePath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\VirtualDJ\\database.xml";
+            if (File.Exists(vdjDatabaseFilePath))
+            {
+                result = true;
+            }
+
+            return result;
         }
 
         private void ClearDatabaseEvent(object sender, EventArgs e)

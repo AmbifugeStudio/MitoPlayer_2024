@@ -59,7 +59,7 @@
             this.menuStripSetQuickListGroup4 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStripSetQuickListGroup = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.btnScanBpm = new System.Windows.Forms.Button();
+            this.btnScanKeyAndBpm = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.lblTrackCount = new System.Windows.Forms.Label();
             this.lblTrackSumLength = new System.Windows.Forms.Label();
@@ -92,6 +92,9 @@
             this.btnHideTagEditor = new System.Windows.Forms.Button();
             this.btnColumnVisibility = new System.Windows.Forms.Button();
             this.tagValueEditorPanel = new System.Windows.Forms.Panel();
+            this.label1 = new System.Windows.Forms.Label();
+            this.chbSetSelectedRows = new System.Windows.Forms.CheckBox();
+            this.chbSetPlayingRow = new System.Windows.Forms.CheckBox();
             this.contextMenuStrip1.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -312,15 +315,16 @@
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(172, 6);
             // 
-            // btnScanBpm
+            // btnScanKeyAndBpm
             // 
-            this.btnScanBpm.Location = new System.Drawing.Point(400, 12);
-            this.btnScanBpm.Name = "btnScanBpm";
-            this.btnScanBpm.Size = new System.Drawing.Size(75, 23);
-            this.btnScanBpm.TabIndex = 31;
-            this.btnScanBpm.Text = "Scan Bpm";
-            this.btnScanBpm.UseVisualStyleBackColor = true;
-            this.btnScanBpm.Click += new System.EventHandler(this.btnScanBpm_Click);
+            this.btnScanKeyAndBpm.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnScanKeyAndBpm.Location = new System.Drawing.Point(400, 12);
+            this.btnScanKeyAndBpm.Name = "btnScanKeyAndBpm";
+            this.btnScanKeyAndBpm.Size = new System.Drawing.Size(90, 23);
+            this.btnScanKeyAndBpm.TabIndex = 31;
+            this.btnScanKeyAndBpm.Text = "Scan Key/Bpm";
+            this.btnScanKeyAndBpm.UseVisualStyleBackColor = true;
+            this.btnScanKeyAndBpm.Click += new System.EventHandler(this.btnScanBpm_Click);
             // 
             // groupBox4
             // 
@@ -703,16 +707,50 @@
             this.tagValueEditorPanel.Size = new System.Drawing.Size(274, 536);
             this.tagValueEditorPanel.TabIndex = 36;
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(967, 17);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(55, 13);
+            this.label1.TabIndex = 37;
+            this.label1.Text = "Set mode:";
+            // 
+            // chbSetSelectedRows
+            // 
+            this.chbSetSelectedRows.AutoSize = true;
+            this.chbSetSelectedRows.Location = new System.Drawing.Point(1028, 16);
+            this.chbSetSelectedRows.Name = "chbSetSelectedRows";
+            this.chbSetSelectedRows.Size = new System.Drawing.Size(68, 17);
+            this.chbSetSelectedRows.TabIndex = 38;
+            this.chbSetSelectedRows.Text = "Selected";
+            this.chbSetSelectedRows.UseVisualStyleBackColor = true;
+            this.chbSetSelectedRows.CheckedChanged += new System.EventHandler(this.chbSetSelectedRows_CheckedChanged);
+            // 
+            // chbSetPlayingRow
+            // 
+            this.chbSetPlayingRow.AutoSize = true;
+            this.chbSetPlayingRow.Location = new System.Drawing.Point(1102, 16);
+            this.chbSetPlayingRow.Name = "chbSetPlayingRow";
+            this.chbSetPlayingRow.Size = new System.Drawing.Size(60, 17);
+            this.chbSetPlayingRow.TabIndex = 38;
+            this.chbSetPlayingRow.Text = "Playing";
+            this.chbSetPlayingRow.UseVisualStyleBackColor = true;
+            this.chbSetPlayingRow.CheckedChanged += new System.EventHandler(this.chbSetPlayingRow_CheckedChanged);
+            // 
             // PlaylistView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1252, 678);
+            this.Controls.Add(this.chbSetPlayingRow);
+            this.Controls.Add(this.chbSetSelectedRows);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.tagValueEditorPanel);
             this.Controls.Add(this.btnColumnVisibility);
             this.Controls.Add(this.btnHideTagEditor);
             this.Controls.Add(this.btnDisplayPlaylistList);
-            this.Controls.Add(this.btnScanBpm);
+            this.Controls.Add(this.btnScanKeyAndBpm);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.lblTagColor);
@@ -763,7 +801,7 @@
         private System.Windows.Forms.ToolStripMenuItem menuStripSetQuickListGroup4;
         private System.Windows.Forms.ToolStripMenuItem menuStripSetQuickListGroup;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private System.Windows.Forms.Button btnScanBpm;
+        private System.Windows.Forms.Button btnScanKeyAndBpm;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.Label lblTrackCount;
         private System.Windows.Forms.Label lblTrackSumLength;
@@ -809,5 +847,8 @@
         private System.Windows.Forms.ToolStripMenuItem setGroup4ToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem exportToDirToolStripMenuItem;
         private System.Windows.Forms.Panel tagValueEditorPanel;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.CheckBox chbSetSelectedRows;
+        private System.Windows.Forms.CheckBox chbSetPlayingRow;
     }
 }

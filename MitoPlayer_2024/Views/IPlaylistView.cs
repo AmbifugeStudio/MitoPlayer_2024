@@ -34,7 +34,7 @@ namespace MitoPlayer_2024.Views
         event EventHandler<ListEventArgs> ExternalDragAndDropIntoPlaylistEvent;
        // event EventHandler<ListEventArgs> ChangeTracklistColorEvent;
         event EventHandler ShowColumnVisibilityEditorEvent;
-        event EventHandler ScanBpmEvent;
+        event EventHandler ScanKeyAndBpmEvent;
         
         //PLAYLIST
         event EventHandler<ListEventArgs> CreatePlaylist;
@@ -54,7 +54,7 @@ namespace MitoPlayer_2024.Views
         event EventHandler<ListEventArgs> SetTagValueEvent;
         event EventHandler<ListEventArgs> ClearTagValueEvent;
 
-        void InitializePlaylistListBindingSource(BindingSource playlistList, bool[] columnVisibility, int currentPlaylistId);
+        void InitializePlaylistListBindingSource(BindingSource playlistList, bool[] columnVisibility,int currentPlaylistId);
         void ReloadPlaylistListBindingSource(BindingSource playlistList, bool[] columnVisibility, int currentPlaylistId);
         void InitializeTrackListBindingSource(BindingSource trackList, bool[] columnVisibility, int[] columnSortingId);
         void ReloadTrackListBindingSource(BindingSource trackList, bool[] columnVisibility, int[] columnSortingId, int currentTrackIdInPlaylist);
@@ -67,6 +67,7 @@ namespace MitoPlayer_2024.Views
         void UpdateTracklistColor(int trackIdInPlaylist);
         void SetVolume(int volume);
         void SetMuted(bool isMuted);
+        void SetKeyAndBpmAnalization(bool showButton);
         void Show();
     }
 }

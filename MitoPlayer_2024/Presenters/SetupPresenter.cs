@@ -5,6 +5,7 @@ using MitoPlayer_2024.Views;
 using MySql.Data.MySqlClient;
 using System;
 using System.Data;
+using System.IO;
 using System.Windows.Forms;
 
 namespace MitoPlayer_2024.Presenters
@@ -27,6 +28,7 @@ namespace MitoPlayer_2024.Presenters
             String userName = e.StringField3;
             String password = e.StringField4;
             String database = System.Configuration.ConfigurationManager.AppSettings["DefaultDatabaseName"];
+            bool hasVirtualDj = false;
             int portNumber = 0;
             bool result = true;
 
@@ -94,8 +96,12 @@ namespace MitoPlayer_2024.Presenters
                     MessageBox.Show("Database connection is invalid!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
-            
-            this.IsDatabaseConnectionReady = result;
+            if (result)
+            {
+                hasVirtualDj = this.HasVirtualDj();
+            }
+
+             this.IsDatabaseConnectionReady = result;
 
             if (result)
             {
@@ -104,9 +110,36 @@ namespace MitoPlayer_2024.Presenters
                 Properties.Settings.Default.UserName = userName;
                 Properties.Settings.Default.Password = password;
                 Properties.Settings.Default.Database = database;
+                Properties.Settings.Default.HasVirtualDj = hasVirtualDj;
                 Properties.Settings.Default.Save();
                 ((SetupView)this.setupView).Close();
             }
+        }
+
+        private bool HasVirtualDj()
+        {
+            bool result = false;
+
+            String letters = "ABCDEFGHIJKLMNOPQRSTIJKLMNOPQRSTUVWXYZ";
+            String vdjDatabaseFilePath = String.Empty;
+
+            foreach (char drive in letters)
+            {
+                vdjDatabaseFilePath = drive + ":\\VirtualDJ\\database.xml";
+                if (File.Exists(vdjDatabaseFilePath))
+                {
+                    result = true;
+                    break;
+                }
+            }
+
+            vdjDatabaseFilePath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\VirtualDJ\\database.xml";
+            if (File.Exists(vdjDatabaseFilePath))
+            {
+                result = true;
+            }
+
+            return result;
         }
     }
 }

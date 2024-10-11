@@ -1,5 +1,10 @@
 ﻿
 
+
+
+
+
+
 - REFACTOR: tagvalue editor - tagvalue change speed optimization
 - FEATURE: tag value editor - "tagvalue change of current playing track or selected track" option
 - BUG: tag color dropdown is empty
@@ -13,6 +18,14 @@
 - FEATURE: tag editor - display according to tag/tagvalue order
 - FEATURE: progress bar for long loading time
 
+======================
+v0.12.11.9
+======================
+OK - FEATURE: check virtual dj files and set the automatic scan in the mysql dialog (and in the setting, if user wants to enable it)
+OK - FEATURE: scan key and bpm button (post)
+OK - REFACTOR: pages reload refactor and source code purifying (in progress)
+OK - FEATURE: dark theme (in progress)
+OK - BUG: delete playlist fix
 ======================
 v0.12.11.4
 ======================

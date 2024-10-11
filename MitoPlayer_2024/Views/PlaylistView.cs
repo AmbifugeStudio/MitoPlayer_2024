@@ -48,7 +48,7 @@ namespace MitoPlayer_2024.Views
         public event EventHandler<ListEventArgs> ExternalDragAndDropIntoPlaylistEvent;
         //public event EventHandler<ListEventArgs> ChangeTracklistColorEvent;
         public event EventHandler ShowColumnVisibilityEditorEvent;
-        public event EventHandler ScanBpmEvent;
+        public event EventHandler ScanKeyAndBpmEvent;
 
         //PLAYLIST
         public event EventHandler<ListEventArgs> CreatePlaylist;
@@ -150,6 +150,10 @@ namespace MitoPlayer_2024.Views
             this.dgvTrackList.EnableHeadersVisualStyles = false;
             this.dgvTrackList.ColumnHeadersDefaultCellStyle.SelectionBackColor = this.ButtonColor;
             this.dgvTrackList.DefaultCellStyle.SelectionBackColor = this.GridSelectionColor;
+
+            this.btnScanKeyAndBpm.BackColor = this.ButtonColor;
+            this.btnScanKeyAndBpm.ForeColor = this.FontColor;
+            this.btnScanKeyAndBpm.FlatAppearance.BorderColor = this.ButtonBorderColor;
         }
 
         #region SINGLETON
@@ -177,13 +181,13 @@ namespace MitoPlayer_2024.Views
         #region TABLE BINDINGS AND INIT
 
         //PLAYLIST DATA BINDING
-        private int CurrentPlaylistId { get; set; }
         private bool[] PlaylistColumnVisibility { get; set; }
+        private int CurrentPlaylistId { get; set; }
         public void InitializePlaylistListBindingSource(BindingSource playlistList, bool[] columnVisibility, int currentPlaylistId)
         {
             this.PlaylistColumnVisibility = columnVisibility;
+            this.playlistListBindingSource.DataSource = playlistList;
             this.CurrentPlaylistId = currentPlaylistId;
-            this.playlistListBindingSource.DataSource = playlistList; 
             this.dgvPlaylistList.DataSource = this.playlistListBindingSource.DataSource;
         }
 
@@ -598,7 +602,7 @@ namespace MitoPlayer_2024.Views
         }
         private void btnScanBpm_Click(object sender, EventArgs e)
         {
-            this.ScanBpmEvent?.Invoke(this, EventArgs.Empty);
+            this.ScanKeyAndBpmEvent?.Invoke(this, EventArgs.Empty);
         }
         #endregion
 
@@ -1318,7 +1322,7 @@ namespace MitoPlayer_2024.Views
             this.currentTagForColors = tag;
             this.currentTagValueColorDic = tagValueColors;
         }
-        public void CallDisplayTagEditor(bool isTagEditorDisplayed, bool inputTextBoxEnabled = false)
+        public void CallDisplayTagEditor(bool isTagEditorDisplayed)
         {
             //kikapcsolt állapotban a panelt elrejtjük, textboxot és gombot elrejtjük, grid szélessége nő
             //bekapcsolt állapotban a panel látszik, ha textbox van, akkor az látzik, ellenben a gombok, grid szélessége csökken
@@ -1418,6 +1422,17 @@ namespace MitoPlayer_2024.Views
         public void UpdateMediaPlayerProgressStatus(double duration, String durationString, double currentPosition, String currentPositionString)
         {
             ((MainView)this.parentView).UpdateMediaPlayerProgressStatus(duration, durationString, currentPosition, currentPositionString);
+        }
+        public void SetKeyAndBpmAnalization(bool showButton)
+        {
+            if (showButton)
+            {
+                this.btnScanKeyAndBpm.Show();
+            }
+            else
+            {
+                this.btnScanKeyAndBpm.Hide();
+            }
         }
         #endregion
 
@@ -1869,6 +1884,16 @@ namespace MitoPlayer_2024.Views
             {
                 this.ClearTagValueEvent?.Invoke(this, new ListEventArgs() { StringField1 = button.TagName, Rows = this.dgvTrackList.Rows });
             }
+        }
+
+        private void chbSetSelectedRows_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void chbSetPlayingRow_CheckedChanged(object sender, EventArgs e)
+        {
+
         }
 
         #endregion

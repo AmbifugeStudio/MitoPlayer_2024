@@ -55,12 +55,19 @@ namespace MitoPlayer_2024.Views
         {
             this.SetAutomaticKeyImportEvent?.Invoke(this, new ListEventArgs { BooleanField1 = this.chbAutomaticKeyImport.Checked });
         }
-        public void SetImportSettings(bool automaticBpmImport, bool automaticKeyImport, String virtualDjDatabasePath, bool playTrackAfterOpenFiles)
+        public void SetImportSettings(bool automaticBpmImport, bool automaticKeyImport, String virtualDjDatabasePath, bool playTrackAfterOpenFiles, bool hasVirtualDj)
         {
             this.chbAutomaticBpmImport.Checked = automaticBpmImport;
             this.chbAutomaticKeyImport.Checked = automaticKeyImport;
             this.txtBoxVirtualDjDatabasePath.Text = virtualDjDatabasePath;
             this.chbPlayTrackAfterOpenFiles.Checked = playTrackAfterOpenFiles;
+            if (!hasVirtualDj)
+            {
+                this.chbAutomaticBpmImport.Checked = false;
+                this.chbAutomaticKeyImport.Checked = false;
+                this.chbAutomaticBpmImport.Enabled = false;
+                this.chbAutomaticKeyImport.Enabled = false;
+            }
         }
 
         private void txtBoxVirtualDjDatabasePath_TextChanged(object sender, EventArgs e)

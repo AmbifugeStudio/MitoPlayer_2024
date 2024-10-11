@@ -61,7 +61,7 @@ namespace MitoPlayer_2024.Helpers
                     this.VdjDatabasePathList.Add(vdjDatabaseFilePath);
                 }
             }
-            vdjDatabaseFilePath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + ":\\VirtuaDJ\\database.xml";
+            vdjDatabaseFilePath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\VirtuaDJ\\database.xml";
             if (File.Exists(vdjDatabaseFilePath) && !this.VdjDatabasePathList.Contains(vdjDatabaseFilePath))
             {
                 this.VdjDatabasePathList.Add(vdjDatabaseFilePath);

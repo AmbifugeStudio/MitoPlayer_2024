@@ -22,6 +22,9 @@ namespace MitoPlayer_2024.Views
         public void SetPlaylistName(String playlistName, bool edit = false)
         {
             this.txtPlaylistName.Text = playlistName;
+            if(playlistName.Equals("Default Playlist")){
+                this.txtPlaylistName.Enabled = false;
+            }
             if (edit)
             {
                 this.Text = "Edit playlist";

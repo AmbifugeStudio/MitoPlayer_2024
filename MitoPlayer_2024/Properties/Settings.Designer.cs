@@ -106,5 +106,17 @@ namespace MitoPlayer_2024.Properties {
                 this["Database"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool HasVirtualDj {
+            get {
+                return ((bool)(this["HasVirtualDj"]));
+            }
+            set {
+                this["HasVirtualDj"] = value;
+            }
+        }
     }
 }

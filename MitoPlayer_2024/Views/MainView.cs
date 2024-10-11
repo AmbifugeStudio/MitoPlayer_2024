@@ -395,8 +395,8 @@ namespace MitoPlayer_2024
         private void trackVolume_Scroll(object sender, EventArgs e)
         {
             this.chbMute.Checked = false;
+            this.lblVolume.Text = this.trackVolume.Value.ToString() + "%";
             this.ChangeVolume?.Invoke(this, new ListEventArgs() { IntegerField1 = this.trackVolume.Value });
-            //this.lblVolume.Text = this.trackVolume.Value.ToString() + "%";
         }
         private void chbMute_CheckedChanged(object sender, EventArgs e)
         {
