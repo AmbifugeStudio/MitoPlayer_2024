@@ -67,14 +67,14 @@ namespace MitoPlayer_2024.Dao
                 command.CommandText = @"INSERT INTO Tag values ( 
                                         @Id, 
                                         @Name, 
-                                        @CellOnly,
+                                        @TextColoring,
                                         @HasMultipleValues,
                                         @Integrated,
                                         @ProfileId)";
 
                 command.Parameters.Add("@Id", MySqlDbType.Int32).Value = tag.Id;
                 command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = tag.Name;
-                command.Parameters.Add("@CellOnly", MySqlDbType.Bit).Value = tag.CellOnly;
+                command.Parameters.Add("@TextColoring", MySqlDbType.Bit).Value = tag.TextColoring;
                 command.Parameters.Add("@HasMultipleValues", MySqlDbType.Bit).Value = tag.HasMultipleValues;
                 command.Parameters.Add("@Integrated", MySqlDbType.Bit).Value = tag.Integrated;
                 command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
@@ -115,7 +115,7 @@ namespace MitoPlayer_2024.Dao
                         tag = new Tag();
                         tag.Id = (int)reader[0];
                         tag.Name = (string)reader[1];
-                        tag.CellOnly = Convert.ToBoolean(reader[2]);
+                        tag.TextColoring = Convert.ToBoolean(reader[2]);
                         tag.HasMultipleValues = Convert.ToBoolean(reader[3]);
                         tag.Integrated = Convert.ToBoolean(reader[4]);
                         tag.ProfileId = (int)reader[5];
@@ -148,7 +148,7 @@ namespace MitoPlayer_2024.Dao
                         tag = new Tag();
                         tag.Id = (int)reader[0];
                         tag.Name = (string)reader[1];
-                        tag.CellOnly = Convert.ToBoolean(reader[2]);
+                        tag.TextColoring = Convert.ToBoolean(reader[2]);
                         tag.HasMultipleValues = Convert.ToBoolean(reader[3]);
                         tag.Integrated = Convert.ToBoolean(reader[4]);
                         tag.ProfileId = (int)reader[5];
@@ -182,7 +182,7 @@ namespace MitoPlayer_2024.Dao
                         Tag tag = new Tag();
                         tag.Id = (int)reader[0];
                         tag.Name = (string)reader[1];
-                        tag.CellOnly = Convert.ToBoolean(reader[2]);
+                        tag.TextColoring = Convert.ToBoolean(reader[2]);
                         tag.HasMultipleValues = Convert.ToBoolean(reader[3]);
                         tag.Integrated = Convert.ToBoolean(reader[4]);
                         tag.ProfileId = (int)reader[5];
@@ -203,13 +203,13 @@ namespace MitoPlayer_2024.Dao
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
                 command.CommandText = @"UPDATE Tag 
-                                        SET Name = @Name, CellOnly = @CellOnly, HasMultipleValues = @HasMultipleValues, Integrated = @Integrated 
+                                        SET Name = @Name, TextColoring = @TextColoring, HasMultipleValues = @HasMultipleValues, Integrated = @Integrated 
                                         WHERE Id = @Id 
                                         AND ProfileId = @ProfileId";
                 
                 command.Parameters.Add("@Id", MySqlDbType.Int32).Value = tag.Id;
                 command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = tag.Name;
-                command.Parameters.Add("@CellOnly", MySqlDbType.Bit).Value = tag.CellOnly;
+                command.Parameters.Add("@TextColoring", MySqlDbType.Bit).Value = tag.TextColoring;
                 command.Parameters.Add("@HasMultipleValues", MySqlDbType.Bit).Value = tag.HasMultipleValues;
                 command.Parameters.Add("@Integrated", MySqlDbType.Bit).Value = tag.Integrated;
                 command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;

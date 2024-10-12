@@ -31,17 +31,19 @@
             this.btnOk = new System.Windows.Forms.Button();
             this.txtTagName = new System.Windows.Forms.TextBox();
             this.lblName = new System.Windows.Forms.Label();
-            this.chbCellOnly = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.btnCancel = new System.Windows.Forms.Button();
             this.chbHasMultipleValues = new System.Windows.Forms.CheckBox();
+            this.rdbtnText = new System.Windows.Forms.RadioButton();
+            this.rdbtnField = new System.Windows.Forms.RadioButton();
             this.SuspendLayout();
             // 
             // btnOk
             // 
             this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.btnOk.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnOk.Location = new System.Drawing.Point(160, 93);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(75, 23);
@@ -68,17 +70,6 @@
             this.lblName.TabIndex = 3;
             this.lblName.Text = "Enter name";
             // 
-            // chbCellOnly
-            // 
-            this.chbCellOnly.AutoSize = true;
-            this.chbCellOnly.Location = new System.Drawing.Point(115, 43);
-            this.chbCellOnly.Name = "chbCellOnly";
-            this.chbCellOnly.Size = new System.Drawing.Size(65, 17);
-            this.chbCellOnly.TabIndex = 12;
-            this.chbCellOnly.Text = "Cell only";
-            this.chbCellOnly.UseVisualStyleBackColor = true;
-            this.chbCellOnly.CheckedChanged += new System.EventHandler(this.chbCellOnly_CheckedChanged);
-            // 
             // label1
             // 
             this.label1.AutoSize = true;
@@ -101,6 +92,7 @@
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCancel.Location = new System.Drawing.Point(241, 93);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
@@ -120,15 +112,40 @@
             this.chbHasMultipleValues.UseVisualStyleBackColor = true;
             this.chbHasMultipleValues.CheckedChanged += new System.EventHandler(this.chbHasMultipleValues_CheckedChanged);
             // 
+            // rdbtnText
+            // 
+            this.rdbtnText.AutoSize = true;
+            this.rdbtnText.Location = new System.Drawing.Point(115, 41);
+            this.rdbtnText.Name = "rdbtnText";
+            this.rdbtnText.Size = new System.Drawing.Size(46, 17);
+            this.rdbtnText.TabIndex = 16;
+            this.rdbtnText.TabStop = true;
+            this.rdbtnText.Text = "Text";
+            this.rdbtnText.UseVisualStyleBackColor = true;
+            this.rdbtnText.CheckedChanged += new System.EventHandler(this.rdbtnText_CheckedChanged);
+            // 
+            // rdbtnField
+            // 
+            this.rdbtnField.AutoSize = true;
+            this.rdbtnField.Location = new System.Drawing.Point(167, 41);
+            this.rdbtnField.Name = "rdbtnField";
+            this.rdbtnField.Size = new System.Drawing.Size(47, 17);
+            this.rdbtnField.TabIndex = 16;
+            this.rdbtnField.TabStop = true;
+            this.rdbtnField.Text = "Field";
+            this.rdbtnField.UseVisualStyleBackColor = true;
+            this.rdbtnField.CheckedChanged += new System.EventHandler(this.rdbtnField_CheckedChanged);
+            // 
             // TagEditorView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(328, 126);
+            this.Controls.Add(this.rdbtnField);
+            this.Controls.Add(this.rdbtnText);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.chbHasMultipleValues);
-            this.Controls.Add(this.chbCellOnly);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOk);
             this.Controls.Add(this.txtTagName);
@@ -145,10 +162,11 @@
         private System.Windows.Forms.Button btnOk;
         private System.Windows.Forms.TextBox txtTagName;
         private System.Windows.Forms.Label lblName;
-        private System.Windows.Forms.CheckBox chbCellOnly;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.CheckBox chbHasMultipleValues;
+        private System.Windows.Forms.RadioButton rdbtnText;
+        private System.Windows.Forms.RadioButton rdbtnField;
     }
 }

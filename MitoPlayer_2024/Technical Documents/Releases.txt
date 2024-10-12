@@ -2,13 +2,16 @@
 
 
 
+- REFACTOR: export to directory tracklist color
+
+- BUG: playlistView crashes, when a tag does not contain tagvalue
 
 
 
 - REFACTOR: tagvalue editor - tagvalue change speed optimization
-- FEATURE: tag value editor - "tagvalue change of current playing track or selected track" option
+
 - BUG: tag color dropdown is empty
-- FEATURE: tag import - color definition in script
+
 - FEATURE: tag editor - one selection fills bpm and select key (and the custom tagvalues)
 - FEATURE: tag editor - export/import key/bpm and custom tag values
 - FEATURE: tagvalue - custom order like: Style:Liquid,Deep,Roller,Stadion,Neuro (order by column)
@@ -18,6 +21,15 @@
 - FEATURE: tag editor - display according to tag/tagvalue order
 - FEATURE: progress bar for long loading time
 
+======================
+v0.12.12.5
+======================
+OK - FEATURE: tagvalue editor - set color mode and color in tracklist
+OK - FEATURE: tag import - color definition in script
+OK - REFACTOR: tag editor load refactor 
+OK - FEATURE: tag value editor - "tagvalue change of current playing track or selected track" option
+OK - BUG: focus back to tracklist after change/clear tagvalue
+OK - FEATURE: dark theme
 ======================
 v0.12.11.9
 ======================

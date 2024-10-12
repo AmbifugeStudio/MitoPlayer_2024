@@ -1,13 +1,8 @@
-﻿using MitoPlayer_2024.Dao;
-using MitoPlayer_2024.Helpers;
-using MitoPlayer_2024.Model;
+﻿using MitoPlayer_2024.Helpers;
 using MitoPlayer_2024.Models;
 using MitoPlayer_2024.Views;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace MitoPlayer_2024.Presenters
@@ -20,8 +15,8 @@ namespace MitoPlayer_2024.Presenters
         private bool isEditMode = false;
         public Tag newTag;
         private int lastGeneratedTagId;
-        private bool cellOnly;
         private bool hasMultipleValues;
+        private bool textColoring;
 
         public TagEditorPresenter(ITagEditorView tagEditorView, ITagDao tagDao, ISettingDao settingDao)
         {
@@ -35,14 +30,14 @@ namespace MitoPlayer_2024.Presenters
 
             this.lastGeneratedTagId = this.lastGeneratedTagId + 1;
             ((TagEditorView)this.tagEditorView).SetTagName("New Tag " + this.lastGeneratedTagId.ToString());
-            ((TagEditorView)this.tagEditorView).SetCellOnly(false);
+            ((TagEditorView)this.tagEditorView).SetTextColoring(true);
 
             this.settingDao.SetIntegerSetting(Settings.LastGeneratedTagId.ToString(), this.lastGeneratedTagId, true);
 
             this.tagEditorView.CreateOrEditTag += CreateOrEditTag;
             this.tagEditorView.CloseEditor += CloseEditor;
-            this.tagEditorView.ChangeCellOnly += ChangeCellOnly;
             this.tagEditorView.ChangeHasMultipleValues += ChangeHasMultipleValues;
+            this.tagEditorView.ChangeTextColoring += ChangeTextColoring;
         }
         public TagEditorPresenter(ITagEditorView tagEditorView, ITagDao tagDao, ISettingDao settingDao, Tag tag)
         {
@@ -53,21 +48,22 @@ namespace MitoPlayer_2024.Presenters
             this.isEditMode = true;
 
             ((TagEditorView)this.tagEditorView).SetTagName(newTag.Name, true);
-            ((TagEditorView)this.tagEditorView).SetCellOnly(newTag.CellOnly);
-            ((TagEditorView)this.tagEditorView).SetHasMultipleValues(newTag.HasMultipleValues);
+            ((TagEditorView)this.tagEditorView).SetHasMultipleValues(newTag.HasMultipleValues, false);
+            ((TagEditorView)this.tagEditorView).SetTextColoring(newTag.TextColoring);
 
             this.tagEditorView.CreateOrEditTag += CreateOrEditTag;
             this.tagEditorView.CloseEditor += CloseEditor;
-            this.tagEditorView.ChangeCellOnly += ChangeCellOnly;
             this.tagEditorView.ChangeHasMultipleValues += ChangeHasMultipleValues;
+            this.tagEditorView.ChangeTextColoring += ChangeTextColoring;
         }
-        private void ChangeCellOnly(object sender, ListEventArgs e)
-        {
-            this.cellOnly = e.BooleanField1;
-        }
+
         private void ChangeHasMultipleValues(object sender, ListEventArgs e)
         {
             this.hasMultipleValues = e.BooleanField1;
+        } 
+        private void ChangeTextColoring(object sender, ListEventArgs e)
+        {
+            this.textColoring = e.BooleanField1;
         }
 
         private void CreateOrEditTag(object sender, Helpers.ListEventArgs e)
@@ -80,7 +76,7 @@ namespace MitoPlayer_2024.Presenters
                 {
                     if (e.StringField1.Equals(this.newTag.Name))
                     {
-                        this.newTag.CellOnly = e.BooleanField1;
+                        this.newTag.TextColoring = this.textColoring;
                         this.newTag.HasMultipleValues = this.hasMultipleValues;
                         ((TagEditorView)this.tagEditorView).DialogResult = DialogResult.OK;
                     }
@@ -94,7 +90,7 @@ namespace MitoPlayer_2024.Presenters
                         else
                         {
                             this.newTag.Name = e.StringField1;
-                            this.newTag.CellOnly = e.BooleanField1;
+                            this.newTag.TextColoring = this.textColoring;
                             this.newTag.HasMultipleValues = this.hasMultipleValues;
                             ((TagEditorView)this.tagEditorView).DialogResult = DialogResult.OK;
                         }
@@ -121,7 +117,7 @@ namespace MitoPlayer_2024.Presenters
                             Tag tag = new Tag();
                             tag.Id = this.tagDao.GetNextId(TableName.Tag.ToString());
                             tag.Name = e.StringField1;
-                            tag.CellOnly = e.BooleanField1;
+                            tag.TextColoring = this.textColoring;
                             tag.HasMultipleValues = this.hasMultipleValues;
                             this.newTag = tag;
                             ((TagEditorView)this.tagEditorView).DialogResult = DialogResult.OK;
@@ -132,7 +128,7 @@ namespace MitoPlayer_2024.Presenters
                         Tag tag = new Tag();
                         tag.Id = this.tagDao.GetNextId(TableName.Tag.ToString());
                         tag.Name = e.StringField1;
-                        tag.CellOnly = e.BooleanField1;
+                        tag.TextColoring = this.textColoring;
                         tag.HasMultipleValues = this.hasMultipleValues;
                         this.newTag = tag;
                         ((TagEditorView)this.tagEditorView).DialogResult = DialogResult.OK;

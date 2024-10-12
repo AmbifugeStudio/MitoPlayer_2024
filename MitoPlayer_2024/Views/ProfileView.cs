@@ -22,8 +22,50 @@ namespace MitoPlayer_2024.Views
 
         public ProfileView()
         {
-            InitializeComponent();
+            this.InitializeComponent();
+            this.SetControlColors();
             this.CenterToScreen();
+        }
+
+        Color BackgroundColor = System.Drawing.ColorTranslator.FromHtml("#363639");
+        Color FontColor = System.Drawing.ColorTranslator.FromHtml("#c6c6c6");
+        Color ButtonColor = System.Drawing.ColorTranslator.FromHtml("#292a2d");
+        Color ButtonBorderColor = System.Drawing.ColorTranslator.FromHtml("#1b1b1b");
+        Color GridHeaderColor = System.Drawing.ColorTranslator.FromHtml("#36373a");
+        Color GridLineColor1 = System.Drawing.ColorTranslator.FromHtml("#131315");
+        Color GridLineColor2 = System.Drawing.ColorTranslator.FromHtml("#212224");
+        Color WhiteColor = System.Drawing.ColorTranslator.FromHtml("#FFFFFF");
+        Color GridPlayingColor = System.Drawing.ColorTranslator.FromHtml("#4d4d4d");
+        Color GridSelectionColor = System.Drawing.ColorTranslator.FromHtml("#626262");
+
+        private void SetControlColors()
+        {
+            this.BackColor = this.BackgroundColor;
+            this.ForeColor = this.FontColor;
+
+            this.btnCreate.BackColor = this.BackgroundColor;
+            this.btnCreate.ForeColor = this.FontColor;
+            this.btnCreate.FlatAppearance.BorderColor = this.ButtonBorderColor;
+
+            this.btnRename.BackColor = this.BackgroundColor;
+            this.btnRename.ForeColor = this.FontColor;
+            this.btnRename.FlatAppearance.BorderColor = this.ButtonBorderColor;
+
+            this.btnSetAsActive.BackColor = this.BackgroundColor;
+            this.btnSetAsActive.ForeColor = this.FontColor;
+            this.btnSetAsActive.FlatAppearance.BorderColor = this.ButtonBorderColor;
+
+            this.btnDelete.BackColor = this.BackgroundColor;
+            this.btnDelete.ForeColor = this.FontColor;
+            this.btnDelete.FlatAppearance.BorderColor = this.ButtonBorderColor;
+
+            this.dgvProfileList.BackgroundColor = this.ButtonColor;
+            this.dgvProfileList.ColumnHeadersDefaultCellStyle.BackColor = this.ButtonColor;
+            this.dgvProfileList.ColumnHeadersDefaultCellStyle.ForeColor = this.FontColor;
+            this.dgvProfileList.EnableHeadersVisualStyles = false;
+            this.dgvProfileList.ColumnHeadersDefaultCellStyle.SelectionBackColor = this.ButtonColor;
+            this.dgvProfileList.DefaultCellStyle.SelectionBackColor = this.GridSelectionColor;
+
         }
 
         public void SetProfileListBindingSource(BindingSource profileList)

@@ -43,7 +43,8 @@
             this.dgvProfileList.AllowUserToResizeColumns = false;
             this.dgvProfileList.AllowUserToResizeRows = false;
             this.dgvProfileList.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dgvProfileList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvProfileList.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
+            this.dgvProfileList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dgvProfileList.Location = new System.Drawing.Point(12, 12);
             this.dgvProfileList.MultiSelect = false;
             this.dgvProfileList.Name = "dgvProfileList";
@@ -57,6 +58,7 @@
             // btnCreate
             // 
             this.btnCreate.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.btnCreate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCreate.Location = new System.Drawing.Point(258, 12);
             this.btnCreate.Name = "btnCreate";
             this.btnCreate.Size = new System.Drawing.Size(100, 23);
@@ -68,6 +70,7 @@
             // btnSetAsActive
             // 
             this.btnSetAsActive.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.btnSetAsActive.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnSetAsActive.Location = new System.Drawing.Point(258, 41);
             this.btnSetAsActive.Name = "btnSetAsActive";
             this.btnSetAsActive.Size = new System.Drawing.Size(100, 23);
@@ -79,6 +82,7 @@
             // btnDelete
             // 
             this.btnDelete.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.btnDelete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnDelete.Location = new System.Drawing.Point(258, 99);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(100, 23);
@@ -90,6 +94,7 @@
             // btnRename
             // 
             this.btnRename.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.btnRename.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnRename.Location = new System.Drawing.Point(258, 70);
             this.btnRename.Name = "btnRename";
             this.btnRename.Size = new System.Drawing.Size(100, 23);
@@ -108,6 +113,7 @@
             this.Controls.Add(this.btnSetAsActive);
             this.Controls.Add(this.btnCreate);
             this.Controls.Add(this.dgvProfileList);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "ProfileView";

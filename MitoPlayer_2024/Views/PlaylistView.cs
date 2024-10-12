@@ -68,6 +68,8 @@ namespace MitoPlayer_2024.Views
         public event EventHandler<ListEventArgs> SetTagValueEvent;
         public event EventHandler<ListEventArgs> ClearTagValueEvent;
 
+        public event EventHandler<ListEventArgs> ChangeSelectedRowEditing;
+
         private int TrackListLeftOffset = 190;
         private int TrackListRightOffset = 285;
 
@@ -75,6 +77,9 @@ namespace MitoPlayer_2024.Views
         {
             this.InitializeComponent();
             this.SetControlColors();
+
+
+
             this.playlistListBindingSource = new BindingSource();
             this.trackListBindingSource = new BindingSource();
         }
@@ -84,10 +89,8 @@ namespace MitoPlayer_2024.Views
         Color FontColor = System.Drawing.ColorTranslator.FromHtml("#c6c6c6");
         Color ButtonColor = System.Drawing.ColorTranslator.FromHtml("#292a2d");
         Color ButtonBorderColor = System.Drawing.ColorTranslator.FromHtml("#1b1b1b");
-        Color GridHeaderColor = System.Drawing.ColorTranslator.FromHtml("#36373a");
         Color GridLineColor1 = System.Drawing.ColorTranslator.FromHtml("#131315");
         Color GridLineColor2 = System.Drawing.ColorTranslator.FromHtml("#212224");
-        Color WhiteColor = System.Drawing.ColorTranslator.FromHtml("#FFFFFF");
         Color GridPlayingColor = System.Drawing.ColorTranslator.FromHtml("#4d4d4d");
         Color GridSelectionColor = System.Drawing.ColorTranslator.FromHtml("#626262");
         private void SetControlColors()
@@ -154,6 +157,10 @@ namespace MitoPlayer_2024.Views
             this.btnScanKeyAndBpm.BackColor = this.ButtonColor;
             this.btnScanKeyAndBpm.ForeColor = this.FontColor;
             this.btnScanKeyAndBpm.FlatAppearance.BorderColor = this.ButtonBorderColor;
+
+            this.contextMenuStrip1.BackColor = this.BackColor;
+            this.contextMenuStrip1.ForeColor = this.FontColor;
+
         }
 
         #region SINGLETON
@@ -206,7 +213,7 @@ namespace MitoPlayer_2024.Views
             this.dgvPlaylistList.CellBorderStyle = DataGridViewCellBorderStyle.None;
             this.SetPlaylistListColors();
         }
-        public void ReloadPlaylistListBindingSource(BindingSource playlistList, bool[] columnVisibility, int currentPlaylistId)
+        public void ReloadPlaylistListBindingSource(bool[] columnVisibility, int currentPlaylistId)
         {
             this.PlaylistColumnVisibility = columnVisibility;
             this.CurrentPlaylistId = currentPlaylistId;
@@ -244,7 +251,13 @@ namespace MitoPlayer_2024.Views
         //TRACKLIST DATA BINDING
         private bool[] TracklistColumnVisibility { get; set; }
         private int[] TracklistDisplayIndex { get; set; }
-
+        private List<Tag> tagList { get; set; }
+        private List<List<TagValue>> tagValueListList { get; set; }
+        public void SetTagsAndTagValues(List<Tag> tagList, List<List<TagValue>> tagValueListList)
+        {
+            this.tagList = tagList;
+            this.tagValueListList = tagValueListList;
+        }
         public void InitializeTrackListBindingSource(BindingSource trackList, bool[] columnVisibility, int[] displayIndex)
         {
             this.TracklistColumnVisibility = columnVisibility;
@@ -263,10 +276,11 @@ namespace MitoPlayer_2024.Views
             }
             this.UpdateTracklistColor();
         }
-        public void ReloadTrackListBindingSource(BindingSource trackList, bool[] columnVisibility, int[] displayIndex, int currentTrackIdInPlaylist)
+        public void ReloadTrackListBindingSource( bool[] columnVisibility, int[] displayIndex, int currentTrackIdInPlaylist)
         {
             this.TracklistColumnVisibility = columnVisibility;
             this.TracklistDisplayIndex = displayIndex;
+
             this.UpdateTracklistColor(currentTrackIdInPlaylist);
         }
 
@@ -306,7 +320,87 @@ namespace MitoPlayer_2024.Views
                         }
                     }
                 }
+
+                if (this.tagList != null && this.tagList.Count > 0 &&
+                    this.tagValueListList != null && this.tagValueListList.Count > 0)
+                {
+                    for (int j = 0; j < this.dgvTrackList.Columns.Count; j++)
+                    {
+                        Tag tag = this.tagList.Find(x => x.Name == this.dgvTrackList.Columns[j].Name.ToString());
+                        if(tag != null)
+                        {
+                            int tagIndex = this.tagList.IndexOf(tag);
+                            List<TagValue> tagValueList = this.tagValueListList[tagIndex];
+                            TagValue tagValue = null;
+                            if (tagValueList != null && tagValueList.Count > 0)
+                            {
+                                for (int i = 0; i < this.dgvTrackList.Rows.Count; i++)
+                                {
+                                    tagValue = tagValueList.Find(x => x.Name == this.dgvTrackList.Rows[i].Cells[j].Value.ToString());
+                                    if (tagValue != null)
+                                    {
+
+                                        if (tag.TextColoring)
+                                        {
+                                            this.dgvTrackList.Rows[i].Cells[j].Style.ForeColor = tagValue.Color;
+                                        }
+                                        else
+                                        {
+                                            this.dgvTrackList.Rows[i].Cells[j].Style.BackColor = tagValue.Color;
+                                            if ((tagValue.Color.R < 100 && tagValue.Color.G < 100) || (tagValue.Color.R < 100 && tagValue.Color.B < 100) || (tagValue.Color.B < 100 && tagValue.Color.G < 100))
+                                            {
+                                                this.dgvTrackList.Rows[i].Cells[j].Style.ForeColor = Color.White;
+                                            }
+                                            else
+                                            {
+                                                this.dgvTrackList.Rows[i].Cells[j].Style.ForeColor = Color.Black;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        
+                    }
+                }
             }
+    
+          /*  if (this.currentTagForColors.CellOnly)
+            {
+                for (int j = 0; j < this.dgvTrackList.Columns.Count; j++)
+                {
+                    if (columnIndex == j)
+                    {
+
+                        this.dgvTrackList.Rows[i].Cells[j].Style.BackColor = color;
+
+                        if ((color.R < 100 && color.G < 100) || (color.R < 100 && color.B < 100) || (color.B < 100 && color.G < 100))
+                        {
+                            this.dgvTrackList.Rows[i].Cells[j].Style.ForeColor = Color.White;
+                        }
+                        else
+                        {
+                            this.dgvTrackList.Rows[i].Cells[j].Style.ForeColor = Color.Black;
+                        }
+                    }
+                    else
+                    {
+                        this.dgvTrackList.Rows[i].Cells[j].Style.BackColor = Color.White;
+                        this.dgvTrackList.Rows[i].Cells[j].Style.ForeColor = Color.Black;
+
+                    }
+
+                }
+
+            }
+            else
+            {
+                for (int j = 0; j < this.dgvTrackList.Columns.Count; j++)
+                {
+                    this.dgvTrackList.Rows[i].Cells[j].Style.BackColor = color;
+
+                }
+            }*/
         }
 
 
@@ -1054,10 +1148,21 @@ namespace MitoPlayer_2024.Views
 
   
 
-        public void InitializeTagValueEditor(List<Tag> tagList, List<List<TagValue>> tagValueListContainer, bool isTagEditorDisplayed)
+        public void InitializeTagValueEditor(List<Tag> tagList, List<List<TagValue>> tagValueListContainer, bool isTagEditorDisplayed, bool selectedRowEditing)
         {
 
             this.tagValueEditorPanel.Controls.Clear();
+
+            if (selectedRowEditing)
+            {
+                this.rdbtnSelectedRow.Checked = true;
+                this.rdbtnPlayingRow.Checked = false;
+            }
+            else
+            {
+                this.rdbtnSelectedRow.Checked = false;
+                this.rdbtnPlayingRow.Checked = true;
+            }
 
             int sumHeight = 0;
             int height = 0;
@@ -1819,46 +1924,12 @@ namespace MitoPlayer_2024.Views
         private void btnDisplayTagEditor_Click(object sender, EventArgs e)
         {
             this.DisplayTagEditorEvent?.Invoke(this, new EventArgs());
+            this.dgvTrackList.Focus();
         }
         private void btnDisplayTagEditor2_Click(object sender, EventArgs e)
         {
             this.DisplayTagEditorEvent?.Invoke(this, new EventArgs());
-        }
-        private void btnTag1_Click(object sender, EventArgs e)
-        {
-            this.SelectTagEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 0 });
-        }
-        private void btnTag2_Click(object sender, EventArgs e)
-        {
-            this.SelectTagEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 1 });
-        }
-        private void btnTag3_Click(object sender, EventArgs e)
-        {
-            this.SelectTagEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 2 });
-        }
-        private void btnTag4_Click(object sender, EventArgs e)
-        {
-            this.SelectTagEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 3 });
-        }
-        private void btnTag5_Click(object sender, EventArgs e)
-        {
-            this.SelectTagEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 4 });
-        }
-        private void btnTag6_Click(object sender, EventArgs e)
-        {
-            this.SelectTagEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 5 });
-        }
-        private void btnTag7_Click(object sender, EventArgs e)
-        {
-            this.SelectTagEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 6 });
-        }
-        private void btnTag8_Click(object sender, EventArgs e)
-        {
-            this.SelectTagEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 7 });
-        }
-        private void btnTag9_Click(object sender, EventArgs e)
-        {
-            this.SelectTagEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = 8 });
+            this.dgvTrackList.Focus();
         }
 
         private void btnSetTagValue_Click(object sender, EventArgs e)
@@ -1875,6 +1946,7 @@ namespace MitoPlayer_2024.Views
                 }
                 this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { StringField1 = button.TagName, StringField2 = button.TagValueName, StringField3 = tagValueValue,  Rows = this.dgvTrackList.Rows });
             }
+            this.dgvTrackList.Focus();
         }
         private void btnClearTagValue_Click(object sender, EventArgs e)
         {
@@ -1884,17 +1956,35 @@ namespace MitoPlayer_2024.Views
             {
                 this.ClearTagValueEvent?.Invoke(this, new ListEventArgs() { StringField1 = button.TagName, Rows = this.dgvTrackList.Rows });
             }
+            this.dgvTrackList.Focus();
         }
 
-        private void chbSetSelectedRows_CheckedChanged(object sender, EventArgs e)
+        private void rdbtnSelectedRow_CheckedChanged(object sender, EventArgs e)
         {
-
+            if (this.rdbtnSelectedRow.Checked)
+            {
+                this.rdbtnPlayingRow.Checked = false;
+                this.ChangeSelectedRowEditing?.Invoke(this, new ListEventArgs()
+                {
+                    BooleanField1 = true
+                });
+            }
+            this.dgvTrackList.Focus();
         }
 
-        private void chbSetPlayingRow_CheckedChanged(object sender, EventArgs e)
+        private void rdbtnPlayingRow_CheckedChanged(object sender, EventArgs e)
         {
-
+            if (this.rdbtnPlayingRow.Checked)
+            {
+                this.rdbtnSelectedRow.Checked = false;
+                this.ChangeSelectedRowEditing?.Invoke(this, new ListEventArgs()
+                {
+                    BooleanField1 = false
+                });
+            }
+            this.dgvTrackList.Focus();
         }
+
 
         #endregion
 
@@ -1921,6 +2011,19 @@ namespace MitoPlayer_2024.Views
             }
         }
 
-        
+        private void tagValueEditorPanel_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+            //R - Play random track
+            if (this.dgvPlaylistList.Rows.Count > 0 && e.KeyCode == Keys.R)
+            {
+                this.CallRandomTrackEvent();
+            }
+
+            //B - Play next track
+            if (this.dgvPlaylistList.Rows.Count > 0 && e.KeyCode == Keys.B)
+            {
+                this.CallNextTrackEvent();
+            }
+        }
     }
 }

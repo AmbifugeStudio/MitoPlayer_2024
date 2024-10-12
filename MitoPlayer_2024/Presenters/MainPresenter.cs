@@ -200,7 +200,7 @@ namespace MitoPlayer_2024.Presenters
             {
                 Id = this.tagDao.GetNextId(TableName.Tag.ToString()),
                 Name = "Key",
-                CellOnly = true,
+                TextColoring = true,
                 HasMultipleValues = false,
                 Integrated = true,
                 ProfileId = profileId
@@ -254,7 +254,7 @@ namespace MitoPlayer_2024.Presenters
                 {
                     Id = this.tagDao.GetNextId(TableName.Tag.ToString()),
                     Name = "Bpm",
-                    CellOnly = true,
+                    TextColoring = true,
                     HasMultipleValues = true,
                     Integrated = true,
                     ProfileId = profileId
@@ -370,10 +370,10 @@ namespace MitoPlayer_2024.Presenters
         {
             this.HideAllForm();
 
-            this.tagValueEditorPresenter.InitializeTagDataTable();
+            this.tagValueEditorPresenter.Initialize();
             ((TagValueView)this.tagValueView).Show();
 
-            this.tagValueEditorPresenter.SelectFirstTagValue();
+            this.tagValueEditorPresenter.ReloadData();
 
             this.actualView = this.tagValueView;
             ((MainView)mainView).SetMenuStripAccessibility(this.actualView);

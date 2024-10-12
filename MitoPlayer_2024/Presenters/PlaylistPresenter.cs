@@ -70,6 +70,8 @@ namespace MitoPlayer_2024.Presenters
             this.playlistView.SelectTagEvent += SelectTagEvent;
             this.playlistView.SetTagValueEvent += SetTagValueEvent;
             this.playlistView.ClearTagValueEvent += ClearTagValueEvent;
+
+            this.playlistView.ChangeSelectedRowEditing += ChangeSelectedRowEditing;
         }
 
         #region INITIALIZE
@@ -92,15 +94,26 @@ namespace MitoPlayer_2024.Presenters
 
 
         private List<Tag> tagList { get; set; }
+        private List<List<TagValue>> tagValueListList { get; set; }
         private void InitializeTaglist()
         {
             List<Tag> tagList = this.tagDao.GetAllTag();
             if (tagList != null && tagList.Count > 0)
             {
                 this.tagList = tagList;
-            }
-        }
 
+                List<TagValue> tagValueList = new List<TagValue>();
+                tagValueListList = new List<List<TagValue>>();
+                foreach (Tag tag in this.tagList)
+                {
+                    tagValueList = this.tagDao.GetTagValuesByTagId(tag.Id);
+                    if(tagValueList != null && tagValueList.Count > 0){
+                        tagValueListList.Add(tagValueList);
+                    }
+                }
+            }
+            this.playlistView.SetTagsAndTagValues(this.tagList, this.tagValueListList);
+        }
 
         private BindingSource playlistListBindingSource { get; set; }
         private DataTable playlistListTable { get; set; }
@@ -164,8 +177,7 @@ namespace MitoPlayer_2024.Presenters
                 }
             }
 
-            this.playlistListBindingSource.DataSource = playlistListTable;
-            this.playlistView.ReloadPlaylistListBindingSource(this.playlistListBindingSource, this.playlistColumnVisibilityArray, this.currentPlaylistId);
+            this.playlistView.ReloadPlaylistListBindingSource( this.playlistColumnVisibilityArray, this.currentPlaylistId);
         }
 
 
@@ -236,8 +248,7 @@ namespace MitoPlayer_2024.Presenters
                 }
             }
 
-            this.trackListBindingSource.DataSource = trackListTable;
-            this.playlistView.ReloadTrackListBindingSource(this.trackListBindingSource, this.TrackColumnVisibilityArray, this.TrackColumnSortingIdArray, currentTrackIdInPlaylist);
+            this.playlistView.ReloadTrackListBindingSource(this.TrackColumnVisibilityArray, this.TrackColumnSortingIdArray, currentTrackIdInPlaylist);
         }
 
 
@@ -245,6 +256,7 @@ namespace MitoPlayer_2024.Presenters
         private void InitializeTagEditor()
         {
             this.isTagEditorDisplayed = this.settingDao.GetBooleanSetting(Settings.IsTagEditorDisplayed.ToString()).Value;
+            this.selectedRowEditing = this.settingDao.GetBooleanSetting(Settings.SelectedRowEditing.ToString()).Value;
 
             List<List<TagValue>> tagValueListContainer = new List<List<TagValue>>();
             foreach (Tag tag in this.tagList)
@@ -254,7 +266,7 @@ namespace MitoPlayer_2024.Presenters
                 tagValueListContainer.Add(tagValues);
             }
 
-            ((PlaylistView)this.playlistView).InitializeTagValueEditor(this.tagList, tagValueListContainer, this.isTagEditorDisplayed);
+            ((PlaylistView)this.playlistView).InitializeTagValueEditor(this.tagList, tagValueListContainer, this.isTagEditorDisplayed, this.selectedRowEditing);
             ((PlaylistView)this.playlistView).CallDisplayTagEditor(this.isTagEditorDisplayed);
         }
 
@@ -1974,7 +1986,7 @@ namespace MitoPlayer_2024.Presenters
                         List<List<TagValue>> tagValueListContainer = new List<List<TagValue>>();
                         tagValueListContainer.Add(tagValueList);
 
-                        ((PlaylistView)this.playlistView).InitializeTagValueEditor(this.tagList, tagValueListContainer, this.isTagEditorDisplayed);
+                        ((PlaylistView)this.playlistView).InitializeTagValueEditor(this.tagList, tagValueListContainer, this.isTagEditorDisplayed, this.selectedRowEditing);
                         ((PlaylistView)this.playlistView).CallDisplayTagEditor(this.isTagEditorDisplayed);
                     }
                 }
@@ -1982,6 +1994,12 @@ namespace MitoPlayer_2024.Presenters
            
         }
 
+        private bool selectedRowEditing { get; set; }
+        private void ChangeSelectedRowEditing(object sender, ListEventArgs e)
+        {
+            this.selectedRowEditing = e.BooleanField1;
+            this.settingDao.SetBooleanSetting(Settings.SelectedRowEditing.ToString(), this.selectedRowEditing);
+        }
         private void ClearTagValueEvent(object sender, ListEventArgs e)
         {
             if (this.tagList != null && this.tagList.Count > 0)
@@ -2044,32 +2062,64 @@ namespace MitoPlayer_2024.Presenters
                             {
                                 if (this.trackListTable != null && this.trackListTable.Rows != null && this.trackListTable.Rows.Count > 0)
                                 {
-                                    for (int i = e.Rows.Count - 1; i >= 0; i--)
+                                    if (this.selectedRowEditing)
                                     {
-                                        if (e.Rows[i].Selected)
+                                        for (int i = e.Rows.Count - 1; i >= 0; i--)
                                         {
-                                            Track track = this.trackDao.GetTrack(Convert.ToInt32(this.trackListTable.Rows[i]["Id"]), this.tagList);
-                                            if (track != null)
+                                            if (e.Rows[i].Selected)
                                             {
-                                                foreach (TrackTagValue ttv in track.TrackTagValues)
+                                                Track track = this.trackDao.GetTrack(Convert.ToInt32(this.trackListTable.Rows[i]["Id"]), this.tagList);
+                                                if (track != null)
                                                 {
-                                                    if (ttv.TagId == currentTag.Id)
+                                                    foreach (TrackTagValue ttv in track.TrackTagValues)
                                                     {
-                                                        ttv.TagValueId = tv.Id;
-                                                        ttv.TagValueName = tv.Name;
-                                                        ttv.HasValue = true;
-                                                        ttv.Value = e.StringField3;
-                                                        this.trackDao.UpdateTrackTagValue(ttv);
-                                                        break;
+                                                        if (ttv.TagId == currentTag.Id)
+                                                        {
+                                                            ttv.TagValueId = tv.Id;
+                                                            ttv.TagValueName = tv.Name;
+                                                            ttv.HasValue = true;
+                                                            ttv.Value = e.StringField3;
+                                                            this.trackDao.UpdateTrackTagValue(ttv);
+                                                            break;
+                                                        }
                                                     }
                                                 }
+                                                this.trackListTable.Rows[i][currentTag.Name] = e.StringField3;
                                             }
-                                            this.trackListTable.Rows[i][currentTag.Name] = e.StringField3;
                                         }
                                     }
+                                    else
+                                    {
+                                        int currentTrackIdInPlaylist = this.mediaPLayerComponent.CurrentTrackIdInPlaylist;
+                                        for (int i = e.Rows.Count - 1; i >= 0; i--)
+                                        {
+                                            int trackIdInPlaylist = Convert.ToInt32(this.trackListTable.Rows[i]["TrackIdInPlaylist"]);
+                                            if (trackIdInPlaylist == currentTrackIdInPlaylist)
+                                            {
+                                                Track track = this.trackDao.GetTrack(Convert.ToInt32(this.trackListTable.Rows[i]["Id"]), this.tagList);
+                                                if (track != null)
+                                                {
+                                                    foreach (TrackTagValue ttv in track.TrackTagValues)
+                                                    {
+                                                        if (ttv.TagId == currentTag.Id)
+                                                        {
+                                                            ttv.TagValueId = tv.Id;
+                                                            ttv.TagValueName = tv.Name;
+                                                            ttv.HasValue = true;
+                                                            ttv.Value = e.StringField3;
+                                                            this.trackDao.UpdateTrackTagValue(ttv);
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                                this.trackListTable.Rows[i][currentTag.Name] = e.StringField3;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    
                                     this.SaveTrackList(trackListTable, this.currentPlaylistId);
                                     this.ReloadTrackListDataGridView(trackListTable);
-
                                 }
                             }
                         }
@@ -2080,27 +2130,58 @@ namespace MitoPlayer_2024.Presenters
                             {
                                 if (this.trackListTable != null && this.trackListTable.Rows != null && this.trackListTable.Rows.Count > 0)
                                 {
-                                    for (int i = e.Rows.Count - 1; i >= 0; i--)
+                                    if (this.selectedRowEditing)
                                     {
-                                        if (e.Rows[i].Selected)
+                                        for (int i = e.Rows.Count - 1; i >= 0; i--)
                                         {
-                                            Track track = this.trackDao.GetTrack(Convert.ToInt32(this.trackListTable.Rows[i]["Id"]), this.tagList);
-                                            if (track != null)
+                                            if (e.Rows[i].Selected)
                                             {
-                                                foreach (TrackTagValue ttv in track.TrackTagValues)
+                                                Track track = this.trackDao.GetTrack(Convert.ToInt32(this.trackListTable.Rows[i]["Id"]), this.tagList);
+                                                if (track != null)
                                                 {
-                                                    if (ttv.TagId == currentTag.Id)
+                                                    foreach (TrackTagValue ttv in track.TrackTagValues)
                                                     {
-                                                        ttv.TagValueId = tv.Id;
-                                                        ttv.TagValueName = tv.Name;
-                                                        this.trackDao.UpdateTrackTagValue(ttv);
-                                                        break;
+                                                        if (ttv.TagId == currentTag.Id)
+                                                        {
+                                                            ttv.TagValueId = tv.Id;
+                                                            ttv.TagValueName = tv.Name;
+                                                            this.trackDao.UpdateTrackTagValue(ttv);
+                                                            break;
+                                                        }
                                                     }
                                                 }
+                                                this.trackListTable.Rows[i][currentTag.Name] = tv.Name;
                                             }
-                                            this.trackListTable.Rows[i][currentTag.Name] = tv.Name;
                                         }
                                     }
+                                    else
+                                    {
+                                        int currentTrackIdInPlaylist = this.mediaPLayerComponent.CurrentTrackIdInPlaylist;
+                                        for (int i = e.Rows.Count - 1; i >= 0; i--)
+                                        {
+                                            int trackIdInPlaylist = Convert.ToInt32(this.trackListTable.Rows[i]["TrackIdInPlaylist"]);
+                                            if (trackIdInPlaylist == currentTrackIdInPlaylist)
+                                            {
+                                                Track track = this.trackDao.GetTrack(Convert.ToInt32(this.trackListTable.Rows[i]["Id"]), this.tagList);
+                                                if (track != null)
+                                                {
+                                                    foreach (TrackTagValue ttv in track.TrackTagValues)
+                                                    {
+                                                        if (ttv.TagId == currentTag.Id)
+                                                        {
+                                                            ttv.TagValueId = tv.Id;
+                                                            ttv.TagValueName = tv.Name;
+                                                            this.trackDao.UpdateTrackTagValue(ttv);
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                                this.trackListTable.Rows[i][currentTag.Name] = tv.Name;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    
                                     this.SaveTrackList(trackListTable, this.currentPlaylistId);
                                     this.ReloadTrackListDataGridView(trackListTable);
 

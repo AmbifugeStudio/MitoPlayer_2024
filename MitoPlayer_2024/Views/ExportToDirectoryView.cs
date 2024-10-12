@@ -27,8 +27,44 @@ namespace MitoPlayer_2024.Views
         private BindingSource trackListBindingSource { get; set; }
         public ExportToDirectoryView()
         {
-            InitializeComponent();
+            this.InitializeComponent();
+            this.SetControlColors();
             this.CenterToScreen();
+        }
+
+        Color BackgroundColor = System.Drawing.ColorTranslator.FromHtml("#363639");
+        Color FontColor = System.Drawing.ColorTranslator.FromHtml("#c6c6c6");
+        Color ButtonColor = System.Drawing.ColorTranslator.FromHtml("#292a2d");
+        Color ButtonBorderColor = System.Drawing.ColorTranslator.FromHtml("#1b1b1b");
+        Color GridLineColor1 = System.Drawing.ColorTranslator.FromHtml("#131315");
+        Color GridLineColor2 = System.Drawing.ColorTranslator.FromHtml("#212224");
+        Color GridPlayingColor = System.Drawing.ColorTranslator.FromHtml("#4d4d4d");
+        Color GridSelectionColor = System.Drawing.ColorTranslator.FromHtml("#626262");
+
+        private void SetControlColors()
+        {
+            this.BackColor = this.BackgroundColor;
+            this.ForeColor = this.FontColor;
+
+            this.btnOk.BackColor = this.BackgroundColor;
+            this.btnOk.ForeColor = this.FontColor;
+            this.btnOk.FlatAppearance.BorderColor = this.ButtonBorderColor;
+
+            this.btnBrowse.BackColor = this.BackgroundColor;
+            this.btnBrowse.ForeColor = this.FontColor;
+            this.btnBrowse.FlatAppearance.BorderColor = this.ButtonBorderColor;
+
+            this.btnCancel.BackColor = this.BackgroundColor;
+            this.btnCancel.ForeColor = this.FontColor;
+            this.btnCancel.FlatAppearance.BorderColor = this.ButtonBorderColor;
+
+            this.dgvTrackList.BackgroundColor = this.ButtonColor;
+            this.dgvTrackList.ColumnHeadersDefaultCellStyle.BackColor = this.ButtonColor;
+            this.dgvTrackList.ColumnHeadersDefaultCellStyle.ForeColor = this.FontColor;
+            this.dgvTrackList.EnableHeadersVisualStyles = false;
+            this.dgvTrackList.ColumnHeadersDefaultCellStyle.SelectionBackColor = this.ButtonColor;
+            this.dgvTrackList.DefaultCellStyle.SelectionBackColor = this.GridSelectionColor;
+
         }
 
         public void InitializeView(String path,bool isRowNumberChecked,bool isKeyCodeChecked,bool isBpmNumberChecked, bool isTrunkBpmChecked,

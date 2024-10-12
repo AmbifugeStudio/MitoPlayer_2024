@@ -4,6 +4,7 @@ using MitoPlayer_2024.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -54,10 +55,13 @@ namespace MitoPlayer_2024.Views
         event EventHandler<ListEventArgs> SetTagValueEvent;
         event EventHandler<ListEventArgs> ClearTagValueEvent;
 
+        event EventHandler<ListEventArgs> ChangeSelectedRowEditing;
+
         void InitializePlaylistListBindingSource(BindingSource playlistList, bool[] columnVisibility,int currentPlaylistId);
-        void ReloadPlaylistListBindingSource(BindingSource playlistList, bool[] columnVisibility, int currentPlaylistId);
+        void ReloadPlaylistListBindingSource(bool[] columnVisibility, int currentPlaylistId);
         void InitializeTrackListBindingSource(BindingSource trackList, bool[] columnVisibility, int[] columnSortingId);
-        void ReloadTrackListBindingSource(BindingSource trackList, bool[] columnVisibility, int[] columnSortingId, int currentTrackIdInPlaylist);
+        void ReloadTrackListBindingSource(bool[] columnVisibility, int[] columnSortingId, int currentTrackIdInPlaylist);
+        void SetTagsAndTagValues(List<Tag> tagList, List<List<TagValue>> tagValueListList);
         void UpdateAfterPlayTrack(int currentTrackIndex, int currentTrackId);
         void UpdateAfterPlayTrackAfterPause();
         void UpdateAfterStopTrack();

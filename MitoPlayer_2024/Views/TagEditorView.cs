@@ -15,15 +15,35 @@ namespace MitoPlayer_2024.Views
     {
         public TagEditorView()
         {
-            InitializeComponent();
+            this.InitializeComponent();
+            this.SetControlColors();
             this.txtTagName.Focus();
             this.CenterToScreen();
         }
 
         public event EventHandler<ListEventArgs> CreateOrEditTag;
         public event EventHandler CloseEditor;
-        public event EventHandler<ListEventArgs> ChangeCellOnly;
+        public event EventHandler<ListEventArgs> ChangeTextColoring;
         public event EventHandler<ListEventArgs> ChangeHasMultipleValues;
+
+        Color BackgroundColor = System.Drawing.ColorTranslator.FromHtml("#363639");
+        Color FontColor = System.Drawing.ColorTranslator.FromHtml("#c6c6c6");
+        Color ButtonBorderColor = System.Drawing.ColorTranslator.FromHtml("#1b1b1b");
+
+        private void SetControlColors()
+        {
+            this.BackColor = this.BackgroundColor;
+            this.ForeColor = this.FontColor;
+
+            this.btnOk.BackColor = this.BackgroundColor;
+            this.btnOk.ForeColor = this.FontColor;
+            this.btnOk.FlatAppearance.BorderColor = this.ButtonBorderColor;
+
+            this.btnCancel.BackColor = this.BackgroundColor;
+            this.btnCancel.ForeColor = this.FontColor;
+            this.btnCancel.FlatAppearance.BorderColor = this.ButtonBorderColor;
+
+        }
 
         public void SetTagName(String name, bool edit = false)
         {
@@ -40,34 +60,65 @@ namespace MitoPlayer_2024.Views
 
         private void btnOk_Click(object sender, EventArgs e)
         {
-            this.CreateOrEditTag?.Invoke(this, new ListEventArgs() { StringField1 = txtTagName.Text, BooleanField1 = chbCellOnly.Checked });
+            bool textColoring = rdbtnText.Checked;
+            this.CreateOrEditTag?.Invoke(this, new ListEventArgs() { StringField1 = txtTagName.Text, BooleanField1 = textColoring });
         }
 
         private void txtTagName_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
             {
-                this.CreateOrEditTag?.Invoke(this, new ListEventArgs() { StringField1 = txtTagName.Text, BooleanField1 = chbCellOnly.Checked });
+                bool textColoring = rdbtnText.Checked;
+                this.CreateOrEditTag?.Invoke(this, new ListEventArgs() { StringField1 = txtTagName.Text, BooleanField1 = textColoring });
             }
             else if (e.KeyCode == Keys.Escape)
             {
                 this.CloseEditor?.Invoke(this, new EventArgs());
             }
         }
-        public void SetCellOnly(bool value)
-        {
-            this.chbCellOnly.Checked = value;
-        }        
-        public void SetHasMultipleValues(bool hasMultipleValues)
+     
+        public void SetHasMultipleValues(bool hasMultipleValues, bool enabled)
         {
             this.chbHasMultipleValues.Checked = hasMultipleValues;
-        }
-        private void chbCellOnly_CheckedChanged(object sender, EventArgs e)
+            this.chbHasMultipleValues.Enabled = enabled;
+        }   
+        public void SetTextColoring(bool textColoring)
         {
-            this.ChangeCellOnly?.Invoke(this, new ListEventArgs()
+            if (textColoring)
             {
-                BooleanField1 = this.chbCellOnly.Checked
-            });
+                this.rdbtnText.Checked = true;
+                this.rdbtnField.Checked = false;
+            }
+            else
+            {
+                this.rdbtnText.Checked = false;
+                this.rdbtnField.Checked = true;
+            }
+            
+        }
+
+        private void rdbtnText_CheckedChanged(object sender, EventArgs e)
+        {
+            if (this.rdbtnText.Checked)
+            {
+                this.rdbtnField.Checked = false;
+                this.ChangeTextColoring?.Invoke(this, new ListEventArgs()
+                {
+                    BooleanField1 = true
+                });
+            }
+        }
+
+        private void rdbtnField_CheckedChanged(object sender, EventArgs e)
+        {
+            if (this.rdbtnField.Checked)
+            {
+                this.rdbtnText.Checked = false;
+                this.ChangeTextColoring?.Invoke(this, new ListEventArgs()
+                {
+                    BooleanField1 = false
+                });
+            }
         }
         private void chbHasMultipleValues_CheckedChanged(object sender, EventArgs e)
         {

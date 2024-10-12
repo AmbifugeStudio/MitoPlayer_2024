@@ -37,11 +37,11 @@
             this.btnColorChange = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.rdb1 = new System.Windows.Forms.RadioButton();
-            this.rdb2 = new System.Windows.Forms.RadioButton();
-            this.rdb3 = new System.Windows.Forms.RadioButton();
             this.rdb4 = new System.Windows.Forms.RadioButton();
+            this.rdb3 = new System.Windows.Forms.RadioButton();
+            this.rdb2 = new System.Windows.Forms.RadioButton();
             this.rdb0 = new System.Windows.Forms.RadioButton();
+            this.rdb1 = new System.Windows.Forms.RadioButton();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -49,6 +49,7 @@
             // 
             this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.btnOk.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnOk.Location = new System.Drawing.Point(188, 126);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(75, 23);
@@ -96,6 +97,7 @@
             // btnColorChange
             // 
             this.btnColorChange.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.btnColorChange.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnColorChange.Location = new System.Drawing.Point(269, 42);
             this.btnColorChange.Name = "btnColorChange";
             this.btnColorChange.Size = new System.Drawing.Size(75, 23);
@@ -108,6 +110,7 @@
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCancel.Location = new System.Drawing.Point(269, 126);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
@@ -130,29 +133,17 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Hotkey";
             // 
-            // rdb1
+            // rdb4
             // 
-            this.rdb1.AutoSize = true;
-            this.rdb1.Location = new System.Drawing.Point(88, 19);
-            this.rdb1.Name = "rdb1";
-            this.rdb1.Size = new System.Drawing.Size(31, 17);
-            this.rdb1.TabIndex = 0;
-            this.rdb1.TabStop = true;
-            this.rdb1.Text = "1";
-            this.rdb1.UseVisualStyleBackColor = true;
-            this.rdb1.CheckedChanged += new System.EventHandler(this.rdb1_CheckedChanged);
-            // 
-            // rdb2
-            // 
-            this.rdb2.AutoSize = true;
-            this.rdb2.Location = new System.Drawing.Point(125, 19);
-            this.rdb2.Name = "rdb2";
-            this.rdb2.Size = new System.Drawing.Size(31, 17);
-            this.rdb2.TabIndex = 0;
-            this.rdb2.TabStop = true;
-            this.rdb2.Text = "2";
-            this.rdb2.UseVisualStyleBackColor = true;
-            this.rdb2.CheckedChanged += new System.EventHandler(this.rdb2_CheckedChanged);
+            this.rdb4.AutoSize = true;
+            this.rdb4.Location = new System.Drawing.Point(199, 19);
+            this.rdb4.Name = "rdb4";
+            this.rdb4.Size = new System.Drawing.Size(31, 17);
+            this.rdb4.TabIndex = 0;
+            this.rdb4.TabStop = true;
+            this.rdb4.Text = "4";
+            this.rdb4.UseVisualStyleBackColor = true;
+            this.rdb4.CheckedChanged += new System.EventHandler(this.rdb4_CheckedChanged);
             // 
             // rdb3
             // 
@@ -166,17 +157,17 @@
             this.rdb3.UseVisualStyleBackColor = true;
             this.rdb3.CheckedChanged += new System.EventHandler(this.rdb3_CheckedChanged);
             // 
-            // rdb4
+            // rdb2
             // 
-            this.rdb4.AutoSize = true;
-            this.rdb4.Location = new System.Drawing.Point(199, 19);
-            this.rdb4.Name = "rdb4";
-            this.rdb4.Size = new System.Drawing.Size(31, 17);
-            this.rdb4.TabIndex = 0;
-            this.rdb4.TabStop = true;
-            this.rdb4.Text = "4";
-            this.rdb4.UseVisualStyleBackColor = true;
-            this.rdb4.CheckedChanged += new System.EventHandler(this.rdb4_CheckedChanged);
+            this.rdb2.AutoSize = true;
+            this.rdb2.Location = new System.Drawing.Point(125, 19);
+            this.rdb2.Name = "rdb2";
+            this.rdb2.Size = new System.Drawing.Size(31, 17);
+            this.rdb2.TabIndex = 0;
+            this.rdb2.TabStop = true;
+            this.rdb2.Text = "2";
+            this.rdb2.UseVisualStyleBackColor = true;
+            this.rdb2.CheckedChanged += new System.EventHandler(this.rdb2_CheckedChanged);
             // 
             // rdb0
             // 
@@ -189,6 +180,18 @@
             this.rdb0.Text = "No Hotkey";
             this.rdb0.UseVisualStyleBackColor = true;
             this.rdb0.CheckedChanged += new System.EventHandler(this.rdb0_CheckedChanged);
+            // 
+            // rdb1
+            // 
+            this.rdb1.AutoSize = true;
+            this.rdb1.Location = new System.Drawing.Point(88, 19);
+            this.rdb1.Name = "rdb1";
+            this.rdb1.Size = new System.Drawing.Size(31, 17);
+            this.rdb1.TabIndex = 0;
+            this.rdb1.TabStop = true;
+            this.rdb1.Text = "1";
+            this.rdb1.UseVisualStyleBackColor = true;
+            this.rdb1.CheckedChanged += new System.EventHandler(this.rdb1_CheckedChanged);
             // 
             // TagValueEditorView
             // 

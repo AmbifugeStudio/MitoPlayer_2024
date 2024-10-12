@@ -359,42 +359,42 @@
             // menuStripStop
             // 
             this.menuStripStop.Name = "menuStripStop";
-            this.menuStripStop.Size = new System.Drawing.Size(187, 22);
+            this.menuStripStop.Size = new System.Drawing.Size(137, 22);
             this.menuStripStop.Text = "Stop";
             this.menuStripStop.Click += new System.EventHandler(this.menuStripStop_Click);
             // 
             // menuStripPause
             // 
             this.menuStripPause.Name = "menuStripPause";
-            this.menuStripPause.Size = new System.Drawing.Size(187, 22);
+            this.menuStripPause.Size = new System.Drawing.Size(137, 22);
             this.menuStripPause.Text = "Pause";
             this.menuStripPause.Click += new System.EventHandler(this.menuStripPause_Click);
             // 
             // menuStripPlay
             // 
             this.menuStripPlay.Name = "menuStripPlay";
-            this.menuStripPlay.Size = new System.Drawing.Size(187, 22);
+            this.menuStripPlay.Size = new System.Drawing.Size(137, 22);
             this.menuStripPlay.Text = "Play";
             this.menuStripPlay.Click += new System.EventHandler(this.menuStripPlay_Click);
             // 
             // menuStripPrev
             // 
             this.menuStripPrev.Name = "menuStripPrev";
-            this.menuStripPrev.Size = new System.Drawing.Size(187, 22);
+            this.menuStripPrev.Size = new System.Drawing.Size(137, 22);
             this.menuStripPrev.Text = "Previous";
             this.menuStripPrev.Click += new System.EventHandler(this.menuStripPrev_Click);
             // 
             // menuStripNext
             // 
             this.menuStripNext.Name = "menuStripNext";
-            this.menuStripNext.Size = new System.Drawing.Size(186, 22);
+            this.menuStripNext.Size = new System.Drawing.Size(137, 22);
             this.menuStripNext.Text = "Next (B)";
             this.menuStripNext.Click += new System.EventHandler(this.menuStripNext_Click);
             // 
             // menuStripRandom
             // 
             this.menuStripRandom.Name = "menuStripRandom";
-            this.menuStripRandom.Size = new System.Drawing.Size(180, 22);
+            this.menuStripRandom.Size = new System.Drawing.Size(137, 22);
             this.menuStripRandom.Text = "Random (R)";
             this.menuStripRandom.Click += new System.EventHandler(this.menuStripRandom_Click);
             // 

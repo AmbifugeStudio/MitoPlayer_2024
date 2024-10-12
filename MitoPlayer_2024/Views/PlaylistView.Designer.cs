@@ -93,8 +93,8 @@
             this.btnColumnVisibility = new System.Windows.Forms.Button();
             this.tagValueEditorPanel = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
-            this.chbSetSelectedRows = new System.Windows.Forms.CheckBox();
-            this.chbSetPlayingRow = new System.Windows.Forms.CheckBox();
+            this.rdbtnSelectedRow = new System.Windows.Forms.RadioButton();
+            this.rdbtnPlayingRow = new System.Windows.Forms.RadioButton();
             this.contextMenuStrip1.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -113,7 +113,7 @@
             // exportToTxtToolStripMenuItem
             // 
             this.exportToTxtToolStripMenuItem.Name = "exportToTxtToolStripMenuItem";
-            this.exportToTxtToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.exportToTxtToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.exportToTxtToolStripMenuItem.Text = "Export to txt";
             this.exportToTxtToolStripMenuItem.Click += new System.EventHandler(this.menuStripExportToTxtToolStripMenuItem_Click);
             // 
@@ -131,40 +131,41 @@
             this.exportToTxtToolStripMenuItem,
             this.exportToDirToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(176, 192);
+            this.contextMenuStrip1.ShowImageMargin = false;
+            this.contextMenuStrip1.Size = new System.Drawing.Size(151, 192);
             // 
             // createPlaylistToolStripMenuItem
             // 
             this.createPlaylistToolStripMenuItem.Name = "createPlaylistToolStripMenuItem";
-            this.createPlaylistToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.createPlaylistToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.createPlaylistToolStripMenuItem.Text = "New";
             this.createPlaylistToolStripMenuItem.Click += new System.EventHandler(this.menuStripCreatePlaylist_Click);
             // 
             // loadToolStripMenuItem
             // 
             this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-            this.loadToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.loadToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.loadToolStripMenuItem.Text = "Load";
             this.loadToolStripMenuItem.Click += new System.EventHandler(this.menuStripLoadPlaylist_Click);
             // 
             // renameToolStripMenuItem
             // 
             this.renameToolStripMenuItem.Name = "renameToolStripMenuItem";
-            this.renameToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.renameToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.renameToolStripMenuItem.Text = "Rename";
             this.renameToolStripMenuItem.Click += new System.EventHandler(this.menuStripRenamePlaylist_Click);
             // 
             // deleteToolStripMenuItem
             // 
             this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.deleteToolStripMenuItem.Text = "Remove";
             this.deleteToolStripMenuItem.Click += new System.EventHandler(this.menuStripDeletePlaylist_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(172, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(147, 6);
             // 
             // setQuicklistGroupToolStripMenuItem
             // 
@@ -174,7 +175,7 @@
             this.setGroup3ToolStripMenuItem1,
             this.setGroup4ToolStripMenuItem1});
             this.setQuicklistGroupToolStripMenuItem.Name = "setQuicklistGroupToolStripMenuItem";
-            this.setQuicklistGroupToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.setQuicklistGroupToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.setQuicklistGroupToolStripMenuItem.Text = "Set Quicklist Group";
             // 
             // setGroup1ToolStripMenuItem1
@@ -208,19 +209,19 @@
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(172, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(147, 6);
             // 
             // exportToM3UToolStripMenuItem1
             // 
             this.exportToM3UToolStripMenuItem1.Name = "exportToM3UToolStripMenuItem1";
-            this.exportToM3UToolStripMenuItem1.Size = new System.Drawing.Size(175, 22);
+            this.exportToM3UToolStripMenuItem1.Size = new System.Drawing.Size(150, 22);
             this.exportToM3UToolStripMenuItem1.Text = "Export to m3u";
             this.exportToM3UToolStripMenuItem1.Click += new System.EventHandler(this.menuStripExportToM3uToolStripMenuItem_Click);
             // 
             // exportToDirToolStripMenuItem
             // 
             this.exportToDirToolStripMenuItem.Name = "exportToDirToolStripMenuItem";
-            this.exportToDirToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.exportToDirToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.exportToDirToolStripMenuItem.Text = "Export to directory";
             this.exportToDirToolStripMenuItem.Click += new System.EventHandler(this.exportToDirectoryToolStripMenuItem_Click);
             // 
@@ -706,9 +707,11 @@
             this.tagValueEditorPanel.Name = "tagValueEditorPanel";
             this.tagValueEditorPanel.Size = new System.Drawing.Size(274, 536);
             this.tagValueEditorPanel.TabIndex = 36;
+            this.tagValueEditorPanel.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.tagValueEditorPanel_PreviewKeyDown);
             // 
             // label1
             // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(967, 17);
             this.label1.Name = "label1";
@@ -716,35 +719,39 @@
             this.label1.TabIndex = 37;
             this.label1.Text = "Set mode:";
             // 
-            // chbSetSelectedRows
+            // rdbtnSelectedRow
             // 
-            this.chbSetSelectedRows.AutoSize = true;
-            this.chbSetSelectedRows.Location = new System.Drawing.Point(1028, 16);
-            this.chbSetSelectedRows.Name = "chbSetSelectedRows";
-            this.chbSetSelectedRows.Size = new System.Drawing.Size(68, 17);
-            this.chbSetSelectedRows.TabIndex = 38;
-            this.chbSetSelectedRows.Text = "Selected";
-            this.chbSetSelectedRows.UseVisualStyleBackColor = true;
-            this.chbSetSelectedRows.CheckedChanged += new System.EventHandler(this.chbSetSelectedRows_CheckedChanged);
+            this.rdbtnSelectedRow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.rdbtnSelectedRow.AutoSize = true;
+            this.rdbtnSelectedRow.Location = new System.Drawing.Point(1028, 15);
+            this.rdbtnSelectedRow.Name = "rdbtnSelectedRow";
+            this.rdbtnSelectedRow.Size = new System.Drawing.Size(67, 17);
+            this.rdbtnSelectedRow.TabIndex = 39;
+            this.rdbtnSelectedRow.TabStop = true;
+            this.rdbtnSelectedRow.Text = "Selected";
+            this.rdbtnSelectedRow.UseVisualStyleBackColor = true;
+            this.rdbtnSelectedRow.CheckedChanged += new System.EventHandler(this.rdbtnSelectedRow_CheckedChanged);
             // 
-            // chbSetPlayingRow
+            // rdbtnPlayingRow
             // 
-            this.chbSetPlayingRow.AutoSize = true;
-            this.chbSetPlayingRow.Location = new System.Drawing.Point(1102, 16);
-            this.chbSetPlayingRow.Name = "chbSetPlayingRow";
-            this.chbSetPlayingRow.Size = new System.Drawing.Size(60, 17);
-            this.chbSetPlayingRow.TabIndex = 38;
-            this.chbSetPlayingRow.Text = "Playing";
-            this.chbSetPlayingRow.UseVisualStyleBackColor = true;
-            this.chbSetPlayingRow.CheckedChanged += new System.EventHandler(this.chbSetPlayingRow_CheckedChanged);
+            this.rdbtnPlayingRow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.rdbtnPlayingRow.AutoSize = true;
+            this.rdbtnPlayingRow.Location = new System.Drawing.Point(1101, 15);
+            this.rdbtnPlayingRow.Name = "rdbtnPlayingRow";
+            this.rdbtnPlayingRow.Size = new System.Drawing.Size(59, 17);
+            this.rdbtnPlayingRow.TabIndex = 39;
+            this.rdbtnPlayingRow.TabStop = true;
+            this.rdbtnPlayingRow.Text = "Playing";
+            this.rdbtnPlayingRow.UseVisualStyleBackColor = true;
+            this.rdbtnPlayingRow.CheckedChanged += new System.EventHandler(this.rdbtnPlayingRow_CheckedChanged);
             // 
             // PlaylistView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1252, 678);
-            this.Controls.Add(this.chbSetPlayingRow);
-            this.Controls.Add(this.chbSetSelectedRows);
+            this.Controls.Add(this.rdbtnPlayingRow);
+            this.Controls.Add(this.rdbtnSelectedRow);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.tagValueEditorPanel);
             this.Controls.Add(this.btnColumnVisibility);
@@ -848,7 +855,7 @@
         private System.Windows.Forms.ToolStripMenuItem exportToDirToolStripMenuItem;
         private System.Windows.Forms.Panel tagValueEditorPanel;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.CheckBox chbSetSelectedRows;
-        private System.Windows.Forms.CheckBox chbSetPlayingRow;
+        private System.Windows.Forms.RadioButton rdbtnSelectedRow;
+        private System.Windows.Forms.RadioButton rdbtnPlayingRow;
     }
 }

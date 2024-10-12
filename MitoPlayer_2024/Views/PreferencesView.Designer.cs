@@ -30,6 +30,8 @@
         {
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabGeneral = new System.Windows.Forms.TabPage();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.chbPlayTrackAfterOpenFiles = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.txtBoxVirtualDjDatabasePath = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -39,13 +41,11 @@
             this.btnClear = new System.Windows.Forms.Button();
             this.btnOk = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.chbPlayTrackAfterOpenFiles = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabGeneral.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -72,6 +72,27 @@
             this.tabGeneral.TabIndex = 0;
             this.tabGeneral.Text = "General";
             this.tabGeneral.UseVisualStyleBackColor = true;
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.chbPlayTrackAfterOpenFiles);
+            this.groupBox3.Location = new System.Drawing.Point(6, 112);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(437, 47);
+            this.groupBox3.TabIndex = 4;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Player";
+            // 
+            // chbPlayTrackAfterOpenFiles
+            // 
+            this.chbPlayTrackAfterOpenFiles.AutoSize = true;
+            this.chbPlayTrackAfterOpenFiles.Location = new System.Drawing.Point(6, 19);
+            this.chbPlayTrackAfterOpenFiles.Name = "chbPlayTrackAfterOpenFiles";
+            this.chbPlayTrackAfterOpenFiles.Size = new System.Drawing.Size(145, 17);
+            this.chbPlayTrackAfterOpenFiles.TabIndex = 0;
+            this.chbPlayTrackAfterOpenFiles.Text = "Play track after open files";
+            this.chbPlayTrackAfterOpenFiles.UseVisualStyleBackColor = true;
+            this.chbPlayTrackAfterOpenFiles.CheckedChanged += new System.EventHandler(this.chbPlayTrackAfterOpenFiles_CheckedChanged);
             // 
             // groupBox2
             // 
@@ -149,6 +170,7 @@
             // btnOk
             // 
             this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnOk.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnOk.Location = new System.Drawing.Point(598, 377);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(75, 23);
@@ -160,6 +182,7 @@
             // btnCancel
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCancel.Location = new System.Drawing.Point(679, 377);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
@@ -167,27 +190,6 @@
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-            // 
-            // groupBox3
-            // 
-            this.groupBox3.Controls.Add(this.chbPlayTrackAfterOpenFiles);
-            this.groupBox3.Location = new System.Drawing.Point(6, 112);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(437, 47);
-            this.groupBox3.TabIndex = 4;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Player";
-            // 
-            // chbPlayTrackAfterOpenFiles
-            // 
-            this.chbPlayTrackAfterOpenFiles.AutoSize = true;
-            this.chbPlayTrackAfterOpenFiles.Location = new System.Drawing.Point(6, 19);
-            this.chbPlayTrackAfterOpenFiles.Name = "chbPlayTrackAfterOpenFiles";
-            this.chbPlayTrackAfterOpenFiles.Size = new System.Drawing.Size(145, 17);
-            this.chbPlayTrackAfterOpenFiles.TabIndex = 0;
-            this.chbPlayTrackAfterOpenFiles.Text = "Play track after open files";
-            this.chbPlayTrackAfterOpenFiles.UseVisualStyleBackColor = true;
-            this.chbPlayTrackAfterOpenFiles.CheckedChanged += new System.EventHandler(this.chbPlayTrackAfterOpenFiles_CheckedChanged);
             // 
             // PreferencesView
             // 
@@ -201,11 +203,11 @@
             this.Text = "PreferencesView";
             this.tabControl1.ResumeLayout(false);
             this.tabGeneral.ResumeLayout(false);
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
 
         }

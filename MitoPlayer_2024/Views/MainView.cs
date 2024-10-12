@@ -57,17 +57,21 @@ namespace MitoPlayer_2024
 
         public event EventHandler<ListEventArgs> ScanFiles;
 
+        public MainView()
+        {
+            this.InitializeComponent();
+            this.SetControlColors();
+
+            this.lblVolume.FlatStyle = FlatStyle.Flat;
+            this.pbrTrackProgress.Hide();
+        }
+
         Color BackgroundColor = System.Drawing.ColorTranslator.FromHtml("#363639");
         Color FontColor = System.Drawing.ColorTranslator.FromHtml("#c6c6c6");
         Color ButtonColor = System.Drawing.ColorTranslator.FromHtml("#292a2d");
         Color ButtonBorderColor = System.Drawing.ColorTranslator.FromHtml("#1b1b1b");
-
-        public MainView()
+        private void SetControlColors()
         {
-            InitializeComponent();
-
-            
-
             this.strMenu.BackColor = this.BackgroundColor;
             this.strMenu.ForeColor = this.FontColor;
 
@@ -121,12 +125,7 @@ namespace MitoPlayer_2024
             this.pbrTrackProgress.BackColor = this.FontColor;
             this.pbrTrackProgress.ForeColor = this.BackgroundColor;
 
-            this.lblVolume.FlatStyle = FlatStyle.Flat;
-
-            this.pbrTrackProgress.Hide();
         }
-
-        
 
         private void MainView_Load(object sender, EventArgs e)
         {

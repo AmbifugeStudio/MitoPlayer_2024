@@ -79,7 +79,7 @@ namespace MitoPlayer_2024.Helpers
         IsPlaylistListDisplayed,
 
         CurrentPlaylistId,
-        CurrentTrackIdInPlaylist
+        SelectedRowEditing
     }
 
     public enum MediaPlayerUpdateState
