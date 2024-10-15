@@ -86,6 +86,29 @@ namespace MitoPlayer_2024.Views
             this.trackListBindingSource = new BindingSource();
             this.trackListBindingSource.DataSource = trackList;
             this.dgvTrackList.DataSource = this.trackListBindingSource.DataSource;
+            this.SetTrackListColors();
+        }
+        private void dgvTrackList_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
+        {
+            this.SetTrackListColors();
+        }
+
+        public void SetTrackListColors()
+        {
+            if (this.dgvTrackList != null && this.dgvTrackList.Rows != null && this.dgvTrackList.Rows.Count > 0)
+            {
+                for (int i = 0; i < this.dgvTrackList.Rows.Count; i++)
+                {
+                    if (i == 0 || i % 2 == 0)
+                    {
+                        this.dgvTrackList.Rows[i].DefaultCellStyle.BackColor = this.GridLineColor1;
+                    }
+                    else
+                    {
+                        this.dgvTrackList.Rows[i].DefaultCellStyle.BackColor = this.GridLineColor2;
+                    }
+                }
+            }
         }
 
 
@@ -143,7 +166,7 @@ namespace MitoPlayer_2024.Views
             this.SetTitleMinimumCharacterEvent?.Invoke(this, new ListEventArgs() { DecimalField1 = this.numTitle.Value });
         }
 
-        
+       
     }
 
 }

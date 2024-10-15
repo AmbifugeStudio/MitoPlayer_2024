@@ -125,6 +125,7 @@
             this.dgvTrackList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvTrackList.Size = new System.Drawing.Size(474, 306);
             this.dgvTrackList.TabIndex = 9;
+            this.dgvTrackList.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this.dgvTrackList_DataBindingComplete);
             // 
             // groupBox1
             // 

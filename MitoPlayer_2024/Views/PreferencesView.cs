@@ -46,6 +46,8 @@ namespace MitoPlayer_2024.Views
             this.btnCancel.BackColor = this.BackgroundColor;
             this.btnCancel.ForeColor = this.FontColor;
             this.btnCancel.FlatAppearance.BorderColor = this.ButtonBorderColor;
+
+            this.tabGeneral.BackColor = this.BackgroundColor;
         }
         private void btnClear_Click(object sender, EventArgs e)
         {

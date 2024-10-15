@@ -39,19 +39,6 @@ namespace MitoPlayer_2024.Presenters
             this.settingDao = settingDao;
             this.trackList = trackList;
 
-            this.exportPath = this.settingDao.GetStringSetting(Settings.LastExportDirectoryPath.ToString());
-            this.isRowNumberChecked = this.settingDao.GetBooleanSetting(Settings.IsRowNumberChecked.ToString()).Value;
-            this.isKeyCodeChecked = this.settingDao.GetBooleanSetting(Settings.IsKeyCodeChecked.ToString()).Value;
-            this.isBpmNumberChecked = this.settingDao.GetBooleanSetting(Settings.IsBpmNumberChecked.ToString()).Value;
-            this.isTrunkBpmChecked = this.settingDao.GetBooleanSetting(Settings.IsTrunkedBpmChecked.ToString()).Value;
-            this.isTrunkedArtistChecked = this.settingDao.GetBooleanSetting(Settings.IsTrunkedArtistChecked.ToString()).Value;
-            this.isTrunkedTitleChecked = this.settingDao.GetBooleanSetting(Settings.IsTrunkedTitleChecked.ToString()).Value;
-            this.artistMinimumCharacter = this.settingDao.GetDecimalSetting(Settings.ArtistMinimumCharacter.ToString());
-            this.titleMinimumCharacter = this.settingDao.GetDecimalSetting(Settings.TitleMinimumCharacter.ToString());
-            
-            this.InitializeSettings();
-            this.InitializeDataTable();
-
             this.view.CloseViewWithOk += CloseViewWithOk;
             this.view.CloseViewWithCancel += CloseViewWithCancel;
             this.view.BrowseEvent += BrowseEvent;
@@ -63,6 +50,22 @@ namespace MitoPlayer_2024.Presenters
             this.view.SetTrunkedTitleEvent += SetTrunkedTitleEvent;
             this.view.SetArtistMinimumCharacterEvent += SetArtistMinimumCharacterEvent;
             this.view.SetTitleMinimumCharacterEvent += SetTitleMinimumCharacterEvent;
+        }
+
+        public void Initialize()
+        {
+            this.exportPath = this.settingDao.GetStringSetting(Settings.LastExportDirectoryPath.ToString());
+            this.isRowNumberChecked = this.settingDao.GetBooleanSetting(Settings.IsRowNumberChecked.ToString()).Value;
+            this.isKeyCodeChecked = this.settingDao.GetBooleanSetting(Settings.IsKeyCodeChecked.ToString()).Value;
+            this.isBpmNumberChecked = this.settingDao.GetBooleanSetting(Settings.IsBpmNumberChecked.ToString()).Value;
+            this.isTrunkBpmChecked = this.settingDao.GetBooleanSetting(Settings.IsTrunkedBpmChecked.ToString()).Value;
+            this.isTrunkedArtistChecked = this.settingDao.GetBooleanSetting(Settings.IsTrunkedArtistChecked.ToString()).Value;
+            this.isTrunkedTitleChecked = this.settingDao.GetBooleanSetting(Settings.IsTrunkedTitleChecked.ToString()).Value;
+            this.artistMinimumCharacter = this.settingDao.GetDecimalSetting(Settings.ArtistMinimumCharacter.ToString());
+            this.titleMinimumCharacter = this.settingDao.GetDecimalSetting(Settings.TitleMinimumCharacter.ToString());
+
+            this.InitializeSettings();
+            this.InitializeDataTable();
         }
         private void InitializeSettings()
         {

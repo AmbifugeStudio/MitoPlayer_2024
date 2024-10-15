@@ -17,7 +17,7 @@ namespace MitoPlayer_2024.Presenters
         public AxWindowsMediaPlayer MediaPlayer { get; set; }
         private DataTable workingTable { get; set; }
         public int CurrentTrackIdInPlaylist { get; set; }
-        private int selectedRowIndex { get; set; }
+        public int selectedRowIndex { get; set; }
         private double currentPlayPosition { get; set; }
         public bool IsShuffleEnabled { get; set; }
 

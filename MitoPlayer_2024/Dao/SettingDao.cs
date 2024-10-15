@@ -199,7 +199,9 @@ namespace MitoPlayer_2024.Dao
             if (result.Success)
                 this.InitializeIntegerSetting(Settings.CurrentPlaylistId.ToString());
             if (result.Success)
-                this.InitializeBooleanSetting(Settings.SelectedRowEditing.ToString());
+                this.InitializeBooleanSetting(Settings.IsOnlyPlayingRowModeEnabled.ToString());
+            if (result.Success)
+                this.InitializeBooleanSetting(Settings.IsFilterModeEnabled.ToString());
 
             return result;
         }

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -168,31 +169,38 @@ namespace MitoPlayer_2024.Presenters
 
         private void CreateTag(object sender, EventArgs e)
         {
-            ResultOrError result = new ResultOrError();
             TagEditorView tagEditorView = new TagEditorView();
             TagEditorPresenter presenter = new TagEditorPresenter(tagEditorView, this.tagDao, this.settingDao);
             if (tagEditorView.ShowDialog((TagValueView)this.tagValueView) == DialogResult.OK)
             {
-
-                result = this.CreateTag(presenter.newTag);
-
-                if (result.Success)
+                try
                 {
+
+                    this.CreateTag(presenter.newTag);
+
+                    if (!presenter.newTag.HasMultipleValues)
+                    {
+                        TagValue tagValue = new TagValue();
+                        tagValue.Id = this.tagDao.GetNextId(TableName.TagValue.ToString());
+                        tagValue.Name = "Default TagValue";
+                        tagValue.TagId = presenter.newTag.Id;
+                        tagValue.TagName = presenter.newTag.Name;
+                        tagValue.Color = HexToColor("#FFFFFF");
+                        tagValue.Hotkey = -1;
+                        this.tagDao.CreateTagValue(tagValue);
+                    }
+
                     this.currentTag = presenter.newTag;
                     this.tagListTable.Rows.Add(
-                        presenter.newTag.Id, 
-                        presenter.newTag.Name,  
-                        presenter.newTag.TextColoring,  
-                        presenter.newTag.HasMultipleValues); 
+                        presenter.newTag.Id,
+                        presenter.newTag.Name,
+                        presenter.newTag.TextColoring,
+                        presenter.newTag.HasMultipleValues);
                     this.InitializeTagValueList();
-
-                    /* this.tagListTable.Rows.Add(presenter.newTag.Id, presenter.newTag.Name);
-                     this.tagListBindingSource.DataSource = tagListTable;
-                     this.tagValueView.SetTagListBindingSource(this.tagListBindingSource);*/
                 }
-                else
+                catch(Exception ex)
                 {
-                    MessageBox.Show(result.ErrorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
 
@@ -234,48 +242,58 @@ namespace MitoPlayer_2024.Presenters
         }
         private void DeleteTag(object sender, ListEventArgs e)
         {
-            if (MessageBox.Show("Do you really want to delete the tag? All metadata of all track related to this Tag will be deleted!", "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK)
+            String tagName = this.tagListTable.Rows[e.IntegerField1]["Name"].ToString();
+            if(tagName == "Key" || tagName =="Bpm")
             {
-                this.trackDao.DeleteTrackTagValueByTagId(e.IntegerField1);
-
-                DataRow tagRow = this.tagListTable.Select("Id = " + Convert.ToInt32(this.tagListTable.Rows[e.IntegerField1]["Id"])).First();
-
-                this.trackDao.DeleteTrackTagValueByTagId((int)tagRow["Id"]);
-                this.tagDao.DeleteTagValuesByTagId((int)tagRow["Id"]);
-                this.tagDao.DeleteTag((int)tagRow["Id"]);
-
-                TrackProperty tp = this.settingDao.GetTrackPropertyByNameAndGroup((string)tagRow["Name"], ColumnGroup.TracklistColumns.ToString());
-                if (tp != null)
-                {
-                    this.settingDao.DeleteTrackProperty(tp.Id);
-                }
-
-                int selectedIndex = 0;
-                if (e.IntegerField1 == 0)
-                {
-                    selectedIndex = 0;
-                }
-                else if (e.IntegerField1 == this.tagListTable.Rows.Count - 1)
-                {
-                    selectedIndex = this.tagListTable.Rows.Count - 2;
-                }
-                else
-                {
-                    selectedIndex = e.IntegerField1;
-                }
-
-                this.tagListTable.Rows.Remove(tagRow);
-
-               /* this.tagListBindingSource.DataSource = tagListTable;
-                this.tagValueView.SetTagListBindingSource(this.tagListBindingSource);*/
-
-                this.tagValueListTable.Rows.Clear();
-               /* this.tagValueListBindingSource.DataSource = tagValueListTable;
-                this.tagValueView.SetTagValueListBindingSource(this.tagValueListBindingSource);*/
-
-                if (this.tagListTable.Rows.Count > 0)
-                    this.SetCurrentTagId(selectedIndex);
+                MessageBox.Show("Key and Bpm tags should not be deleted!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
+            else
+            {
+                if (MessageBox.Show("Do you really want to delete the tag? All metadata of all track related to this Tag will be deleted!", "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK)
+                {
+                    this.trackDao.DeleteTrackTagValueByTagId(e.IntegerField1);
+
+                    DataRow tagRow = this.tagListTable.Select("Id = " + Convert.ToInt32(this.tagListTable.Rows[e.IntegerField1]["Id"])).First();
+
+                    this.trackDao.DeleteTrackTagValueByTagId((int)tagRow["Id"]);
+                    this.tagDao.DeleteTagValuesByTagId((int)tagRow["Id"]);
+                    this.tagDao.DeleteTag((int)tagRow["Id"]);
+
+                    TrackProperty tp = this.settingDao.GetTrackPropertyByNameAndGroup((string)tagRow["Name"], ColumnGroup.TracklistColumns.ToString());
+                    if (tp != null)
+                    {
+                        this.settingDao.DeleteTrackProperty(tp.Id);
+                    }
+
+                    int selectedIndex = 0;
+                    if (e.IntegerField1 == 0)
+                    {
+                        selectedIndex = 0;
+                    }
+                    else if (e.IntegerField1 == this.tagListTable.Rows.Count - 1)
+                    {
+                        selectedIndex = this.tagListTable.Rows.Count - 2;
+                    }
+                    else
+                    {
+                        selectedIndex = e.IntegerField1;
+                    }
+
+                    this.tagListTable.Rows.Remove(tagRow);
+
+                    /* this.tagListBindingSource.DataSource = tagListTable;
+                     this.tagValueView.SetTagListBindingSource(this.tagListBindingSource);*/
+
+                    this.tagValueListTable.Rows.Clear();
+                    /* this.tagValueListBindingSource.DataSource = tagValueListTable;
+                     this.tagValueView.SetTagValueListBindingSource(this.tagValueListBindingSource);*/
+
+                    if (this.tagListTable.Rows.Count > 0)
+                        this.SetCurrentTagId(selectedIndex);
+                }
+            }
+
+            
         }
         private void CreateTagValue(object sender, EventArgs e)
         {
@@ -317,14 +335,21 @@ namespace MitoPlayer_2024.Presenters
 
         private void DeleteTagValue(object sender, ListEventArgs e)
         {
-            if (MessageBox.Show("Do you really want to delete the tag value? All metadata of all track related to this tag value will be deleted!", "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK)
+            if(this.tagValueListTable.Rows.Count == 1)
             {
-                DataRow tagValueRow = this.tagValueListTable.Select("Id = " + Convert.ToInt32(this.tagValueListTable.Rows[e.IntegerField1]["Id"])).First();
+                MessageBox.Show("One tag value is mandatory and should not be deleted!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            else
+            {
+                if (MessageBox.Show("Do you really want to delete the tag value? All metadata of all track related to this tag value will be deleted!", "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK)
+                {
+                    DataRow tagValueRow = this.tagValueListTable.Select("Id = " + Convert.ToInt32(this.tagValueListTable.Rows[e.IntegerField1]["Id"])).First();
 
-                this.tagDao.DeleteTagValue(Convert.ToInt32(this.tagValueListTable.Rows[e.IntegerField1]["Id"]));
-                this.trackDao.DeleteTagValueFromTrackTagValues(Convert.ToInt32(this.tagValueListTable.Rows[e.IntegerField1]["Id"]));
+                    this.tagDao.DeleteTagValue(Convert.ToInt32(this.tagValueListTable.Rows[e.IntegerField1]["Id"]));
+                    this.trackDao.DeleteTagValueFromTrackTagValues(Convert.ToInt32(this.tagValueListTable.Rows[e.IntegerField1]["Id"]));
 
-                this.tagValueListTable.Rows.Remove(tagValueRow);
+                    this.tagValueListTable.Rows.Remove(tagValueRow);
+                }
             }
         }
 

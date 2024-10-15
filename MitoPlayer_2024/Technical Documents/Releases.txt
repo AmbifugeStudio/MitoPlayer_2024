@@ -1,26 +1,38 @@
 ﻿
 
 
-
-- REFACTOR: export to directory tracklist color
-
-- BUG: playlistView crashes, when a tag does not contain tagvalue
-
-
+- FEATURE: preview setting (music start at certain point on the next track button)
+- FEATURE: visualizer
+- FEATURE: uv meter
+- FEATURE: track cover browser
+- FEATURE: tag value filter mode (med)
+- FEATURE: column visibility
 
 - REFACTOR: tagvalue editor - tagvalue change speed optimization
-
-- BUG: tag color dropdown is empty
-
-- FEATURE: tag editor - one selection fills bpm and select key (and the custom tagvalues)
 - FEATURE: tag editor - export/import key/bpm and custom tag values
 - FEATURE: tagvalue - custom order like: Style:Liquid,Deep,Roller,Stadion,Neuro (order by column)
 - BUG: automatic next track stops - after list reorder and the current playing track was at the end of the original list (list has not been updated in the player?) - or not. Objectiv - Fighting Chance stops at the end
-- FEATURE: preview setting (music start at certain point on the next track button)
+
 - FEATURE: reorder tags and tagvalues
 - FEATURE: tag editor - display according to tag/tagvalue order
 - FEATURE: progress bar for long loading time
 
+======================
+v0.12.13.11
+======================
+OK - FEATURE: tag value editor as filter
+OK - BUG: scan/bpm button does not scan (after i change a value - bpm)
+OK - REFACTOR: export to directory tracklist color
+OK - BUG: bpm and key should not be deleted
+OK - FEATURE: preferences dark theme
+OK - BUG: playlistView crashes, when a tag does not contain tagvalue - system adds one default tag value at tag creation and the last tag value should not be deleted
+OK - FEATURE: tag value filter - filter textbox displays only when the filter checkbox is active
+OK - BUG: playing tracks + order = playing order became completely wrong
+OK - BUG: tag value filter - setter not working after using the filter
+OK - BUG: playing order changes after filter+reordering
+OK - BUG: filter mode: turn off playlist change (or turn off filter at playlist change)
+OK - BUG: in the filter mode: turn off any tracklist ordering/saving 
+OK - BUG: reload list after turn off filter
 ======================
 v0.12.12.5
 ======================

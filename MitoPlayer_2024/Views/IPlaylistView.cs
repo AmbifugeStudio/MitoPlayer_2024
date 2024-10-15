@@ -55,12 +55,15 @@ namespace MitoPlayer_2024.Views
         event EventHandler<ListEventArgs> SetTagValueEvent;
         event EventHandler<ListEventArgs> ClearTagValueEvent;
 
-        event EventHandler<ListEventArgs> ChangeSelectedRowEditing;
+        event EventHandler<ListEventArgs> ChangeFilterModeEnabled;
+        event EventHandler<ListEventArgs> ChangeOnlyPlayingRowModeEnabled;
+        event EventHandler<ListEventArgs> ChangeFilterText;
+        event EventHandler RemoveTagValueFilter;
 
         void InitializePlaylistListBindingSource(BindingSource playlistList, bool[] columnVisibility,int currentPlaylistId);
         void ReloadPlaylistListBindingSource(bool[] columnVisibility, int currentPlaylistId);
         void InitializeTrackListBindingSource(BindingSource trackList, bool[] columnVisibility, int[] columnSortingId);
-        void ReloadTrackListBindingSource(bool[] columnVisibility, int[] columnSortingId, int currentTrackIdInPlaylist);
+        void ReloadTrackListBindingSource(BindingSource trackList, bool[] columnVisibility, int[] columnSortingId, int currentTrackIdInPlaylist);
         void SetTagsAndTagValues(List<Tag> tagList, List<List<TagValue>> tagValueListList);
         void UpdateAfterPlayTrack(int currentTrackIndex, int currentTrackId);
         void UpdateAfterPlayTrackAfterPause();
@@ -73,5 +76,6 @@ namespace MitoPlayer_2024.Views
         void SetMuted(bool isMuted);
         void SetKeyAndBpmAnalization(bool showButton);
         void Show();
+        void FilterTracklist(BindingSource trackList, bool[] columnVisibility, int[] displayIndex, int currentTrackIdInPlaylist);
     }
 }

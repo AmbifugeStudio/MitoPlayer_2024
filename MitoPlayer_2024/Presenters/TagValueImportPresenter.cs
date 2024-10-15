@@ -64,7 +64,7 @@ namespace MitoPlayer_2024.Presenters
                     List<String> tvList = new List<String>();
                     List<String> colorList = new List<String>();
 
-                    for (int i = 0;i<= lines.Count()-1;i++)
+                    for (int i = 0;i <= lines.Count() - 1; i++)
                     {
                         String[] parts = null;
                         String[] tagValues = null;
@@ -99,6 +99,15 @@ namespace MitoPlayer_2024.Presenters
                                 if (String.IsNullOrEmpty(parts[0]))
                                 {
                                     result.AddError("Syntax error! (tag name missing)" + " Line: " + (i + 1).ToString());
+                                    break;
+                                }
+                            }
+
+                            if (result.Success)
+                            {
+                                if (String.IsNullOrEmpty(parts[1]))
+                                {
+                                    result.AddError("Syntax error! (tag value name missing)" + " Line: " + (i + 1).ToString());
                                     break;
                                 }
                             }

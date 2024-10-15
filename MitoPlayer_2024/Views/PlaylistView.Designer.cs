@@ -67,19 +67,9 @@
             this.lblSelectedItemsCount = new System.Windows.Forms.Label();
             this.lblSelectedItemsLength = new System.Windows.Forms.Label();
             this.lblCurrentTrack = new System.Windows.Forms.Label();
-            this.lblTagColor = new System.Windows.Forms.Label();
-            this.cmbColor = new System.Windows.Forms.ComboBox();
             this.btnHidePlaylistList = new System.Windows.Forms.Button();
             this.btnDisplayTagEditor = new System.Windows.Forms.Button();
             this.btnColumnVisibilityWithTagEditor = new System.Windows.Forms.Button();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.rdbPlaylist = new System.Windows.Forms.RadioButton();
-            this.rdbTagValue = new System.Windows.Forms.RadioButton();
-            this.groupBoxTagValueHotkeys = new System.Windows.Forms.GroupBox();
-            this.tgvHotkeyName3 = new System.Windows.Forms.Label();
-            this.tgvHotkeyName4 = new System.Windows.Forms.Label();
-            this.tgvHotkeyName2 = new System.Windows.Forms.Label();
-            this.tgvHotkeyName1 = new System.Windows.Forms.Label();
             this.groupBoxPlaylist = new System.Windows.Forms.GroupBox();
             this.btnNewPlaylist = new System.Windows.Forms.Button();
             this.btnRenamePlaylist = new System.Windows.Forms.Button();
@@ -92,14 +82,15 @@
             this.btnHideTagEditor = new System.Windows.Forms.Button();
             this.btnColumnVisibility = new System.Windows.Forms.Button();
             this.tagValueEditorPanel = new System.Windows.Forms.Panel();
-            this.label1 = new System.Windows.Forms.Label();
-            this.rdbtnSelectedRow = new System.Windows.Forms.RadioButton();
-            this.rdbtnPlayingRow = new System.Windows.Forms.RadioButton();
+            this.chbOnlyPlayingRowModeEnabled = new System.Windows.Forms.CheckBox();
+            this.chbFilterModeEnabled = new System.Windows.Forms.CheckBox();
+            this.txtbFilter = new System.Windows.Forms.TextBox();
+            this.lblFilter = new System.Windows.Forms.Label();
+            this.rtxtbTagValueEditorParams = new System.Windows.Forms.RichTextBox();
+            this.btnClearTagValueFilter = new System.Windows.Forms.Button();
             this.contextMenuStrip1.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
-            this.groupBox2.SuspendLayout();
-            this.groupBoxTagValueHotkeys.SuspendLayout();
             this.groupBoxPlaylist.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPlaylistList)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTrackList)).BeginInit();
@@ -318,8 +309,9 @@
             // 
             // btnScanKeyAndBpm
             // 
+            this.btnScanKeyAndBpm.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnScanKeyAndBpm.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnScanKeyAndBpm.Location = new System.Drawing.Point(400, 12);
+            this.btnScanKeyAndBpm.Location = new System.Drawing.Point(870, 583);
             this.btnScanKeyAndBpm.Name = "btnScanKeyAndBpm";
             this.btnScanKeyAndBpm.Size = new System.Drawing.Size(90, 23);
             this.btnScanKeyAndBpm.TabIndex = 31;
@@ -402,24 +394,6 @@
             this.lblCurrentTrack.TabIndex = 2;
             this.lblCurrentTrack.Text = "Playing: -";
             // 
-            // lblTagColor
-            // 
-            this.lblTagColor.AutoSize = true;
-            this.lblTagColor.Location = new System.Drawing.Point(236, 17);
-            this.lblTagColor.Name = "lblTagColor";
-            this.lblTagColor.Size = new System.Drawing.Size(31, 13);
-            this.lblTagColor.TabIndex = 28;
-            this.lblTagColor.Text = "Color";
-            // 
-            // cmbColor
-            // 
-            this.cmbColor.FormattingEnabled = true;
-            this.cmbColor.Location = new System.Drawing.Point(273, 14);
-            this.cmbColor.Name = "cmbColor";
-            this.cmbColor.Size = new System.Drawing.Size(121, 21);
-            this.cmbColor.TabIndex = 27;
-            this.cmbColor.SelectedIndexChanged += new System.EventHandler(this.cmbColor_SelectedIndexChanged);
-            // 
             // btnHidePlaylistList
             // 
             this.btnHidePlaylistList.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -437,7 +411,7 @@
             this.btnDisplayTagEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnDisplayTagEditor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnDisplayTagEditor.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDisplayTagEditor.Location = new System.Drawing.Point(1212, 14);
+            this.btnDisplayTagEditor.Location = new System.Drawing.Point(1209, 14);
             this.btnDisplayTagEditor.Name = "btnDisplayTagEditor";
             this.btnDisplayTagEditor.Size = new System.Drawing.Size(31, 23);
             this.btnDisplayTagEditor.TabIndex = 23;
@@ -450,96 +424,12 @@
             this.btnColumnVisibilityWithTagEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnColumnVisibilityWithTagEditor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnColumnVisibilityWithTagEditor.Image = ((System.Drawing.Image)(resources.GetObject("btnColumnVisibilityWithTagEditor.Image")));
-            this.btnColumnVisibilityWithTagEditor.Location = new System.Drawing.Point(1175, 14);
+            this.btnColumnVisibilityWithTagEditor.Location = new System.Drawing.Point(1171, 14);
             this.btnColumnVisibilityWithTagEditor.Name = "btnColumnVisibilityWithTagEditor";
             this.btnColumnVisibilityWithTagEditor.Size = new System.Drawing.Size(31, 23);
             this.btnColumnVisibilityWithTagEditor.TabIndex = 24;
             this.btnColumnVisibilityWithTagEditor.UseVisualStyleBackColor = true;
             this.btnColumnVisibilityWithTagEditor.Click += new System.EventHandler(this.btnColumnVisibility_Click);
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox2.Controls.Add(this.rdbPlaylist);
-            this.groupBox2.Controls.Add(this.rdbTagValue);
-            this.groupBox2.Location = new System.Drawing.Point(769, 583);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(191, 79);
-            this.groupBox2.TabIndex = 20;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Hotkey mode";
-            // 
-            // rdbPlaylist
-            // 
-            this.rdbPlaylist.AutoSize = true;
-            this.rdbPlaylist.Location = new System.Drawing.Point(11, 18);
-            this.rdbPlaylist.Name = "rdbPlaylist";
-            this.rdbPlaylist.Size = new System.Drawing.Size(57, 17);
-            this.rdbPlaylist.TabIndex = 0;
-            this.rdbPlaylist.Text = "Playlist";
-            this.rdbPlaylist.UseVisualStyleBackColor = true;
-            // 
-            // rdbTagValue
-            // 
-            this.rdbTagValue.AutoSize = true;
-            this.rdbTagValue.Checked = true;
-            this.rdbTagValue.Location = new System.Drawing.Point(74, 18);
-            this.rdbTagValue.Name = "rdbTagValue";
-            this.rdbTagValue.Size = new System.Drawing.Size(71, 17);
-            this.rdbTagValue.TabIndex = 0;
-            this.rdbTagValue.TabStop = true;
-            this.rdbTagValue.Text = "TagValue";
-            this.rdbTagValue.UseVisualStyleBackColor = true;
-            // 
-            // groupBoxTagValueHotkeys
-            // 
-            this.groupBoxTagValueHotkeys.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBoxTagValueHotkeys.Controls.Add(this.tgvHotkeyName3);
-            this.groupBoxTagValueHotkeys.Controls.Add(this.tgvHotkeyName4);
-            this.groupBoxTagValueHotkeys.Controls.Add(this.tgvHotkeyName2);
-            this.groupBoxTagValueHotkeys.Controls.Add(this.tgvHotkeyName1);
-            this.groupBoxTagValueHotkeys.Location = new System.Drawing.Point(989, 590);
-            this.groupBoxTagValueHotkeys.Name = "groupBoxTagValueHotkeys";
-            this.groupBoxTagValueHotkeys.Size = new System.Drawing.Size(254, 72);
-            this.groupBoxTagValueHotkeys.TabIndex = 21;
-            this.groupBoxTagValueHotkeys.TabStop = false;
-            this.groupBoxTagValueHotkeys.Text = "Hotkey";
-            // 
-            // tgvHotkeyName3
-            // 
-            this.tgvHotkeyName3.AutoSize = true;
-            this.tgvHotkeyName3.Location = new System.Drawing.Point(6, 39);
-            this.tgvHotkeyName3.Name = "tgvHotkeyName3";
-            this.tgvHotkeyName3.Size = new System.Drawing.Size(25, 13);
-            this.tgvHotkeyName3.TabIndex = 1;
-            this.tgvHotkeyName3.Text = "(3) -";
-            // 
-            // tgvHotkeyName4
-            // 
-            this.tgvHotkeyName4.AutoSize = true;
-            this.tgvHotkeyName4.Location = new System.Drawing.Point(124, 39);
-            this.tgvHotkeyName4.Name = "tgvHotkeyName4";
-            this.tgvHotkeyName4.Size = new System.Drawing.Size(25, 13);
-            this.tgvHotkeyName4.TabIndex = 1;
-            this.tgvHotkeyName4.Text = "(4) -";
-            // 
-            // tgvHotkeyName2
-            // 
-            this.tgvHotkeyName2.AutoSize = true;
-            this.tgvHotkeyName2.Location = new System.Drawing.Point(124, 16);
-            this.tgvHotkeyName2.Name = "tgvHotkeyName2";
-            this.tgvHotkeyName2.Size = new System.Drawing.Size(25, 13);
-            this.tgvHotkeyName2.TabIndex = 1;
-            this.tgvHotkeyName2.Text = "(2) -";
-            // 
-            // tgvHotkeyName1
-            // 
-            this.tgvHotkeyName1.AutoSize = true;
-            this.tgvHotkeyName1.Location = new System.Drawing.Point(6, 16);
-            this.tgvHotkeyName1.Name = "tgvHotkeyName1";
-            this.tgvHotkeyName1.Size = new System.Drawing.Size(25, 13);
-            this.tgvHotkeyName1.TabIndex = 1;
-            this.tgvHotkeyName1.Text = "(1) -";
             // 
             // groupBoxPlaylist
             // 
@@ -655,6 +545,7 @@
             this.dgvTrackList.Size = new System.Drawing.Size(761, 536);
             this.dgvTrackList.TabIndex = 16;
             this.dgvTrackList.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTrackList_CellClick);
+            this.dgvTrackList.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTrackList_CellContentClick);
             this.dgvTrackList.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTrackList_CellDoubleClick);
             this.dgvTrackList.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvTrackList_ColumnHeaderMouseClick);
             this.dgvTrackList.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this.dgvTrackList_DataBindingComplete);
@@ -703,56 +594,90 @@
             this.tagValueEditorPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tagValueEditorPanel.AutoScroll = true;
-            this.tagValueEditorPanel.Location = new System.Drawing.Point(966, 41);
+            this.tagValueEditorPanel.Location = new System.Drawing.Point(966, 43);
             this.tagValueEditorPanel.Name = "tagValueEditorPanel";
-            this.tagValueEditorPanel.Size = new System.Drawing.Size(274, 536);
+            this.tagValueEditorPanel.Size = new System.Drawing.Size(274, 449);
             this.tagValueEditorPanel.TabIndex = 36;
             this.tagValueEditorPanel.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.tagValueEditorPanel_PreviewKeyDown);
             // 
-            // label1
+            // chbOnlyPlayingRowModeEnabled
             // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(967, 17);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(55, 13);
-            this.label1.TabIndex = 37;
-            this.label1.Text = "Set mode:";
+            this.chbOnlyPlayingRowModeEnabled.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.chbOnlyPlayingRowModeEnabled.AutoSize = true;
+            this.chbOnlyPlayingRowModeEnabled.Location = new System.Drawing.Point(1062, 16);
+            this.chbOnlyPlayingRowModeEnabled.Name = "chbOnlyPlayingRowModeEnabled";
+            this.chbOnlyPlayingRowModeEnabled.Size = new System.Drawing.Size(103, 17);
+            this.chbOnlyPlayingRowModeEnabled.TabIndex = 40;
+            this.chbOnlyPlayingRowModeEnabled.Text = "Set Only Playing";
+            this.chbOnlyPlayingRowModeEnabled.UseVisualStyleBackColor = true;
+            this.chbOnlyPlayingRowModeEnabled.CheckedChanged += new System.EventHandler(this.chbOnlyPlayingRowModeEnabled_CheckedChanged);
             // 
-            // rdbtnSelectedRow
+            // chbFilterModeEnabled
             // 
-            this.rdbtnSelectedRow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.rdbtnSelectedRow.AutoSize = true;
-            this.rdbtnSelectedRow.Location = new System.Drawing.Point(1028, 15);
-            this.rdbtnSelectedRow.Name = "rdbtnSelectedRow";
-            this.rdbtnSelectedRow.Size = new System.Drawing.Size(67, 17);
-            this.rdbtnSelectedRow.TabIndex = 39;
-            this.rdbtnSelectedRow.TabStop = true;
-            this.rdbtnSelectedRow.Text = "Selected";
-            this.rdbtnSelectedRow.UseVisualStyleBackColor = true;
-            this.rdbtnSelectedRow.CheckedChanged += new System.EventHandler(this.rdbtnSelectedRow_CheckedChanged);
+            this.chbFilterModeEnabled.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.chbFilterModeEnabled.AutoSize = true;
+            this.chbFilterModeEnabled.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.chbFilterModeEnabled.Location = new System.Drawing.Point(967, 16);
+            this.chbFilterModeEnabled.Name = "chbFilterModeEnabled";
+            this.chbFilterModeEnabled.Size = new System.Drawing.Size(89, 17);
+            this.chbFilterModeEnabled.TabIndex = 41;
+            this.chbFilterModeEnabled.Text = "Filter Mode";
+            this.chbFilterModeEnabled.UseVisualStyleBackColor = true;
+            this.chbFilterModeEnabled.CheckedChanged += new System.EventHandler(this.chbFilterModeEnabled_CheckedChanged);
             // 
-            // rdbtnPlayingRow
+            // txtbFilter
             // 
-            this.rdbtnPlayingRow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.rdbtnPlayingRow.AutoSize = true;
-            this.rdbtnPlayingRow.Location = new System.Drawing.Point(1101, 15);
-            this.rdbtnPlayingRow.Name = "rdbtnPlayingRow";
-            this.rdbtnPlayingRow.Size = new System.Drawing.Size(59, 17);
-            this.rdbtnPlayingRow.TabIndex = 39;
-            this.rdbtnPlayingRow.TabStop = true;
-            this.rdbtnPlayingRow.Text = "Playing";
-            this.rdbtnPlayingRow.UseVisualStyleBackColor = true;
-            this.rdbtnPlayingRow.CheckedChanged += new System.EventHandler(this.rdbtnPlayingRow_CheckedChanged);
+            this.txtbFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtbFilter.Location = new System.Drawing.Point(274, 14);
+            this.txtbFilter.Name = "txtbFilter";
+            this.txtbFilter.Size = new System.Drawing.Size(612, 20);
+            this.txtbFilter.TabIndex = 42;
+            this.txtbFilter.TextChanged += new System.EventHandler(this.txtbFilter_TextChanged);
+            this.txtbFilter.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtbFilter_KeyUp);
+            // 
+            // lblFilter
+            // 
+            this.lblFilter.AutoSize = true;
+            this.lblFilter.Location = new System.Drawing.Point(236, 17);
+            this.lblFilter.Name = "lblFilter";
+            this.lblFilter.Size = new System.Drawing.Size(32, 13);
+            this.lblFilter.TabIndex = 43;
+            this.lblFilter.Text = "Filter:";
+            // 
+            // rtxtbTagValueEditorParams
+            // 
+            this.rtxtbTagValueEditorParams.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.rtxtbTagValueEditorParams.Enabled = false;
+            this.rtxtbTagValueEditorParams.Location = new System.Drawing.Point(966, 498);
+            this.rtxtbTagValueEditorParams.Name = "rtxtbTagValueEditorParams";
+            this.rtxtbTagValueEditorParams.Size = new System.Drawing.Size(274, 50);
+            this.rtxtbTagValueEditorParams.TabIndex = 44;
+            this.rtxtbTagValueEditorParams.Text = "";
+            // 
+            // btnClearTagValueFilter
+            // 
+            this.btnClearTagValueFilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnClearTagValueFilter.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnClearTagValueFilter.Location = new System.Drawing.Point(1165, 554);
+            this.btnClearTagValueFilter.Name = "btnClearTagValueFilter";
+            this.btnClearTagValueFilter.Size = new System.Drawing.Size(75, 23);
+            this.btnClearTagValueFilter.TabIndex = 45;
+            this.btnClearTagValueFilter.Text = "Clear Filter";
+            this.btnClearTagValueFilter.UseVisualStyleBackColor = true;
+            this.btnClearTagValueFilter.Click += new System.EventHandler(this.btnClearTagValueFilter_Click);
             // 
             // PlaylistView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1252, 678);
-            this.Controls.Add(this.rdbtnPlayingRow);
-            this.Controls.Add(this.rdbtnSelectedRow);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.btnClearTagValueFilter);
+            this.Controls.Add(this.rtxtbTagValueEditorParams);
+            this.Controls.Add(this.lblFilter);
+            this.Controls.Add(this.txtbFilter);
+            this.Controls.Add(this.chbFilterModeEnabled);
+            this.Controls.Add(this.chbOnlyPlayingRowModeEnabled);
             this.Controls.Add(this.tagValueEditorPanel);
             this.Controls.Add(this.btnColumnVisibility);
             this.Controls.Add(this.btnHideTagEditor);
@@ -760,13 +685,9 @@
             this.Controls.Add(this.btnScanKeyAndBpm);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
-            this.Controls.Add(this.lblTagColor);
-            this.Controls.Add(this.cmbColor);
             this.Controls.Add(this.btnHidePlaylistList);
             this.Controls.Add(this.btnDisplayTagEditor);
             this.Controls.Add(this.btnColumnVisibilityWithTagEditor);
-            this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.groupBoxTagValueHotkeys);
             this.Controls.Add(this.groupBoxPlaylist);
             this.Controls.Add(this.lblMessage);
             this.Controls.Add(this.dgvPlaylistList);
@@ -778,10 +699,6 @@
             this.groupBox4.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
-            this.groupBoxTagValueHotkeys.ResumeLayout(false);
-            this.groupBoxTagValueHotkeys.PerformLayout();
             this.groupBoxPlaylist.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvPlaylistList)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTrackList)).EndInit();
@@ -816,19 +733,9 @@
         private System.Windows.Forms.Label lblSelectedItemsCount;
         private System.Windows.Forms.Label lblSelectedItemsLength;
         private System.Windows.Forms.Label lblCurrentTrack;
-        private System.Windows.Forms.Label lblTagColor;
-        private System.Windows.Forms.ComboBox cmbColor;
         private System.Windows.Forms.Button btnHidePlaylistList;
         private System.Windows.Forms.Button btnDisplayTagEditor;
         private System.Windows.Forms.Button btnColumnVisibilityWithTagEditor;
-        private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.RadioButton rdbPlaylist;
-        private System.Windows.Forms.RadioButton rdbTagValue;
-        private System.Windows.Forms.GroupBox groupBoxTagValueHotkeys;
-        private System.Windows.Forms.Label tgvHotkeyName3;
-        private System.Windows.Forms.Label tgvHotkeyName4;
-        private System.Windows.Forms.Label tgvHotkeyName2;
-        private System.Windows.Forms.Label tgvHotkeyName1;
         private System.Windows.Forms.GroupBox groupBoxPlaylist;
         private System.Windows.Forms.Button btnNewPlaylist;
         private System.Windows.Forms.Button btnRenamePlaylist;
@@ -854,8 +761,11 @@
         private System.Windows.Forms.ToolStripMenuItem setGroup4ToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem exportToDirToolStripMenuItem;
         private System.Windows.Forms.Panel tagValueEditorPanel;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.RadioButton rdbtnSelectedRow;
-        private System.Windows.Forms.RadioButton rdbtnPlayingRow;
+        private System.Windows.Forms.CheckBox chbOnlyPlayingRowModeEnabled;
+        private System.Windows.Forms.CheckBox chbFilterModeEnabled;
+        private System.Windows.Forms.TextBox txtbFilter;
+        private System.Windows.Forms.Label lblFilter;
+        private System.Windows.Forms.RichTextBox rtxtbTagValueEditorParams;
+        private System.Windows.Forms.Button btnClearTagValueFilter;
     }
 }
