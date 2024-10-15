@@ -520,9 +520,15 @@
             this.dgvPlaylistList.Size = new System.Drawing.Size(183, 565);
             this.dgvPlaylistList.TabIndex = 17;
             this.dgvPlaylistList.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvPlaylistList_CellDoubleClick);
+            this.dgvPlaylistList.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.dgvPlaylistList_CellPainting);
             this.dgvPlaylistList.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this.dgvPlaylistList_DataBindingComplete);
+            this.dgvPlaylistList.DragDrop += new System.Windows.Forms.DragEventHandler(this.dgvPlaylistList_DragDrop);
+            this.dgvPlaylistList.DragOver += new System.Windows.Forms.DragEventHandler(this.dgvPlaylistList_DragOver);
+            this.dgvPlaylistList.QueryContinueDrag += new System.Windows.Forms.QueryContinueDragEventHandler(this.dgvPlaylistList_QueryContinueDrag);
             this.dgvPlaylistList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvPlaylistList_KeyDown);
             this.dgvPlaylistList.MouseClick += new System.Windows.Forms.MouseEventHandler(this.dgvPlaylistList_MouseClick);
+            this.dgvPlaylistList.MouseDown += new System.Windows.Forms.MouseEventHandler(this.dgvPlaylistList_MouseDown);
+            this.dgvPlaylistList.MouseMove += new System.Windows.Forms.MouseEventHandler(this.dgvPlaylistList_MouseMove);
             // 
             // dgvTrackList
             // 
@@ -545,12 +551,18 @@
             this.dgvTrackList.Size = new System.Drawing.Size(761, 536);
             this.dgvTrackList.TabIndex = 16;
             this.dgvTrackList.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTrackList_CellClick);
-            this.dgvTrackList.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTrackList_CellContentClick);
             this.dgvTrackList.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTrackList_CellDoubleClick);
+            this.dgvTrackList.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.dgvTrackList_CellPainting);
             this.dgvTrackList.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvTrackList_ColumnHeaderMouseClick);
             this.dgvTrackList.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this.dgvTrackList_DataBindingComplete);
             this.dgvTrackList.SelectionChanged += new System.EventHandler(this.dgvTrackList_SelectionChanged);
+            this.dgvTrackList.DragDrop += new System.Windows.Forms.DragEventHandler(this.dgvTrackList_DragDrop);
+            this.dgvTrackList.DragOver += new System.Windows.Forms.DragEventHandler(this.dgvTrackList_DragOver);
+            this.dgvTrackList.QueryContinueDrag += new System.Windows.Forms.QueryContinueDragEventHandler(this.dgvTrackList_QueryContinueDrag);
             this.dgvTrackList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvTrackList_KeyDown);
+            this.dgvTrackList.KeyUp += new System.Windows.Forms.KeyEventHandler(this.dgvTrackList_KeyUp);
+            this.dgvTrackList.MouseDown += new System.Windows.Forms.MouseEventHandler(this.dgvTrackList_MouseDown);
+            this.dgvTrackList.MouseMove += new System.Windows.Forms.MouseEventHandler(this.dgvTrackList_MouseMove);
             // 
             // btnDisplayPlaylistList
             // 
@@ -604,7 +616,7 @@
             // 
             this.chbOnlyPlayingRowModeEnabled.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.chbOnlyPlayingRowModeEnabled.AutoSize = true;
-            this.chbOnlyPlayingRowModeEnabled.Location = new System.Drawing.Point(1062, 16);
+            this.chbOnlyPlayingRowModeEnabled.Location = new System.Drawing.Point(966, 16);
             this.chbOnlyPlayingRowModeEnabled.Name = "chbOnlyPlayingRowModeEnabled";
             this.chbOnlyPlayingRowModeEnabled.Size = new System.Drawing.Size(103, 17);
             this.chbOnlyPlayingRowModeEnabled.TabIndex = 40;
@@ -614,10 +626,9 @@
             // 
             // chbFilterModeEnabled
             // 
-            this.chbFilterModeEnabled.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.chbFilterModeEnabled.AutoSize = true;
             this.chbFilterModeEnabled.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.chbFilterModeEnabled.Location = new System.Drawing.Point(967, 16);
+            this.chbFilterModeEnabled.Location = new System.Drawing.Point(236, 16);
             this.chbFilterModeEnabled.Name = "chbFilterModeEnabled";
             this.chbFilterModeEnabled.Size = new System.Drawing.Size(89, 17);
             this.chbFilterModeEnabled.TabIndex = 41;
@@ -629,17 +640,16 @@
             // 
             this.txtbFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtbFilter.Location = new System.Drawing.Point(274, 14);
+            this.txtbFilter.Location = new System.Drawing.Point(369, 14);
             this.txtbFilter.Name = "txtbFilter";
-            this.txtbFilter.Size = new System.Drawing.Size(612, 20);
+            this.txtbFilter.Size = new System.Drawing.Size(517, 20);
             this.txtbFilter.TabIndex = 42;
-            this.txtbFilter.TextChanged += new System.EventHandler(this.txtbFilter_TextChanged);
             this.txtbFilter.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtbFilter_KeyUp);
             // 
             // lblFilter
             // 
             this.lblFilter.AutoSize = true;
-            this.lblFilter.Location = new System.Drawing.Point(236, 17);
+            this.lblFilter.Location = new System.Drawing.Point(331, 17);
             this.lblFilter.Name = "lblFilter";
             this.lblFilter.Size = new System.Drawing.Size(32, 13);
             this.lblFilter.TabIndex = 43;

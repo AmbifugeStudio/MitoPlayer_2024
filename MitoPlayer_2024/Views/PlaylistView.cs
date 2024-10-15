@@ -376,172 +376,17 @@ namespace MitoPlayer_2024.Views
                     }
                 }
             }
-    
-          /*  if (this.currentTagForColors.CellOnly)
-            {
-                for (int j = 0; j < this.dgvTrackList.Columns.Count; j++)
-                {
-                    if (columnIndex == j)
-                    {
-
-                        this.dgvTrackList.Rows[i].Cells[j].Style.BackColor = color;
-
-                        if ((color.R < 100 && color.G < 100) || (color.R < 100 && color.B < 100) || (color.B < 100 && color.G < 100))
-                        {
-                            this.dgvTrackList.Rows[i].Cells[j].Style.ForeColor = Color.White;
-                        }
-                        else
-                        {
-                            this.dgvTrackList.Rows[i].Cells[j].Style.ForeColor = Color.Black;
-                        }
-                    }
-                    else
-                    {
-                        this.dgvTrackList.Rows[i].Cells[j].Style.BackColor = Color.White;
-                        this.dgvTrackList.Rows[i].Cells[j].Style.ForeColor = Color.Black;
-
-                    }
-
-                }
-
-            }
-            else
-            {
-                for (int j = 0; j < this.dgvTrackList.Columns.Count; j++)
-                {
-                    this.dgvTrackList.Rows[i].Cells[j].Style.BackColor = color;
-
-                }
-            }*/
         }
-
-
-        /*
-        public void SetColorAndSelection(int currentTrackIdInPlaylist = -1)
-        {
-            bool isMissing = false;
-            int trackIdInPlaylist = -1;
-
-            int columnIndex = 0;
-
-            for (int i = 0; i < this.dgvTrackList.Rows.Count; i++)
-            {
-                for (int j = 0; j < this.dgvTrackList.Columns.Count; j++)
-                {
-                    this.dgvTrackList.Rows[i].Cells[j].Style.BackColor = Color.White;
-                    this.dgvTrackList.Rows[i].Cells[j].Style.ForeColor = Color.Black;
-                }
-            }
-
-            if (this.currentTagForColors != null)
-            {
-                for (int j = 0; j < this.dgvTrackList.Columns.Count; j++)
-                {
-                    if (this.dgvTrackList.Columns[j].Name == this.currentTagForColors.Name)
-                    {
-                        columnIndex = j;
-                        break;
-                    }
-                }
-            }
-
-            for (int i = 0; i < this.dgvTrackList.Rows.Count; i++)
-            {
-                isMissing = (bool)this.dgvTrackList.Rows[i].Cells["IsMissing"].Value;
-                trackIdInPlaylist = (int)this.dgvTrackList.Rows[i].Cells["TrackIdInPlaylist"].Value;
-                if (isMissing)
-                {
-                    this.dgvTrackList.Rows[i].DefaultCellStyle.BackColor = Color.Salmon;
-                }
-                else if(currentTrackIdInPlaylist != -1 && trackIdInPlaylist == currentTrackIdInPlaylist) 
-                {
-                    for (int j = 0; j < this.dgvTrackList.Columns.Count; j++)
-                    {
-                        this.dgvTrackList.Rows[i].Cells[j].Style.BackColor = Color.LightSeaGreen;
-                    }
-                }
-                else
-                {
-                    if (this.currentTagForColors != null)
-                    {
-                        String actualTagValueName = this.dgvTrackList.Rows[i].Cells[this.currentTagForColors.Name].Value.ToString();
-                        if (!String.IsNullOrEmpty(actualTagValueName))
-                        {
-                            Color color = this.currentTagValueColorDic[actualTagValueName];
-                            if (color != null)
-                            {
-                                if (this.currentTagForColors.CellOnly)
-                                {
-                                    for (int j = 0; j < this.dgvTrackList.Columns.Count; j++)
-                                    {
-                                        if(columnIndex == j)
-                                        {
-                                    
-                                            this.dgvTrackList.Rows[i].Cells[j].Style.BackColor = color;
-
-                                            if ((color.R < 100 && color.G < 100) || (color.R < 100 && color.B < 100) || (color.B < 100 && color.G < 100))
-                                            {
-                                                this.dgvTrackList.Rows[i].Cells[j].Style.ForeColor = Color.White;
-                                            }
-                                            else
-                                            {
-                                                this.dgvTrackList.Rows[i].Cells[j].Style.ForeColor = Color.Black;
-                                            }
-                                        }
-                                        else
-                                        {
-                                           this.dgvTrackList.Rows[i].Cells[j].Style.BackColor = Color.White;
-                                           this.dgvTrackList.Rows[i].Cells[j].Style.ForeColor = Color.Black;
-
-                                        }
-                                        
-                                    }
-
-                                }
-                                else
-                                {
-                                    for (int j = 0; j < this.dgvTrackList.Columns.Count; j++)
-                                    {
-                                        this.dgvTrackList.Rows[i].Cells[j].Style.BackColor = color;
-
-                                    }
-                                }
-                            }
-                        }
-
-                    }
-                    else
-                    {
-                        for (int j = 0; j < this.dgvTrackList.Columns.Count; j++)
-                        {
-                            this.dgvTrackList.Rows[i].Cells[j].Style.BackColor = Color.White;
-                            this.dgvTrackList.Rows[i].Cells[j].Style.ForeColor = Color.Black;
-                        }
-                    }
-
-                }
-            }
-            this.dgvTrackList.CellBorderStyle = DataGridViewCellBorderStyle.None;
-        }
-        */
-
-       /* public void SetSelectedTrackListBindingSource(BindingSource selectedTrackList)
-        {
-            this.selectedTrackListBindingSource = new BindingSource();
-            this.selectedTrackListBindingSource.DataSource = selectedTrackList;
-        }*/
-
-       
         #endregion
 
         #region TRACKLIST - ROW SELECTION
-        //az aktuális tracklist elemeinek kijelölésekor megjelenik, hogy hány darab szám lett kijelölve és azoknbak mennyi az össz játékideje
+        ///az aktuális tracklist elemeinek kijelölésekor megjelenik, hogy hány darab szám lett kijelölve és azoknak mennyi az össz játékideje
         private bool controlKey = false;
         private void dgvTrackList_SelectionChanged(object sender, EventArgs e)
         {
             if (this.dgvTrackList.SelectedRows != null && this.dgvTrackList.SelectedRows.Count > 0)
             {
-                //ROW COUNT
+                ///ROW COUNT
                 if (this.dgvTrackList.SelectedRows.Count == 1)
                     this.lblSelectedItemsCount.Text = this.dgvTrackList.SelectedRows.Count.ToString() + " item selected";
                 else
@@ -571,7 +416,7 @@ namespace MitoPlayer_2024.Views
                     }
                 }
 
-                //SUM OF TIME
+                ///SUM OF TIME
                 TimeSpan t = TimeSpan.FromSeconds(seconds);
                 String length = String.Empty;
                 if (t.Hours > 0)
@@ -1131,402 +976,6 @@ namespace MitoPlayer_2024.Views
             
             
         }
-       /* public void InitializeTagEditor(List<Tag> tagList)
-        {
-            //tag-eket mutató gombok jelennek meg először, 9db gomb
-            //induláskor minden megjelenne, ezért az összeset elhide-oljuk
-            //taglist-en végigmegyünk és az első x darab label-jét beállítjuk, illetve megjelenítjük (ahány tag, annyi gomb)
-            List<Button> buttonList = new List<Button> { this.btnTag1, this.btnTag2, this.btnTag3, 
-                                                        this.btnTag4, this.btnTag5, this.btnTag6,
-                                                        this.btnTag7,this.btnTag8,this.btnTag9 };
-            for (int i = 0; i <= buttonList.Count - 1; i++)
-            {
-                buttonList[i].Hide();
-            }
-            if (tagList != null && tagList.Count > 0)
-            {
-                for (int i = 0; i <= tagList.Count - 1; i++)
-                {
-                    buttonList[i].Text = tagList[i].Name;
-                    buttonList[i].Show();
-                }
-            }
-        }*/
-
-        int tgvHotkeyIndex1 = -1;
-        int tgvHotkeyIndex2 = -1;
-        int tgvHotkeyIndex3 = -1;
-        int tgvHotkeyIndex4 = -1;
-
-        private bool isOnlyPlayingRowModeEnabled { get; set; }
-        public void InitializeTagValueEditor(List<Tag> tagList, List<List<TagValue>> tagValueListContainer, bool isTagEditorDisplayed, bool isOnlyPlayingRowModeEnabled, bool isFilterModeEnabled)
-        {
-
-            this.tagValueEditorPanel.Controls.Clear();
-
-            if (isOnlyPlayingRowModeEnabled)
-            {
-                this.chbOnlyPlayingRowModeEnabled.Checked = true;
-            }
-            else
-            {
-                this.chbOnlyPlayingRowModeEnabled.Checked = false;
-            }
-
-            if (isFilterModeEnabled)
-            {
-                this.chbOnlyPlayingRowModeEnabled.Hide();
-                this.lblFilter.Show();
-                this.txtbFilter.Show();
-                this.txtbFilter.Text = string.Empty;
-                this.chbFilterModeEnabled.Checked = true;
-            }
-            else
-            {
-                this.chbOnlyPlayingRowModeEnabled.Show();
-                this.lblFilter.Hide();
-                this.txtbFilter.Hide();
-                this.txtbFilter.Text = string.Empty;
-                this.chbFilterModeEnabled.Checked = false;
-            }
-
-/*
-            this.rtxtbTagValueEditorParams.Show();
-            this.btnClearTagValueFilter.Show();
-            this.tagValueEditorPanel.Top = this.tagValueEditorPanel.Top - this.tagValueEditorPanelTopOffset;
-            */
-            int sumHeight = 0;
-            int height = 0;
-            for(int i = 0; i< tagList.Count; i++)
-            {
-                GroupBox gp = new GroupBox();
-                gp.Text = tagList[i].Name;
-                gp.ForeColor = this.FontColor;
-
-                if (tagValueListContainer != null && tagValueListContainer.Count > 0
-                        && tagValueListContainer[i] != null && tagValueListContainer[i].Count > 0)
-                {
-                    decimal heightFactor = (1 + (decimal)tagValueListContainer[i].Count) / (decimal)3;
-                    heightFactor = Math.Ceiling(heightFactor);
-                    height = 20 + (int)(heightFactor * 30);
-                    gp.Size = new Size(255, height);
-
-                    if (i == 0)
-                    {
-                        gp.Location = new Point(0, 0);
-                    }
-                    else
-                    {
-                        gp.Location = new Point(0, sumHeight);
-                    }
-                    sumHeight += height + 10;
-
-                    if (tagList[i].HasMultipleValues)
-                    {
-                        TextBox txtBox = new TextBox();
-                        txtBox.Size = new Size(156, 20);
-                        txtBox.Location = new Point(5, 20);
-
-                        TagValueButton btn = new TagValueButton();
-                        btn.Text = "Save";
-                        btn.Size = new Size(75, 23);
-                        btn.Location = new Point(165, 19);
-
-                        btn.FlatAppearance.BorderSize = 1;
-                        btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-                        btn.UseVisualStyleBackColor = false;
-
-                        btn.BackColor = this.ButtonColor;
-                        btn.ForeColor = this.FontColor;
-                        btn.FlatAppearance.BorderColor = this.ButtonBorderColor;
-
-                        btn.TagName = gp.Text;
-                        btn.TagValueName = btn.Text;
-                        btn.TextBox = txtBox;
-
-                        txtBox.KeyDown += new KeyEventHandler(
-                             (sender, e) => this.txtbSetTagValue_KeyDown(sender, e, btn));
-                        btn.Click += new System.EventHandler(
-                             (sender, e) => this.btnSetTagValue_Click(sender, e));
-
-                        gp.Controls.Add(txtBox);
-                        gp.Controls.Add(btn);
-                    }
-                    else
-                    {
-                        int buttonLengthX = 75;
-                        int buttonLengthY = 23;
-                        int buttonsIntervalX = 5;
-                        int buttonsIntervalY = 20;
-
-                        TagValueButton btn = new TagValueButton();
-                        btn.Text = "-";
-                        btn.Size = new Size(buttonLengthX, buttonLengthY);
-
-                        btn.TagName = gp.Text;
-
-                        btn.Click += new System.EventHandler(
-                                (sender, e) => this.btnClearTagValue_Click(sender, e));
-                        btn.Location = new Point(buttonsIntervalX, buttonsIntervalY);
-
-                        btn.FlatAppearance.BorderSize = 1;
-                        btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-                        btn.UseVisualStyleBackColor = false;
-                        
-                        btn.BackColor = this.ButtonColor;
-                        btn.ForeColor = this.FontColor;
-                        btn.FlatAppearance.BorderColor = this.ButtonBorderColor;
-
-                        gp.Controls.Add(btn);
-
-                        for (int j = 1; j <= tagValueListContainer[i].Count; j++)
-                        {
-
-                            btn = new TagValueButton();
-                            btn.Text = tagValueListContainer[i][j-1].Name;
-                            btn.Size = new Size(buttonLengthX, buttonLengthY);
-
-                            btn.TagName = gp.Text;
-                            btn.TagValueName = btn.Text;
-
-                            btn.Click += new System.EventHandler(
-                                    (sender, e) => this.btnSetTagValue_Click(sender, e));
-
-                            btn.FlatAppearance.BorderSize = 1;
-                            btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-                            btn.UseVisualStyleBackColor = false;
-
-                            btn.BackColor = this.ButtonColor;
-                            btn.ForeColor = tagValueListContainer[i][j - 1].Color;
-                            btn.FlatAppearance.BorderColor = this.ButtonBorderColor;
-
-                            if (j == 1 || j == 2)
-                            {
-                               btn.Location = new Point(buttonsIntervalX + (j * (buttonLengthX + buttonsIntervalX)), buttonsIntervalY);
-                               gp.Controls.Add(btn);
-                            }
-                            else if(j > 2 && j % 3 == 0)
-                            {
-                                buttonsIntervalY = buttonLengthY + buttonsIntervalY + 5;
-                                btn.Location = new Point(buttonsIntervalX, buttonsIntervalY);
-                                gp.Controls.Add(btn);
-                            }
-                            else if (j > 2 && (j % 3 == 1 || j % 3 == 2))
-                            {
-                                btn.Location = new Point(buttonsIntervalX + ((j % 3) * (buttonLengthX + buttonsIntervalX)), buttonsIntervalY);
-                                gp.Controls.Add(btn);
-                            }
-
-                        }
-                        
-                    }
-                }
-
-                this.tagValueEditorPanel.Controls.Add(gp);
-            }
-
-            if (isTagEditorDisplayed)
-            {
-                this.dgvTrackList.Width = this.dgvTrackList.Width + this.trackListRightOffset;
-            }
-        }
-
-
-
-
-        /*
-public void InitializeTagValueEditor(List<TagValue> tagValueList, bool isTagEditorDisplayed, bool inputTextBoxEnabled = false)
-{
-   //van 24 tagvalue gomb, induláskor megjelennének, ezért elhideoljuk őket
-   //a hotkey text-eket inicializáljuk
-   //ha inputtextbox van, akkor egy textbox meg a gomb jelenik csak meg, ellenben végigmegyünk a gombokon és a tag-hez tartozó tagvalue-k neveit felrakjuk a gombokra, majd megjelenítjük őket, azaz megjelenik x db tagvalue gomb
-   //hotkey indexeket is inicializáljuk
-   List<Button> buttonList = new List<Button> { this.btnTagValue1, this.btnTagValue2, this.btnTagValue3,
-                                               this.btnTagValue4, this.btnTagValue5, this.btnTagValue6,
-                                               this.btnTagValue7,this.btnTagValue8,this.btnTagValue9,
-                                               this.btnTagValue10, this.btnTagValue11, this.btnTagValue12,
-                                               this.btnTagValue13, this.btnTagValue14,this.btnTagValue15,
-                                               this.btnTagValue16,this.btnTagValue17,this.btnTagValue18,
-                                               this.btnTagValue19,this.btnTagValue20,this.btnTagValue21,
-                                               this.btnTagValue22,this.btnTagValue23,this.btnTagValue24};
-
-   for (int i = 0; i <= buttonList.Count - 1; i++)
-   {
-       buttonList[i].Hide();
-   }
-
-   if (tagValueList != null && tagValueList.Count > 0)
-   {
-       for (int i = 0; i <= tagValueList.Count - 1; i++)
-       {
-           this.tgvHotkeyName1.Text = "(1) - ";
-           this.tgvHotkeyName2.Text = "(2) - ";
-           this.tgvHotkeyName3.Text = "(3) - ";
-           this.tgvHotkeyName4.Text = "(4) - ";
-           this.tgvHotkeyIndex1 = -1;
-           this.tgvHotkeyIndex2 = -1;
-           this.tgvHotkeyIndex3 = -1;
-           this.tgvHotkeyIndex4 = -1;
-       }
-   }
-
-   if (!inputTextBoxEnabled)
-   {
-       if (tagValueList != null && tagValueList.Count > 0)
-       {
-           for (int i = 0; i <= tagValueList.Count - 1; i++)
-           {
-               buttonList[i].Text = tagValueList[i].Name;
-               buttonList[i].BackColor = tagValueList[i].Color;
-
-               if ((tagValueList[i].Color.R < 100 && tagValueList[i].Color.G < 100) || (tagValueList[i].Color.R < 100 && tagValueList[i].Color.B < 100) || (tagValueList[i].Color.B < 100 && tagValueList[i].Color.G < 100))
-               {
-                  // buttonList[i].ForeColor = Color.White;
-               }
-
-               buttonList[i].Show();
-
-               if(tagValueList[i].Hotkey == 1)
-               {
-                   this.tgvHotkeyIndex1 = i;
-                   this.tgvHotkeyName1.Text = "(1) " + tagValueList[i].Name;
-               }
-               else if (tagValueList[i].Hotkey == 2)
-               {
-                   this.tgvHotkeyIndex2 = i;
-                   this.tgvHotkeyName2.Text = "(2) " + tagValueList[i].Name;
-               }
-               else if (tagValueList[i].Hotkey == 3)
-               {
-                   this.tgvHotkeyIndex3 = i;
-                   this.tgvHotkeyName3.Text = "(3) " + tagValueList[i].Name;
-               }
-               else if (tagValueList[i].Hotkey == 4)
-               {
-                   this.tgvHotkeyIndex4 = i;
-                   this.tgvHotkeyName4.Text = "(4) " + tagValueList[i].Name;
-               }
-           }
-       }
-       this.txtBoxTagValueInput.Hide();
-       this.btnSetTagValue.Hide();
-   }
-   else
-   {
-       this.txtBoxTagValueInput.Show();
-       this.btnSetTagValue.Show();
-   }
-
-   if (isTagEditorDisplayed)
-   {
-       this.dgvTrackList.Width = this.dgvTrackList.Width + 260;
-   }
-
-}
-*/
-
-        /* public void InitializeCurrentTagValueColors(List<Tag> tagList, int currentTagId)
-         {
-             int selectedIndex = 0;
-
-             this.cmbColor.Items.Clear();
-             this.cmbColor.Items.Add("No Color");
-
-             if (tagList != null && tagList.Count > 0)
-             {
-                 int comboboxContentCount = 0;
-
-
-                 for (int i = 0; i <= tagList.Count - 1; i++)
-                 {
-                     if (!tagList[i].HasMultipleValues)
-                     {
-                         this.cmbColor.Items.Add(tagList[i].Name);
-                         comboboxContentCount++;
-                         if (tagList[i].Id == currentTagId)
-                         {
-                             selectedIndex = comboboxContentCount;
-                         }
-                     }
-
-                 }
-             }
-
-             this.currentTagForColors = null;
-             this.currentTagValueColorDic = null;
-             //this.cmbColor.SelectedItem = this.cmbColor.Items[selectedIndex];
-
-            // this.ChangeTracklistColorEvent?.Invoke(this, new ListEventArgs() { StringField1 = (String)this.cmbColor.SelectedItem });
-
-         }*/
-        public void ChangeCurrentTagValueColors(Tag tag, Dictionary<String, Color> tagValueColors)
-        {
-            this.currentTagForColors = tag;
-            this.currentTagValueColorDic = tagValueColors;
-        }
-        public void CallDisplayTagEditor(bool isTagEditorDisplayed)
-        {
-            //kikapcsolt állapotban a panelt elrejtjük, textboxot és gombot elrejtjük, grid szélessége nő
-            //bekapcsolt állapotban a panel látszik, ha textbox van, akkor az látzik, ellenben a gombok, grid szélessége csökken
-            if (!isTagEditorDisplayed)
-            {
-                this.btnDisplayTagEditor.Text = "<";
-                this.btnHideTagEditor.Text = "<";
-                this.btnDisplayTagEditor.Show();
-                this.btnHideTagEditor.Hide();
-                this.btnColumnVisibilityWithTagEditor.Show();
-                this.btnColumnVisibility.Hide();
-
-                this.chbFilterModeEnabled.Hide();
-                this.chbOnlyPlayingRowModeEnabled.Hide();
-
-                this.tagValueEditorPanel.Hide();
-                this.dgvTrackList.Width = this.dgvTrackList.Width + this.trackListRightOffset;
-            }
-            else
-            {
-                this.btnDisplayTagEditor.Text = ">";
-                this.btnHideTagEditor.Text = ">";
-                this.btnDisplayTagEditor.Hide();
-                this.btnHideTagEditor.Show();
-                this.btnColumnVisibilityWithTagEditor.Hide();
-                this.btnColumnVisibility.Show();
-
-                this.chbFilterModeEnabled.Show();
-                if (!this.chbFilterModeEnabled.Checked)
-                {
-                    this.chbOnlyPlayingRowModeEnabled.Show();
-                }
-               
-
-                this.tagValueEditorPanel.Show();
-
-                this.dgvTrackList.Width = this.dgvTrackList.Width - this.trackListRightOffset;
-            }
-        }
-
-        public void SetTagValueFilter(Dictionary<String, String> tagValueFilterDic)
-        {
-            String tagValueAsFilter = String.Empty;
-            if(tagValueFilterDic != null && tagValueFilterDic.Count > 0)
-            {
-                foreach(KeyValuePair<String,String> filter in tagValueFilterDic)
-                {
-                    if (String.IsNullOrEmpty(tagValueAsFilter))
-                    {
-                        tagValueAsFilter = "[" + filter.Key + ": " + filter.Value + "]";
-                    }
-                    else
-                    {
-                        tagValueAsFilter = tagValueAsFilter + "  [" + filter.Key + ": " + filter.Value + "]";
-                    }
-                } 
-            }
-            this.rtxtbTagValueEditorParams.Text = tagValueAsFilter;
-
-            this.ChangeFilterText?.Invoke(this, new ListEventArgs() { StringField1 = this.txtbFilter.Text });
-        }
-
         public void ResetPlaylistList(bool isPlaylistListDisplayed)
         {
             if (isPlaylistListDisplayed)
@@ -1738,6 +1187,7 @@ public void InitializeTagValueEditor(List<TagValue> tagValueList, bool isTagEdit
             if (this.dgvPlaylistList.SelectedRows.Count > 0)
                 this.ExportToDirectoryEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = this.dgvPlaylistList.SelectedRows[0].Index });
         }
+        /*
         public void SetCurrentPlaylistColor(int playlistId)
         {
             this.ClearCurrentPlaylistColor();
@@ -1755,8 +1205,8 @@ public void InitializeTagValueEditor(List<TagValue> tagValueList, bool isTagEdit
                     }
                 }
             }
-        }
-        private void ClearCurrentPlaylistColor()
+        }*/
+       /* private void ClearCurrentPlaylistColor()
         {
             for (int i = 0; i < this.dgvPlaylistList.Rows.Count; i++)
             {
@@ -1766,7 +1216,7 @@ public void InitializeTagValueEditor(List<TagValue> tagValueList, bool isTagEdit
                     break;
                 }
             }
-        }
+        }*/
         #endregion
 
         #region PLAYLIST - DRAG AND DROP
@@ -1962,7 +1412,7 @@ public void InitializeTagValueEditor(List<TagValue> tagValueList, bool isTagEdit
 
         #endregion
 
-        #region TRACKLIST - COLUMNS
+        #region TRACKLIST - COLUMN VISIBILITY
         private void btnColumnVisibility_Click(object sender, EventArgs e)
         {
             this.ShowColumnVisibilityEditorEvent?.Invoke(this, new EventArgs());
@@ -1975,21 +1425,243 @@ public void InitializeTagValueEditor(List<TagValue> tagValueList, bool isTagEdit
 
         #region TAG EDITOR
 
+        public void InitializeTagValueEditor(List<Tag> tagList, List<List<TagValue>> tagValueListContainer, bool isTagEditorDisplayed, bool isOnlyPlayingRowModeEnabled, bool isFilterModeEnabled)
+        {
+            this.tagValueEditorPanel.Controls.Clear();
+
+            if (isOnlyPlayingRowModeEnabled)
+            {
+                this.chbOnlyPlayingRowModeEnabled.Checked = true;
+            }
+            else
+            {
+                this.chbOnlyPlayingRowModeEnabled.Checked = false;
+            }
+
+            if (isFilterModeEnabled)
+            {
+                this.chbOnlyPlayingRowModeEnabled.Hide();
+                this.lblFilter.Show();
+                this.txtbFilter.Show();
+                this.txtbFilter.Text = string.Empty;
+                this.chbFilterModeEnabled.Checked = true;
+            }
+            else
+            {
+                this.chbOnlyPlayingRowModeEnabled.Show();
+                this.lblFilter.Hide();
+                this.txtbFilter.Hide();
+                this.txtbFilter.Text = string.Empty;
+                this.chbFilterModeEnabled.Checked = false;
+            }
+
+            if(isFilterModeEnabled && isTagEditorDisplayed)
+            {
+                this.rtxtbTagValueEditorParams.Show();
+                this.btnClearTagValueFilter.Show();
+            }
+            else
+            {
+                this.rtxtbTagValueEditorParams.Hide();
+                this.btnClearTagValueFilter.Hide();
+            }
+
+            int sumHeight = 0;
+            int height = 0;
+            for (int i = 0; i < tagList.Count; i++)
+            {
+                GroupBox gp = new GroupBox();
+                gp.Text = tagList[i].Name;
+                gp.ForeColor = this.FontColor;
+
+                if (tagValueListContainer != null && tagValueListContainer.Count > 0
+                        && tagValueListContainer[i] != null && tagValueListContainer[i].Count > 0)
+                {
+                    decimal heightFactor = (1 + (decimal)tagValueListContainer[i].Count) / (decimal)3;
+                    heightFactor = Math.Ceiling(heightFactor);
+                    height = 20 + (int)(heightFactor * 30);
+                    gp.Size = new Size(255, height);
+
+                    if (i == 0)
+                    {
+                        gp.Location = new Point(0, 0);
+                    }
+                    else
+                    {
+                        gp.Location = new Point(0, sumHeight);
+                    }
+                    sumHeight += height + 10;
+
+                    if (tagList[i].HasMultipleValues)
+                    {
+                        TextBox txtBox = new TextBox();
+                        txtBox.Size = new Size(156, 20);
+                        txtBox.Location = new Point(5, 20);
+
+                        TagValueButton btn = new TagValueButton();
+                        btn.Text = "Save";
+                        btn.Size = new Size(75, 23);
+                        btn.Location = new Point(165, 19);
+
+                        btn.FlatAppearance.BorderSize = 1;
+                        btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+                        btn.UseVisualStyleBackColor = false;
+
+                        btn.BackColor = this.ButtonColor;
+                        btn.ForeColor = this.FontColor;
+                        btn.FlatAppearance.BorderColor = this.ButtonBorderColor;
+
+                        btn.TagName = gp.Text;
+                        btn.TagValueName = btn.Text;
+                        btn.TextBox = txtBox;
+
+                        txtBox.KeyDown += new KeyEventHandler(
+                             (sender, e) => this.txtbSetTagValue_KeyDown(sender, e, btn));
+                        btn.Click += new System.EventHandler(
+                             (sender, e) => this.btnSetTagValue_Click(sender, e));
+
+                        gp.Controls.Add(txtBox);
+                        gp.Controls.Add(btn);
+                    }
+                    else
+                    {
+                        int buttonLengthX = 75;
+                        int buttonLengthY = 23;
+                        int buttonsIntervalX = 5;
+                        int buttonsIntervalY = 20;
+
+                        TagValueButton btn = new TagValueButton();
+                        btn.Text = "-";
+                        btn.Size = new Size(buttonLengthX, buttonLengthY);
+
+                        btn.TagName = gp.Text;
+
+                        btn.Click += new System.EventHandler(
+                                (sender, e) => this.btnClearTagValue_Click(sender, e));
+                        btn.Location = new Point(buttonsIntervalX, buttonsIntervalY);
+
+                        btn.FlatAppearance.BorderSize = 1;
+                        btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+                        btn.UseVisualStyleBackColor = false;
+
+                        btn.BackColor = this.ButtonColor;
+                        btn.ForeColor = this.FontColor;
+                        btn.FlatAppearance.BorderColor = this.ButtonBorderColor;
+
+                        gp.Controls.Add(btn);
+
+                        for (int j = 1; j <= tagValueListContainer[i].Count; j++)
+                        {
+
+                            btn = new TagValueButton();
+                            btn.Text = tagValueListContainer[i][j - 1].Name;
+                            btn.Size = new Size(buttonLengthX, buttonLengthY);
+
+                            btn.TagName = gp.Text;
+                            btn.TagValueName = btn.Text;
+
+                            btn.Click += new System.EventHandler(
+                                    (sender, e) => this.btnSetTagValue_Click(sender, e));
+
+                            btn.FlatAppearance.BorderSize = 1;
+                            btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+                            btn.UseVisualStyleBackColor = false;
+
+                            btn.BackColor = this.ButtonColor;
+                            btn.ForeColor = tagValueListContainer[i][j - 1].Color;
+                            btn.FlatAppearance.BorderColor = this.ButtonBorderColor;
+
+                            if (j == 1 || j == 2)
+                            {
+                                btn.Location = new Point(buttonsIntervalX + (j * (buttonLengthX + buttonsIntervalX)), buttonsIntervalY);
+                                gp.Controls.Add(btn);
+                            }
+                            else if (j > 2 && j % 3 == 0)
+                            {
+                                buttonsIntervalY = buttonLengthY + buttonsIntervalY + 5;
+                                btn.Location = new Point(buttonsIntervalX, buttonsIntervalY);
+                                gp.Controls.Add(btn);
+                            }
+                            else if (j > 2 && (j % 3 == 1 || j % 3 == 2))
+                            {
+                                btn.Location = new Point(buttonsIntervalX + ((j % 3) * (buttonLengthX + buttonsIntervalX)), buttonsIntervalY);
+                                gp.Controls.Add(btn);
+                            }
+
+                        }
+
+                    }
+                }
+
+                this.tagValueEditorPanel.Controls.Add(gp);
+            }
+
+            if (isTagEditorDisplayed)
+            {
+                this.dgvTrackList.Width = this.dgvTrackList.Width + this.trackListRightOffset;
+            }
+        }
+        public void CallDisplayTagEditor(bool isTagEditorDisplayed)
+        {
+            ///kikapcsolt állapotban a panelt elrejtjük, textboxot és gombot elrejtjük, grid szélessége nő
+            ///bekapcsolt állapotban a panel látszik, ha textbox van, akkor az látzik, ellenben a gombok, grid szélessége csökken
+            if (!isTagEditorDisplayed)
+            {
+                this.btnDisplayTagEditor.Text = "<";
+                this.btnHideTagEditor.Text = "<";
+                this.btnDisplayTagEditor.Show();
+                this.btnHideTagEditor.Hide();
+                this.btnColumnVisibilityWithTagEditor.Show();
+                this.btnColumnVisibility.Hide();
+
+                this.chbOnlyPlayingRowModeEnabled.Hide();
+
+                this.tagValueEditorPanel.Hide();
+                this.dgvTrackList.Width = this.dgvTrackList.Width + this.trackListRightOffset;
+            }
+            else
+            {
+                this.btnDisplayTagEditor.Text = ">";
+                this.btnHideTagEditor.Text = ">";
+                this.btnDisplayTagEditor.Hide();
+                this.btnHideTagEditor.Show();
+                this.btnColumnVisibilityWithTagEditor.Hide();
+                this.btnColumnVisibility.Show();
+
+                if (!this.chbFilterModeEnabled.Checked)
+                {
+                    this.chbOnlyPlayingRowModeEnabled.Show();
+                }
+
+
+                this.tagValueEditorPanel.Show();
+
+                this.dgvTrackList.Width = this.dgvTrackList.Width - this.trackListRightOffset;
+            }
+        }
         private void btnDisplayTagEditor_Click(object sender, EventArgs e)
         {
             this.DisplayTagEditorEvent?.Invoke(this, new EventArgs());
-            this.chbFilterModeEnabled.Show();
             this.chbOnlyPlayingRowModeEnabled.Show();
+
+            if (this.chbFilterModeEnabled.Checked)
+            {
+                this.rtxtbTagValueEditorParams.Show();
+                this.btnClearTagValueFilter.Show();
+            }
+
             this.dgvTrackList.Focus();
         }
         private void btnDisplayTagEditor2_Click(object sender, EventArgs e)
         {
             this.DisplayTagEditorEvent?.Invoke(this, new EventArgs());
-            this.chbFilterModeEnabled.Hide();
             this.chbOnlyPlayingRowModeEnabled.Hide();
+
+            this.rtxtbTagValueEditorParams.Hide();
+            this.btnClearTagValueFilter.Hide();
+
             this.dgvTrackList.Focus();
         }
-
         private void btnSetTagValue_Click(object sender, EventArgs e)
         {
             TagValueButton button = (sender as TagValueButton);
@@ -2014,7 +1686,7 @@ public void InitializeTagValueEditor(List<TagValue> tagValueList, bool isTagEdit
             {
                 TagValueButton button = (btn as TagValueButton);
 
-                if (this.dgvPlaylistList.SelectedRows.Count > 0)
+                if (this.chbOnlyPlayingRowModeEnabled.Checked)
                 {
                     String tagValueValue = String.Empty;
                     if (button.TextBox != null)
@@ -2024,22 +1696,46 @@ public void InitializeTagValueEditor(List<TagValue> tagValueList, bool isTagEdit
                     }
                     this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { StringField1 = button.TagName, StringField2 = button.TagValueName, StringField3 = tagValueValue, Rows = this.dgvTrackList.Rows });
                 }
+                else
+                {
+                    if (this.dgvPlaylistList.SelectedRows.Count > 0)
+                    {
+                        String tagValueValue = String.Empty;
+                        if (button.TextBox != null)
+                        {
+                            tagValueValue = button.TextBox.Text;
+                            button.TextBox.Text = String.Empty;
+                        }
+                        this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { StringField1 = button.TagName, StringField2 = button.TagValueName, StringField3 = tagValueValue, Rows = this.dgvTrackList.Rows });
+                    }
+                }
+
                 this.dgvTrackList.Focus();
             }
         }
-
         private void btnClearTagValue_Click(object sender, EventArgs e)
         {
             TagValueButton button = (sender as TagValueButton);
 
-            if (this.dgvPlaylistList.SelectedRows.Count > 0)
+            if (this.chbOnlyPlayingRowModeEnabled.Checked)
             {
                 this.ClearTagValueEvent?.Invoke(this, new ListEventArgs() { StringField1 = button.TagName, Rows = this.dgvTrackList.Rows });
             }
+            else
+            {
+                if (this.dgvPlaylistList.SelectedRows.Count > 0)
+                {
+                    this.ClearTagValueEvent?.Invoke(this, new ListEventArgs() { StringField1 = button.TagName, Rows = this.dgvTrackList.Rows });
+                }
+            }
+
             this.dgvTrackList.Focus();
         }
-
-
+        private void chbOnlyPlayingRowModeEnabled_CheckedChanged(object sender, EventArgs e)
+        {
+            this.dgvTrackList.Focus();
+            this.ChangeOnlyPlayingRowModeEnabled?.Invoke(this, new ListEventArgs() { BooleanField1 = this.chbOnlyPlayingRowModeEnabled.Checked });
+        }
         private void chbFilterModeEnabled_CheckedChanged(object sender, EventArgs e)
         {
             if (this.chbFilterModeEnabled.Checked)
@@ -2074,50 +1770,38 @@ public void InitializeTagValueEditor(List<TagValue> tagValueList, bool isTagEdit
             this.dgvTrackList.Focus();
             this.ChangeFilterModeEnabled?.Invoke(this, new ListEventArgs() { BooleanField1 = this.chbFilterModeEnabled.Checked });
         }
-
-        private void chbOnlyPlayingRowModeEnabled_CheckedChanged(object sender, EventArgs e)
-        {
-            this.dgvTrackList.Focus();
-            this.ChangeOnlyPlayingRowModeEnabled?.Invoke(this, new ListEventArgs() { BooleanField1 = this.chbOnlyPlayingRowModeEnabled.Checked });
-        }
-
         private void txtbFilter_KeyUp(object sender, KeyEventArgs e)
         {
-            if(e.KeyCode == Keys.Enter)
+            if (e.KeyCode == Keys.Enter)
             {
                 this.ChangeFilterText?.Invoke(this, new ListEventArgs() { StringField1 = this.txtbFilter.Text });
             }
+        }
+        public void SetTagValueFilter(Dictionary<String, String> tagValueFilterDic)
+        {
+            String tagValueAsFilter = String.Empty;
+            if (tagValueFilterDic != null && tagValueFilterDic.Count > 0)
+            {
+                foreach (KeyValuePair<String, String> filter in tagValueFilterDic)
+                {
+                    if (String.IsNullOrEmpty(tagValueAsFilter))
+                    {
+                        tagValueAsFilter = "[" + filter.Key + ": " + filter.Value + "]";
+                    }
+                    else
+                    {
+                        tagValueAsFilter = tagValueAsFilter + "  [" + filter.Key + ": " + filter.Value + "]";
+                    }
+                }
+            }
+            this.rtxtbTagValueEditorParams.Text = tagValueAsFilter;
+
+            this.ChangeFilterText?.Invoke(this, new ListEventArgs() { StringField1 = this.txtbFilter.Text });
         }
         private void btnClearTagValueFilter_Click(object sender, EventArgs e)
         {
             this.RemoveTagValueFilter?.Invoke(this, new EventArgs());
         }
-
-        #endregion
-
-
-
-        /*  private void cmbColor_SelectedIndexChanged(object sender, EventArgs e)
-          {
-              //this.ChangeTracklistColorEvent?.Invoke(this, new ListEventArgs() { StringField1 = (String)this.cmbColor.SelectedItem });
-          }
-
-           private void groupBoxTag_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
-          {
-              if (this.dgvPlaylistList.Rows.Count > 0 && e.KeyCode == Keys.B)
-              {
-                  this.CallNextTrackEvent();
-              }
-          }
-
-          private void groupBoxTagValue_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
-          {
-              if (this.dgvPlaylistList.Rows.Count > 0 && e.KeyCode == Keys.B)
-              {
-                  this.CallNextTrackEvent();
-              }
-          }*/
-
         private void tagValueEditorPanel_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
             //R - Play random track
@@ -2133,15 +1817,7 @@ public void InitializeTagValueEditor(List<TagValue> tagValueList, bool isTagEdit
             }
         }
 
-        private void dgvTrackList_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
-
-        private void txtbFilter_TextChanged(object sender, EventArgs e)
-        {
-
-        }
+        #endregion
 
        
     }

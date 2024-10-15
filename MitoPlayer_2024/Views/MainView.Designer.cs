@@ -521,7 +521,7 @@
             // 
             this.lblVolume.AutoSize = true;
             this.lblVolume.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.lblVolume.Location = new System.Drawing.Point(511, 15);
+            this.lblVolume.Location = new System.Drawing.Point(482, 15);
             this.lblVolume.Name = "lblVolume";
             this.lblVolume.Size = new System.Drawing.Size(50, 20);
             this.lblVolume.TabIndex = 42;
@@ -558,7 +558,7 @@
             // 
             this.pbrTrackProgress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.pbrTrackProgress.Location = new System.Drawing.Point(707, 14);
+            this.pbrTrackProgress.Location = new System.Drawing.Point(689, 14);
             this.pbrTrackProgress.Name = "pbrTrackProgress";
             this.pbrTrackProgress.Size = new System.Drawing.Size(432, 23);
             this.pbrTrackProgress.Step = 1;
@@ -569,7 +569,7 @@
             // chbShuffle
             // 
             this.chbShuffle.AutoSize = true;
-            this.chbShuffle.Location = new System.Drawing.Point(565, 17);
+            this.chbShuffle.Location = new System.Drawing.Point(538, 18);
             this.chbShuffle.Name = "chbShuffle";
             this.chbShuffle.Size = new System.Drawing.Size(59, 17);
             this.chbShuffle.TabIndex = 47;
@@ -582,7 +582,7 @@
             this.lblTrackEnd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTrackEnd.AutoSize = true;
             this.lblTrackEnd.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.lblTrackEnd.Location = new System.Drawing.Point(1145, 13);
+            this.lblTrackEnd.Location = new System.Drawing.Point(1127, 12);
             this.lblTrackEnd.Name = "lblTrackEnd";
             this.lblTrackEnd.Size = new System.Drawing.Size(80, 24);
             this.lblTrackEnd.TabIndex = 43;
@@ -594,7 +594,7 @@
             this.trackVolume.Maximum = 100;
             this.trackVolume.Name = "trackVolume";
             this.trackVolume.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.trackVolume.Size = new System.Drawing.Size(139, 45);
+            this.trackVolume.Size = new System.Drawing.Size(107, 45);
             this.trackVolume.TabIndex = 46;
             this.trackVolume.TickFrequency = 10;
             this.trackVolume.Scroll += new System.EventHandler(this.trackVolume_Scroll);
@@ -616,7 +616,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTrackStart.AutoSize = true;
             this.lblTrackStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.lblTrackStart.Location = new System.Drawing.Point(621, 13);
+            this.lblTrackStart.Location = new System.Drawing.Point(603, 13);
             this.lblTrackStart.Name = "lblTrackStart";
             this.lblTrackStart.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.lblTrackStart.Size = new System.Drawing.Size(80, 24);

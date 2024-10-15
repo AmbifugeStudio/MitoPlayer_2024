@@ -1,11 +1,16 @@
 ﻿
 
 
+- BUG: filter rich text box is visible at program start
+- FEATURE: filter mode button relocate to the filter textbox
+- BUG: at every plalyist open, the tracklist become longer and longerű
+- BUG: set only playing visibility fix
+
 - FEATURE: preview setting (music start at certain point on the next track button)
 - FEATURE: visualizer
 - FEATURE: uv meter
 - FEATURE: track cover browser
-- FEATURE: tag value filter mode (med)
+
 - FEATURE: column visibility
 
 - REFACTOR: tagvalue editor - tagvalue change speed optimization
@@ -16,7 +21,11 @@
 - FEATURE: reorder tags and tagvalues
 - FEATURE: tag editor - display according to tag/tagvalue order
 - FEATURE: progress bar for long loading time
-
+======================
+v0.12.13.13
+======================
+OK - BUG: track start, load another playlist, load the original playlist, current playing track will be different in the tracklist
+OK - BUG: tag value editor - clear tag value removes values from selected track also in the only playing mode
 ======================
 v0.12.13.11
 ======================
