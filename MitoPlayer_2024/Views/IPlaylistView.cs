@@ -60,10 +60,15 @@ namespace MitoPlayer_2024.Views
         event EventHandler<ListEventArgs> ChangeFilterText;
         event EventHandler RemoveTagValueFilter;
 
+        event EventHandler SaveTrackListEvent;
+
         void InitializePlaylistListBindingSource(BindingSource playlistList, bool[] columnVisibility,int currentPlaylistId);
         void ReloadPlaylistListBindingSource(bool[] columnVisibility, int currentPlaylistId);
-        void InitializeTrackListBindingSource(BindingSource trackList, bool[] columnVisibility, int[] columnSortingId);
-        void ReloadTrackListBindingSource(BindingSource trackList, bool[] columnVisibility, int[] columnSortingId, int currentTrackIdInPlaylist);
+
+        void InitializeTrackListRows(DataTableModel model);
+        void InitializeTrackList(DataTableModel model);
+
+        void ReloadTrackListBindingSource(DataTableModel model);
         void SetTagsAndTagValues(List<Tag> tagList, List<List<TagValue>> tagValueListList);
         void UpdateAfterPlayTrack(int currentTrackIndex, int currentTrackId);
         void UpdateAfterPlayTrackAfterPause();
@@ -77,5 +82,6 @@ namespace MitoPlayer_2024.Views
         void SetKeyAndBpmAnalization(bool showButton);
         void Show();
         void FilterTracklist(BindingSource trackList, bool[] columnVisibility, int[] displayIndex, int currentTrackIdInPlaylist);
+        void ChangeSaveButtonColor(bool v);
     }
 }

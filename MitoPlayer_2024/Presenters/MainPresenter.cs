@@ -357,10 +357,8 @@ namespace MitoPlayer_2024.Presenters
         {
             this.HideAllForm();
 
-            this.playlistPresenter.Initialize();
+            this.playlistPresenter.Initialize(this.mediaPlayerComponent);
             ((PlaylistView)this.playlistView).Show();
-
-            this.playlistPresenter.ReloadData(this.mediaPlayerComponent);
 
             this.actualView = this.playlistView;
             ((MainView)mainView).SetMenuStripAccessibility(this.actualView);

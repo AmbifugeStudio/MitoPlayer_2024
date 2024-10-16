@@ -10,7 +10,7 @@
 
 - FEATURE: column visibility
 
-- REFACTOR: tagvalue editor - tagvalue change speed optimization
+
 - FEATURE: tag editor - export/import key/bpm and custom tag values
 - FEATURE: tagvalue - custom order like: Style:Liquid,Deep,Roller,Stadion,Neuro (order by column)
 - BUG: automatic next track stops - after list reorder and the current playing track was at the end of the original list (list has not been updated in the player?) - or not. Objectiv - Fighting Chance stops at the end
@@ -19,6 +19,14 @@
 - FEATURE: tag editor - display according to tag/tagvalue order
 - FEATURE: progress bar for long loading time
 
+- FEATURE: load tracklist or navigate away: check save status and show dialog window is there are unsaved progress
+
+======================
+v0.12.13.19
+======================
+OK - REFACTOR: manual save button and save async process
+OK - REFACTOR: tracklist load process change (larger)
+OK - REFACTOR: tagvalue editor - tagvalue change speed optimization
 ======================
 v0.12.13.16
 ======================

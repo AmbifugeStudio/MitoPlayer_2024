@@ -88,6 +88,7 @@
             this.lblFilter = new System.Windows.Forms.Label();
             this.rtxtbTagValueEditorParams = new System.Windows.Forms.RichTextBox();
             this.btnClearTagValueFilter = new System.Windows.Forms.Button();
+            this.btnSave = new System.Windows.Forms.Button();
             this.contextMenuStrip1.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -555,6 +556,7 @@
             this.dgvTrackList.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.dgvTrackList_CellPainting);
             this.dgvTrackList.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvTrackList_ColumnHeaderMouseClick);
             this.dgvTrackList.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this.dgvTrackList_DataBindingComplete);
+            this.dgvTrackList.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dgvTrackList_RowsAdded);
             this.dgvTrackList.SelectionChanged += new System.EventHandler(this.dgvTrackList_SelectionChanged);
             this.dgvTrackList.DragDrop += new System.Windows.Forms.DragEventHandler(this.dgvTrackList_DragDrop);
             this.dgvTrackList.DragOver += new System.Windows.Forms.DragEventHandler(this.dgvTrackList_DragOver);
@@ -626,11 +628,9 @@
             // 
             // chbFilterModeEnabled
             // 
-            this.chbFilterModeEnabled.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.chbFilterModeEnabled.AutoSize = true;
             this.chbFilterModeEnabled.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.chbFilterModeEnabled.Location = new System.Drawing.Point(236, 16);
+            this.chbFilterModeEnabled.Location = new System.Drawing.Point(317, 16);
             this.chbFilterModeEnabled.Name = "chbFilterModeEnabled";
             this.chbFilterModeEnabled.Size = new System.Drawing.Size(89, 17);
             this.chbFilterModeEnabled.TabIndex = 41;
@@ -642,18 +642,16 @@
             // 
             this.txtbFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtbFilter.Location = new System.Drawing.Point(369, 14);
+            this.txtbFilter.Location = new System.Drawing.Point(450, 15);
             this.txtbFilter.Name = "txtbFilter";
-            this.txtbFilter.Size = new System.Drawing.Size(517, 20);
+            this.txtbFilter.Size = new System.Drawing.Size(436, 20);
             this.txtbFilter.TabIndex = 42;
             this.txtbFilter.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtbFilter_KeyUp);
             // 
             // lblFilter
             // 
-            this.lblFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.lblFilter.AutoSize = true;
-            this.lblFilter.Location = new System.Drawing.Point(331, 17);
+            this.lblFilter.Location = new System.Drawing.Point(412, 17);
             this.lblFilter.Name = "lblFilter";
             this.lblFilter.Size = new System.Drawing.Size(32, 13);
             this.lblFilter.TabIndex = 43;
@@ -681,11 +679,23 @@
             this.btnClearTagValueFilter.UseVisualStyleBackColor = true;
             this.btnClearTagValueFilter.Click += new System.EventHandler(this.btnClearTagValueFilter_Click);
             // 
+            // btnSave
+            // 
+            this.btnSave.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnSave.Location = new System.Drawing.Point(236, 12);
+            this.btnSave.Name = "btnSave";
+            this.btnSave.Size = new System.Drawing.Size(75, 23);
+            this.btnSave.TabIndex = 46;
+            this.btnSave.Text = "SAVE";
+            this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            // 
             // PlaylistView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1252, 678);
+            this.Controls.Add(this.btnSave);
             this.Controls.Add(this.btnClearTagValueFilter);
             this.Controls.Add(this.rtxtbTagValueEditorParams);
             this.Controls.Add(this.lblFilter);
@@ -781,5 +791,6 @@
         private System.Windows.Forms.Label lblFilter;
         private System.Windows.Forms.RichTextBox rtxtbTagValueEditorParams;
         private System.Windows.Forms.Button btnClearTagValueFilter;
+        private System.Windows.Forms.Button btnSave;
     }
 }
