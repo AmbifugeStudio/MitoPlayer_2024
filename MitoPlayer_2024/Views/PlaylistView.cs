@@ -995,8 +995,12 @@ namespace MitoPlayer_2024.Views
 
                 this.dgvPlaylistList.Hide();
                 this.groupBoxPlaylist.Hide();
-                this.dgvTrackList.Left -= this.trackListLeftOffset;
-                this.dgvTrackList.Width += this.trackListLeftOffset;
+
+                if(this.dgvTrackList.Left > 9)
+                {
+                    this.dgvTrackList.Left -= this.trackListLeftOffset;
+                    this.dgvTrackList.Width += this.trackListLeftOffset;
+                }
             }
             else
             {
@@ -1617,7 +1621,9 @@ namespace MitoPlayer_2024.Views
                 this.chbOnlyPlayingRowModeEnabled.Hide();
 
                 this.tagValueEditorPanel.Hide();
-                this.dgvTrackList.Width = this.dgvTrackList.Width + this.trackListRightOffset;
+
+                if(this.dgvTrackList.Width < 1089)
+                    this.dgvTrackList.Width = this.dgvTrackList.Width + this.trackListRightOffset;
             }
             else
             {

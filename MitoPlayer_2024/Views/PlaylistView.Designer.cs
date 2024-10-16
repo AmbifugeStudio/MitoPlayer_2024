@@ -626,6 +626,8 @@
             // 
             // chbFilterModeEnabled
             // 
+            this.chbFilterModeEnabled.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.chbFilterModeEnabled.AutoSize = true;
             this.chbFilterModeEnabled.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.chbFilterModeEnabled.Location = new System.Drawing.Point(236, 16);
@@ -648,6 +650,8 @@
             // 
             // lblFilter
             // 
+            this.lblFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lblFilter.AutoSize = true;
             this.lblFilter.Location = new System.Drawing.Point(331, 17);
             this.lblFilter.Name = "lblFilter";

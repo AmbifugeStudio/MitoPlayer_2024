@@ -1,10 +1,7 @@
 ﻿
 
 
-- BUG: filter rich text box is visible at program start
-- FEATURE: filter mode button relocate to the filter textbox
-- BUG: at every plalyist open, the tracklist become longer and longerű
-- BUG: set only playing visibility fix
+
 
 - FEATURE: preview setting (music start at certain point on the next track button)
 - FEATURE: visualizer
@@ -21,6 +18,13 @@
 - FEATURE: reorder tags and tagvalues
 - FEATURE: tag editor - display according to tag/tagvalue order
 - FEATURE: progress bar for long loading time
+
+======================
+v0.12.13.16
+======================
+OK - BUG: filter rich text box is visible at program start
+OK - FEATURE: filter mode button relocate to the filter textbox
+OK - BUG: at every plalyist open, the tracklist become longer and longer
 ======================
 v0.12.13.13
 ======================
