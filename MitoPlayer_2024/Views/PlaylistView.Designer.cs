@@ -89,6 +89,10 @@
             this.rtxtbTagValueEditorParams = new System.Windows.Forms.RichTextBox();
             this.btnClearTagValueFilter = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
+            this.lblLog1 = new System.Windows.Forms.Label();
+            this.lblLog2 = new System.Windows.Forms.Label();
+            this.lblLog3 = new System.Windows.Forms.Label();
+            this.lblLog4 = new System.Windows.Forms.Label();
             this.contextMenuStrip1.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -510,6 +514,7 @@
             this.dgvPlaylistList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.dgvPlaylistList.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvPlaylistList.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
             this.dgvPlaylistList.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
             this.dgvPlaylistList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dgvPlaylistList.Location = new System.Drawing.Point(10, 12);
@@ -556,7 +561,6 @@
             this.dgvTrackList.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.dgvTrackList_CellPainting);
             this.dgvTrackList.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvTrackList_ColumnHeaderMouseClick);
             this.dgvTrackList.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this.dgvTrackList_DataBindingComplete);
-            this.dgvTrackList.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dgvTrackList_RowsAdded);
             this.dgvTrackList.SelectionChanged += new System.EventHandler(this.dgvTrackList_SelectionChanged);
             this.dgvTrackList.DragDrop += new System.Windows.Forms.DragEventHandler(this.dgvTrackList_DragDrop);
             this.dgvTrackList.DragOver += new System.Windows.Forms.DragEventHandler(this.dgvTrackList_DragOver);
@@ -690,11 +694,55 @@
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
+            // lblLog1
+            // 
+            this.lblLog1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblLog1.AutoSize = true;
+            this.lblLog1.Location = new System.Drawing.Point(967, 583);
+            this.lblLog1.Name = "lblLog1";
+            this.lblLog1.Size = new System.Drawing.Size(35, 13);
+            this.lblLog1.TabIndex = 47;
+            this.lblLog1.Text = "label1";
+            // 
+            // lblLog2
+            // 
+            this.lblLog2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblLog2.AutoSize = true;
+            this.lblLog2.Location = new System.Drawing.Point(967, 602);
+            this.lblLog2.Name = "lblLog2";
+            this.lblLog2.Size = new System.Drawing.Size(35, 13);
+            this.lblLog2.TabIndex = 47;
+            this.lblLog2.Text = "label1";
+            // 
+            // lblLog3
+            // 
+            this.lblLog3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblLog3.AutoSize = true;
+            this.lblLog3.Location = new System.Drawing.Point(967, 626);
+            this.lblLog3.Name = "lblLog3";
+            this.lblLog3.Size = new System.Drawing.Size(35, 13);
+            this.lblLog3.TabIndex = 47;
+            this.lblLog3.Text = "label1";
+            // 
+            // lblLog4
+            // 
+            this.lblLog4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblLog4.AutoSize = true;
+            this.lblLog4.Location = new System.Drawing.Point(967, 646);
+            this.lblLog4.Name = "lblLog4";
+            this.lblLog4.Size = new System.Drawing.Size(35, 13);
+            this.lblLog4.TabIndex = 47;
+            this.lblLog4.Text = "label1";
+            // 
             // PlaylistView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1252, 678);
+            this.Controls.Add(this.lblLog4);
+            this.Controls.Add(this.lblLog3);
+            this.Controls.Add(this.lblLog2);
+            this.Controls.Add(this.lblLog1);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.btnClearTagValueFilter);
             this.Controls.Add(this.rtxtbTagValueEditorParams);
@@ -792,5 +840,9 @@
         private System.Windows.Forms.RichTextBox rtxtbTagValueEditorParams;
         private System.Windows.Forms.Button btnClearTagValueFilter;
         private System.Windows.Forms.Button btnSave;
+        private System.Windows.Forms.Label lblLog1;
+        private System.Windows.Forms.Label lblLog2;
+        private System.Windows.Forms.Label lblLog3;
+        private System.Windows.Forms.Label lblLog4;
     }
 }

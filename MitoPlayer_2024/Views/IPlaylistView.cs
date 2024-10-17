@@ -1,10 +1,12 @@
-﻿using MitoPlayer_2024.Helpers;
+﻿using Google.Protobuf.WellKnownTypes;
+using MitoPlayer_2024.Helpers;
 using MitoPlayer_2024.Model;
 using MitoPlayer_2024.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -62,14 +64,12 @@ namespace MitoPlayer_2024.Views
 
         event EventHandler SaveTrackListEvent;
 
-        void InitializePlaylistListBindingSource(BindingSource playlistList, bool[] columnVisibility,int currentPlaylistId);
-        void ReloadPlaylistListBindingSource(bool[] columnVisibility, int currentPlaylistId);
-
-        void InitializeTrackListRows(DataTableModel model);
+        void InitializeTagsAndTagValues(List<Tag> tagList, Dictionary<String, Dictionary<String, Color>> tagValueListList);
+        void InitializePlaylistList(DataTableModel model);
+        void ReloadPlaylistList(DataTableModel model);
         void InitializeTrackList(DataTableModel model);
+        void ReloadTrackList(DataTableModel model);
 
-        void ReloadTrackListBindingSource(DataTableModel model);
-        void SetTagsAndTagValues(List<Tag> tagList, List<List<TagValue>> tagValueListList);
         void UpdateAfterPlayTrack(int currentTrackIndex, int currentTrackId);
         void UpdateAfterPlayTrackAfterPause();
         void UpdateAfterStopTrack();
@@ -80,8 +80,6 @@ namespace MitoPlayer_2024.Views
         void SetVolume(int volume);
         void SetMuted(bool isMuted);
         void SetKeyAndBpmAnalization(bool showButton);
-        void Show();
-        void FilterTracklist(BindingSource trackList, bool[] columnVisibility, int[] displayIndex, int currentTrackIdInPlaylist);
         void ChangeSaveButtonColor(bool v);
     }
 }
