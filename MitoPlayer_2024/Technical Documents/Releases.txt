@@ -1,5 +1,11 @@
 ﻿
 
+- FEATURE: tag setter and filter difference should be more obvoious
+- FEATURE: default should turned off the tag setter and also the filter
+- BUG: tag editor panel turn off and on again - tracklist size does not reset
+
+
+
 - FEATURE: navigate away from playlist view or load playlist -> autosave
 
 
@@ -22,6 +28,10 @@
 
 - FEATURE: load tracklist or navigate away: check save status and show dialog window is there are unsaved progress
 
+======================
+v0.12.13.22
+======================
+OK - BUG: tag filter does not work when there is no selected row in the playlist list
 ======================
 v0.12.13.21
 ======================

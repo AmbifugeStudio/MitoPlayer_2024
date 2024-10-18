@@ -1691,18 +1691,16 @@ namespace MitoPlayer_2024.Views
         {
             TagValueButton button = (sender as TagValueButton);
 
-            if (this.dgvPlaylistList.SelectedRows.Count > 0)
+            String tagValueValue = String.Empty;
+            if(button.TextBox != null)
             {
-                String tagValueValue = String.Empty;
-                if(button.TextBox != null)
-                {
-                    tagValueValue = button.TextBox.Text;
+                tagValueValue = button.TextBox.Text;
 
-                    if(!this.chbFilterModeEnabled.Checked)
-                        button.TextBox.Text = String.Empty;
-                }
-                this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { StringField1 = button.TagName, StringField2 = button.TagValueName, StringField3 = tagValueValue,  Rows = this.dgvTrackList.Rows });
+                if(!this.chbFilterModeEnabled.Checked)
+                    button.TextBox.Text = String.Empty;
             }
+            this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { StringField1 = button.TagName, StringField2 = button.TagValueName, StringField3 = tagValueValue,  Rows = this.dgvTrackList.Rows });
+
             this.dgvTrackList.Focus();
         }
         private void txtbSetTagValue_KeyDown(object sender, KeyEventArgs e, Button btn)
