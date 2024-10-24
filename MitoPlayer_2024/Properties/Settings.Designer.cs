@@ -118,5 +118,29 @@ namespace MitoPlayer_2024.Properties {
                 this["HasVirtualDj"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int InitialTracklistLeftValue {
+            get {
+                return ((int)(this["InitialTracklistLeftValue"]));
+            }
+            set {
+                this["InitialTracklistLeftValue"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int InitialTracklistWidthValue {
+            get {
+                return ((int)(this["InitialTracklistWidthValue"]));
+            }
+            set {
+                this["InitialTracklistWidthValue"] = value;
+            }
+        }
     }
 }

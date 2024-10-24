@@ -80,7 +80,10 @@ namespace MitoPlayer_2024.Helpers
 
         CurrentPlaylistId,
         IsOnlyPlayingRowModeEnabled,
-        IsFilterModeEnabled
+        IsFilterModeEnabled,
+
+        InitialTracklistLeftValue,
+        InitialTracklistWidth
     }
 
     public enum MediaPlayerUpdateState

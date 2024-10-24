@@ -79,6 +79,8 @@ namespace MitoPlayer_2024.Views
         private int trackListRightOffset = 285;
         private int tagValueEditorPanelBottomOffset = 85;
 
+        private bool isFilterEnabled = false;
+
         public PlaylistView()
         {
             this.InitializeComponent();
@@ -123,25 +125,16 @@ namespace MitoPlayer_2024.Views
             this.btnDeletePlaylist.ForeColor = this.FontColor;
             this.btnDeletePlaylist.FlatAppearance.BorderColor = this.ButtonBorderColor;
 
-            this.btnDisplayPlaylistList.BackColor = this.ButtonColor;
-            this.btnDisplayPlaylistList.ForeColor = this.FontColor;
-            this.btnDisplayPlaylistList.FlatAppearance.BorderColor = this.ButtonBorderColor;
-            this.btnHidePlaylistList.BackColor = this.ButtonColor;
-            this.btnHidePlaylistList.ForeColor = this.FontColor;
-            this.btnHidePlaylistList.FlatAppearance.BorderColor = this.ButtonBorderColor;
-            this.btnDisplayTagEditor.BackColor = this.ButtonColor;
-            this.btnDisplayTagEditor.ForeColor = this.FontColor;
-            this.btnDisplayTagEditor.FlatAppearance.BorderColor = this.ButtonBorderColor;
-            this.btnHideTagEditor.BackColor = this.ButtonColor;
-            this.btnHideTagEditor.ForeColor = this.FontColor;
-            this.btnHideTagEditor.FlatAppearance.BorderColor = this.ButtonBorderColor;
+            this.btnPlaylistListPanelToggle.BackColor = this.ButtonColor;
+            this.btnPlaylistListPanelToggle.ForeColor = this.FontColor;
+            this.btnPlaylistListPanelToggle.FlatAppearance.BorderColor = this.ButtonBorderColor;
+            this.btnDisplayTagComponentToggle.BackColor = this.ButtonColor;
+            this.btnDisplayTagComponentToggle.ForeColor = this.FontColor;
+            this.btnDisplayTagComponentToggle.FlatAppearance.BorderColor = this.ButtonBorderColor;
 
             this.btnColumnVisibilityWithTagEditor.BackColor = this.ButtonColor;
             this.btnColumnVisibilityWithTagEditor.ForeColor = this.FontColor;
             this.btnColumnVisibilityWithTagEditor.FlatAppearance.BorderColor = this.ButtonBorderColor;
-            this.btnColumnVisibility.BackColor = this.ButtonColor;
-            this.btnColumnVisibility.ForeColor = this.FontColor;
-            this.btnColumnVisibility.FlatAppearance.BorderColor = this.ButtonBorderColor;
 
             this.dgvPlaylistList.BackgroundColor = this.ButtonColor;
             this.dgvPlaylistList.ColumnHeadersDefaultCellStyle.BackColor = this.ButtonColor;
@@ -995,43 +988,46 @@ namespace MitoPlayer_2024.Views
             
             
         }
-        public void ResetPlaylistList(bool isPlaylistListDisplayed)
+
+        //alapesetben ha enabled, akkor csak a gomb label-t kell beállítani
+        //ha disabled, akkor a gomb labelt kell állítani, eltüntetni a playlistlist panelt és 
+        //csökkenteni a tracklist bal oldalát, növelni a tracklist méretét
+        public void InitializeDisplayPlaylistList(bool isPlaylistListDisplayed)
         {
             if (isPlaylistListDisplayed)
             {
-                this.dgvTrackList.Left -= this.trackListLeftOffset;
-                this.dgvTrackList.Width += this.trackListLeftOffset;
+                this.btnPlaylistListPanelToggle.Text = "<";
             }
-        }
-        public void CallDisplayPlaylistList(bool isPlaylistListDisplayed)
-        {
-            if (!isPlaylistListDisplayed)
+            else
             {
-                this.btnHidePlaylistList.Text = ">";
-                this.btnDisplayPlaylistList.Text = ">";
-                this.btnHidePlaylistList.Hide();
-                this.btnDisplayPlaylistList.Show();
+                this.btnPlaylistListPanelToggle.Text = ">";
+                this.pnlPlaylistList.Hide();
 
-                this.dgvPlaylistList.Hide();
-                this.groupBoxPlaylist.Hide();
-
-                if(this.dgvTrackList.Left > 9)
+                if (this.dgvTrackList.Left > 9)
                 {
                     this.dgvTrackList.Left -= this.trackListLeftOffset;
                     this.dgvTrackList.Width += this.trackListLeftOffset;
                 }
+                
+            }
+        }
+        public void UpdateDisplayPlaylistList(bool isPlaylistListDisplayed)
+        {
+            if (isPlaylistListDisplayed)
+            {
+                this.btnPlaylistListPanelToggle.Text = "<";
+                this.pnlPlaylistList.Show();
+
+                this.dgvTrackList.Left += this.trackListLeftOffset;
+                this.dgvTrackList.Width -= this.trackListLeftOffset;
             }
             else
             {
-                this.btnHidePlaylistList.Text = "<";
-                this.btnDisplayPlaylistList.Text = "<";
-                this.btnHidePlaylistList.Show();
-                this.btnDisplayPlaylistList.Hide();
+                this.btnPlaylistListPanelToggle.Text = ">";
+                this.pnlPlaylistList.Hide();
 
-                this.dgvPlaylistList.Show();
-                this.groupBoxPlaylist.Show();
-                this.dgvTrackList.Left += this.trackListLeftOffset;
-                this.dgvTrackList.Width -= this.trackListLeftOffset;
+                this.dgvTrackList.Left -= this.trackListLeftOffset;
+                this.dgvTrackList.Width += this.trackListLeftOffset;
             }
         }
 
@@ -1176,7 +1172,7 @@ namespace MitoPlayer_2024.Views
         }
         public void CallLoadPlaylistEvent()
         {
-            if (!this.chbFilterModeEnabled.Checked)
+            if (!this.isFilterEnabled)
             {
                 if (this.dgvPlaylistList.SelectedRows.Count > 0)
                 {
@@ -1428,10 +1424,6 @@ namespace MitoPlayer_2024.Views
         {
             this.DisplayPlaylistListEvent?.Invoke(this, new EventArgs());
         }
-        private void btnDisplayPlaylistList2_Click(object sender, EventArgs e)
-        {
-            this.DisplayPlaylistListEvent?.Invoke(this, new EventArgs());
-        }
 
         #endregion
 
@@ -1448,7 +1440,7 @@ namespace MitoPlayer_2024.Views
 
         #region TAG EDITOR
 
-        public void InitializeTagValueEditor(List<Tag> tagList, List<List<TagValue>> tagValueListContainer, bool isTagEditorDisplayed, bool isOnlyPlayingRowModeEnabled, bool isFilterModeEnabled)
+        public void InitializeTagComponent(List<Tag> tagList, List<List<TagValue>> tagValueListContainer, bool isTagEditorDisplayed, bool isOnlyPlayingRowModeEnabled, bool isFilterModeEnabled)
         {
             this.tagValueEditorPanel.Controls.Clear();
 
@@ -1467,7 +1459,7 @@ namespace MitoPlayer_2024.Views
                 this.lblFilter.Show();
                 this.txtbFilter.Show();
                 this.txtbFilter.Text = string.Empty;
-                this.chbFilterModeEnabled.Checked = true;
+                this.isFilterEnabled = true;
             }
             else
             {
@@ -1475,7 +1467,7 @@ namespace MitoPlayer_2024.Views
                 this.lblFilter.Hide();
                 this.txtbFilter.Hide();
                 this.txtbFilter.Text = string.Empty;
-                this.chbFilterModeEnabled.Checked = false;
+                this.isFilterEnabled = false;
             }
 
             if(isFilterModeEnabled && isTagEditorDisplayed)
@@ -1630,14 +1622,12 @@ namespace MitoPlayer_2024.Views
             ///bekapcsolt állapotban a panel látszik, ha textbox van, akkor az látzik, ellenben a gombok, grid szélessége csökken
             if (!isTagEditorDisplayed)
             {
-                this.btnDisplayTagEditor.Text = "<";
-                this.btnHideTagEditor.Text = "<";
-                this.btnDisplayTagEditor.Show();
-                this.btnHideTagEditor.Hide();
+                this.btnDisplayTagComponentToggle.Text = "<";
+                this.btnDisplayTagComponentToggle.Show();
                 this.btnColumnVisibilityWithTagEditor.Show();
-                this.btnColumnVisibility.Hide();
 
-                this.chbOnlyPlayingRowModeEnabled.Hide();
+
+                
 
                 this.tagValueEditorPanel.Hide();
 
@@ -1646,17 +1636,13 @@ namespace MitoPlayer_2024.Views
             }
             else
             {
-                this.btnDisplayTagEditor.Text = ">";
-                this.btnHideTagEditor.Text = ">";
-                this.btnDisplayTagEditor.Hide();
-                this.btnHideTagEditor.Show();
-                this.btnColumnVisibilityWithTagEditor.Hide();
-                this.btnColumnVisibility.Show();
+                this.btnDisplayTagComponentToggle.Text = ">";
 
-                if (!this.chbFilterModeEnabled.Checked)
-                {
-                    this.chbOnlyPlayingRowModeEnabled.Show();
-                }
+                this.btnDisplayTagComponentToggle.Hide();
+
+                this.btnColumnVisibilityWithTagEditor.Hide();
+
+               
 
 
                 this.tagValueEditorPanel.Show();
@@ -1664,12 +1650,109 @@ namespace MitoPlayer_2024.Views
                 this.dgvTrackList.Width = this.dgvTrackList.Width - this.trackListRightOffset;
             }
         }
+
+        public void InitializeDisplayTagComponent(bool isTagComponentDisplayed)
+        {
+            if (isTagComponentDisplayed)
+            {
+                this.btnDisplayTagComponentToggle.Text = ">";
+                this.dgvTrackList.Width = this.dgvTrackList.Width - this.trackListRightOffset;
+            }
+            else
+            {
+                this.btnDisplayTagComponentToggle.Text = "<";
+                this.pnlTagComponent.Hide();
+
+                if (this.dgvTrackList.Width < 883)
+                {
+                    this.dgvTrackList.Width = this.dgvTrackList.Width + this.trackListRightOffset;
+                }
+            }
+
+            this.isFilterEnabled = false;
+            this.btnFilterModeToggle.FlatAppearance.BorderColor = this.ButtonBorderColor;
+            this.btnSetterModeToggle.FlatAppearance.BorderColor = this.ActiveButtonColor;
+
+            this.rtxtbTagValueEditorParams.Hide();
+            this.btnClearTagValueFilter.Hide();
+            this.lblFilter.Hide();
+            this.txtbFilter.Hide();
+            this.txtbFilter.Text = string.Empty;
+
+            this.chbOnlyPlayingRowModeEnabled.Show();
+            this.tagValueEditorPanel.Size = new Size(this.tagValueEditorPanel.Width, this.tagValueEditorPanel.Height + this.tagValueEditorPanelBottomOffset);
+
+
+
+        }
+        public void UpdateDisplayTagComponent(bool isTagComponentDisplayed)
+        {
+            if (isTagComponentDisplayed)
+            {
+                this.btnDisplayTagComponentToggle.Text = ">";
+                this.pnlTagComponent.Show();
+                this.dgvTrackList.Width = this.dgvTrackList.Width - this.trackListRightOffset;
+            }
+            else
+            {
+                this.btnDisplayTagComponentToggle.Text = "<";
+                this.pnlTagComponent.Hide();
+                this.dgvTrackList.Width = this.dgvTrackList.Width + this.trackListRightOffset;
+            }
+        }
+
+        private void btnFilterModeToggle_Click(object sender, EventArgs e)
+        {
+            this.isFilterEnabled = true;
+
+            this.btnFilterModeToggle.FlatAppearance.BorderColor = this.ActiveButtonColor;
+            this.btnSetterModeToggle.FlatAppearance.BorderColor = this.ButtonBorderColor;
+
+            this.rtxtbTagValueEditorParams.Show();
+            this.btnClearTagValueFilter.Show();
+            this.lblFilter.Show();
+            this.txtbFilter.Show();
+            this.txtbFilter.Text = string.Empty;
+
+            this.chbOnlyPlayingRowModeEnabled.Hide();
+
+            if (this.tagValueEditorPanel.Height != 449)
+            {
+                this.tagValueEditorPanel.Size = new Size(this.tagValueEditorPanel.Width, this.tagValueEditorPanel.Height - this.tagValueEditorPanelBottomOffset);
+            }
+
+            this.dgvTrackList.Focus();
+            this.ChangeFilterModeEnabled?.Invoke(this, new ListEventArgs() { BooleanField1 = true });
+        }
+
+        private void btnSetterModeToggle_Click(object sender, EventArgs e)
+        {
+            this.isFilterEnabled = false;
+
+            this.btnFilterModeToggle.FlatAppearance.BorderColor = this.ButtonBorderColor;
+            this.btnSetterModeToggle.FlatAppearance.BorderColor = this.ActiveButtonColor;
+
+            this.rtxtbTagValueEditorParams.Hide();
+            this.btnClearTagValueFilter.Hide();
+            this.lblFilter.Hide();
+            this.txtbFilter.Hide();
+            this.txtbFilter.Text = string.Empty;
+
+            this.chbOnlyPlayingRowModeEnabled.Show();
+
+            this.tagValueEditorPanel.Size = new Size(this.tagValueEditorPanel.Width, this.tagValueEditorPanel.Height + this.tagValueEditorPanelBottomOffset);
+
+            this.dgvTrackList.Focus();
+            this.ChangeFilterModeEnabled?.Invoke(this, new ListEventArgs() { BooleanField1 = false });
+        }
+
+
         private void btnDisplayTagEditor_Click(object sender, EventArgs e)
         {
             this.DisplayTagEditorEvent?.Invoke(this, new EventArgs());
             this.chbOnlyPlayingRowModeEnabled.Show();
 
-            if (this.chbFilterModeEnabled.Checked)
+            if (this.isFilterEnabled)
             {
                 this.rtxtbTagValueEditorParams.Show();
                 this.btnClearTagValueFilter.Show();
@@ -1696,7 +1779,7 @@ namespace MitoPlayer_2024.Views
             {
                 tagValueValue = button.TextBox.Text;
 
-                if(!this.chbFilterModeEnabled.Checked)
+                if(!this.isFilterEnabled)
                     button.TextBox.Text = String.Empty;
             }
             this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { StringField1 = button.TagName, StringField2 = button.TagValueName, StringField3 = tagValueValue,  Rows = this.dgvTrackList.Rows });
@@ -1746,7 +1829,7 @@ namespace MitoPlayer_2024.Views
             }
             else
             {
-                if (this.dgvPlaylistList.SelectedRows.Count > 0)
+                if (this.dgvTrackList.SelectedRows.Count > 0)
                 {
                     this.ClearTagValueEvent?.Invoke(this, new ListEventArgs() { StringField1 = button.TagName, Rows = this.dgvTrackList.Rows });
                 }
@@ -1761,7 +1844,7 @@ namespace MitoPlayer_2024.Views
         }
         private void chbFilterModeEnabled_CheckedChanged(object sender, EventArgs e)
         {
-            if (this.chbFilterModeEnabled.Checked)
+           /* if (this.chbFilterModeEnabled.Checked)
             {
                 this.rtxtbTagValueEditorParams.Show();
                 this.btnClearTagValueFilter.Show();
@@ -1791,7 +1874,7 @@ namespace MitoPlayer_2024.Views
                 this.chbOnlyPlayingRowModeEnabled.Show();
             }
             this.dgvTrackList.Focus();
-            this.ChangeFilterModeEnabled?.Invoke(this, new ListEventArgs() { BooleanField1 = this.chbFilterModeEnabled.Checked });
+            this.ChangeFilterModeEnabled?.Invoke(this, new ListEventArgs() { BooleanField1 = this.chbFilterModeEnabled.Checked });*/
         }
         private void txtbFilter_KeyUp(object sender, KeyEventArgs e)
         {
@@ -1864,5 +1947,7 @@ namespace MitoPlayer_2024.Views
         {
             this.SaveTrackListEvent?.Invoke(this, new EventArgs());
         }
+
+       
     }
 }

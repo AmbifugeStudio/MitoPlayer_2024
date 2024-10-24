@@ -202,6 +202,10 @@ namespace MitoPlayer_2024.Dao
                 this.InitializeBooleanSetting(Settings.IsOnlyPlayingRowModeEnabled.ToString());
             if (result.Success)
                 this.InitializeBooleanSetting(Settings.IsFilterModeEnabled.ToString());
+            if (result.Success)
+                this.InitializeBooleanSetting(Settings.InitialTracklistLeftValue.ToString());
+            if (result.Success)
+                this.InitializeBooleanSetting(Settings.InitialTracklistWidth.ToString());
 
             return result;
         }

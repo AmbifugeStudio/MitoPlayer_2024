@@ -75,8 +75,7 @@ namespace MitoPlayer_2024.Presenters
             this.playlistView.DisplayPlaylistListEvent += DisplayPlaylistListEvent;
 
             //TAG EDITOR
-            this.playlistView.DisplayTagEditorEvent += DisplayTagEditorEvent;
-            this.playlistView.SelectTagEvent += SelectTagEvent;
+            this.playlistView.DisplayTagEditorEvent += DisplayTagComponentEvent;
             this.playlistView.SetTagValueEvent += SetTagValueEvent;
             this.playlistView.ClearTagValueEvent += ClearTagValueEvent;
 
@@ -105,7 +104,7 @@ namespace MitoPlayer_2024.Presenters
                 this.InitializeTrackListRows(null);
                 this.InitializeTrackList();
 
-                this.InitializeTagEditor();
+                this.InitializeTagComponent();
                 
 
                 if (this.mediaPLayerComponent == null)
@@ -390,10 +389,10 @@ namespace MitoPlayer_2024.Presenters
         }*/
 
 
-        private bool isTagEditorDisplayed { get; set; }
-        private void InitializeTagEditor()
+        private bool isTagComponentDisplayed { get; set; }
+        private void InitializeTagComponent()
         {
-            this.isTagEditorDisplayed = this.settingDao.GetBooleanSetting(Settings.IsTagEditorDisplayed.ToString()).Value;
+            this.isTagComponentDisplayed = this.settingDao.GetBooleanSetting(Settings.IsTagEditorDisplayed.ToString()).Value;
             this.isOnlyPlayingRowModeEnabled = this.settingDao.GetBooleanSetting(Settings.IsOnlyPlayingRowModeEnabled.ToString()).Value;
             //this.isFilterModeEnabled = this.settingDao.GetBooleanSetting(Settings.IsFilterModeEnabled.ToString()).Value;
 
@@ -405,13 +404,16 @@ namespace MitoPlayer_2024.Presenters
                 tagValueListContainer.Add(tagValues);
             }
 
-            ((PlaylistView)this.playlistView).InitializeTagValueEditor(
+            ((PlaylistView)this.playlistView).InitializeTagComponent(
                 this.tagList, 
                 tagValueListContainer, 
-                this.isTagEditorDisplayed, 
+                this.isTagComponentDisplayed, 
                 this.isOnlyPlayingRowModeEnabled,
                 this.isFilterModeEnabled);
-            ((PlaylistView)this.playlistView).CallDisplayTagEditor(this.isTagEditorDisplayed);
+
+            
+
+            ((PlaylistView)this.playlistView).InitializeDisplayTagComponent(this.isTagComponentDisplayed);
         }
 
 
@@ -419,8 +421,10 @@ namespace MitoPlayer_2024.Presenters
         private void InitializedPlaylistList()
         {
             this.isPlaylistListDisplayed = this.settingDao.GetBooleanSetting(Settings.IsPlaylistListDisplayed.ToString()).Value;
-            ((PlaylistView)this.playlistView).ResetPlaylistList(this.isPlaylistListDisplayed);
-            ((PlaylistView)this.playlistView).CallDisplayPlaylistList(this.isPlaylistListDisplayed);
+            ((PlaylistView)this.playlistView).InitializeDisplayPlaylistList(this.isPlaylistListDisplayed);
+
+            //((PlaylistView)this.playlistView).ResetPlaylistList(this.isPlaylistListDisplayed);
+            //((PlaylistView)this.playlistView).CallDisplayPlaylistList(this.isPlaylistListDisplayed);
         }
 
         #endregion
@@ -1861,7 +1865,7 @@ namespace MitoPlayer_2024.Presenters
         {
             this.isPlaylistListDisplayed = !this.isPlaylistListDisplayed;
             this.settingDao.SetBooleanSetting(Settings.IsPlaylistListDisplayed.ToString(), this.isPlaylistListDisplayed);
-            ((PlaylistView)this.playlistView).CallDisplayPlaylistList(this.isPlaylistListDisplayed);
+            ((PlaylistView)this.playlistView).UpdateDisplayPlaylistList(this.isPlaylistListDisplayed);
         }
 
        /* private void SetPlaylistAsCurrent(int playlistId)
@@ -2171,34 +2175,11 @@ namespace MitoPlayer_2024.Presenters
                 }
             }*/
         }
-        private void DisplayTagEditorEvent(object sender, EventArgs e)
+        private void DisplayTagComponentEvent(object sender, EventArgs e)
         {
-            this.isTagEditorDisplayed = !this.isTagEditorDisplayed;
-            this.settingDao.SetBooleanSetting(Settings.IsTagEditorDisplayed.ToString(), this.isTagEditorDisplayed);
-            ((PlaylistView)this.playlistView).CallDisplayTagEditor(this.isTagEditorDisplayed);
-        }
-        
-        
-
-        private void SelectTagEvent(object sender, ListEventArgs e)
-        {
-            if(this.tagList != null && this.tagList.Count > 0)
-            {
-                Tag tag = tagList[e.IntegerField1];
-                if(tag != null)
-                {
-                    List<TagValue> tagValueList = this.tagDao.GetTagValuesByTagId(tag.Id);
-                    if(tagValueList != null && tagValueList.Count > 0)
-                    {
-                        List<List<TagValue>> tagValueListContainer = new List<List<TagValue>>();
-                        tagValueListContainer.Add(tagValueList);
-
-                        ((PlaylistView)this.playlistView).InitializeTagValueEditor(this.tagList, tagValueListContainer, this.isTagEditorDisplayed, this.isOnlyPlayingRowModeEnabled,this.isFilterModeEnabled);
-                        ((PlaylistView)this.playlistView).CallDisplayTagEditor(this.isTagEditorDisplayed);
-                    }
-                }
-            }
-           
+            this.isTagComponentDisplayed = !this.isTagComponentDisplayed;
+            this.settingDao.SetBooleanSetting(Settings.IsTagEditorDisplayed.ToString(), this.isTagComponentDisplayed);
+            ((PlaylistView)this.playlistView).UpdateDisplayTagComponent(this.isTagComponentDisplayed);
         }
 
         private bool isOnlyPlayingRowModeEnabled { get; set; }
@@ -2231,211 +2212,222 @@ namespace MitoPlayer_2024.Presenters
         private Dictionary<String, String> tagValueFilterDic = new Dictionary<String, String>();
 
 
+        private void SetTagValue(String tagName,String tagValueName,String tagValueValue, DataGridViewRowCollection rows)
+        {
+            if (this.tagList != null && this.tagList.Count > 0)
+            {
+                Tag currentTag = this.tagList.Find(x => x.Name == tagName);
+                if (currentTag != null)
+                {
+                    List<TagValue> tagValueList = this.tagDao.GetTagValuesByTagId(currentTag.Id);
+                    if (tagValueList != null && tagValueList.Count > 0)
+                    {
+                        if (currentTag.HasMultipleValues)
+                        {
+                            TagValue tv = tagValueList[0];
+                            if (tv != null)
+                            {
+                                if (this.trackListTable != null && this.trackListTable.Rows != null && this.trackListTable.Rows.Count > 0)
+                                {
+                                    if (!this.isOnlyPlayingRowModeEnabled)
+                                    {
+                                        for (int i = rows.Count - 1; i >= 0; i--)
+                                        {
+                                            if (rows[i].Selected)
+                                            {
+                                                Track track = this.trackDao.GetTrack(Convert.ToInt32(this.trackListTable.Rows[i]["Id"]), this.tagList);
+                                                if (track != null)
+                                                {
+                                                    foreach (TrackTagValue ttv in track.TrackTagValues)
+                                                    {
+                                                        if (ttv.TagId == currentTag.Id)
+                                                        {
+                                                            ttv.TagValueId = tv.Id;
+                                                            ttv.TagValueName = tv.Name;
+                                                            ttv.HasValue = true;
+                                                            ttv.Value = tagValueValue;
+                                                            this.trackDao.UpdateTrackTagValue(ttv);
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                                this.trackListTable.Rows[i][currentTag.Name] = tagValueValue;
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        int currentTrackIdInPlaylist = this.mediaPLayerComponent.CurrentTrackIdInPlaylist;
+                                        for (int i = rows.Count - 1; i >= 0; i--)
+                                        {
+                                            int trackIdInPlaylist = Convert.ToInt32(this.trackListTable.Rows[i]["TrackIdInPlaylist"]);
+                                            if (trackIdInPlaylist == currentTrackIdInPlaylist)
+                                            {
+                                                Track track = this.trackDao.GetTrack(Convert.ToInt32(this.trackListTable.Rows[i]["Id"]), this.tagList);
+                                                if (track != null)
+                                                {
+                                                    foreach (TrackTagValue ttv in track.TrackTagValues)
+                                                    {
+                                                        if (ttv.TagId == currentTag.Id)
+                                                        {
+                                                            ttv.TagValueId = tv.Id;
+                                                            ttv.TagValueName = tv.Name;
+                                                            ttv.HasValue = true;
+                                                            ttv.Value = tagValueValue;
+                                                            this.trackDao.UpdateTrackTagValue(ttv);
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                                this.trackListTable.Rows[i][currentTag.Name] = tagValueValue;
+                                                break;
+                                            }
+                                        }
+                                    }
+
+
+                                    this.ReloadTrackList();
+                                    this.TrackListChanged();
+                                }
+                            }
+                        }
+                        else
+                        {
+                            TagValue tv = tagValueList.Find(x => x.Name == tagValueName);
+                            if (tv != null)
+                            {
+                                if (this.trackListTable != null && this.trackListTable.Rows != null && this.trackListTable.Rows.Count > 0)
+                                {
+                                    if (!this.isOnlyPlayingRowModeEnabled)
+                                    {
+                                        for (int i = rows.Count - 1; i >= 0; i--)
+                                        {
+                                            if (rows[i].Selected)
+                                            {
+                                                Track track = this.trackDao.GetTrack(Convert.ToInt32(this.trackListTable.Rows[i]["Id"]), this.tagList);
+                                                if (track != null)
+                                                {
+                                                    foreach (TrackTagValue ttv in track.TrackTagValues)
+                                                    {
+                                                        if (ttv.TagId == currentTag.Id)
+                                                        {
+                                                            ttv.TagValueId = tv.Id;
+                                                            ttv.TagValueName = tv.Name;
+                                                            this.trackDao.UpdateTrackTagValue(ttv);
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                                this.trackListTable.Rows[i][currentTag.Name] = tv.Name;
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        int currentTrackIdInPlaylist = this.mediaPLayerComponent.CurrentTrackIdInPlaylist;
+                                        for (int i = rows.Count - 1; i >= 0; i--)
+                                        {
+                                            int trackIdInPlaylist = Convert.ToInt32(this.trackListTable.Rows[i]["TrackIdInPlaylist"]);
+                                            if (trackIdInPlaylist == currentTrackIdInPlaylist)
+                                            {
+                                                Track track = this.trackDao.GetTrack(Convert.ToInt32(this.trackListTable.Rows[i]["Id"]), this.tagList);
+                                                if (track != null)
+                                                {
+                                                    foreach (TrackTagValue ttv in track.TrackTagValues)
+                                                    {
+                                                        if (ttv.TagId == currentTag.Id)
+                                                        {
+                                                            ttv.TagValueId = tv.Id;
+                                                            ttv.TagValueName = tv.Name;
+                                                            this.trackDao.UpdateTrackTagValue(ttv);
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                                this.trackListTable.Rows[i][currentTag.Name] = tv.Name;
+                                                break;
+                                            }
+                                        }
+                                    }
+
+
+                                    this.ReloadTrackList();
+                                    this.TrackListChanged();
+
+                                }
+                            }
+
+                        }
+                    }
+
+
+                }
+            }
+        }
+
+        private void FilterByTagValue(String tagName, String tagValueName, String tagValueValue)
+        {
+            if (this.tagList != null && this.tagList.Count > 0)
+            {
+                Tag currentTag = this.tagList.Find(x => x.Name == tagName);
+                if (currentTag != null)
+                {
+                    List<TagValue> tagValueList = this.tagDao.GetTagValuesByTagId(currentTag.Id);
+                    if (tagValueList != null && tagValueList.Count > 0)
+                    {
+                        if (currentTag.HasMultipleValues)
+                        {
+                            TagValue tv = tagValueList[0];
+                            if (tv != null)
+                            {
+                                if (!tagValueFilterDic.ContainsKey(currentTag.Name))
+                                {
+                                    tagValueFilterDic.Add(currentTag.Name, tagValueValue);
+                                }
+                                else
+                                {
+                                    tagValueFilterDic[currentTag.Name] = tagValueValue;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            TagValue tv = tagValueList.Find(x => x.Name == tagValueName);
+                            if (tv != null)
+                            {
+                                if (!tagValueFilterDic.ContainsKey(currentTag.Name))
+                                {
+                                    tagValueFilterDic.Add(currentTag.Name, tv.Name);
+                                }
+                                else
+                                {
+                                    tagValueFilterDic[currentTag.Name] = tv.Name;
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+
+            ((PlaylistView)this.playlistView).SetTagValueFilter(this.tagValueFilterDic);
+        }
+
         private void SetTagValueEvent(object sender, ListEventArgs e)
         {
             if (!isSaving) { 
                 if (!this.isFilterModeEnabled)
                 {
-                    if (this.tagList != null && this.tagList.Count > 0)
-                    {
-                        Tag currentTag = this.tagList.Find(x => x.Name == e.StringField1);
-                        if (currentTag != null)
-                        {
-                            List<TagValue> tagValueList = this.tagDao.GetTagValuesByTagId(currentTag.Id);
-                            if (tagValueList != null && tagValueList.Count > 0)
-                            {
-                                if (currentTag.HasMultipleValues)
-                                {
-                                    TagValue tv = tagValueList[0];
-                                    if (tv != null)
-                                    {
-                                        if (this.trackListTable != null && this.trackListTable.Rows != null && this.trackListTable.Rows.Count > 0)
-                                        {
-                                            if (!this.isOnlyPlayingRowModeEnabled)
-                                            {
-                                                for (int i = e.Rows.Count - 1; i >= 0; i--)
-                                                {
-                                                    if (e.Rows[i].Selected)
-                                                    {
-                                                        Track track = this.trackDao.GetTrack(Convert.ToInt32(this.trackListTable.Rows[i]["Id"]), this.tagList);
-                                                        if (track != null)
-                                                        {
-                                                            foreach (TrackTagValue ttv in track.TrackTagValues)
-                                                            {
-                                                                if (ttv.TagId == currentTag.Id)
-                                                                {
-                                                                    ttv.TagValueId = tv.Id;
-                                                                    ttv.TagValueName = tv.Name;
-                                                                    ttv.HasValue = true;
-                                                                    ttv.Value = e.StringField3;
-                                                                    this.trackDao.UpdateTrackTagValue(ttv);
-                                                                    break;
-                                                                }
-                                                            }
-                                                        }
-                                                        this.trackListTable.Rows[i][currentTag.Name] = e.StringField3;
-                                                    }
-                                                }
-                                            }
-                                            else
-                                            {
-                                                int currentTrackIdInPlaylist = this.mediaPLayerComponent.CurrentTrackIdInPlaylist;
-                                                for (int i = e.Rows.Count - 1; i >= 0; i--)
-                                                {
-                                                    int trackIdInPlaylist = Convert.ToInt32(this.trackListTable.Rows[i]["TrackIdInPlaylist"]);
-                                                    if (trackIdInPlaylist == currentTrackIdInPlaylist)
-                                                    {
-                                                        Track track = this.trackDao.GetTrack(Convert.ToInt32(this.trackListTable.Rows[i]["Id"]), this.tagList);
-                                                        if (track != null)
-                                                        {
-                                                            foreach (TrackTagValue ttv in track.TrackTagValues)
-                                                            {
-                                                                if (ttv.TagId == currentTag.Id)
-                                                                {
-                                                                    ttv.TagValueId = tv.Id;
-                                                                    ttv.TagValueName = tv.Name;
-                                                                    ttv.HasValue = true;
-                                                                    ttv.Value = e.StringField3;
-                                                                    this.trackDao.UpdateTrackTagValue(ttv);
-                                                                    break;
-                                                                }
-                                                            }
-                                                        }
-                                                        this.trackListTable.Rows[i][currentTag.Name] = e.StringField3;
-                                                        break;
-                                                    }
-                                                }
-                                            }
-
-
-                                            this.ReloadTrackList();
-                                            this.TrackListChanged();
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    TagValue tv = tagValueList.Find(x => x.Name == e.StringField2);
-                                    if (tv != null)
-                                    {
-                                        if (this.trackListTable != null && this.trackListTable.Rows != null && this.trackListTable.Rows.Count > 0)
-                                        {
-                                            if (!this.isOnlyPlayingRowModeEnabled)
-                                            {
-                                                for (int i = e.Rows.Count - 1; i >= 0; i--)
-                                                {
-                                                    if (e.Rows[i].Selected)
-                                                    {
-                                                        Track track = this.trackDao.GetTrack(Convert.ToInt32(this.trackListTable.Rows[i]["Id"]), this.tagList);
-                                                        if (track != null)
-                                                        {
-                                                            foreach (TrackTagValue ttv in track.TrackTagValues)
-                                                            {
-                                                                if (ttv.TagId == currentTag.Id)
-                                                                {
-                                                                    ttv.TagValueId = tv.Id;
-                                                                    ttv.TagValueName = tv.Name;
-                                                                    this.trackDao.UpdateTrackTagValue(ttv);
-                                                                    break;
-                                                                }
-                                                            }
-                                                        }
-                                                        this.trackListTable.Rows[i][currentTag.Name] = tv.Name;
-                                                    }
-                                                }
-                                            }
-                                            else
-                                            {
-                                                int currentTrackIdInPlaylist = this.mediaPLayerComponent.CurrentTrackIdInPlaylist;
-                                                for (int i = e.Rows.Count - 1; i >= 0; i--)
-                                                {
-                                                    int trackIdInPlaylist = Convert.ToInt32(this.trackListTable.Rows[i]["TrackIdInPlaylist"]);
-                                                    if (trackIdInPlaylist == currentTrackIdInPlaylist)
-                                                    {
-                                                        Track track = this.trackDao.GetTrack(Convert.ToInt32(this.trackListTable.Rows[i]["Id"]), this.tagList);
-                                                        if (track != null)
-                                                        {
-                                                            foreach (TrackTagValue ttv in track.TrackTagValues)
-                                                            {
-                                                                if (ttv.TagId == currentTag.Id)
-                                                                {
-                                                                    ttv.TagValueId = tv.Id;
-                                                                    ttv.TagValueName = tv.Name;
-                                                                    this.trackDao.UpdateTrackTagValue(ttv);
-                                                                    break;
-                                                                }
-                                                            }
-                                                        }
-                                                        this.trackListTable.Rows[i][currentTag.Name] = tv.Name;
-                                                        break;
-                                                    }
-                                                }
-                                            }
-
-
-                                            this.ReloadTrackList();
-                                            this.TrackListChanged();
-
-                                        }
-                                    }
-
-                                }
-                            }
-
-
-                        }
-                    }
-
+                    this.SetTagValue(e.StringField1,e.StringField2,e.StringField3, e.Rows);
                 }
                 else
                 {
-                    if (this.tagList != null && this.tagList.Count > 0)
-                    {
-                        Tag currentTag = this.tagList.Find(x => x.Name == e.StringField1);
-                        if (currentTag != null)
-                        {
-                            List<TagValue> tagValueList = this.tagDao.GetTagValuesByTagId(currentTag.Id);
-                            if (tagValueList != null && tagValueList.Count > 0)
-                            {
-                                if (currentTag.HasMultipleValues)
-                                {
-                                    TagValue tv = tagValueList[0];
-                                    if (tv != null)
-                                    {
-                                        if (!tagValueFilterDic.ContainsKey(currentTag.Name))
-                                        {
-                                            tagValueFilterDic.Add(currentTag.Name, e.StringField3);
-                                        }
-                                        else
-                                        {
-                                            tagValueFilterDic[currentTag.Name] = e.StringField3;
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    TagValue tv = tagValueList.Find(x => x.Name == e.StringField2);
-                                    if (tv != null)
-                                    {
-                                        if (!tagValueFilterDic.ContainsKey(currentTag.Name))
-                                        {
-                                            tagValueFilterDic.Add(currentTag.Name, tv.Name);
-                                        }
-                                        else
-                                        {
-                                            tagValueFilterDic[currentTag.Name] = tv.Name;
-                                        }
-                                    }
-                                }
-                            }
-
-                        }
-                    }
-
-                    ((PlaylistView)this.playlistView).SetTagValueFilter(this.tagValueFilterDic);
+                    this.FilterByTagValue(e.StringField1, e.StringField2, e.StringField3);
                 }
+            }
         }
-        }
+
+
         private void ClearTagValueEvent(object sender, ListEventArgs e)
         {
             if (!isSaving)

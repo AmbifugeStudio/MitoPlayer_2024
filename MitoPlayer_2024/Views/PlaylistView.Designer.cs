@@ -67,23 +67,14 @@
             this.lblSelectedItemsCount = new System.Windows.Forms.Label();
             this.lblSelectedItemsLength = new System.Windows.Forms.Label();
             this.lblCurrentTrack = new System.Windows.Forms.Label();
-            this.btnHidePlaylistList = new System.Windows.Forms.Button();
-            this.btnDisplayTagEditor = new System.Windows.Forms.Button();
+            this.btnPlaylistListPanelToggle = new System.Windows.Forms.Button();
+            this.btnDisplayTagComponentToggle = new System.Windows.Forms.Button();
             this.btnColumnVisibilityWithTagEditor = new System.Windows.Forms.Button();
-            this.groupBoxPlaylist = new System.Windows.Forms.GroupBox();
-            this.btnNewPlaylist = new System.Windows.Forms.Button();
-            this.btnRenamePlaylist = new System.Windows.Forms.Button();
-            this.btnLoadPlaylist = new System.Windows.Forms.Button();
-            this.btnDeletePlaylist = new System.Windows.Forms.Button();
             this.lblMessage = new System.Windows.Forms.Label();
             this.dgvPlaylistList = new System.Windows.Forms.DataGridView();
             this.dgvTrackList = new System.Windows.Forms.DataGridView();
-            this.btnDisplayPlaylistList = new System.Windows.Forms.Button();
-            this.btnHideTagEditor = new System.Windows.Forms.Button();
-            this.btnColumnVisibility = new System.Windows.Forms.Button();
             this.tagValueEditorPanel = new System.Windows.Forms.Panel();
             this.chbOnlyPlayingRowModeEnabled = new System.Windows.Forms.CheckBox();
-            this.chbFilterModeEnabled = new System.Windows.Forms.CheckBox();
             this.txtbFilter = new System.Windows.Forms.TextBox();
             this.lblFilter = new System.Windows.Forms.Label();
             this.rtxtbTagValueEditorParams = new System.Windows.Forms.RichTextBox();
@@ -93,12 +84,23 @@
             this.lblLog2 = new System.Windows.Forms.Label();
             this.lblLog3 = new System.Windows.Forms.Label();
             this.lblLog4 = new System.Windows.Forms.Label();
+            this.groupBoxPlaylist = new System.Windows.Forms.GroupBox();
+            this.btnNewPlaylist = new System.Windows.Forms.Button();
+            this.btnRenamePlaylist = new System.Windows.Forms.Button();
+            this.btnLoadPlaylist = new System.Windows.Forms.Button();
+            this.btnDeletePlaylist = new System.Windows.Forms.Button();
+            this.pnlPlaylistList = new System.Windows.Forms.Panel();
+            this.pnlTagComponent = new System.Windows.Forms.Panel();
+            this.btnSetterModeToggle = new System.Windows.Forms.Button();
+            this.btnFilterModeToggle = new System.Windows.Forms.Button();
             this.contextMenuStrip1.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
-            this.groupBoxPlaylist.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPlaylistList)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTrackList)).BeginInit();
+            this.groupBoxPlaylist.SuspendLayout();
+            this.pnlPlaylistList.SuspendLayout();
+            this.pnlTagComponent.SuspendLayout();
             this.SuspendLayout();
             // 
             // timer1
@@ -399,30 +401,30 @@
             this.lblCurrentTrack.TabIndex = 2;
             this.lblCurrentTrack.Text = "Playing: -";
             // 
-            // btnHidePlaylistList
+            // btnPlaylistListPanelToggle
             // 
-            this.btnHidePlaylistList.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnHidePlaylistList.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnHidePlaylistList.Location = new System.Drawing.Point(199, 12);
-            this.btnHidePlaylistList.Name = "btnHidePlaylistList";
-            this.btnHidePlaylistList.Size = new System.Drawing.Size(31, 23);
-            this.btnHidePlaylistList.TabIndex = 22;
-            this.btnHidePlaylistList.Text = "<";
-            this.btnHidePlaylistList.UseVisualStyleBackColor = true;
-            this.btnHidePlaylistList.Click += new System.EventHandler(this.btnDisplayPlaylistList_Click);
+            this.btnPlaylistListPanelToggle.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnPlaylistListPanelToggle.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnPlaylistListPanelToggle.Location = new System.Drawing.Point(10, 13);
+            this.btnPlaylistListPanelToggle.Name = "btnPlaylistListPanelToggle";
+            this.btnPlaylistListPanelToggle.Size = new System.Drawing.Size(31, 23);
+            this.btnPlaylistListPanelToggle.TabIndex = 22;
+            this.btnPlaylistListPanelToggle.Text = "<";
+            this.btnPlaylistListPanelToggle.UseVisualStyleBackColor = true;
+            this.btnPlaylistListPanelToggle.Click += new System.EventHandler(this.btnDisplayPlaylistList_Click);
             // 
-            // btnDisplayTagEditor
+            // btnDisplayTagComponentToggle
             // 
-            this.btnDisplayTagEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDisplayTagEditor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnDisplayTagEditor.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDisplayTagEditor.Location = new System.Drawing.Point(1209, 14);
-            this.btnDisplayTagEditor.Name = "btnDisplayTagEditor";
-            this.btnDisplayTagEditor.Size = new System.Drawing.Size(31, 23);
-            this.btnDisplayTagEditor.TabIndex = 23;
-            this.btnDisplayTagEditor.Text = "<";
-            this.btnDisplayTagEditor.UseVisualStyleBackColor = true;
-            this.btnDisplayTagEditor.Click += new System.EventHandler(this.btnDisplayTagEditor_Click);
+            this.btnDisplayTagComponentToggle.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnDisplayTagComponentToggle.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDisplayTagComponentToggle.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnDisplayTagComponentToggle.Location = new System.Drawing.Point(1209, 14);
+            this.btnDisplayTagComponentToggle.Name = "btnDisplayTagComponentToggle";
+            this.btnDisplayTagComponentToggle.Size = new System.Drawing.Size(31, 23);
+            this.btnDisplayTagComponentToggle.TabIndex = 23;
+            this.btnDisplayTagComponentToggle.Text = "<";
+            this.btnDisplayTagComponentToggle.UseVisualStyleBackColor = true;
+            this.btnDisplayTagComponentToggle.Click += new System.EventHandler(this.btnDisplayTagEditor_Click);
             // 
             // btnColumnVisibilityWithTagEditor
             // 
@@ -435,64 +437,6 @@
             this.btnColumnVisibilityWithTagEditor.TabIndex = 24;
             this.btnColumnVisibilityWithTagEditor.UseVisualStyleBackColor = true;
             this.btnColumnVisibilityWithTagEditor.Click += new System.EventHandler(this.btnColumnVisibility_Click);
-            // 
-            // groupBoxPlaylist
-            // 
-            this.groupBoxPlaylist.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.groupBoxPlaylist.Controls.Add(this.btnNewPlaylist);
-            this.groupBoxPlaylist.Controls.Add(this.btnRenamePlaylist);
-            this.groupBoxPlaylist.Controls.Add(this.btnLoadPlaylist);
-            this.groupBoxPlaylist.Controls.Add(this.btnDeletePlaylist);
-            this.groupBoxPlaylist.Location = new System.Drawing.Point(10, 583);
-            this.groupBoxPlaylist.Name = "groupBoxPlaylist";
-            this.groupBoxPlaylist.Size = new System.Drawing.Size(183, 79);
-            this.groupBoxPlaylist.TabIndex = 19;
-            this.groupBoxPlaylist.TabStop = false;
-            this.groupBoxPlaylist.Text = "Playlist";
-            // 
-            // btnNewPlaylist
-            // 
-            this.btnNewPlaylist.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnNewPlaylist.Location = new System.Drawing.Point(6, 19);
-            this.btnNewPlaylist.Name = "btnNewPlaylist";
-            this.btnNewPlaylist.Size = new System.Drawing.Size(83, 23);
-            this.btnNewPlaylist.TabIndex = 6;
-            this.btnNewPlaylist.Text = "New";
-            this.btnNewPlaylist.UseVisualStyleBackColor = true;
-            this.btnNewPlaylist.Click += new System.EventHandler(this.btnNewPlaylist_Click);
-            // 
-            // btnRenamePlaylist
-            // 
-            this.btnRenamePlaylist.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnRenamePlaylist.Location = new System.Drawing.Point(6, 48);
-            this.btnRenamePlaylist.Name = "btnRenamePlaylist";
-            this.btnRenamePlaylist.Size = new System.Drawing.Size(83, 23);
-            this.btnRenamePlaylist.TabIndex = 6;
-            this.btnRenamePlaylist.Text = "Rename";
-            this.btnRenamePlaylist.UseVisualStyleBackColor = true;
-            this.btnRenamePlaylist.Click += new System.EventHandler(this.btnRenamePlaylist_Click);
-            // 
-            // btnLoadPlaylist
-            // 
-            this.btnLoadPlaylist.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnLoadPlaylist.Location = new System.Drawing.Point(95, 19);
-            this.btnLoadPlaylist.Name = "btnLoadPlaylist";
-            this.btnLoadPlaylist.Size = new System.Drawing.Size(82, 23);
-            this.btnLoadPlaylist.TabIndex = 6;
-            this.btnLoadPlaylist.Text = "Load";
-            this.btnLoadPlaylist.UseVisualStyleBackColor = true;
-            this.btnLoadPlaylist.Click += new System.EventHandler(this.btnLoadPlaylist_Click);
-            // 
-            // btnDeletePlaylist
-            // 
-            this.btnDeletePlaylist.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnDeletePlaylist.Location = new System.Drawing.Point(95, 48);
-            this.btnDeletePlaylist.Name = "btnDeletePlaylist";
-            this.btnDeletePlaylist.Size = new System.Drawing.Size(82, 23);
-            this.btnDeletePlaylist.TabIndex = 6;
-            this.btnDeletePlaylist.Text = "Delete";
-            this.btnDeletePlaylist.UseVisualStyleBackColor = true;
-            this.btnDeletePlaylist.Click += new System.EventHandler(this.btnDeletePlaylist_Click);
             // 
             // lblMessage
             // 
@@ -517,13 +461,13 @@
             this.dgvPlaylistList.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
             this.dgvPlaylistList.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
             this.dgvPlaylistList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            this.dgvPlaylistList.Location = new System.Drawing.Point(10, 12);
+            this.dgvPlaylistList.Location = new System.Drawing.Point(0, 0);
             this.dgvPlaylistList.MultiSelect = false;
             this.dgvPlaylistList.Name = "dgvPlaylistList";
             this.dgvPlaylistList.ReadOnly = true;
             this.dgvPlaylistList.RowHeadersVisible = false;
             this.dgvPlaylistList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvPlaylistList.Size = new System.Drawing.Size(183, 565);
+            this.dgvPlaylistList.Size = new System.Drawing.Size(183, 536);
             this.dgvPlaylistList.TabIndex = 17;
             this.dgvPlaylistList.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvPlaylistList_CellDoubleClick);
             this.dgvPlaylistList.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.dgvPlaylistList_CellPainting);
@@ -570,51 +514,14 @@
             this.dgvTrackList.MouseDown += new System.Windows.Forms.MouseEventHandler(this.dgvTrackList_MouseDown);
             this.dgvTrackList.MouseMove += new System.Windows.Forms.MouseEventHandler(this.dgvTrackList_MouseMove);
             // 
-            // btnDisplayPlaylistList
-            // 
-            this.btnDisplayPlaylistList.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnDisplayPlaylistList.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDisplayPlaylistList.Location = new System.Drawing.Point(10, 12);
-            this.btnDisplayPlaylistList.Name = "btnDisplayPlaylistList";
-            this.btnDisplayPlaylistList.Size = new System.Drawing.Size(31, 23);
-            this.btnDisplayPlaylistList.TabIndex = 32;
-            this.btnDisplayPlaylistList.Text = "<";
-            this.btnDisplayPlaylistList.UseVisualStyleBackColor = true;
-            this.btnDisplayPlaylistList.Click += new System.EventHandler(this.btnDisplayPlaylistList2_Click);
-            // 
-            // btnHideTagEditor
-            // 
-            this.btnHideTagEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnHideTagEditor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnHideTagEditor.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnHideTagEditor.Location = new System.Drawing.Point(929, 12);
-            this.btnHideTagEditor.Name = "btnHideTagEditor";
-            this.btnHideTagEditor.Size = new System.Drawing.Size(31, 23);
-            this.btnHideTagEditor.TabIndex = 33;
-            this.btnHideTagEditor.Text = "<";
-            this.btnHideTagEditor.UseVisualStyleBackColor = true;
-            this.btnHideTagEditor.Click += new System.EventHandler(this.btnDisplayTagEditor2_Click);
-            // 
-            // btnColumnVisibility
-            // 
-            this.btnColumnVisibility.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnColumnVisibility.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnColumnVisibility.Image = ((System.Drawing.Image)(resources.GetObject("btnColumnVisibility.Image")));
-            this.btnColumnVisibility.Location = new System.Drawing.Point(892, 12);
-            this.btnColumnVisibility.Name = "btnColumnVisibility";
-            this.btnColumnVisibility.Size = new System.Drawing.Size(31, 23);
-            this.btnColumnVisibility.TabIndex = 34;
-            this.btnColumnVisibility.UseVisualStyleBackColor = true;
-            this.btnColumnVisibility.Click += new System.EventHandler(this.btnColumnVisibility2_Click);
-            // 
             // tagValueEditorPanel
             // 
             this.tagValueEditorPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tagValueEditorPanel.AutoScroll = true;
-            this.tagValueEditorPanel.Location = new System.Drawing.Point(966, 43);
+            this.tagValueEditorPanel.Location = new System.Drawing.Point(0, 58);
             this.tagValueEditorPanel.Name = "tagValueEditorPanel";
-            this.tagValueEditorPanel.Size = new System.Drawing.Size(274, 449);
+            this.tagValueEditorPanel.Size = new System.Drawing.Size(274, 386);
             this.tagValueEditorPanel.TabIndex = 36;
             this.tagValueEditorPanel.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.tagValueEditorPanel_PreviewKeyDown);
             // 
@@ -622,7 +529,7 @@
             // 
             this.chbOnlyPlayingRowModeEnabled.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.chbOnlyPlayingRowModeEnabled.AutoSize = true;
-            this.chbOnlyPlayingRowModeEnabled.Location = new System.Drawing.Point(966, 16);
+            this.chbOnlyPlayingRowModeEnabled.Location = new System.Drawing.Point(4, 34);
             this.chbOnlyPlayingRowModeEnabled.Name = "chbOnlyPlayingRowModeEnabled";
             this.chbOnlyPlayingRowModeEnabled.Size = new System.Drawing.Size(103, 17);
             this.chbOnlyPlayingRowModeEnabled.TabIndex = 40;
@@ -630,32 +537,20 @@
             this.chbOnlyPlayingRowModeEnabled.UseVisualStyleBackColor = true;
             this.chbOnlyPlayingRowModeEnabled.CheckedChanged += new System.EventHandler(this.chbOnlyPlayingRowModeEnabled_CheckedChanged);
             // 
-            // chbFilterModeEnabled
-            // 
-            this.chbFilterModeEnabled.AutoSize = true;
-            this.chbFilterModeEnabled.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.chbFilterModeEnabled.Location = new System.Drawing.Point(317, 16);
-            this.chbFilterModeEnabled.Name = "chbFilterModeEnabled";
-            this.chbFilterModeEnabled.Size = new System.Drawing.Size(89, 17);
-            this.chbFilterModeEnabled.TabIndex = 41;
-            this.chbFilterModeEnabled.Text = "Filter Mode";
-            this.chbFilterModeEnabled.UseVisualStyleBackColor = true;
-            this.chbFilterModeEnabled.CheckedChanged += new System.EventHandler(this.chbFilterModeEnabled_CheckedChanged);
-            // 
             // txtbFilter
             // 
             this.txtbFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtbFilter.Location = new System.Drawing.Point(450, 15);
+            this.txtbFilter.Location = new System.Drawing.Point(42, 32);
             this.txtbFilter.Name = "txtbFilter";
-            this.txtbFilter.Size = new System.Drawing.Size(436, 20);
+            this.txtbFilter.Size = new System.Drawing.Size(229, 20);
             this.txtbFilter.TabIndex = 42;
             this.txtbFilter.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtbFilter_KeyUp);
             // 
             // lblFilter
             // 
             this.lblFilter.AutoSize = true;
-            this.lblFilter.Location = new System.Drawing.Point(412, 17);
+            this.lblFilter.Location = new System.Drawing.Point(4, 35);
             this.lblFilter.Name = "lblFilter";
             this.lblFilter.Size = new System.Drawing.Size(32, 13);
             this.lblFilter.TabIndex = 43;
@@ -665,7 +560,7 @@
             // 
             this.rtxtbTagValueEditorParams.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.rtxtbTagValueEditorParams.Enabled = false;
-            this.rtxtbTagValueEditorParams.Location = new System.Drawing.Point(966, 498);
+            this.rtxtbTagValueEditorParams.Location = new System.Drawing.Point(0, 450);
             this.rtxtbTagValueEditorParams.Name = "rtxtbTagValueEditorParams";
             this.rtxtbTagValueEditorParams.Size = new System.Drawing.Size(274, 50);
             this.rtxtbTagValueEditorParams.TabIndex = 44;
@@ -675,7 +570,7 @@
             // 
             this.btnClearTagValueFilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnClearTagValueFilter.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnClearTagValueFilter.Location = new System.Drawing.Point(1165, 554);
+            this.btnClearTagValueFilter.Location = new System.Drawing.Point(196, 506);
             this.btnClearTagValueFilter.Name = "btnClearTagValueFilter";
             this.btnClearTagValueFilter.Size = new System.Drawing.Size(75, 23);
             this.btnClearTagValueFilter.TabIndex = 45;
@@ -734,35 +629,133 @@
             this.lblLog4.TabIndex = 47;
             this.lblLog4.Text = "label1";
             // 
+            // groupBoxPlaylist
+            // 
+            this.groupBoxPlaylist.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.groupBoxPlaylist.Controls.Add(this.btnNewPlaylist);
+            this.groupBoxPlaylist.Controls.Add(this.btnRenamePlaylist);
+            this.groupBoxPlaylist.Controls.Add(this.btnLoadPlaylist);
+            this.groupBoxPlaylist.Controls.Add(this.btnDeletePlaylist);
+            this.groupBoxPlaylist.Location = new System.Drawing.Point(0, 542);
+            this.groupBoxPlaylist.Name = "groupBoxPlaylist";
+            this.groupBoxPlaylist.Size = new System.Drawing.Size(183, 79);
+            this.groupBoxPlaylist.TabIndex = 19;
+            this.groupBoxPlaylist.TabStop = false;
+            this.groupBoxPlaylist.Text = "Playlist";
+            // 
+            // btnNewPlaylist
+            // 
+            this.btnNewPlaylist.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnNewPlaylist.Location = new System.Drawing.Point(6, 19);
+            this.btnNewPlaylist.Name = "btnNewPlaylist";
+            this.btnNewPlaylist.Size = new System.Drawing.Size(83, 23);
+            this.btnNewPlaylist.TabIndex = 6;
+            this.btnNewPlaylist.Text = "New";
+            this.btnNewPlaylist.UseVisualStyleBackColor = true;
+            this.btnNewPlaylist.Click += new System.EventHandler(this.btnNewPlaylist_Click);
+            // 
+            // btnRenamePlaylist
+            // 
+            this.btnRenamePlaylist.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnRenamePlaylist.Location = new System.Drawing.Point(6, 48);
+            this.btnRenamePlaylist.Name = "btnRenamePlaylist";
+            this.btnRenamePlaylist.Size = new System.Drawing.Size(83, 23);
+            this.btnRenamePlaylist.TabIndex = 6;
+            this.btnRenamePlaylist.Text = "Rename";
+            this.btnRenamePlaylist.UseVisualStyleBackColor = true;
+            this.btnRenamePlaylist.Click += new System.EventHandler(this.btnRenamePlaylist_Click);
+            // 
+            // btnLoadPlaylist
+            // 
+            this.btnLoadPlaylist.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnLoadPlaylist.Location = new System.Drawing.Point(95, 19);
+            this.btnLoadPlaylist.Name = "btnLoadPlaylist";
+            this.btnLoadPlaylist.Size = new System.Drawing.Size(82, 23);
+            this.btnLoadPlaylist.TabIndex = 6;
+            this.btnLoadPlaylist.Text = "Load";
+            this.btnLoadPlaylist.UseVisualStyleBackColor = true;
+            this.btnLoadPlaylist.Click += new System.EventHandler(this.btnLoadPlaylist_Click);
+            // 
+            // btnDeletePlaylist
+            // 
+            this.btnDeletePlaylist.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDeletePlaylist.Location = new System.Drawing.Point(95, 48);
+            this.btnDeletePlaylist.Name = "btnDeletePlaylist";
+            this.btnDeletePlaylist.Size = new System.Drawing.Size(82, 23);
+            this.btnDeletePlaylist.TabIndex = 6;
+            this.btnDeletePlaylist.Text = "Delete";
+            this.btnDeletePlaylist.UseVisualStyleBackColor = true;
+            this.btnDeletePlaylist.Click += new System.EventHandler(this.btnDeletePlaylist_Click);
+            // 
+            // pnlPlaylistList
+            // 
+            this.pnlPlaylistList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.pnlPlaylistList.Controls.Add(this.groupBoxPlaylist);
+            this.pnlPlaylistList.Controls.Add(this.dgvPlaylistList);
+            this.pnlPlaylistList.Location = new System.Drawing.Point(10, 41);
+            this.pnlPlaylistList.Name = "pnlPlaylistList";
+            this.pnlPlaylistList.Size = new System.Drawing.Size(183, 621);
+            this.pnlPlaylistList.TabIndex = 48;
+            // 
+            // pnlTagComponent
+            // 
+            this.pnlTagComponent.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnlTagComponent.Controls.Add(this.btnSetterModeToggle);
+            this.pnlTagComponent.Controls.Add(this.btnFilterModeToggle);
+            this.pnlTagComponent.Controls.Add(this.tagValueEditorPanel);
+            this.pnlTagComponent.Controls.Add(this.btnClearTagValueFilter);
+            this.pnlTagComponent.Controls.Add(this.rtxtbTagValueEditorParams);
+            this.pnlTagComponent.Controls.Add(this.txtbFilter);
+            this.pnlTagComponent.Controls.Add(this.lblFilter);
+            this.pnlTagComponent.Controls.Add(this.chbOnlyPlayingRowModeEnabled);
+            this.pnlTagComponent.Location = new System.Drawing.Point(966, 43);
+            this.pnlTagComponent.Name = "pnlTagComponent";
+            this.pnlTagComponent.Size = new System.Drawing.Size(274, 534);
+            this.pnlTagComponent.TabIndex = 49;
+            // 
+            // btnSetterModeToggle
+            // 
+            this.btnSetterModeToggle.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnSetterModeToggle.Location = new System.Drawing.Point(4, 3);
+            this.btnSetterModeToggle.Name = "btnSetterModeToggle";
+            this.btnSetterModeToggle.Size = new System.Drawing.Size(75, 23);
+            this.btnSetterModeToggle.TabIndex = 46;
+            this.btnSetterModeToggle.Text = "Setter";
+            this.btnSetterModeToggle.UseVisualStyleBackColor = true;
+            this.btnSetterModeToggle.Click += new System.EventHandler(this.btnSetterModeToggle_Click);
+            // 
+            // btnFilterModeToggle
+            // 
+            this.btnFilterModeToggle.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnFilterModeToggle.Location = new System.Drawing.Point(85, 3);
+            this.btnFilterModeToggle.Name = "btnFilterModeToggle";
+            this.btnFilterModeToggle.Size = new System.Drawing.Size(75, 23);
+            this.btnFilterModeToggle.TabIndex = 46;
+            this.btnFilterModeToggle.Text = "Filter";
+            this.btnFilterModeToggle.UseVisualStyleBackColor = true;
+            this.btnFilterModeToggle.Click += new System.EventHandler(this.btnFilterModeToggle_Click);
+            // 
             // PlaylistView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1252, 678);
+            this.Controls.Add(this.pnlTagComponent);
+            this.Controls.Add(this.pnlPlaylistList);
             this.Controls.Add(this.lblLog4);
             this.Controls.Add(this.lblLog3);
             this.Controls.Add(this.lblLog2);
             this.Controls.Add(this.lblLog1);
             this.Controls.Add(this.btnSave);
-            this.Controls.Add(this.btnClearTagValueFilter);
-            this.Controls.Add(this.rtxtbTagValueEditorParams);
-            this.Controls.Add(this.lblFilter);
-            this.Controls.Add(this.txtbFilter);
-            this.Controls.Add(this.chbFilterModeEnabled);
-            this.Controls.Add(this.chbOnlyPlayingRowModeEnabled);
-            this.Controls.Add(this.tagValueEditorPanel);
-            this.Controls.Add(this.btnColumnVisibility);
-            this.Controls.Add(this.btnHideTagEditor);
-            this.Controls.Add(this.btnDisplayPlaylistList);
             this.Controls.Add(this.btnScanKeyAndBpm);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
-            this.Controls.Add(this.btnHidePlaylistList);
-            this.Controls.Add(this.btnDisplayTagEditor);
+            this.Controls.Add(this.btnPlaylistListPanelToggle);
+            this.Controls.Add(this.btnDisplayTagComponentToggle);
             this.Controls.Add(this.btnColumnVisibilityWithTagEditor);
-            this.Controls.Add(this.groupBoxPlaylist);
             this.Controls.Add(this.lblMessage);
-            this.Controls.Add(this.dgvPlaylistList);
             this.Controls.Add(this.dgvTrackList);
             this.Name = "PlaylistView";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -771,9 +764,12 @@
             this.groupBox4.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
-            this.groupBoxPlaylist.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvPlaylistList)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTrackList)).EndInit();
+            this.groupBoxPlaylist.ResumeLayout(false);
+            this.pnlPlaylistList.ResumeLayout(false);
+            this.pnlTagComponent.ResumeLayout(false);
+            this.pnlTagComponent.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -805,20 +801,12 @@
         private System.Windows.Forms.Label lblSelectedItemsCount;
         private System.Windows.Forms.Label lblSelectedItemsLength;
         private System.Windows.Forms.Label lblCurrentTrack;
-        private System.Windows.Forms.Button btnHidePlaylistList;
-        private System.Windows.Forms.Button btnDisplayTagEditor;
+        private System.Windows.Forms.Button btnPlaylistListPanelToggle;
+        private System.Windows.Forms.Button btnDisplayTagComponentToggle;
         private System.Windows.Forms.Button btnColumnVisibilityWithTagEditor;
-        private System.Windows.Forms.GroupBox groupBoxPlaylist;
-        private System.Windows.Forms.Button btnNewPlaylist;
-        private System.Windows.Forms.Button btnRenamePlaylist;
-        private System.Windows.Forms.Button btnLoadPlaylist;
-        private System.Windows.Forms.Button btnDeletePlaylist;
         private System.Windows.Forms.Label lblMessage;
         private System.Windows.Forms.DataGridView dgvPlaylistList;
         private System.Windows.Forms.DataGridView dgvTrackList;
-        private System.Windows.Forms.Button btnDisplayPlaylistList;
-        private System.Windows.Forms.Button btnHideTagEditor;
-        private System.Windows.Forms.Button btnColumnVisibility;
         private System.Windows.Forms.ToolStripMenuItem createPlaylistToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem renameToolStripMenuItem;
@@ -834,7 +822,6 @@
         private System.Windows.Forms.ToolStripMenuItem exportToDirToolStripMenuItem;
         private System.Windows.Forms.Panel tagValueEditorPanel;
         private System.Windows.Forms.CheckBox chbOnlyPlayingRowModeEnabled;
-        private System.Windows.Forms.CheckBox chbFilterModeEnabled;
         private System.Windows.Forms.TextBox txtbFilter;
         private System.Windows.Forms.Label lblFilter;
         private System.Windows.Forms.RichTextBox rtxtbTagValueEditorParams;
@@ -844,5 +831,14 @@
         private System.Windows.Forms.Label lblLog2;
         private System.Windows.Forms.Label lblLog3;
         private System.Windows.Forms.Label lblLog4;
+        private System.Windows.Forms.GroupBox groupBoxPlaylist;
+        private System.Windows.Forms.Button btnNewPlaylist;
+        private System.Windows.Forms.Button btnRenamePlaylist;
+        private System.Windows.Forms.Button btnLoadPlaylist;
+        private System.Windows.Forms.Button btnDeletePlaylist;
+        private System.Windows.Forms.Panel pnlPlaylistList;
+        private System.Windows.Forms.Panel pnlTagComponent;
+        private System.Windows.Forms.Button btnSetterModeToggle;
+        private System.Windows.Forms.Button btnFilterModeToggle;
     }
 }
