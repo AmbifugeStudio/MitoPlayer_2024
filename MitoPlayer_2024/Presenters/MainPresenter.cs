@@ -222,6 +222,18 @@ namespace MitoPlayer_2024.Presenters
 
                 result = this.settingDao.CreateTrackProperty(tp);
 
+                tp = new TrackProperty()
+                {
+                    Id = this.trackDao.GetNextId(TableName.TrackProperty.ToString()),
+                    Name = tag.Name + "TagValueId",
+                    Type = "System.Int32",
+                    IsEnabled = true,
+                    ColumnGroup = ColumnGroup.TracklistColumns.ToString(),
+                    SortingId = this.settingDao.GetNextTrackPropertySortingId(),
+                };
+
+                result = this.settingDao.CreateTrackProperty(tp);
+
             }
 
             if (result.Success)
@@ -273,6 +285,18 @@ namespace MitoPlayer_2024.Presenters
                     IsEnabled = true,
                     ColumnGroup = ColumnGroup.TracklistColumns.ToString(),
                     SortingId = this.settingDao.GetNextTrackPropertySortingId()
+                };
+
+                result = this.settingDao.CreateTrackProperty(tp);
+
+                tp = new TrackProperty()
+                {
+                    Id = this.trackDao.GetNextId(TableName.TrackProperty.ToString()),
+                    Name = tag.Name + "TagValueId",
+                    Type = "System.Int32",
+                    IsEnabled = true,
+                    ColumnGroup = ColumnGroup.TracklistColumns.ToString(),
+                    SortingId = this.settingDao.GetNextTrackPropertySortingId(),
                 };
 
                 result = this.settingDao.CreateTrackProperty(tp);

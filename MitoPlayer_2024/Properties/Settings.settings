@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="Installed" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="DefaultDatabaseName" Type="System.String" Scope="User">
       <Value Profile="(Default)" />

@@ -2,21 +2,16 @@
 using MitoPlayer_2024.Model;
 using MitoPlayer_2024.Models;
 using MitoPlayer_2024.Views;
-using MySqlX.XDevAPI.Common;
-using NAudio.CoreAudioApi;
 using NAudio.Wave;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Management;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using Type = System.Type;
 
 namespace MitoPlayer_2024.Presenters
@@ -79,12 +74,13 @@ namespace MitoPlayer_2024.Presenters
             this.playlistView.SetTagValueEvent += SetTagValueEvent;
             this.playlistView.ClearTagValueEvent += ClearTagValueEvent;
 
-            this.playlistView.ChangeFilterModeEnabled += ChangeFilterModeEnabled;
+            this.playlistView.EnableFilterModeEvent += EnableFilterModeEvent;
+            this.playlistView.EnableSetterModeEvent += EnableSetterModeEvent;
             this.playlistView.ChangeOnlyPlayingRowModeEnabled += ChangeOnlyPlayingRowModeEnabled;
-            this.playlistView.ChangeFilterText += ChangeFilterText;
+            this.playlistView.ChangeFilterParameters += ChangeFilterParameters;
             this.playlistView.RemoveTagValueFilter += RemoveTagValueFilter;
 
-            this.playlistView.SaveTrackListEvent += SaveTrackList;
+            this.playlistView.SaveTrackListEvent += SaveTrackListEvent;
         }
 
 
@@ -101,8 +97,8 @@ namespace MitoPlayer_2024.Presenters
                 this.InitializePlaylistList();
 
                 this.InitializeTracklistColumns();
-                this.InitializeTrackListRows(null);
-                this.InitializeTrackList();
+                this.InitializeTrackListRows(this.trackListTable, null);
+                this.InitializeTrackList(this.trackListTable);
 
                 this.InitializeTagComponent();
                 
@@ -229,6 +225,8 @@ namespace MitoPlayer_2024.Presenters
 
         private BindingSource trackListBindingSource { get; set; }
         private DataTable trackListTable { get; set; }
+        private List<Track> tracklist { get; set; }
+        private DataTable filteredTrackListTable { get; set; }
         private Dictionary<string, int> columnOrderStates { get; set; }
         private int[] trackColumnDisplayIndexArray { get; set; }
         private bool[] trackColumnVisibilityArray { get; set; }
@@ -246,6 +244,7 @@ namespace MitoPlayer_2024.Presenters
         {
             this.trackListBindingSource = new BindingSource();
             this.trackListTable = new DataTable();
+            this.filteredTrackListTable = new DataTable();
             this.columnOrderStates = new Dictionary<string, int>();
 
             List<TrackProperty> tpList = new List<TrackProperty>();
@@ -259,16 +258,17 @@ namespace MitoPlayer_2024.Presenters
                 {
                     this.columnOrderStates.Add(tpList[i].Name, -1);
                     this.trackListTable.Columns.Add(tpList[i].Name, Type.GetType(tpList[i].Type));
+                    this.filteredTrackListTable.Columns.Add(tpList[i].Name, Type.GetType(tpList[i].Type));
                 }
 
                 this.trackColumnVisibilityArray = tpList.Select(x => x.IsEnabled).ToArray();
             }
         }
-        private void InitializeTrackListRows(List<Track> trackList)
+        private void InitializeTrackListRows(DataTable tracklistTable, List<Track> trackList)
         {
-            this.trackListTable.Clear();
+            tracklistTable.Clear();
 
-            if(trackList == null)
+            if (trackList == null)
             {
                 List<Playlist> plsList = this.trackDao.GetAllPlaylist();
                 Playlist actualPlaylist = null;
@@ -277,13 +277,14 @@ namespace MitoPlayer_2024.Presenters
                     actualPlaylist = plsList.Find(x => x.Id == this.currentPlaylistId);
                 }
                 trackList = this.trackDao.GetTracklistByPlaylistId(actualPlaylist.Id, this.tagList);
+                this.tracklist = tracklist;
             }
 
             if (trackList != null && trackList.Count > 0)
             {
                 foreach (Track track in trackList)
                 {
-                    DataRow dataRow = this.trackListTable.NewRow();
+                    DataRow dataRow = tracklistTable.NewRow();
                     dataRow["Id"] = track.Id;
                     dataRow["Album"] = track.Album;
                     dataRow["Artist"] = track.Artist;
@@ -303,21 +304,25 @@ namespace MitoPlayer_2024.Presenters
                             if (ttv.HasValue)
                             {
                                 dataRow[ttv.TagName] = ttv.Value;
+                                dataRow[ttv.TagName + "TagValueId"] = ttv.TagValueId;
                             }
                             else
                             {
                                 dataRow[ttv.TagName] = ttv.TagValueName;
+                                dataRow[ttv.TagName + "TagValueId"] = ttv.TagValueId;
                             }
                         }
                     }
 
-                    this.trackListTable.Rows.Add(dataRow);
+                    tracklistTable.Rows.Add(dataRow);
                 }
             }
+
         }
-        private void InitializeTrackList(int currentTrackIdInPlaylist = -1)
+
+        private void InitializeTrackList(DataTable trackListTable, int currentTrackIdInPlaylist = -1)
         {
-            this.trackListBindingSource.DataSource = this.trackListTable;
+            this.trackListBindingSource.DataSource = trackListTable;
 
             DataTableModel model = new DataTableModel()
             {
@@ -356,7 +361,15 @@ namespace MitoPlayer_2024.Presenters
                 }
             }
 
-            this.InitializeTrackList(currentTrackIdInPlaylist);
+            if (this.isFilterModeEnabled)
+            {
+                this.InitializeTrackList(this.filteredTrackListTable, currentTrackIdInPlaylist);
+            }
+            else
+            {
+                this.InitializeTrackList(this.trackListTable, currentTrackIdInPlaylist);
+            }
+            
         }
 
       /* private void ReloadTrackListDataGridView(DataTable trackListTable)
@@ -751,7 +764,7 @@ namespace MitoPlayer_2024.Presenters
             }
         }
 
-        private void SaveTrackList(object sender, EventArgs e)
+        private void SaveTrackListEvent(object sender, EventArgs e)
         {
             this.SaveTrackList();
         }
@@ -846,37 +859,65 @@ namespace MitoPlayer_2024.Presenters
         private void OrderByColumn(String columnName)
         {
             
-                if (this.trackListTable != null && this.trackListTable.Rows != null && this.trackListTable.Rows.Count > 0 && !isSaving)
+            if (this.trackListTable != null && this.trackListTable.Rows != null && this.trackListTable.Rows.Count > 0 && !isSaving)
+            {
+                DataView dv = new DataView();
+
+                if (this.isFilterModeEnabled)
+                    dv = this.filteredTrackListTable.DefaultView;
+                else
+                    dv = this.trackListTable.DefaultView;
+
+                dv.Sort = columnName;
+                DataTable sortedDT = dv.ToTable();
+
+                if (this.columnOrderStates[columnName] == -1)
                 {
-                    DataView dv = this.trackListTable.DefaultView;
-                    dv.Sort = columnName;
-                    DataTable sortedDT = dv.ToTable();
+                    this.columnOrderStates[columnName] = 0;
 
-                    if (this.columnOrderStates[columnName] == -1)
-                    {
-                        this.columnOrderStates[columnName] = 0;
+                    if (this.isFilterModeEnabled)
+                        this.filteredTrackListTable = sortedDT;
+                    else
                         this.trackListTable = sortedDT;
-                    }
-                    else if (this.columnOrderStates[columnName] == 0)
-                    {
-                        this.columnOrderStates[columnName] = 1;
+                }
+                else if (this.columnOrderStates[columnName] == 0)
+                {
+                    this.columnOrderStates[columnName] = 1;
 
-                        DataTable reversedDt = this.trackListTable.Clone();
+                    DataTable reversedDt = new DataTable();
+
+                    if (this.isFilterModeEnabled) { 
+                        reversedDt = this.filteredTrackListTable.Clone();
+                        for (var row = this.filteredTrackListTable.Rows.Count - 1; row >= 0; row--)
+                            reversedDt.ImportRow(this.filteredTrackListTable.Rows[row]);
+                    }
+                    else
+                    {
+                        reversedDt = this.trackListTable.Clone();
                         for (var row = this.trackListTable.Rows.Count - 1; row >= 0; row--)
                             reversedDt.ImportRow(this.trackListTable.Rows[row]);
+                    }
+
+                    if (this.isFilterModeEnabled)
+                        this.filteredTrackListTable = reversedDt;
+                    else
                         this.trackListTable = reversedDt;
-                    }
-                    else if (this.columnOrderStates[columnName] == 1)
-                    {
-                        this.columnOrderStates[columnName] = 0;
-                        this.trackListTable = sortedDT;
-                    }
-
-
-                    this.ReloadTrackList();
-                    this.TrackListChanged();
-
                 }
+                else if (this.columnOrderStates[columnName] == 1)
+                {
+                    this.columnOrderStates[columnName] = 0;
+
+                    if (this.isFilterModeEnabled)
+                        this.filteredTrackListTable = sortedDT;
+                    else
+                        this.trackListTable = sortedDT;
+                }
+
+
+                this.ReloadTrackList();
+                this.TrackListChanged();
+
+            }
             
                 
         }
@@ -1301,7 +1342,7 @@ namespace MitoPlayer_2024.Presenters
                         object[] args = null;
                         if (track.TrackTagValues != null)
                         {
-                            args = new object[11 + track.TrackTagValues.Count];
+                            args = new object[11 + (track.TrackTagValues.Count * 2)];
                         }
                         else
                         {
@@ -1333,6 +1374,15 @@ namespace MitoPlayer_2024.Presenters
                                 else
                                 {
                                     args[i] = ttv.TagValueName;
+                                }
+                                i++;
+
+                                if (ttv.HasValue)
+                                {
+                                    args[i] = -1;
+                                }
+                                else{
+                                    args[i] = ttv.TagValueId;
                                 }
                                 i++;
                             }
@@ -1743,7 +1793,7 @@ namespace MitoPlayer_2024.Presenters
                 this.settingDao.SetIntegerSetting(Settings.CurrentPlaylistId.ToString(), this.currentPlaylistId);
 
                 this.ReloadPlaylist();
-                this.InitializeTrackListRows(null);
+                this.InitializeTrackListRows(this.trackListTable,null);
 
                 this.mediaPLayerComponent.SetWorkingTable(this.trackListTable);
             }
@@ -1848,7 +1898,7 @@ namespace MitoPlayer_2024.Presenters
                             this.settingDao.SetIntegerSetting(Settings.CurrentPlaylistId.ToString(), this.currentPlaylistId);
                             this.ReloadPlaylist();
 
-                            this.InitializeTrackListRows(null);
+                            this.InitializeTrackListRows(this.trackListTable,null);
                             this.mediaPLayerComponent.SetWorkingTable(this.trackListTable);
                         }
                         else
@@ -2093,87 +2143,14 @@ namespace MitoPlayer_2024.Presenters
                     }
 
                     VirtualDJReader.Instance.ReadKeyAndBpmFromVirtualDJDatabase(ref trackList, this.trackDao, keyTagValueList, bpmTagValueList);
-                    this.InitializeTrackListRows(trackList);
+                    this.InitializeTrackListRows(this.trackListTable, trackList);
                 }
             }
             catch(Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            
 
-
-           /* VirtualDJReader vdjReader = new VirtualDJReader(this.trackDao, this.settingDao, null);
-
-            if (this.trackListTable.Rows != null && this.trackListTable.Rows.Count > 0)
-            {
-
-                for (int i = 0; i <= this.trackListTable.Rows.Count - 1; i++) {
-
-                    String key = Convert.ToString(this.trackListTable.Rows[i]["Key"]);
-                    String bpm = Convert.ToString(this.trackListTable.Rows[i]["Bpm"]);
-
-                    if(String.IsNullOrEmpty(key) || String.IsNullOrEmpty(bpm))
-                    {
-                        VirtualDJReader.Instance.ReadKeyAndBpmFromVirtualDJDatabase(Convert.ToString(this.trackListTable.Rows[i]["Path"]), ref key, ref bpm);
-
-                        int id = Convert.ToInt32(this.trackListTable.Rows[i]["Id"]);
-                        Track track = this.trackDao.GetTrack(id, this.tagList);
-                        if(track != null)
-                        {
-                            foreach (Tag tag in this.tagList)
-                            {
-                                if (tag.Name == "Key")
-                                {
-                                    List<TagValue> keyList = this.tagDao.GetTagValuesByTagId(tag.Id);
-                                    if (track.TrackTagValues != null)
-                                    {
-                                        TrackTagValue ttv = track.TrackTagValues.Find(x => x.TagId == tag.Id);
-                                        if (keyList != null && keyList.Count > 0 && ttv != null)
-                                        {
-                                            // vdjReader.ReadKeyFromVirtualDJDatabase(track.Path, ref ttv, keyList);
-
-                                            TagValue keyTagValue = keyList.Find(x => x.Name == key);
-                                            if (keyTagValue != null)
-                                            {
-                                                ttv.TagValueId = keyTagValue.Id;
-                                                ttv.TagValueName = keyTagValue.Name;
-                                            }
-
-                                            this.trackListTable.Rows[i]["Key"] = ttv.TagValueName;
-                                            this.trackDao.UpdateTrackTagValue(ttv);
-                                        }
-                                    }
-
-                                }
-                                else if (tag.Name == "Bpm")
-                                {
-                                    List<TagValue> keyList = this.tagDao.GetTagValuesByTagId(tag.Id);
-                                    if (track.TrackTagValues != null)
-                                    {
-                                        TrackTagValue ttv = track.TrackTagValues.Find(x => x.TagId == tag.Id);
-                                        if (keyList != null && keyList.Count > 0)
-                                        {
-                                            TagValue keyTagValue = keyList.Find(x => x.Name == tag.Name);
-                                            if (keyTagValue != null)
-                                            {
-                                                ttv.TagValueId = keyTagValue.Id;
-                                                ttv.TagValueName = keyTagValue.Name;
-                                                ttv.Value = bpm;
-                                                ttv.HasValue = true;
-                                            }
-
-                                            this.trackListTable.Rows[i]["Bpm"] = ttv.Value;
-                                            this.trackDao.UpdateTrackTagValue(ttv);
-                                        }
-                                    }
-
-                                }
-                            }
-                        }
-                    }
-                }
-            }*/
         }
         private void DisplayTagComponentEvent(object sender, EventArgs e)
         {
@@ -2187,20 +2164,56 @@ namespace MitoPlayer_2024.Presenters
         private void ChangeFilterModeEnabled(object sender, ListEventArgs e)
         {
             this.isFilterModeEnabled = e.BooleanField1;
-            this.tagValueFilterDic = new Dictionary<String, String>();
 
             if (!this.isFilterModeEnabled)
             {
-                this.InitializeTrackListRows(null);
+                this.tagNameFilterList = new List<String>();
+                this.tagValueIdFilterList = new List<int>();
+
                 DataView dv = this.trackListTable.DefaultView;
                 dv.RowFilter = "";
                 DataTable filteredDT = dv.ToTable();
                 this.trackListTable = filteredDT;
                 this.trackListBindingSource.DataSource = this.trackListTable;
 
-                this.InitializeTrackList(this.mediaPLayerComponent.CurrentTrackIdInPlaylist); 
+                this.InitializeTrackList(this.trackListTable, this.mediaPLayerComponent.CurrentTrackIdInPlaylist);
+            }
+            else
+            {
+                this.isTrackListChanged = true;
+                this.SaveTrackList();
             }
 
+            this.mediaPLayerComponent.SetWorkingTable(this.trackListTable);
+        }
+        private void EnableFilterModeEvent(object sender, EventArgs e)
+        {
+            if (!this.isFilterModeEnabled)
+            {
+                this.isTrackListChanged = true;
+                this.SaveTrackList();
+            }
+
+            this.isFilterModeEnabled = true;
+            this.mediaPLayerComponent.SetWorkingTable(this.trackListTable);
+        }
+        private void EnableSetterModeEvent(object sender, EventArgs e)
+        {
+            if (this.isFilterModeEnabled)
+            {
+                this.tagNameFilterList = new List<String>();
+                this.tagValueIdFilterList = new List<int>();
+
+                DataView dv = this.trackListTable.DefaultView;
+                dv.RowFilter = "";
+                DataTable filteredDT = dv.ToTable();
+                this.trackListTable = filteredDT;
+                this.trackListBindingSource.DataSource = this.trackListTable;
+
+                this.InitializeTrackList(this.trackListTable, this.mediaPLayerComponent.CurrentTrackIdInPlaylist);
+            }
+
+            this.isFilterModeEnabled = false;
             this.mediaPLayerComponent.SetWorkingTable(this.trackListTable);
         }
         private void ChangeOnlyPlayingRowModeEnabled(object sender, ListEventArgs e)
@@ -2209,10 +2222,8 @@ namespace MitoPlayer_2024.Presenters
             this.settingDao.SetBooleanSetting(Settings.IsOnlyPlayingRowModeEnabled.ToString(), this.isOnlyPlayingRowModeEnabled);
         }
 
-        private Dictionary<String, String> tagValueFilterDic = new Dictionary<String, String>();
 
-
-        private void SetTagValue(String tagName,String tagValueName,String tagValueValue, DataGridViewRowCollection rows)
+        private void SetTagValue(String tagName,String tagValueName,String tagValueValue,int tagValueId, DataGridViewRowCollection rows)
         {
             if (this.tagList != null && this.tagList.Count > 0)
             {
@@ -2252,6 +2263,7 @@ namespace MitoPlayer_2024.Presenters
                                                     }
                                                 }
                                                 this.trackListTable.Rows[i][currentTag.Name] = tagValueValue;
+                                                this.trackListTable.Rows[i][currentTag.Name + "TagValueId"] = tagValueId;
                                             }
                                         }
                                     }
@@ -2280,6 +2292,7 @@ namespace MitoPlayer_2024.Presenters
                                                     }
                                                 }
                                                 this.trackListTable.Rows[i][currentTag.Name] = tagValueValue;
+                                                this.trackListTable.Rows[i][currentTag.Name + "TagValueId"] = tagValueId;
                                                 break;
                                             }
                                         }
@@ -2319,6 +2332,7 @@ namespace MitoPlayer_2024.Presenters
                                                     }
                                                 }
                                                 this.trackListTable.Rows[i][currentTag.Name] = tv.Name;
+                                                this.trackListTable.Rows[i][currentTag.Name + "TagValueId"] = tagValueId;
                                             }
                                         }
                                     }
@@ -2345,6 +2359,7 @@ namespace MitoPlayer_2024.Presenters
                                                     }
                                                 }
                                                 this.trackListTable.Rows[i][currentTag.Name] = tv.Name;
+                                                this.trackListTable.Rows[i][currentTag.Name + "TagValueId"] = tagValueId;
                                                 break;
                                             }
                                         }
@@ -2365,13 +2380,62 @@ namespace MitoPlayer_2024.Presenters
             }
         }
 
-        private void FilterByTagValue(String tagName, String tagValueName, String tagValueValue)
+        private List<String> tagNameFilterList { get; set; }
+        private List<int> tagValueIdFilterList { get; set; }
+        private void FilterByTagValue(String tagName, String tagValueName, String tagValueValue, int tagValueId)
         {
+            if(this.tagNameFilterList == null || this.tagNameFilterList.Count == 0)
+            {
+                this.tagNameFilterList = new List<String>();
+                this.tagValueIdFilterList = new List<int>();
+                this.tagNameFilterList.Add(tagName);
+                this.tagValueIdFilterList.Add(tagValueId);
+            }
+            else
+            {
+                if(!this.tagNameFilterList.Contains(tagName))
+                {
+                    this.tagNameFilterList.Add(tagName);
+                    this.tagValueIdFilterList.Add(tagValueId);
+                }
+                else
+                {
+                    bool removeHappened = false;
+                    for (int i = 0; i < tagNameFilterList.Count; i++)
+                    {
+                        if (tagNameFilterList[i] == tagName && tagValueIdFilterList[i] == tagValueId)
+                        {
+                            tagNameFilterList.RemoveAt(i);
+                            tagValueIdFilterList.RemoveAt(i);
+                            removeHappened = true;
+                        }
+                    }
+                    if (!removeHappened)
+                    {
+                        for (int i = 0; i < tagNameFilterList.Count; i++)
+                        {
+                            if (tagNameFilterList[i] == tagName)
+                            {
+                                this.tagNameFilterList.Insert(i,tagName);
+                                this.tagValueIdFilterList.Insert(i,tagValueId);
+                                break;
+                            }
+                        }
+                        
+                    }
+                }               
+            }
+
+            /*
             if (this.tagList != null && this.tagList.Count > 0)
             {
                 Tag currentTag = this.tagList.Find(x => x.Name == tagName);
                 if (currentTag != null)
                 {
+                    
+
+
+
                     List<TagValue> tagValueList = this.tagDao.GetTagValuesByTagId(currentTag.Id);
                     if (tagValueList != null && tagValueList.Count > 0)
                     {
@@ -2409,8 +2473,9 @@ namespace MitoPlayer_2024.Presenters
 
                 }
             }
-
-            ((PlaylistView)this.playlistView).SetTagValueFilter(this.tagValueFilterDic);
+            */
+            //((PlaylistView)this.playlistView).SetTagValueFilter(this.tagValueFilterDic);
+            ((PlaylistView)this.playlistView).SetTagValueFilter(this.tagNameFilterList, this.tagValueIdFilterList);
         }
 
         private void SetTagValueEvent(object sender, ListEventArgs e)
@@ -2418,11 +2483,11 @@ namespace MitoPlayer_2024.Presenters
             if (!isSaving) { 
                 if (!this.isFilterModeEnabled)
                 {
-                    this.SetTagValue(e.StringField1,e.StringField2,e.StringField3, e.Rows);
+                    this.SetTagValue(e.StringField1,e.StringField2,e.StringField3,e.IntegerField1, e.Rows);
                 }
                 else
                 {
-                    this.FilterByTagValue(e.StringField1, e.StringField2, e.StringField3);
+                    this.FilterByTagValue(e.StringField1, e.StringField2, e.StringField3, e.IntegerField1);
                 }
             }
         }
@@ -2513,29 +2578,47 @@ namespace MitoPlayer_2024.Presenters
                 }
                 else
                 {
-                    if (this.tagList != null && this.tagList.Count > 0)
+                    /* if (this.tagList != null && this.tagList.Count > 0)
+                     {
+                         Tag currentTag = this.tagList.Find(x => x.Name == e.StringField1);
+                         if (currentTag != null)
+                         {
+                             if (tagValueFilterDic.ContainsKey(currentTag.Name))
+                             {
+                                 tagValueFilterDic.Remove(currentTag.Name);
+                             }
+                         }
+                     }*/
+
+                    for(int i = this.tagNameFilterList.Count - 1; i >=0; i--)
                     {
-                        Tag currentTag = this.tagList.Find(x => x.Name == e.StringField1);
-                        if (currentTag != null)
+                        if (this.tagNameFilterList[i] == e.StringField1)
                         {
-                            if (tagValueFilterDic.ContainsKey(currentTag.Name))
-                            {
-                                tagValueFilterDic.Remove(currentTag.Name);
-                            }
+                            this.tagNameFilterList.RemoveAt(i);
+                            this.tagValueIdFilterList.RemoveAt(i);
                         }
                     }
-                    ((PlaylistView)this.playlistView).SetTagValueFilter(this.tagValueFilterDic);
+
+                    ((PlaylistView)this.playlistView).SetTagValueFilter(this.tagNameFilterList, this.tagValueIdFilterList);
                 }
             }
         }
         private void RemoveTagValueFilter(object sender, EventArgs e)
         {
-            tagValueFilterDic = new Dictionary<String, String>();
-            ((PlaylistView)this.playlistView).SetTagValueFilter(this.tagValueFilterDic);
+            //tagValueFilterDic = new Dictionary<String, String>();
+            //((PlaylistView)this.playlistView).SetTagValueFilter(this.tagValueFilterDic);
+
+            this.tagNameFilterList = new List<String>();
+            this.tagValueIdFilterList = new List<int>();
+            ((PlaylistView)this.playlistView).SetTagValueFilter(this.tagNameFilterList, this.tagValueIdFilterList);
         }
-        private void ChangeFilterText(object sender, ListEventArgs e)
+        private DataTable OriginalTrackListTable = new DataTable();
+
+
+
+        private void ChangeFilterParameters(object sender, ListEventArgs e)
         {
-            this.InitializeTrackListRows(null);
+           // this.InitializeTrackListRows(this.trackListTable, null);
 
             DataView dv = this.trackListTable.DefaultView;
             String filterText = e.StringField1;
@@ -2568,24 +2651,55 @@ namespace MitoPlayer_2024.Presenters
                     }
                 }
 
-                if (this.isFilterModeEnabled)
+                List<String> processedTags = new List<String>();
+
+                if (this.tagNameFilterList != null && this.tagNameFilterList.Count > 0)
                 {
-                    if (this.tagValueFilterDic != null && this.tagValueFilterDic.Count > 0)
+                    String lastTagName = String.Empty;
+
+                    for (int i = 0; i < this.tagNameFilterList.Count; i++)
                     {
-                        foreach (KeyValuePair<String, String> filter in this.tagValueFilterDic)
+                        if (String.IsNullOrEmpty(filterQuery2))
                         {
-                            if (String.IsNullOrEmpty(filterQuery2))
+                            lastTagName = this.tagNameFilterList[i];
+                            filterQuery2 += "(" + lastTagName + "TagValueId=" + this.tagValueIdFilterList[i];
+                        }
+                        else
+                        {
+                            if (lastTagName != this.tagNameFilterList[i])
                             {
-                                filterQuery2 = filter.Key + " LIKE '%" + filter.Value + "%' ";
+                                lastTagName = this.tagNameFilterList[i];
+                                filterQuery2 += ") AND (";
                             }
                             else
                             {
-                                filterQuery2 = filterQuery2 + " AND " + filter.Key + " LIKE '%" + filter.Value + "%' ";
+                                filterQuery2 += " OR ";
                             }
+                            filterQuery2 += lastTagName + "TagValueId=" + this.tagValueIdFilterList[i];
                         }
-                        filterQuery2 = "(" + filterQuery2 + ")";
+
                     }
+                    filterQuery2 = "(" + filterQuery2 + "))";
                 }
+
+                /* if (this.isFilterModeEnabled)
+                 {
+                     if (this.tagValueFilterDic != null && this.tagValueFilterDic.Count > 0)
+                     {
+                         foreach (KeyValuePair<String, String> filter in this.tagValueFilterDic)
+                         {
+                             if (String.IsNullOrEmpty(filterQuery2))
+                             {
+                                 filterQuery2 = filter.Key + " LIKE '%" + filter.Value + "%' ";
+                             }
+                             else
+                             {
+                                 filterQuery2 = filterQuery2 + " AND " + filter.Key + " LIKE '%" + filter.Value + "%' ";
+                             }
+                         }
+                         filterQuery2 = "(" + filterQuery2 + ")";
+                     }
+                 }*/
 
 
                 if (!String.IsNullOrEmpty(filterQuery) && !String.IsNullOrEmpty(filterQuery2))
@@ -2606,14 +2720,14 @@ namespace MitoPlayer_2024.Presenters
                 }
 
                 DataTable filteredDT = dv.ToTable();
-                this.trackListTable = filteredDT;
-                this.trackListBindingSource.DataSource = this.trackListTable;
+                this.filteredTrackListTable = filteredDT;
+                this.trackListBindingSource.DataSource = this.filteredTrackListTable;
 
-                this.InitializeTrackList(this.mediaPLayerComponent.CurrentTrackIdInPlaylist);
+                this.InitializeTrackList(this.filteredTrackListTable, this.mediaPLayerComponent.CurrentTrackIdInPlaylist);
                 
             }
 
-            this.mediaPLayerComponent.SetWorkingTable(this.trackListTable);
+            this.mediaPLayerComponent.SetWorkingTable(this.filteredTrackListTable);
         }
 
 

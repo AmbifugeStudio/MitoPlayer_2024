@@ -347,14 +347,23 @@ namespace MitoPlayer_2024.Helpers
                                 XmlNodeList list = node.SelectNodes("Scan");
                                 if (list != null && list.Count > 0)
                                 {
-                                    String key = list[0].Attributes["Key"].Value;
-                                    key = this.KeyToKeyCode(key);
+                                    String key = String.Empty;
+                                    String bpm = String.Empty;
 
-                                    String bpm = list[0].Attributes["Bpm"].Value;
-                                    Decimal bpmConverted = Convert.ToDecimal(bpm.Replace(".", ","));
-                                    if (bpmConverted > 0)
+                                    if (list[0].Attributes["Key"] != null)
                                     {
-                                        bpm = (60 / bpmConverted).ToString("N1");
+                                        key = list[0].Attributes["Key"].Value;
+                                        key = this.KeyToKeyCode(key);
+                                    }
+
+                                    if (list[0].Attributes["Bpm"] != null)
+                                    {
+                                        bpm = list[0].Attributes["Bpm"].Value;
+                                        Decimal bpmConverted = Convert.ToDecimal(bpm.Replace(".", ","));
+                                        if (bpmConverted > 0)
+                                        {
+                                            bpm = (60 / bpmConverted).ToString("N1");
+                                        }
                                     }
 
                                     keyList.Add(key);

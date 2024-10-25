@@ -24,9 +24,6 @@ namespace MitoPlayer_2024.Views
         private BindingSource playlistListBindingSource { get; set; }
         private BindingSource trackListBindingSource { get; set; }
 
-        private Tag currentTagForColors { get; set; }
-        private Dictionary<String, Color> currentTagValueColorDic = new Dictionary<String, Color>();
-
         //PLAYER
         public event EventHandler<ListEventArgs> SetCurrentTrackEvent;
         public event EventHandler<ListEventArgs> PlayTrackEvent;
@@ -69,8 +66,10 @@ namespace MitoPlayer_2024.Views
         public event EventHandler<ListEventArgs> ClearTagValueEvent;
 
         public event EventHandler<ListEventArgs> ChangeFilterModeEnabled;
+        public event EventHandler EnableFilterModeEvent;
+        public event EventHandler EnableSetterModeEvent;
         public event EventHandler<ListEventArgs> ChangeOnlyPlayingRowModeEnabled;
-        public event EventHandler<ListEventArgs> ChangeFilterText;
+        public event EventHandler<ListEventArgs> ChangeFilterParameters;
         public event EventHandler RemoveTagValueFilter;
 
         public event EventHandler SaveTrackListEvent;
@@ -374,6 +373,17 @@ namespace MitoPlayer_2024.Views
                                     {
                                         this.dgvTrackList.Rows[i].Cells[tagName].Style.ForeColor = Color.Black;
                                     }
+                                }
+                            }
+                            else
+                            {
+                                if (i == 0 || i % 2 == 0)
+                                {
+                                    this.dgvTrackList.Rows[i].Cells[tagName].Style.BackColor = this.GridLineColor1;
+                                }
+                                else
+                                {
+                                    this.dgvTrackList.Rows[i].Cells[tagName].Style.BackColor = this.GridLineColor2;
                                 }
                             }
                             
@@ -1528,6 +1538,7 @@ namespace MitoPlayer_2024.Views
 
                         btn.TagName = gp.Text;
                         btn.TagValueName = btn.Text;
+
                         btn.TextBox = txtBox;
 
                         txtBox.KeyDown += new KeyEventHandler(
@@ -1574,6 +1585,7 @@ namespace MitoPlayer_2024.Views
 
                             btn.TagName = gp.Text;
                             btn.TagValueName = btn.Text;
+                            btn.TagValueId = tagValueListContainer[i][j - 1].Id;
 
                             btn.Click += new System.EventHandler(
                                     (sender, e) => this.btnSetTagValue_Click(sender, e));
@@ -1670,8 +1682,12 @@ namespace MitoPlayer_2024.Views
             }
 
             this.isFilterEnabled = false;
-            this.btnFilterModeToggle.FlatAppearance.BorderColor = this.ButtonBorderColor;
-            this.btnSetterModeToggle.FlatAppearance.BorderColor = this.ActiveButtonColor;
+
+            this.btnFilterModeToggle.BackColor = this.ButtonColor;
+            this.btnFilterModeToggle.ForeColor = this.FontColor;
+
+            this.btnSetterModeToggle.BackColor = this.ActiveButtonColor;
+            this.btnSetterModeToggle.ForeColor = this.ButtonColor;
 
             this.rtxtbTagValueEditorParams.Hide();
             this.btnClearTagValueFilter.Hide();
@@ -1705,8 +1721,13 @@ namespace MitoPlayer_2024.Views
         {
             this.isFilterEnabled = true;
 
-            this.btnFilterModeToggle.FlatAppearance.BorderColor = this.ActiveButtonColor;
-            this.btnSetterModeToggle.FlatAppearance.BorderColor = this.ButtonBorderColor;
+            this.btnFilterModeToggle.BackColor = this.ActiveButtonColor;
+            this.btnFilterModeToggle.ForeColor = this.ButtonColor;
+
+            this.btnSetterModeToggle.BackColor = this.ButtonColor;
+            this.btnSetterModeToggle.ForeColor = this.FontColor;
+
+            this.btnSave.Enabled = false;
 
             this.rtxtbTagValueEditorParams.Show();
             this.btnClearTagValueFilter.Show();
@@ -1722,15 +1743,43 @@ namespace MitoPlayer_2024.Views
             }
 
             this.dgvTrackList.Focus();
-            this.ChangeFilterModeEnabled?.Invoke(this, new ListEventArgs() { BooleanField1 = true });
+
+
+            this.EnableFilterModeEvent?.Invoke(this, new EventArgs());
         }
 
+
+        //ha volt kijelölve gomb, reset-elni kell a kijelölését szürkére
+        //ha 
         private void btnSetterModeToggle_Click(object sender, EventArgs e)
         {
+            foreach(Control groupBox in this.tagValueEditorPanel.Controls)
+            {
+                if(groupBox.GetType() == typeof(GroupBox))
+                {
+                    foreach(Control button in groupBox.Controls)
+                    {
+                        if (button.GetType() == typeof(TagValueButton))
+                        {
+                            ((TagValueButton)button).FlatAppearance.BorderColor = this.ButtonBorderColor;
+                            ((TagValueButton)button).IsPressed = false;
+                        }
+                    }
+                }
+            }
+
+            this.rtxtbTagValueEditorParams.Text = String.Empty;
+
+
             this.isFilterEnabled = false;
 
-            this.btnFilterModeToggle.FlatAppearance.BorderColor = this.ButtonBorderColor;
-            this.btnSetterModeToggle.FlatAppearance.BorderColor = this.ActiveButtonColor;
+            this.btnFilterModeToggle.BackColor = this.ButtonColor;
+            this.btnFilterModeToggle.ForeColor = this.FontColor;
+
+            this.btnSetterModeToggle.BackColor = this.ActiveButtonColor;
+            this.btnSetterModeToggle.ForeColor = this.ButtonColor;
+
+            this.btnSave.Enabled = true;
 
             this.rtxtbTagValueEditorParams.Hide();
             this.btnClearTagValueFilter.Hide();
@@ -1743,7 +1792,8 @@ namespace MitoPlayer_2024.Views
             this.tagValueEditorPanel.Size = new Size(this.tagValueEditorPanel.Width, this.tagValueEditorPanel.Height + this.tagValueEditorPanelBottomOffset);
 
             this.dgvTrackList.Focus();
-            this.ChangeFilterModeEnabled?.Invoke(this, new ListEventArgs() { BooleanField1 = false });
+
+            this.EnableSetterModeEvent?.Invoke(this, new EventArgs());
         }
 
 
@@ -1774,15 +1824,28 @@ namespace MitoPlayer_2024.Views
         {
             TagValueButton button = (sender as TagValueButton);
 
+            if (this.isFilterEnabled)
+            {
+                button.IsPressed = !button.IsPressed;
+                if (button.IsPressed)
+                {
+                    button.FlatAppearance.BorderColor = this.ActiveButtonColor;
+                }
+                else
+                {
+                    button.FlatAppearance.BorderColor = this.ButtonBorderColor;
+                }
+            }
+
             String tagValueValue = String.Empty;
             if(button.TextBox != null)
             {
                 tagValueValue = button.TextBox.Text;
 
-                if(!this.isFilterEnabled)
+                if (!this.isFilterEnabled)
                     button.TextBox.Text = String.Empty;
             }
-            this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { StringField1 = button.TagName, StringField2 = button.TagValueName, StringField3 = tagValueValue,  Rows = this.dgvTrackList.Rows });
+            this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { StringField1 = button.TagName, StringField2 = button.TagValueName, StringField3 = tagValueValue, IntegerField1 = button.TagValueId,  Rows = this.dgvTrackList.Rows });
 
             this.dgvTrackList.Focus();
         }
@@ -1792,6 +1855,19 @@ namespace MitoPlayer_2024.Views
             {
                 TagValueButton button = (btn as TagValueButton);
 
+                if (this.isFilterEnabled)
+                {
+                    button.IsPressed = !button.IsPressed;
+                    if (button.IsPressed)
+                    {
+                        button.FlatAppearance.BorderColor = this.ActiveButtonColor;
+                    }
+                    else
+                    {
+                        button.FlatAppearance.BorderColor = this.ButtonBorderColor;
+                    }
+                }
+
                 if (this.chbOnlyPlayingRowModeEnabled.Checked)
                 {
                     String tagValueValue = String.Empty;
@@ -1800,11 +1876,11 @@ namespace MitoPlayer_2024.Views
                         tagValueValue = button.TextBox.Text;
                         button.TextBox.Text = String.Empty;
                     }
-                    this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { StringField1 = button.TagName, StringField2 = button.TagValueName, StringField3 = tagValueValue, Rows = this.dgvTrackList.Rows });
+                    this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { StringField1 = button.TagName, StringField2 = button.TagValueName, StringField3 = tagValueValue, IntegerField1 = button.TagValueId, Rows = this.dgvTrackList.Rows });
                 }
                 else
                 {
-                    if (this.dgvPlaylistList.SelectedRows.Count > 0)
+                    if (this.dgvTrackList.SelectedRows.Count > 0)
                     {
                         String tagValueValue = String.Empty;
                         if (button.TextBox != null)
@@ -1812,7 +1888,7 @@ namespace MitoPlayer_2024.Views
                             tagValueValue = button.TextBox.Text;
                             button.TextBox.Text = String.Empty;
                         }
-                        this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { StringField1 = button.TagName, StringField2 = button.TagValueName, StringField3 = tagValueValue, Rows = this.dgvTrackList.Rows });
+                        this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { StringField1 = button.TagName, StringField2 = button.TagValueName, StringField3 = tagValueValue, IntegerField1 = button.TagValueId, Rows = this.dgvTrackList.Rows });
                     }
                 }
 
@@ -1822,6 +1898,18 @@ namespace MitoPlayer_2024.Views
         private void btnClearTagValue_Click(object sender, EventArgs e)
         {
             TagValueButton button = (sender as TagValueButton);
+
+            if (this.isFilterEnabled)
+            {
+                foreach (Control btn in ((GroupBox)button.Parent).Controls)
+                {
+                    if (btn.GetType() == typeof(TagValueButton))
+                    {
+                        ((TagValueButton)btn).FlatAppearance.BorderColor = this.ButtonBorderColor;
+                        ((TagValueButton)btn).IsPressed = false;
+                    }
+                }
+            }
 
             if (this.chbOnlyPlayingRowModeEnabled.Checked)
             {
@@ -1880,9 +1968,31 @@ namespace MitoPlayer_2024.Views
         {
             if (e.KeyCode == Keys.Enter)
             {
-                this.ChangeFilterText?.Invoke(this, new ListEventArgs() { StringField1 = this.txtbFilter.Text });
+                this.ChangeFilterParameters?.Invoke(this, new ListEventArgs() { StringField1 = this.txtbFilter.Text });
             }
         }
+
+        public void SetTagValueFilter(List<String> tagFilterList, List<int> tagValueIdFilterList)
+        {
+            String tagValueAsFilter = String.Empty;
+            if (tagFilterList != null && tagFilterList.Count > 0 && tagValueIdFilterList != null && tagValueIdFilterList.Count > 0)
+            {
+                for(int i = 0; i < tagFilterList.Count; i++)
+                {
+                    if (String.IsNullOrEmpty(tagValueAsFilter))
+                    {
+                        tagValueAsFilter = "[" + tagFilterList[i] + ": " + tagValueIdFilterList[i].ToString() + "]";
+                    }
+                    else
+                    {
+                        tagValueAsFilter = tagValueAsFilter + "  [" + tagFilterList[i] + ": " + tagValueIdFilterList[i].ToString() + "]";
+                    }
+                }
+            }
+            this.rtxtbTagValueEditorParams.Text = tagValueAsFilter;
+            this.ChangeFilterParameters?.Invoke(this, new ListEventArgs() { StringField1 = this.txtbFilter.Text });
+        }
+
         public void SetTagValueFilter(Dictionary<String, String> tagValueFilterDic)
         {
             String tagValueAsFilter = String.Empty;
@@ -1902,10 +2012,25 @@ namespace MitoPlayer_2024.Views
             }
             this.rtxtbTagValueEditorParams.Text = tagValueAsFilter;
 
-            this.ChangeFilterText?.Invoke(this, new ListEventArgs() { StringField1 = this.txtbFilter.Text });
+            this.ChangeFilterParameters?.Invoke(this, new ListEventArgs() { StringField1 = this.txtbFilter.Text });
         }
         private void btnClearTagValueFilter_Click(object sender, EventArgs e)
         {
+            foreach (Control groupBox in this.tagValueEditorPanel.Controls)
+            {
+                if (groupBox.GetType() == typeof(GroupBox))
+                {
+                    foreach (Control button in groupBox.Controls)
+                    {
+                        if (button.GetType() == typeof(TagValueButton))
+                        {
+                            ((TagValueButton)button).FlatAppearance.BorderColor = this.ButtonBorderColor;
+                            ((TagValueButton)button).IsPressed = false;
+                        }
+                    }
+                }
+            }
+
             this.RemoveTagValueFilter?.Invoke(this, new EventArgs());
         }
         private void tagValueEditorPanel_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
@@ -1925,16 +2050,24 @@ namespace MitoPlayer_2024.Views
 
         public void ChangeSaveButtonColor(bool isTableChanged)
         {
+           
+            
             if (isTableChanged)
             {
-                this.btnSave.BackColor = this.ActiveButtonColor;
-                this.btnSave.ForeColor = this.ButtonColor;
+                if (!this.isFilterEnabled)
+                {
+                    this.btnSave.BackColor = this.ActiveButtonColor;
+                    this.btnSave.ForeColor = this.ButtonColor;
+                }
+                   
             }
             else
             {
                 this.btnSave.BackColor = this.ButtonColor;
                 this.btnSave.ForeColor = this.FontColor;
             }
+            
+           
             
         }
 

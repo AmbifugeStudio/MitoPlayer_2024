@@ -11,7 +11,14 @@ namespace MitoPlayer_2024.Helpers
     {
         public String TagName { get; set; }
         public String TagValueName { get; set; }
+        public int TagValueId { get; set; }
 
         public TextBox TextBox {  get; set; }
+        public bool IsPressed { get; set; }
+
+        public TagValueButton()
+        {
+            this.IsPressed = false;
+        }
     }
 }

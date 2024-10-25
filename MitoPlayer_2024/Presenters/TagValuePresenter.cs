@@ -265,6 +265,12 @@ namespace MitoPlayer_2024.Presenters
                         this.settingDao.DeleteTrackProperty(tp.Id);
                     }
 
+                    tp = this.settingDao.GetTrackPropertyByNameAndGroup((string)tagRow["Name"] + "TagValueId", ColumnGroup.TracklistColumns.ToString());
+                    if (tp != null)
+                    {
+                        this.settingDao.DeleteTrackProperty(tp.Id);
+                    }
+
                     int selectedIndex = 0;
                     if (e.IntegerField1 == 0)
                     {
@@ -487,6 +493,15 @@ namespace MitoPlayer_2024.Presenters
                 tp.Name = tag.Name;
                 tp.Type = "System.String";
                 tp.IsEnabled = true;
+                tp.ColumnGroup = ColumnGroup.TracklistColumns.ToString();
+                tp.SortingId = this.settingDao.GetNextTrackPropertySortingId();
+                result = this.settingDao.CreateTrackProperty(tp);
+
+
+                tp.Id = this.trackDao.GetNextId(TableName.TrackProperty.ToString());
+                tp.Name = tag.Name + "TagValueId";
+                tp.Type = "System.Int32";
+                tp.IsEnabled = false;
                 tp.ColumnGroup = ColumnGroup.TracklistColumns.ToString();
                 tp.SortingId = this.settingDao.GetNextTrackPropertySortingId();
                 result = this.settingDao.CreateTrackProperty(tp);

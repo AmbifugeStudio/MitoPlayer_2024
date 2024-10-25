@@ -58,8 +58,10 @@ namespace MitoPlayer_2024.Views
         event EventHandler<ListEventArgs> ClearTagValueEvent;
 
         event EventHandler<ListEventArgs> ChangeFilterModeEnabled;
+        event EventHandler EnableFilterModeEvent;
+        event EventHandler EnableSetterModeEvent;
         event EventHandler<ListEventArgs> ChangeOnlyPlayingRowModeEnabled;
-        event EventHandler<ListEventArgs> ChangeFilterText;
+        event EventHandler<ListEventArgs> ChangeFilterParameters;
         event EventHandler RemoveTagValueFilter;
 
         event EventHandler SaveTrackListEvent;
