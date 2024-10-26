@@ -179,6 +179,7 @@
     <Compile Include="Helpers\LabelTimer.cs" />
     <Compile Include="Helpers\ListEventArgs.cs" />
     <Compile Include="Helpers\ResultOrError.cs" />
+    <Compile Include="Helpers\TagValueFilter.cs" />
     <Compile Include="Helpers\VirtualDJReader.cs" />
     <Compile Include="Models\IDataBaseBuilderDao.cs" />
     <Compile Include="Models\IProfileDao.cs" />

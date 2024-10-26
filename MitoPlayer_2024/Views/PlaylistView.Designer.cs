@@ -77,7 +77,6 @@
             this.chbOnlyPlayingRowModeEnabled = new System.Windows.Forms.CheckBox();
             this.txtbFilter = new System.Windows.Forms.TextBox();
             this.lblFilter = new System.Windows.Forms.Label();
-            this.rtxtbTagValueEditorParams = new System.Windows.Forms.RichTextBox();
             this.btnClearTagValueFilter = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
             this.groupBoxPlaylist = new System.Windows.Forms.GroupBox();
@@ -89,6 +88,7 @@
             this.pnlTagComponent = new System.Windows.Forms.Panel();
             this.btnSetterModeToggle = new System.Windows.Forms.Button();
             this.btnFilterModeToggle = new System.Windows.Forms.Button();
+            this.btnFilter = new System.Windows.Forms.Button();
             this.contextMenuStrip1.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -517,7 +517,7 @@
             this.tagValueEditorPanel.AutoScroll = true;
             this.tagValueEditorPanel.Location = new System.Drawing.Point(0, 58);
             this.tagValueEditorPanel.Name = "tagValueEditorPanel";
-            this.tagValueEditorPanel.Size = new System.Drawing.Size(274, 386);
+            this.tagValueEditorPanel.Size = new System.Drawing.Size(274, 442);
             this.tagValueEditorPanel.TabIndex = 36;
             this.tagValueEditorPanel.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.tagValueEditorPanel_PreviewKeyDown);
             // 
@@ -539,7 +539,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtbFilter.Location = new System.Drawing.Point(42, 32);
             this.txtbFilter.Name = "txtbFilter";
-            this.txtbFilter.Size = new System.Drawing.Size(229, 20);
+            this.txtbFilter.Size = new System.Drawing.Size(148, 20);
             this.txtbFilter.TabIndex = 42;
             this.txtbFilter.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtbFilter_KeyUp);
             // 
@@ -551,16 +551,6 @@
             this.lblFilter.Size = new System.Drawing.Size(32, 13);
             this.lblFilter.TabIndex = 43;
             this.lblFilter.Text = "Filter:";
-            // 
-            // rtxtbTagValueEditorParams
-            // 
-            this.rtxtbTagValueEditorParams.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.rtxtbTagValueEditorParams.Enabled = false;
-            this.rtxtbTagValueEditorParams.Location = new System.Drawing.Point(0, 450);
-            this.rtxtbTagValueEditorParams.Name = "rtxtbTagValueEditorParams";
-            this.rtxtbTagValueEditorParams.Size = new System.Drawing.Size(274, 50);
-            this.rtxtbTagValueEditorParams.TabIndex = 44;
-            this.rtxtbTagValueEditorParams.Text = "";
             // 
             // btnClearTagValueFilter
             // 
@@ -658,11 +648,11 @@
             // 
             this.pnlTagComponent.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnlTagComponent.Controls.Add(this.btnFilter);
             this.pnlTagComponent.Controls.Add(this.btnSetterModeToggle);
             this.pnlTagComponent.Controls.Add(this.btnFilterModeToggle);
             this.pnlTagComponent.Controls.Add(this.tagValueEditorPanel);
             this.pnlTagComponent.Controls.Add(this.btnClearTagValueFilter);
-            this.pnlTagComponent.Controls.Add(this.rtxtbTagValueEditorParams);
             this.pnlTagComponent.Controls.Add(this.txtbFilter);
             this.pnlTagComponent.Controls.Add(this.lblFilter);
             this.pnlTagComponent.Controls.Add(this.chbOnlyPlayingRowModeEnabled);
@@ -692,6 +682,17 @@
             this.btnFilterModeToggle.Text = "Filter";
             this.btnFilterModeToggle.UseVisualStyleBackColor = true;
             this.btnFilterModeToggle.Click += new System.EventHandler(this.btnFilterModeToggle_Click);
+            // 
+            // btnFilter
+            // 
+            this.btnFilter.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnFilter.Location = new System.Drawing.Point(196, 30);
+            this.btnFilter.Name = "btnFilter";
+            this.btnFilter.Size = new System.Drawing.Size(66, 23);
+            this.btnFilter.TabIndex = 46;
+            this.btnFilter.Text = "Filter";
+            this.btnFilter.UseVisualStyleBackColor = true;
+            this.btnFilter.Click += new System.EventHandler(this.btnFilter_Click);
             // 
             // PlaylistView
             // 
@@ -775,7 +776,6 @@
         private System.Windows.Forms.CheckBox chbOnlyPlayingRowModeEnabled;
         private System.Windows.Forms.TextBox txtbFilter;
         private System.Windows.Forms.Label lblFilter;
-        private System.Windows.Forms.RichTextBox rtxtbTagValueEditorParams;
         private System.Windows.Forms.Button btnClearTagValueFilter;
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.GroupBox groupBoxPlaylist;
@@ -787,5 +787,6 @@
         private System.Windows.Forms.Panel pnlTagComponent;
         private System.Windows.Forms.Button btnSetterModeToggle;
         private System.Windows.Forms.Button btnFilterModeToggle;
+        private System.Windows.Forms.Button btnFilter;
     }
 }

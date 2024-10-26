@@ -2,26 +2,16 @@
 
 
 
-
-- FEATURE: bpm filter
-
-
-- BUG: save playlist, when load another playlist
-
-- BUG: bpm column ordering: order as double not as string
-
-- BUG: when turn off filter, filter richtextbox does not appear
-
-
 - BUG: column visibility - isdisplayed will be turned off after sorting
 - REFACTOR: column visibility dark mode
 - FEATURE: column visibility changes from context menu of the tracklist column header
-- BUG: save button should not change when filter mode is turned on
+
 - FEATURE: sound volume bars
 - BUG: column visibility reorder orders the wrong column
 
 
-- FEATURE: navigate away from playlist view or load playlist -> autosave
+
+- FEATURE: navigate away from playlist view -> autosave
 
 
 
@@ -34,7 +24,7 @@
 
 
 - FEATURE: tag editor - export/import key/bpm and custom tag values
-- FEATURE: tagvalue - custom order like: Style:Liquid,Deep,Roller,Stadion,Neuro (order by column)
+
 - BUG: automatic next track stops - after list reorder and the current playing track was at the end of the original list (list has not been updated in the player?) - or not. Objectiv - Fighting Chance stops at the end
 
 - FEATURE: reorder tags and tagvalues
@@ -43,6 +33,19 @@
 
 - FEATURE: load tracklist or navigate away: check save status and show dialog window is there are unsaved progress
 
+======================
+v0.12.13.42
+======================
+OK - BUG: bpm column ordering: order as double not as string
+OK - BUG: disable filter, when load another playlist
+OK - BUG: save playlist, when load another playlist
+OK - FEATURE: bpm filter 
+OK - REFACTOR: filter by text
+OK - BUG: when turn off filter, filter richtextbox does not appear
+OK - BUG: save button should not change when filter mode is turned on
+OK - FEATURE: load playlist -> autosave
+OK - BUG: tagvalue coloring is wrong at the playing track
+OK - BUG: trac count and sum time fix
 ======================
 v0.12.13.32
 ======================

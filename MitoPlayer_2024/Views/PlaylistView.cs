@@ -69,14 +69,14 @@ namespace MitoPlayer_2024.Views
         public event EventHandler EnableFilterModeEvent;
         public event EventHandler EnableSetterModeEvent;
         public event EventHandler<ListEventArgs> ChangeOnlyPlayingRowModeEnabled;
-        public event EventHandler<ListEventArgs> ChangeFilterParameters;
+        public event EventHandler<ListEventArgs> ChangeFilterParametersEvent;
         public event EventHandler RemoveTagValueFilter;
 
         public event EventHandler SaveTrackListEvent;
 
         private int trackListLeftOffset = 190;
         private int trackListRightOffset = 285;
-        private int tagValueEditorPanelBottomOffset = 85;
+        private int tagValueEditorPanelBottomOffset = 25;
 
         private bool isFilterEnabled = false;
 
@@ -377,14 +377,24 @@ namespace MitoPlayer_2024.Views
                             }
                             else
                             {
-                                if (i == 0 || i % 2 == 0)
+                                if (currentTrackIdInPlaylist != -1 && trackIdInPlaylist == currentTrackIdInPlaylist)
                                 {
-                                    this.dgvTrackList.Rows[i].Cells[tagName].Style.BackColor = this.GridLineColor1;
+                                    this.dgvTrackList.Rows[i].Cells[tagName].Style.BackColor = this.GridPlayingColor;
                                 }
                                 else
                                 {
-                                    this.dgvTrackList.Rows[i].Cells[tagName].Style.BackColor = this.GridLineColor2;
+                                    if (i == 0 || i % 2 == 0)
+                                    {
+                                        this.dgvTrackList.Rows[i].Cells[tagName].Style.BackColor = this.GridLineColor1;
+                                    }
+                                    else
+                                    {
+                                        this.dgvTrackList.Rows[i].Cells[tagName].Style.BackColor = this.GridLineColor2;
+                                    }
                                 }
+
+
+                                
                             }
                             
                         }
@@ -1189,6 +1199,15 @@ namespace MitoPlayer_2024.Views
                     this.LoadPlaylistEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = this.dgvPlaylistList.SelectedRows[0].Index });
                 }
             }
+            else
+            {
+                this.EnableSetterMode();
+
+                if (this.dgvPlaylistList.SelectedRows.Count > 0)
+                {
+                    this.LoadPlaylistEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = this.dgvPlaylistList.SelectedRows[0].Index });
+                }
+            }
             
         }
         public void CallDeletePlaylistEvent()
@@ -1468,6 +1487,8 @@ namespace MitoPlayer_2024.Views
                 this.chbOnlyPlayingRowModeEnabled.Hide();
                 this.lblFilter.Show();
                 this.txtbFilter.Show();
+                this.btnFilter.Show();
+                this.btnFilterIsPressed = false;
                 this.txtbFilter.Text = string.Empty;
                 this.isFilterEnabled = true;
             }
@@ -1476,18 +1497,18 @@ namespace MitoPlayer_2024.Views
                 this.chbOnlyPlayingRowModeEnabled.Show();
                 this.lblFilter.Hide();
                 this.txtbFilter.Hide();
+                this.btnFilter.Hide();
+                this.btnFilterIsPressed = false;
                 this.txtbFilter.Text = string.Empty;
                 this.isFilterEnabled = false;
             }
 
             if(isFilterModeEnabled && isTagEditorDisplayed)
             {
-                this.rtxtbTagValueEditorParams.Show();
                 this.btnClearTagValueFilter.Show();
             }
             else
             {
-                this.rtxtbTagValueEditorParams.Hide();
                 this.btnClearTagValueFilter.Hide();
             }
 
@@ -1524,7 +1545,7 @@ namespace MitoPlayer_2024.Views
                         txtBox.Location = new Point(5, 20);
 
                         TagValueButton btn = new TagValueButton();
-                        btn.Text = "Save";
+                        btn.Text = "Set";
                         btn.Size = new Size(75, 23);
                         btn.Location = new Point(165, 19);
 
@@ -1538,6 +1559,7 @@ namespace MitoPlayer_2024.Views
 
                         btn.TagName = gp.Text;
                         btn.TagValueName = btn.Text;
+                        btn.TagValueId = -1;
 
                         btn.TextBox = txtBox;
 
@@ -1685,14 +1707,20 @@ namespace MitoPlayer_2024.Views
 
             this.btnFilterModeToggle.BackColor = this.ButtonColor;
             this.btnFilterModeToggle.ForeColor = this.FontColor;
+            this.btnFilterModeToggle.FlatAppearance.BorderColor = this.ButtonBorderColor;
 
             this.btnSetterModeToggle.BackColor = this.ActiveButtonColor;
             this.btnSetterModeToggle.ForeColor = this.ButtonColor;
+            this.btnSetterModeToggle.FlatAppearance.BorderColor = this.ButtonBorderColor;
 
-            this.rtxtbTagValueEditorParams.Hide();
+            this.btnFilter.BackColor = this.ButtonColor;
+            this.btnFilter.ForeColor = this.FontColor;
+            this.btnFilter.FlatAppearance.BorderColor = this.ButtonBorderColor;
+
             this.btnClearTagValueFilter.Hide();
             this.lblFilter.Hide();
             this.txtbFilter.Hide();
+            this.btnFilter.Hide();
             this.txtbFilter.Text = string.Empty;
 
             this.chbOnlyPlayingRowModeEnabled.Show();
@@ -1719,20 +1747,44 @@ namespace MitoPlayer_2024.Views
 
         private void btnFilterModeToggle_Click(object sender, EventArgs e)
         {
+            foreach (Control groupBox in this.tagValueEditorPanel.Controls)
+            {
+                if (groupBox.GetType() == typeof(GroupBox))
+                {
+                    foreach (Control buttonOrTextBox in groupBox.Controls)
+                    {
+                        if (buttonOrTextBox.GetType() == typeof(TagValueButton))
+                        {
+                            if (((TagValueButton)buttonOrTextBox).TextBox != null)
+                            {
+                                ((TagValueButton)buttonOrTextBox).Text = "Filter";
+                            }
+                        }
+                    }
+                }
+            }
+
             this.isFilterEnabled = true;
 
             this.btnFilterModeToggle.BackColor = this.ActiveButtonColor;
             this.btnFilterModeToggle.ForeColor = this.ButtonColor;
+            this.btnFilterModeToggle.FlatAppearance.BorderColor = this.ButtonBorderColor;
 
             this.btnSetterModeToggle.BackColor = this.ButtonColor;
             this.btnSetterModeToggle.ForeColor = this.FontColor;
+            this.btnSetterModeToggle.FlatAppearance.BorderColor = this.ButtonBorderColor;
+
+            this.btnFilter.BackColor = this.ButtonColor;
+            this.btnFilter.ForeColor = this.FontColor;
+            this.btnFilter.FlatAppearance.BorderColor = this.ButtonBorderColor;
 
             this.btnSave.Enabled = false;
 
-            this.rtxtbTagValueEditorParams.Show();
             this.btnClearTagValueFilter.Show();
             this.lblFilter.Show();
             this.txtbFilter.Show();
+            this.btnFilter.Show();
+            this.btnFilterIsPressed = false;
             this.txtbFilter.Text = string.Empty;
 
             this.chbOnlyPlayingRowModeEnabled.Hide();
@@ -1747,29 +1799,38 @@ namespace MitoPlayer_2024.Views
 
             this.EnableFilterModeEvent?.Invoke(this, new EventArgs());
         }
-
-
-        //ha volt kijelölve gomb, reset-elni kell a kijelölését szürkére
-        //ha 
         private void btnSetterModeToggle_Click(object sender, EventArgs e)
         {
-            foreach(Control groupBox in this.tagValueEditorPanel.Controls)
+            this.EnableSetterMode();
+        }
+        private void EnableSetterMode()
+        {
+            foreach (Control groupBox in this.tagValueEditorPanel.Controls)
             {
-                if(groupBox.GetType() == typeof(GroupBox))
+                if (groupBox.GetType() == typeof(GroupBox))
                 {
-                    foreach(Control button in groupBox.Controls)
+                    foreach (Control buttonOrTextBox in groupBox.Controls)
                     {
-                        if (button.GetType() == typeof(TagValueButton))
+                        if (buttonOrTextBox.GetType() == typeof(TagValueButton))
                         {
-                            ((TagValueButton)button).FlatAppearance.BorderColor = this.ButtonBorderColor;
-                            ((TagValueButton)button).IsPressed = false;
+                            ((TagValueButton)buttonOrTextBox).FlatAppearance.BorderColor = this.ButtonBorderColor;
+                            ((TagValueButton)buttonOrTextBox).IsPressed = false;
+
+                            if(((TagValueButton)buttonOrTextBox).TextBox != null)
+                            {
+                                ((TagValueButton)buttonOrTextBox).Text = "Set";
+                            }
+                        }
+                        else if (buttonOrTextBox.GetType() == typeof(TextBox))
+                        {
+                            ((TextBox)buttonOrTextBox).Text = String.Empty;
                         }
                     }
+                    this.txtbFilter.Text = string.Empty;
+                    this.btnFilter.FlatAppearance.BorderColor = this.ButtonBorderColor;
+                    this.btnFilterIsPressed = false;
                 }
             }
-
-            this.rtxtbTagValueEditorParams.Text = String.Empty;
-
 
             this.isFilterEnabled = false;
 
@@ -1781,10 +1842,11 @@ namespace MitoPlayer_2024.Views
 
             this.btnSave.Enabled = true;
 
-            this.rtxtbTagValueEditorParams.Hide();
             this.btnClearTagValueFilter.Hide();
             this.lblFilter.Hide();
             this.txtbFilter.Hide();
+            this.btnFilter.Hide();
+            this.btnFilterIsPressed = false;
             this.txtbFilter.Text = string.Empty;
 
             this.chbOnlyPlayingRowModeEnabled.Show();
@@ -1796,7 +1858,6 @@ namespace MitoPlayer_2024.Views
             this.EnableSetterModeEvent?.Invoke(this, new EventArgs());
         }
 
-
         private void btnDisplayTagEditor_Click(object sender, EventArgs e)
         {
             this.DisplayTagEditorEvent?.Invoke(this, new EventArgs());
@@ -1804,7 +1865,6 @@ namespace MitoPlayer_2024.Views
 
             if (this.isFilterEnabled)
             {
-                this.rtxtbTagValueEditorParams.Show();
                 this.btnClearTagValueFilter.Show();
             }
 
@@ -1815,84 +1875,99 @@ namespace MitoPlayer_2024.Views
             this.DisplayTagEditorEvent?.Invoke(this, new EventArgs());
             this.chbOnlyPlayingRowModeEnabled.Hide();
 
-            this.rtxtbTagValueEditorParams.Hide();
             this.btnClearTagValueFilter.Hide();
 
             this.dgvTrackList.Focus();
         }
+
+        private bool btnFilterIsPressed = false;
+        private void btnFilter_Click(object sender, EventArgs e)
+        {
+            this.ChangeFilterParameters();
+        }
+        private void txtbFilter_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                this.ChangeFilterParameters();
+            }
+        }
+        private void ChangeFilterParameters()
+        {
+            btnFilterIsPressed = !btnFilterIsPressed;
+            if (btnFilterIsPressed)
+            {
+                btnFilter.FlatAppearance.BorderColor = this.ActiveButtonColor;
+            }
+            else
+            {
+                btnFilter.FlatAppearance.BorderColor = this.ButtonBorderColor;
+                txtbFilter.Text = String.Empty;
+            }
+
+            this.ChangeFilterParametersEvent?.Invoke(this, new ListEventArgs() { StringField1 = this.txtbFilter.Text });
+        }
+
         private void btnSetTagValue_Click(object sender, EventArgs e)
+        {
+            this.SetTagValue(sender, e, null);
+        }
+
+        private void SetTagValue(object sender, EventArgs e, Button btn)
         {
             TagValueButton button = (sender as TagValueButton);
 
-            if (this.isFilterEnabled)
-            {
-                button.IsPressed = !button.IsPressed;
-                if (button.IsPressed)
-                {
-                    button.FlatAppearance.BorderColor = this.ActiveButtonColor;
-                }
-                else
-                {
-                    button.FlatAppearance.BorderColor = this.ButtonBorderColor;
-                }
-            }
+            if (btn != null)
+                button = (TagValueButton)btn;
 
-            String tagValueValue = String.Empty;
-            if(button.TextBox != null)
-            {
-                tagValueValue = button.TextBox.Text;
+            String tagName = button.TagName;
+            String tagValueName = button.TagValueName;
+            int tagValueId = button.TagValueId;
+            String tagValueValue = !String.IsNullOrEmpty(button.TextBox?.Text) ? button.TextBox?.Text : "-1";
 
-                if (!this.isFilterEnabled)
+            if (!this.isFilterEnabled)
+            {
+                if(button.TextBox != null)
+                {
                     button.TextBox.Text = String.Empty;
+                }
             }
-            this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { StringField1 = button.TagName, StringField2 = button.TagValueName, StringField3 = tagValueValue, IntegerField1 = button.TagValueId,  Rows = this.dgvTrackList.Rows });
+            else
+            {
+                if (button.TextBox != null && button.IsPressed)
+                {
+                    button.TextBox.Text = String.Empty;
+                }
 
+                button.IsPressed = !button.IsPressed;
+
+                
+            }
+
+            if (button.IsPressed)
+            {
+                button.FlatAppearance.BorderColor = this.ActiveButtonColor;
+            }
+            else
+            {
+                button.FlatAppearance.BorderColor = this.ButtonBorderColor;
+            }
+
+            this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { 
+                StringField1 = tagName,
+                StringField2 = tagValueName,
+                StringField3 = tagValueValue, 
+                IntegerField1 = tagValueId, 
+                Rows = this.dgvTrackList.Rows });
             this.dgvTrackList.Focus();
         }
+
+
         private void txtbSetTagValue_KeyDown(object sender, KeyEventArgs e, Button btn)
         {
             if(e.KeyCode == Keys.Enter)
             {
-                TagValueButton button = (btn as TagValueButton);
-
-                if (this.isFilterEnabled)
-                {
-                    button.IsPressed = !button.IsPressed;
-                    if (button.IsPressed)
-                    {
-                        button.FlatAppearance.BorderColor = this.ActiveButtonColor;
-                    }
-                    else
-                    {
-                        button.FlatAppearance.BorderColor = this.ButtonBorderColor;
-                    }
-                }
-
-                if (this.chbOnlyPlayingRowModeEnabled.Checked)
-                {
-                    String tagValueValue = String.Empty;
-                    if (button.TextBox != null)
-                    {
-                        tagValueValue = button.TextBox.Text;
-                        button.TextBox.Text = String.Empty;
-                    }
-                    this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { StringField1 = button.TagName, StringField2 = button.TagValueName, StringField3 = tagValueValue, IntegerField1 = button.TagValueId, Rows = this.dgvTrackList.Rows });
-                }
-                else
-                {
-                    if (this.dgvTrackList.SelectedRows.Count > 0)
-                    {
-                        String tagValueValue = String.Empty;
-                        if (button.TextBox != null)
-                        {
-                            tagValueValue = button.TextBox.Text;
-                            button.TextBox.Text = String.Empty;
-                        }
-                        this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { StringField1 = button.TagName, StringField2 = button.TagValueName, StringField3 = tagValueValue, IntegerField1 = button.TagValueId, Rows = this.dgvTrackList.Rows });
-                    }
-                }
-
-                this.dgvTrackList.Focus();
+                this.SetTagValue(sender, e, btn);
             }
         }
         private void btnClearTagValue_Click(object sender, EventArgs e)
@@ -1909,6 +1984,9 @@ namespace MitoPlayer_2024.Views
                         ((TagValueButton)btn).IsPressed = false;
                     }
                 }
+                this.txtbFilter.Text = string.Empty;
+                this.btnFilter.FlatAppearance.BorderColor = this.ButtonBorderColor;
+                this.btnFilterIsPressed = false;
             }
 
             if (this.chbOnlyPlayingRowModeEnabled.Checked)
@@ -1930,67 +2008,42 @@ namespace MitoPlayer_2024.Views
             this.dgvTrackList.Focus();
             this.ChangeOnlyPlayingRowModeEnabled?.Invoke(this, new ListEventArgs() { BooleanField1 = this.chbOnlyPlayingRowModeEnabled.Checked });
         }
-        private void chbFilterModeEnabled_CheckedChanged(object sender, EventArgs e)
-        {
-           /* if (this.chbFilterModeEnabled.Checked)
-            {
-                this.rtxtbTagValueEditorParams.Show();
-                this.btnClearTagValueFilter.Show();
 
-                this.lblFilter.Show();
-                this.txtbFilter.Show();
-                this.txtbFilter.Text = string.Empty;
+        
 
-                if (this.tagValueEditorPanel.Height != 449)
-                {
-                    this.tagValueEditorPanel.Size = new Size(this.tagValueEditorPanel.Width, this.tagValueEditorPanel.Height - this.tagValueEditorPanelBottomOffset);
-                }
-
-                this.chbOnlyPlayingRowModeEnabled.Hide();
-            }
-            else
-            {
-                this.rtxtbTagValueEditorParams.Hide();
-                this.btnClearTagValueFilter.Hide();
-
-                this.lblFilter.Hide();
-                this.txtbFilter.Hide();
-                this.txtbFilter.Text = string.Empty;
-
-                this.tagValueEditorPanel.Size = new Size(this.tagValueEditorPanel.Width, this.tagValueEditorPanel.Height + this.tagValueEditorPanelBottomOffset);
-
-                this.chbOnlyPlayingRowModeEnabled.Show();
-            }
-            this.dgvTrackList.Focus();
-            this.ChangeFilterModeEnabled?.Invoke(this, new ListEventArgs() { BooleanField1 = this.chbFilterModeEnabled.Checked });*/
-        }
-        private void txtbFilter_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter)
-            {
-                this.ChangeFilterParameters?.Invoke(this, new ListEventArgs() { StringField1 = this.txtbFilter.Text });
-            }
-        }
-
-        public void SetTagValueFilter(List<String> tagFilterList, List<int> tagValueIdFilterList)
+        public void SetTagValueFilter(List<TagValueFilter> tagValueFilterList)
         {
             String tagValueAsFilter = String.Empty;
-            if (tagFilterList != null && tagFilterList.Count > 0 && tagValueIdFilterList != null && tagValueIdFilterList.Count > 0)
+
+            if (tagValueFilterList != null && tagValueFilterList.Count > 0)
             {
-                for(int i = 0; i < tagFilterList.Count; i++)
+                for(int i = 0; i < tagValueFilterList.Count; i++)
                 {
                     if (String.IsNullOrEmpty(tagValueAsFilter))
                     {
-                        tagValueAsFilter = "[" + tagFilterList[i] + ": " + tagValueIdFilterList[i].ToString() + "]";
+                        if (tagValueFilterList[i].TagValueValue == "-1")
+                        {
+                            tagValueAsFilter = "[" + tagValueFilterList[i].TagName + ": " + tagValueFilterList[i].TagValueName + "]";
+                        }
+                        else
+                        {
+                            tagValueAsFilter = "[" + tagValueFilterList[i].TagName + ": " + tagValueFilterList[i].TagValueValue + "]";
+                        }
                     }
                     else
                     {
-                        tagValueAsFilter = tagValueAsFilter + "  [" + tagFilterList[i] + ": " + tagValueIdFilterList[i].ToString() + "]";
+                        if (tagValueFilterList[i].TagValueValue == "-1")
+                        {
+                            tagValueAsFilter = tagValueAsFilter + "  [" + tagValueFilterList[i].TagName + ": " + tagValueFilterList[i].TagValueName + "]";
+                        }
+                        else
+                        {
+                            tagValueAsFilter = tagValueAsFilter + "  [" + tagValueFilterList[i].TagName + ": " + tagValueFilterList[i].TagValueValue + "]";
+                        }
                     }
                 }
             }
-            this.rtxtbTagValueEditorParams.Text = tagValueAsFilter;
-            this.ChangeFilterParameters?.Invoke(this, new ListEventArgs() { StringField1 = this.txtbFilter.Text });
+            this.ChangeFilterParametersEvent?.Invoke(this, new ListEventArgs() { StringField1 = this.txtbFilter.Text });
         }
 
         public void SetTagValueFilter(Dictionary<String, String> tagValueFilterDic)
@@ -2010,9 +2063,8 @@ namespace MitoPlayer_2024.Views
                     }
                 }
             }
-            this.rtxtbTagValueEditorParams.Text = tagValueAsFilter;
 
-            this.ChangeFilterParameters?.Invoke(this, new ListEventArgs() { StringField1 = this.txtbFilter.Text });
+            this.ChangeFilterParametersEvent?.Invoke(this, new ListEventArgs() { StringField1 = this.txtbFilter.Text });
         }
         private void btnClearTagValueFilter_Click(object sender, EventArgs e)
         {
@@ -2028,6 +2080,9 @@ namespace MitoPlayer_2024.Views
                             ((TagValueButton)button).IsPressed = false;
                         }
                     }
+                    this.txtbFilter.Text = string.Empty;
+                    this.btnFilter.FlatAppearance.BorderColor = this.ButtonBorderColor;
+                    this.btnFilterIsPressed = false;
                 }
             }
 

@@ -293,7 +293,7 @@ namespace MitoPlayer_2024.Presenters
                 {
                     Id = this.trackDao.GetNextId(TableName.TrackProperty.ToString()),
                     Name = tag.Name + "TagValueId",
-                    Type = "System.Int32",
+                    Type = "System.Decimal",
                     IsEnabled = true,
                     ColumnGroup = ColumnGroup.TracklistColumns.ToString(),
                     SortingId = this.settingDao.GetNextTrackPropertySortingId(),
@@ -979,7 +979,7 @@ namespace MitoPlayer_2024.Presenters
                                 ttv.TagName = tag.Name;
                                 ttv.TagValueId = -1;
                                 ttv.TagValueName = String.Empty;
-                                ttv.Value = String.Empty;
+                                ttv.Value ="-1";
                                 ttv.HasValue = false;
                                 ttv.ProfileId = this.trackDao.GetProfileId();
                                 this.trackDao.CreateTrackTagValue(ttv);
