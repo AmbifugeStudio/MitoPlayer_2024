@@ -24,7 +24,6 @@ namespace MitoPlayer_2024.Presenters
         private ITagDao tagDao { get; set; }
         private ISettingDao settingDao { get; set; }
 
-        
         public PlaylistPresenter(IPlaylistView view, ITrackDao trackDao, ITagDao tagValueDao, ISettingDao settingDao)
         {
             //INITIALIZE
@@ -119,7 +118,6 @@ namespace MitoPlayer_2024.Presenters
             }
         }
 
-
         private List<Tag> tagList { get; set; }
         private Dictionary<String, Dictionary<String, Color>> tagValueDictionary { get; set; }
         private void InitializeTagsAndTagValues()
@@ -150,7 +148,6 @@ namespace MitoPlayer_2024.Presenters
             }
             this.playlistView.InitializeTagsAndTagValues(this.tagList, this.tagValueDictionary);
         }
-
         private BindingSource playlistListBindingSource { get; set; }
         private DataTable playlistListTable { get; set; }
         private bool[] playlistListColumnVisibilityArray { get; set; }
@@ -180,7 +177,6 @@ namespace MitoPlayer_2024.Presenters
                 this.playlistListColumnVisibilityArray = tpList.Select(x => x.IsEnabled).ToArray();
             }
         }
-
         private void InitializePlaylistListRows()
         {
             this.playlistListTable.Clear();
@@ -201,7 +197,6 @@ namespace MitoPlayer_2024.Presenters
                 }
             }
         }
-
         private void InitializePlaylistList()
         {
             this.playlistListBindingSource.DataSource = this.playlistListTable;
@@ -216,7 +211,6 @@ namespace MitoPlayer_2024.Presenters
 
             this.playlistView.InitializePlaylistList(model);
         }
-
         private void ReloadPlaylist()
         {
             this.InitializePlaylistList();
@@ -321,7 +315,6 @@ namespace MitoPlayer_2024.Presenters
             ((PlaylistView)this.playlistView).UpdateTrackCountAndLength(this.currentPlaylistId);
 
         }
-
         private void InitializeTrackList(DataTable trackListTable, int currentTrackIdInPlaylist = -1)
         {
             this.trackListBindingSource.DataSource = trackListTable;
@@ -431,8 +424,6 @@ namespace MitoPlayer_2024.Presenters
 
             ((PlaylistView)this.playlistView).InitializeDisplayTagComponent(this.isTagComponentDisplayed);
         }
-
-
         private bool isPlaylistListDisplayed { get; set; }
         private void InitializedPlaylistList()
         {
@@ -446,11 +437,6 @@ namespace MitoPlayer_2024.Presenters
         #endregion
 
         #region INITIALIZED - RELOAD
-
-
-        
-
-        
 
         private String LengthToString(double length)
         {
@@ -660,14 +646,24 @@ namespace MitoPlayer_2024.Presenters
         {
             await Task.Run(() =>
             {
-                List<Playlist> playlistlist = this.ConvertPlaylistDataTableToList(this.playlistListTable);
-                int orderInList = 0;
-                foreach (Playlist playlist in playlistlist)
+                String errorMessage = String.Empty;
+                try
                 {
-                    playlist.OrderInList = orderInList;
-                    this.trackDao.UpdatePlaylist(playlist);
-                    orderInList++;
+                    List<Playlist> playlistlist = this.ConvertPlaylistDataTableToList(this.playlistListTable);
+                    int orderInList = 0;
+                    foreach (Playlist playlist in playlistlist)
+                    {
+                        playlist.OrderInList = orderInList;
+                        this.trackDao.UpdatePlaylist(playlist);
+                        orderInList++;
+                    }
                 }
+                catch (Exception ex)
+                {
+                    errorMessage = ex.Message;
+                }
+                
+               // ((PlaylistView)this.playlistView).UpdateAfterTracklistSave(errorMessage);
             });
         }
         private List<Playlist> ConvertPlaylistDataTableToList(DataTable dt)
@@ -690,7 +686,41 @@ namespace MitoPlayer_2024.Presenters
 
         public async Task SaveTrackListAsync()
         {
+            String errorMessage = String.Empty;
+
             await Task.Run(() =>
+            {
+                try
+                {
+                    this.trackDao.DeletePlaylistContentByPlaylistId(this.currentPlaylistId);
+                    List<Track> tracklist = this.ConvertTrackDataTableToList(this.trackListTable);
+                    int orderInList = 0;
+                    foreach (Track track in tracklist)
+                    {
+                        track.OrderInList = orderInList;
+
+                        PlaylistContent plc = new PlaylistContent();
+                        plc.Id = this.trackDao.GetNextId(TableName.PlaylistContent.ToString());
+                        plc.PlaylistId = this.currentPlaylistId;
+                        plc.TrackId = track.Id;
+                        plc.OrderInList = track.OrderInList;
+                        plc.TrackIdInPlaylist = track.TrackIdInPlaylist;
+                        this.trackDao.CreatePlaylistContent(plc);
+
+                        orderInList++;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    errorMessage = ex.Message;
+                }
+            });
+            ((PlaylistView)this.playlistView).UpdateAfterTracklistSave(errorMessage);
+        }
+        public void SaveTrackListSync()
+        {
+            String errorMessage = String.Empty;
+            try
             {
                 this.trackDao.DeletePlaylistContentByPlaylistId(this.currentPlaylistId);
                 List<Track> tracklist = this.ConvertTrackDataTableToList(this.trackListTable);
@@ -709,27 +739,13 @@ namespace MitoPlayer_2024.Presenters
 
                     orderInList++;
                 }
-            });
-        }
-        public void SaveTrackListSync()
-        {
-            this.trackDao.DeletePlaylistContentByPlaylistId(this.currentPlaylistId);
-            List<Track> tracklist = this.ConvertTrackDataTableToList(this.trackListTable);
-            int orderInList = 0;
-            foreach (Track track in tracklist)
-            {
-                track.OrderInList = orderInList;
-
-                PlaylistContent plc = new PlaylistContent();
-                plc.Id = this.trackDao.GetNextId(TableName.PlaylistContent.ToString());
-                plc.PlaylistId = this.currentPlaylistId;
-                plc.TrackId = track.Id;
-                plc.OrderInList = track.OrderInList;
-                plc.TrackIdInPlaylist = track.TrackIdInPlaylist;
-                this.trackDao.CreatePlaylistContent(plc);
-
-                orderInList++;
             }
+            catch (Exception ex)
+            {
+                errorMessage = ex.Message;
+            }
+
+            ((PlaylistView)this.playlistView).UpdateAfterTracklistSave(errorMessage);
         }
 
         private bool isSaving = false;
@@ -809,8 +825,6 @@ namespace MitoPlayer_2024.Presenters
             return trackList;
         }
         #endregion
-
-
 
         #region TRACKLIST - ORDER
         public void OrderByArtist()
@@ -1544,7 +1558,6 @@ namespace MitoPlayer_2024.Presenters
                 this.playlistView.UpdateAfterPlayTrackAfterPause();
             }
         }
-
         public void PauseTrackEvent(object sender, EventArgs e)
         {
             if (this.mediaPLayerComponent.MediaPlayer.playState == WMPLib.WMPPlayState.wmppsPaused)

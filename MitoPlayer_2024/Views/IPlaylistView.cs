@@ -72,11 +72,16 @@ namespace MitoPlayer_2024.Views
         void InitializeTrackList(DataTableModel model);
         void ReloadTrackList(DataTableModel model);
 
+
+
         void UpdateAfterPlayTrack(int currentTrackIndex, int currentTrackId);
         void UpdateAfterPlayTrackAfterPause();
         void UpdateAfterStopTrack();
         void UpdateAfterPauseTrack();
         void UpdateMediaPlayerProgressStatus(double duration, String durationString, double currentPosition, String currentPositionString);
+
+
+
         void SetCurrentTrackColor(int trackIdInPlaylist);
         void UpdateTracklistColor(int trackIdInPlaylist);
         void SetVolume(int volume);

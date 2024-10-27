@@ -1,36 +1,35 @@
 ﻿
+======================
+v0.12.14.3
+======================
+OK - FEATURE: decibel peak meter
+OK - REFACTOR: playlist view preparing for album covers
+OK - REFACTOR: media player view refactor
+OK - REFACTOR: media player timer refactor
 
 
+- FEATURE: tagvalue editor right button also should work as turn off filter
+- BUG: sorting does not work in filter mode
+
+OK - FEATURE: playlist save message
+- FEATURE: set debug message timer time in options
 
 - BUG: column visibility - isdisplayed will be turned off after sorting
 - REFACTOR: column visibility dark mode
 - FEATURE: column visibility changes from context menu of the tracklist column header
-
 - FEATURE: sound volume bars
 - BUG: column visibility reorder orders the wrong column
-
-
-
 - FEATURE: navigate away from playlist view -> autosave
-
-
-
 - FEATURE: preview setting (music start at certain point on the next track button)
 - FEATURE: visualizer
 - FEATURE: uv meter
 - FEATURE: track cover browser
-
 - FEATURE: column visibility
-
-
 - FEATURE: tag editor - export/import key/bpm and custom tag values
-
 - BUG: automatic next track stops - after list reorder and the current playing track was at the end of the original list (list has not been updated in the player?) - or not. Objectiv - Fighting Chance stops at the end
-
 - FEATURE: reorder tags and tagvalues
 - FEATURE: tag editor - display according to tag/tagvalue order
 - FEATURE: progress bar for long loading time
-
 - FEATURE: load tracklist or navigate away: check save status and show dialog window is there are unsaved progress
 
 ======================
@@ -200,4 +199,4 @@ BUGS
 - TagEditor: disable order by columns
 - Directory Scan: ha már állítottam be key-t meg bpm-et meg style-t, akkor nem tölti be, ha ugyanazt a számot törlöm majd beszkennelem.
 - REFACTOR - Remove tracklist always saving feature
-- BUG - TagEditor - If list contained the same track twice or more and i change the tag value, the only the selected track tag value changes
+- BUG - TagEditor - If list contained the same track twice or more and i change the tag value,  only the selected track tag value ha been changed

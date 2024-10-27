@@ -104,11 +104,11 @@ namespace MitoPlayer_2024.Views
             this.BackColor = this.BackgroundColor;
             this.ForeColor = this.FontColor;
 
-            this.groupBoxPlaylist.ForeColor = this.FontColor;
-            this.groupBox4.ForeColor = this.FontColor;
-            this.groupBox3.ForeColor = this.FontColor;
+            //this.groupBoxPlaylist.ForeColor = this.FontColor;
+          /*  this.groupBox4.ForeColor = this.FontColor;
+            this.groupBox3.ForeColor = this.FontColor;*/
 
-            this.btnNewPlaylist.BackColor = this.ButtonColor;
+          /*  this.btnNewPlaylist.BackColor = this.ButtonColor;
             this.btnNewPlaylist.ForeColor = this.FontColor;
             this.btnNewPlaylist.FlatAppearance.BorderColor = this.ButtonBorderColor;
 
@@ -122,7 +122,7 @@ namespace MitoPlayer_2024.Views
 
             this.btnDeletePlaylist.BackColor = this.ButtonColor;
             this.btnDeletePlaylist.ForeColor = this.FontColor;
-            this.btnDeletePlaylist.FlatAppearance.BorderColor = this.ButtonBorderColor;
+            this.btnDeletePlaylist.FlatAppearance.BorderColor = this.ButtonBorderColor;*/
 
             this.btnPlaylistListPanelToggle.BackColor = this.ButtonColor;
             this.btnPlaylistListPanelToggle.ForeColor = this.FontColor;
@@ -159,6 +159,8 @@ namespace MitoPlayer_2024.Views
             this.btnSave.BackColor = this.ButtonColor;
             this.btnSave.ForeColor = this.FontColor;
             this.btnSave.FlatAppearance.BorderColor = this.ButtonBorderColor;
+
+            this.lblMessage.ForeColor = this.ActiveButtonColor;
 
         }
 
@@ -231,7 +233,6 @@ namespace MitoPlayer_2024.Views
         {
             this.UpdatePlaylistListColor(model.CurrentPlaylistId);
         }
-
         public void UpdatePlaylistListColor(int currentPlaylistId = -1)
         {
             int playlistId = -1;
@@ -260,7 +261,6 @@ namespace MitoPlayer_2024.Views
         }
 
         // TRACKLIST DATA BINDING
-       
         public void InitializeTrackList(DataTableModel model)
         {
             if (model.BindingSource != null)
@@ -289,17 +289,14 @@ namespace MitoPlayer_2024.Views
 
             this.UpdateTracklistColor(model.CurrentTrackIdInPlaylist);
         }
-
         private void dgvTrackList_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
         {
             this.UpdateTracklistColor();
         }
-
         public void ReloadTrackList(DataTableModel model)
         {
             this.UpdateTracklistColor(model.CurrentTrackIdInPlaylist);
         }
-
         public void UpdateTracklistColor(int currentTrackIdInPlaylist = -1)
         {
             bool isMissing = false;
@@ -563,19 +560,6 @@ namespace MitoPlayer_2024.Views
                 this.CallNextTrackEvent();
             }
         }
-        private int GetPlaylistIndex(int hotKeyNumber)
-        {
-            int result = -1;
-            for(int i = 0; i <= dgvPlaylistList.Rows.Count - 1; i++)
-            {
-                if (Convert.ToInt32(dgvPlaylistList.Rows[i].Cells["G"].Value) == hotKeyNumber)
-                {
-                    result = i;
-                    break;
-                }
-            }
-            return result;
-        }
         private void dgvTrackList_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.ControlKey || e.KeyCode == Keys.ShiftKey)
@@ -597,7 +581,7 @@ namespace MitoPlayer_2024.Views
         private bool prepareToDragOneRow = false;
         private void dgvTrackList_MouseDown(object sender, MouseEventArgs e) 
         {
-            HitTestInfo hitTest = this.dgvTrackList.HitTest(e.X, e.Y);
+          /*  HitTestInfo hitTest = this.dgvTrackList.HitTest(e.X, e.Y);
             if (hitTest != null && hitTest.RowIndex > -1)
             {
                 this.currentRowIndex = hitTest.RowIndex;
@@ -621,7 +605,7 @@ namespace MitoPlayer_2024.Views
                         }
                     }
                 }
-            }
+            }*/
         }
         List<String> dragAndDropPathList = new List<String>();
         List<int> dragAndDropTrackIdInPlaylistList = new List<int>();
@@ -807,11 +791,8 @@ namespace MitoPlayer_2024.Views
                 this.CallPlayTrackEvent();
             }
         }
-        private void timer1_Tick(object sender, EventArgs e)
-        {
-            this.GetMediaPlayerProgressStatusEvent?.Invoke(this, EventArgs.Empty);
-        }
-       
+
+
         //EVENT CALLINGS
         public void CallSetCurrentTrackEvent(int rowIndex = -1)
         {
@@ -823,12 +804,12 @@ namespace MitoPlayer_2024.Views
         }
         public void CallPauseTrackEvent()
         {
-            this.timer1.Stop();
+           // this.timer1.Stop();
             this.PauseTrackEvent?.Invoke(this, EventArgs.Empty);
         }
         public void CallStopTrackEvent()
         {
-            this.timer1.Stop();
+          //  this.timer1.Stop();
             this.StopTrackEvent?.Invoke(this, EventArgs.Empty);
         }
         public void CallPrevTrackEvent()
@@ -851,8 +832,21 @@ namespace MitoPlayer_2024.Views
         //UPDATE PLAYLIST VIEW
         public void UpdateAfterPlayTrack(int currentTrackIndex, int currentTrackIdInPlaylist)
         {
-            this.timer1.Start();
-            String artist = "Playing: " + (string)dgvTrackList.Rows[currentTrackIndex].Cells["Artist"].Value;
+            String artist = "Playing: ";
+            String title = String.Empty;
+
+            if (dgvTrackList.Rows[currentTrackIndex].Cells["Title"] != null)
+                artist += (string)dgvTrackList.Rows[currentTrackIndex].Cells["Artist"].Value;
+            if (dgvTrackList.Rows[currentTrackIndex].Cells["Title"] != null)
+                title = (string)dgvTrackList.Rows[currentTrackIndex].Cells["Title"].Value;
+
+            if (!String.IsNullOrEmpty(title))
+            {
+                artist += " - " + title;
+            }
+
+            ((MainView)this.parentView).UpdateAfterPlayTrack(artist);
+          /*  String artist = "Playing: " + (string)dgvTrackList.Rows[currentTrackIndex].Cells["Artist"].Value;
             String title = "";
             if (dgvTrackList.Rows[currentTrackIndex].Cells["Title"] != null)
                 title = dgvTrackList.Rows[currentTrackIndex].Cells["Title"].Value.ToString();
@@ -861,24 +855,33 @@ namespace MitoPlayer_2024.Views
             {
                 artist += " - " + title;
             }
-            this.lblCurrentTrack.Text = artist;
-            //this.CallSetCurrentTrackColorEvent(currentTrackIndex);
+            this.lblCurrentTrack.Text = artist;*/
+
             this.UpdateTracklistColor(currentTrackIdInPlaylist);
         }
         public void UpdateAfterPlayTrackAfterPause()
         {
-            this.timer1.Start();
-            this.lblCurrentTrack.Text = this.lblCurrentTrack.Text.Replace("Paused: ", "Playing: ");
+            ((MainView)this.parentView).UpdateAfterPlayTrackAfterPause();
+            //  this.timer1.Start();
+            //this.lblCurrentTrack.Text = this.lblCurrentTrack.Text.Replace("Paused: ", "Playing: ");
         }
         public void UpdateAfterStopTrack()
         {
-            this.lblCurrentTrack.Text = "Playing: -";
+            ((MainView)this.parentView).UpdateAfterStopTrack();
+           // this.lblCurrentTrack.Text = "Playing: -";
             this.UpdateTracklistColor();
         }
         public void UpdateAfterPauseTrack()
         {
-            this.lblCurrentTrack.Text = this.lblCurrentTrack.Text.Replace("Playing: ", "Paused: ");
+            ((MainView)this.parentView).UpdateAfterPauseTrack();
+           // this.lblCurrentTrack.Text = this.lblCurrentTrack.Text.Replace("Playing: ", "Paused: ");
         }
+        public void UpdateMediaPlayerProgressStatus(double duration, String durationString, double currentPosition, String currentPositionString)
+        {
+            ((MainView)this.parentView).UpdateMediaPlayerProgressStatus(duration, durationString, currentPosition, currentPositionString);
+        }
+
+
         public void UpdateAfterCopyTracksToPlaylist(int count, String playlistName)
         {
             if(count == 1)
@@ -890,6 +893,19 @@ namespace MitoPlayer_2024.Views
                 LabelTimer.DisplayLabel(this.components, this.lblMessage, count + " tracks copied to [" + playlistName + "]");
             }
            
+        }
+
+        public void UpdateAfterTracklistSave(String errorMessage)
+        {
+            if (String.IsNullOrEmpty(errorMessage))
+            {
+                LabelTimer.DisplayLabel(this.components, this.lblMessage, "Playlist saved successfully!");
+            }
+            else
+            {
+                LabelTimer.DisplayLabel(this.components, this.lblMessage, errorMessage);
+            }
+            
         }
         public void SetCurrentTrackColor(int trackIdInPlaylist)
         {
@@ -1060,10 +1076,7 @@ namespace MitoPlayer_2024.Views
         {
             ((MainView)this.parentView).SetMuted(isMuted);
         }
-        public void UpdateMediaPlayerProgressStatus(double duration, String durationString, double currentPosition, String currentPositionString)
-        {
-            ((MainView)this.parentView).UpdateMediaPlayerProgressStatus(duration, durationString, currentPosition, currentPositionString);
-        }
+       
         public void SetKeyAndBpmAnalization(bool showButton)
         {
             if (showButton)
@@ -1147,39 +1160,7 @@ namespace MitoPlayer_2024.Views
         {
             this.CallExportToDirectoryEvent();
         }
-        private void btnNewPlaylist_Click(object sender, EventArgs e)
-        {
-            this.CallCreatePlaylistEvent();
-        }
-        private void btnLoadPlaylist_Click(object sender, EventArgs e)
-        {
-            this.CallLoadPlaylistEvent();
-        }
-        private void btnRenamePlaylist_Click(object sender, EventArgs e)
-        {
-            this.CallRenamePlaylistEvent();
-        }
-        private void btnDeletePlaylist_Click(object sender, EventArgs e)
-        {
-            this.CallDeletePlaylistEvent();
-        }
-        private void btnSetQuickListGroup1_Click(object sender, EventArgs e)
-        {
-            this.CallSetQuickListEvent(1);
-        }
-        private void btnSetQuickListGroup2_Click(object sender, EventArgs e)
-        {
-            this.CallSetQuickListEvent(2);
-        }
-        private void btnSetQuickListGroup3_Click(object sender, EventArgs e)
-        {
-            this.CallSetQuickListEvent(3);
-        }
-        private void btnSetQuickListGroup4_Click(object sender, EventArgs e)
-        {
-            this.CallSetQuickListEvent(4);
-        }
-        
+
         //EVENT CALLINGS
         public void CallCreatePlaylistEvent()
         {
@@ -1235,36 +1216,6 @@ namespace MitoPlayer_2024.Views
             if (this.dgvPlaylistList.SelectedRows.Count > 0)
                 this.ExportToDirectoryEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = this.dgvPlaylistList.SelectedRows[0].Index });
         }
-        /*
-        public void SetCurrentPlaylistColor(int playlistId)
-        {
-            this.ClearCurrentPlaylistColor();
-
-            if (playlistId != -1)
-            {
-                int idInList = -1;
-                for (int i = 0; i <= this.dgvPlaylistList.Rows.Count - 1; i++)
-                {
-                    idInList = Convert.ToInt32(this.dgvPlaylistList.Rows[i].Cells["Id"].Value);
-                    if (playlistId == idInList)
-                    {
-                        this.dgvPlaylistList.Rows[i].DefaultCellStyle.BackColor = Color.LightSeaGreen;
-                        break;
-                    }
-                }
-            }
-        }*/
-       /* private void ClearCurrentPlaylistColor()
-        {
-            for (int i = 0; i < this.dgvPlaylistList.Rows.Count; i++)
-            {
-                if (this.dgvPlaylistList.Rows[i].DefaultCellStyle.BackColor == Color.LightSeaGreen)
-                {
-                    this.dgvPlaylistList.Rows[i].DefaultCellStyle.BackColor = Color.White;
-                    break;
-                }
-            }
-        }*/
         #endregion
 
         #region PLAYLIST - DRAG AND DROP
@@ -1650,41 +1601,6 @@ namespace MitoPlayer_2024.Views
                 this.dgvTrackList.Width = this.dgvTrackList.Width + this.trackListRightOffset;
             }
         }
-        public void CallDisplayTagEditor(bool isTagEditorDisplayed)
-        {
-            ///kikapcsolt állapotban a panelt elrejtjük, textboxot és gombot elrejtjük, grid szélessége nő
-            ///bekapcsolt állapotban a panel látszik, ha textbox van, akkor az látzik, ellenben a gombok, grid szélessége csökken
-            if (!isTagEditorDisplayed)
-            {
-                this.btnDisplayTagComponentToggle.Text = "<";
-                this.btnDisplayTagComponentToggle.Show();
-                this.btnColumnVisibilityWithTagEditor.Show();
-
-
-                
-
-                this.tagValueEditorPanel.Hide();
-
-                if(this.dgvTrackList.Width < 1089)
-                    this.dgvTrackList.Width = this.dgvTrackList.Width + this.trackListRightOffset;
-            }
-            else
-            {
-                this.btnDisplayTagComponentToggle.Text = ">";
-
-                this.btnDisplayTagComponentToggle.Hide();
-
-                this.btnColumnVisibilityWithTagEditor.Hide();
-
-               
-
-
-                this.tagValueEditorPanel.Show();
-
-                this.dgvTrackList.Width = this.dgvTrackList.Width - this.trackListRightOffset;
-            }
-        }
-
         public void InitializeDisplayTagComponent(bool isTagComponentDisplayed)
         {
             if (isTagComponentDisplayed)
@@ -1744,7 +1660,6 @@ namespace MitoPlayer_2024.Views
                 this.dgvTrackList.Width = this.dgvTrackList.Width + this.trackListRightOffset;
             }
         }
-
         private void btnFilterModeToggle_Click(object sender, EventArgs e)
         {
             foreach (Control groupBox in this.tagValueEditorPanel.Controls)
@@ -1857,7 +1772,6 @@ namespace MitoPlayer_2024.Views
 
             this.EnableSetterModeEvent?.Invoke(this, new EventArgs());
         }
-
         private void btnDisplayTagEditor_Click(object sender, EventArgs e)
         {
             this.DisplayTagEditorEvent?.Invoke(this, new EventArgs());
@@ -1867,15 +1781,6 @@ namespace MitoPlayer_2024.Views
             {
                 this.btnClearTagValueFilter.Show();
             }
-
-            this.dgvTrackList.Focus();
-        }
-        private void btnDisplayTagEditor2_Click(object sender, EventArgs e)
-        {
-            this.DisplayTagEditorEvent?.Invoke(this, new EventArgs());
-            this.chbOnlyPlayingRowModeEnabled.Hide();
-
-            this.btnClearTagValueFilter.Hide();
 
             this.dgvTrackList.Focus();
         }
@@ -1907,12 +1812,10 @@ namespace MitoPlayer_2024.Views
 
             this.ChangeFilterParametersEvent?.Invoke(this, new ListEventArgs() { StringField1 = this.txtbFilter.Text });
         }
-
         private void btnSetTagValue_Click(object sender, EventArgs e)
         {
             this.SetTagValue(sender, e, null);
         }
-
         private void SetTagValue(object sender, EventArgs e, Button btn)
         {
             TagValueButton button = (sender as TagValueButton);
@@ -1961,8 +1864,6 @@ namespace MitoPlayer_2024.Views
                 Rows = this.dgvTrackList.Rows });
             this.dgvTrackList.Focus();
         }
-
-
         private void txtbSetTagValue_KeyDown(object sender, KeyEventArgs e, Button btn)
         {
             if(e.KeyCode == Keys.Enter)
@@ -2008,9 +1909,6 @@ namespace MitoPlayer_2024.Views
             this.dgvTrackList.Focus();
             this.ChangeOnlyPlayingRowModeEnabled?.Invoke(this, new ListEventArgs() { BooleanField1 = this.chbOnlyPlayingRowModeEnabled.Checked });
         }
-
-        
-
         public void SetTagValueFilter(List<TagValueFilter> tagValueFilterList)
         {
             String tagValueAsFilter = String.Empty;
@@ -2043,27 +1941,6 @@ namespace MitoPlayer_2024.Views
                     }
                 }
             }
-            this.ChangeFilterParametersEvent?.Invoke(this, new ListEventArgs() { StringField1 = this.txtbFilter.Text });
-        }
-
-        public void SetTagValueFilter(Dictionary<String, String> tagValueFilterDic)
-        {
-            String tagValueAsFilter = String.Empty;
-            if (tagValueFilterDic != null && tagValueFilterDic.Count > 0)
-            {
-                foreach (KeyValuePair<String, String> filter in tagValueFilterDic)
-                {
-                    if (String.IsNullOrEmpty(tagValueAsFilter))
-                    {
-                        tagValueAsFilter = "[" + filter.Key + ": " + filter.Value + "]";
-                    }
-                    else
-                    {
-                        tagValueAsFilter = tagValueAsFilter + "  [" + filter.Key + ": " + filter.Value + "]";
-                    }
-                }
-            }
-
             this.ChangeFilterParametersEvent?.Invoke(this, new ListEventArgs() { StringField1 = this.txtbFilter.Text });
         }
         private void btnClearTagValueFilter_Click(object sender, EventArgs e)
@@ -2102,11 +1979,8 @@ namespace MitoPlayer_2024.Views
                 this.CallNextTrackEvent();
             }
         }
-
         public void ChangeSaveButtonColor(bool isTableChanged)
         {
-           
-            
             if (isTableChanged)
             {
                 if (!this.isFilterEnabled)
@@ -2114,20 +1988,13 @@ namespace MitoPlayer_2024.Views
                     this.btnSave.BackColor = this.ActiveButtonColor;
                     this.btnSave.ForeColor = this.ButtonColor;
                 }
-                   
             }
             else
             {
                 this.btnSave.BackColor = this.ButtonColor;
                 this.btnSave.ForeColor = this.FontColor;
             }
-            
-           
-            
         }
-
-
-
 
         #endregion
 

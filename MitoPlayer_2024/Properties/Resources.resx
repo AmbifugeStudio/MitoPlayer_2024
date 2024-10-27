@@ -118,7 +118,55 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="BlackLine" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BlackLine.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="MasterPeakColoured1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\MasterPeakColoured1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Screenshot_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Screenshot_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="MarkerBlack" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\MarkerBlack.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="MarkerRed" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\MarkerRed.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="MasterPeakRed" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\MasterPeakRed.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="MarkerGreen" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\MarkerGreen.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="MasterPeakBackgroundTest1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\MasterPeakBackgroundTest1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="MasterPeakColoured2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\MasterPeakColoured2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="MasterPeakBackground" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\MasterPeakBackground.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="MasterPeakOrange" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\MasterPeakOrange.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="MasterPeakMeter" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\MasterPeakMeter.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="MarkerOrange" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\MarkerOrange.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="MasterPeakBackgroundTest" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\MasterPeakBackgroundTest.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="MasterPeakColoured" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\MasterPeakColoured.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="MasterPeakGreen" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\MasterPeakGreen.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="MarkerGrey" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\MarkerGrey.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

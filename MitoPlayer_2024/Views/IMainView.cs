@@ -53,9 +53,17 @@ namespace MitoPlayer_2024.Views
         event EventHandler<ListEventArgs> ChangeVolume;
         event EventHandler<ListEventArgs> ChangeShuffle;
         event EventHandler<ListEventArgs> ChangeMute;
+
+        event EventHandler GetMediaPlayerProgressStatusEvent;
         //HELP
         event EventHandler About;
 
         event EventHandler<ListEventArgs> ScanFiles;
+
+        void UpdateAfterPlayTrack(String artist);
+        void UpdateAfterPlayTrackAfterPause();
+        void UpdateAfterStopTrack();
+        void UpdateAfterPauseTrack();
+        void UpdateMediaPlayerProgressStatus(double duration, String durationString, double currentPosition, String currentPositionString);
     }
 }

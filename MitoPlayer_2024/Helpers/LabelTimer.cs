@@ -18,7 +18,7 @@ namespace MitoPlayer_2024.Helpers
             _label.Text = _message;
 
             var t = new Timer(_view);
-            t.Interval = 3000;
+            t.Interval = 5000;
             t.Start();
 
             t.Tick += (s, e) =>

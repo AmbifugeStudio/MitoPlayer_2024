@@ -104,6 +104,7 @@ namespace MitoPlayer_2024.Presenters
             this.mainView.ExportToM3U += ExportToM3U;
             this.mainView.ExportToTXT += ExportToTXT;
             this.mainView.ExportToDirectory += ExportToDirectory;
+            this.mainView.GetMediaPlayerProgressStatusEvent += GetMediaPlayerProgressStatusEvent;
             //Other
             this.mainView.Exit += Exit;
 
@@ -1090,7 +1091,18 @@ namespace MitoPlayer_2024.Presenters
             }
         }
 
-  
 
+        private void GetMediaPlayerProgressStatusEvent(object sender, EventArgs e)
+        {
+            if (this.mediaPlayerComponent.MediaPlayer.playState == WMPLib.WMPPlayState.wmppsPlaying)
+            {
+                double duration = mediaPlayerComponent.GetDuration();
+                String durationString = mediaPlayerComponent.GetDurationString();
+                double currentPosition = mediaPlayerComponent.GetCurrentPosition();
+                String currentPositionString = mediaPlayerComponent.GetCurrentPositionString();
+
+                this.mainView.UpdateMediaPlayerProgressStatus(duration, durationString, currentPosition, currentPositionString);
+            }
+        }
     }
 }

@@ -460,6 +460,22 @@
     <None Include="Resources\Screenshot_1.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\MasterPeakGreen.png" />
+    <None Include="Resources\MasterPeakOrange.png" />
+    <None Include="Resources\MasterPeakRed.png" />
+    <None Include="Resources\MasterPeakBackground.png" />
+    <None Include="Resources\MasterPeakColoured.png" />
+    <None Include="Resources\MasterPeakColoured2.png" />
+    <None Include="Resources\MasterPeakBackgroundTest.png" />
+    <None Include="Resources\MasterPeakBackgroundTest1.png" />
+    <None Include="Resources\BlackLine.png" />
+    <None Include="Resources\MarkerBlack.png" />
+    <None Include="Resources\MarkerGreen.png" />
+    <None Include="Resources\MarkerOrange.png" />
+    <None Include="Resources\MarkerRed.png" />
+    <None Include="Resources\MasterPeakColoured1.png" />
+    <None Include="Resources\MasterPeakMeter.png" />
+    <None Include="Resources\MarkerGrey.png" />
     <Content Include="Technical Documents\Releases.txt" />
     <Content Include="Technical Documents\DevProcess.txt" />
     <Content Include="Technical Documents\TestCases.txt" />

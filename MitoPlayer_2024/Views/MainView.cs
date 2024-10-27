@@ -1,11 +1,14 @@
-﻿using MitoPlayer_2024.Helpers;
+﻿using Google.Protobuf.WellKnownTypes;
+using MitoPlayer_2024.Helpers;
 using MitoPlayer_2024.Views;
 using NAudio.CoreAudioApi;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
+using TagLib.Riff;
 
 namespace MitoPlayer_2024
 {
@@ -57,19 +60,34 @@ namespace MitoPlayer_2024
 
         public event EventHandler<ListEventArgs> ScanFiles;
 
+        public event EventHandler GetMediaPlayerProgressStatusEvent;
+
+        private MMDevice mmDevice;
+
         public MainView()
         {
             this.InitializeComponent();
             this.SetControlColors();
 
-            this.lblVolume.FlatStyle = FlatStyle.Flat;
             this.pbrTrackProgress.Hide();
+            this.lblTrackStart.Hide();
+            this.lblTrackEnd.Hide();
+
+            MMDeviceEnumerator enumerator = new MMDeviceEnumerator();
+            MMDeviceCollection devices = enumerator.EnumerateAudioEndPoints(DataFlow.All, DeviceState.Active);
+            if(devices != null && devices.Count > 0)
+            {
+                mmDevice = devices[0];
+            }
+
+            this.tmrPeak.Start();
         }
 
         Color BackgroundColor = System.Drawing.ColorTranslator.FromHtml("#363639");
         Color FontColor = System.Drawing.ColorTranslator.FromHtml("#c6c6c6");
         Color ButtonColor = System.Drawing.ColorTranslator.FromHtml("#292a2d");
         Color ButtonBorderColor = System.Drawing.ColorTranslator.FromHtml("#1b1b1b");
+        Color WarningColor = System.Drawing.ColorTranslator.FromHtml("#ff8088");
         private void SetControlColors()
         {
             this.strMenu.BackColor = this.BackgroundColor;
@@ -124,6 +142,11 @@ namespace MitoPlayer_2024
 
             this.pbrTrackProgress.BackColor = this.FontColor;
             this.pbrTrackProgress.ForeColor = this.BackgroundColor;
+
+            this.pnlMarkerBackground.BackColor = this.BackgroundColor;
+
+            this.prbVolume.BackColor = this.FontColor;
+            this.prbVolume.ForeColor = this.BackgroundColor;
 
         }
 
@@ -261,6 +284,8 @@ namespace MitoPlayer_2024
             this.lblTrackEnd.Text = "";
             this.pbrTrackProgress.Value = 0;
             this.pbrTrackProgress.Hide();
+            this.lblTrackStart.Hide();
+            this.lblTrackEnd.Hide();
         }
         private void menuStripPause_Click(object sender, EventArgs e)
         {
@@ -373,6 +398,8 @@ namespace MitoPlayer_2024
             this.lblTrackEnd.Text = "";
             this.pbrTrackProgress.Value = 0;
             this.pbrTrackProgress.Hide();
+            this.lblTrackStart.Hide();
+            this.lblTrackEnd.Hide();
         }
         private void btnPause_Click(object sender, EventArgs e)
         {
@@ -391,12 +418,6 @@ namespace MitoPlayer_2024
             this.ChangeProgress?.Invoke(this, new ListEventArgs() { IntegerField1 = e.X, IntegerField2 = pbrTrackProgress.Width });
         }
 
-        private void trackVolume_Scroll(object sender, EventArgs e)
-        {
-            this.chbMute.Checked = false;
-            this.lblVolume.Text = this.trackVolume.Value.ToString() + "%";
-            this.ChangeVolume?.Invoke(this, new ListEventArgs() { IntegerField1 = this.trackVolume.Value });
-        }
         private void chbMute_CheckedChanged(object sender, EventArgs e)
         {
             this.ChangeMute?.Invoke(this, new ListEventArgs() { BooleanField1 = this.chbMute.Checked }); 
@@ -421,8 +442,7 @@ namespace MitoPlayer_2024
         //SETVOLUME - INIT VOLUME FROM SETTING
         public void SetVolume(int volume)
         {
-            trackVolume.Value = volume;
-            lblVolume.Text = volume.ToString() + "%";
+            this.prbVolume.Value = volume;
         }
         public void SetMuted(bool isMuted)
         {
@@ -433,20 +453,216 @@ namespace MitoPlayer_2024
 
         //CALL FROM PLAYLIST VIEW 
         //UPDATE ELAPSED DATE, DURATION AND PROGRESS BAR VIA TIMER
+
+        public void UpdateAfterPlayTrack(String artist)
+        {
+            this.tmrPlayer.Stop();
+            this.tmrPlayer.Start();
+            this.lblCurrentTrack.Text = artist;
+        }
+        public void UpdateAfterPlayTrackAfterPause()
+        {
+            this.tmrPlayer.Stop();
+            this.tmrPlayer.Start();
+            this.lblCurrentTrack.Text = this.lblCurrentTrack.Text.Replace("Paused: ", "Playing: ");
+        }
+        public void UpdateAfterStopTrack()
+        {
+            this.tmrPlayer.Stop();
+            this.lblCurrentTrack.Text = "Playing: -";
+
+            leftReferenceHeight = this.pcbMasterPeakLeftColoured.Height;
+            rightReferenceHeight = this.pcbMasterPeakLeftColoured.Height;
+            this.pcbMasterPeakLeftBackground.Height = leftReferenceHeight;
+            this.pcbMasterPeakRightBackground.Height = rightReferenceHeight;
+        }
+        public void UpdateAfterPauseTrack()
+        {
+            this.tmrPlayer.Stop();
+            this.lblCurrentTrack.Text = this.lblCurrentTrack.Text.Replace("Playing: ", "Paused: ");
+
+            leftReferenceHeight = this.pcbMasterPeakLeftColoured.Height;
+            rightReferenceHeight = this.pcbMasterPeakLeftColoured.Height;
+            this.pcbMasterPeakLeftBackground.Height = leftReferenceHeight;
+            this.pcbMasterPeakRightBackground.Height = rightReferenceHeight;
+        }
+        private int leftReferenceHeight = 0;
+        private int rightReferenceHeight = 0;
+
         public void UpdateMediaPlayerProgressStatus(double duration, String durationString, double currentPosition, String currentPositionString)
         {
             if((int)currentPosition > 0)
             {
                 this.pbrTrackProgress.Show();
+                this.lblTrackStart.Show();
+                this.lblTrackEnd.Show();
             }
             this.pbrTrackProgress.Maximum = (int)duration;
             this.pbrTrackProgress.Value = (int)currentPosition;
             this.lblTrackEnd.Text = durationString;
             this.lblTrackStart.Text = currentPositionString;
+
         }
 
+        private bool masterPeakLeftGreenEnabled = false;
+        private bool masterPeakLeftOrangeEnabled = false;
+        private bool masterPeakLeftRedEnabled = false;
         
+        private bool masterPeakRightGreenEnabled = false;
+        private bool masterPeakRightOrangeEnabled = false;
+        private bool masterPeakRightRedEnabled = false;
 
         
+        private int medPeakThreshold = 60;
+        private int highPeakThreshold = 80;
+
+        private void tmrPlayer_Tick(object sender, EventArgs e)
+        {
+            this.GetMediaPlayerProgressStatusEvent?.Invoke(this, EventArgs.Empty);
+        }
+
+
+
+        private DateTime? currentTime = null;
+        private DateTime? lastCurrentTime = null;
+        private DateTime? lastCurrentTimeForPeak = null;
+        private List<float> peakDecibelList = new List<float>();
+
+        int leftPeak, rightPeak, masterPeak;
+        float masterPeakInDecibel;
+        int peakLineY;
+
+        private void prbVolume_MouseDown(object sender, MouseEventArgs e)
+        {
+            this.chbMute.Checked = false;
+
+            if (e.X > 100)
+            {
+                this.prbVolume.Value = 100;
+            }
+            else
+            {
+                this.prbVolume.Value = e.X;
+            }
+
+            this.ChangeVolume?.Invoke(this, new ListEventArgs() { IntegerField1 = e.X });
+        }
+
+        private void tmrPeak_Tick(object sender, EventArgs e)
+        {
+            if (this.mmDevice != null)
+            {
+                if (this.mmDevice.AudioMeterInformation.PeakValues.Count > 1)
+                {
+                    leftReferenceHeight = this.pcbMasterPeakLeftColoured.Height;
+                    rightReferenceHeight = this.pcbMasterPeakLeftColoured.Height;
+
+                    leftPeak = (int)(Math.Round(this.mmDevice.AudioMeterInformation.PeakValues[0] * 100));
+                    rightPeak = (int)(Math.Round(this.mmDevice.AudioMeterInformation.PeakValues[1] * 100));
+                    masterPeak = (int)(Math.Round(this.mmDevice.AudioMeterInformation.MasterPeakValue * 100));
+
+                    masterPeakInDecibel = this.ConvertToDecibels(this.mmDevice.AudioMeterInformation.MasterPeakValue);
+
+                    this.pcbMasterPeakLeftBackground.Height = leftReferenceHeight - leftPeak * (leftReferenceHeight / 100);
+                    this.pcbMasterPeakRightBackground.Height = rightReferenceHeight - rightPeak * (leftReferenceHeight / 100);
+
+                    currentTime = DateTime.Now;
+
+                    if(!lastCurrentTime.HasValue)
+                    {
+                        lastCurrentTime = currentTime;
+                    }
+                    else
+                    {
+                        if (lastCurrentTime.Value.AddMilliseconds(100) < currentTime)
+                        {
+                            lastCurrentTime = currentTime;
+
+                            if(peakDecibelList.Count() < 10)
+                            {
+                                peakDecibelList.Insert(0, masterPeakInDecibel);
+                                
+                            }
+                            else
+                            {
+                                peakDecibelList.Insert(0, masterPeakInDecibel);
+                                peakDecibelList.RemoveAt(peakDecibelList.Count - 1);
+                               
+                            }
+                        }
+                    }
+
+                    if (!lastCurrentTimeForPeak.HasValue)
+                    {
+                        lastCurrentTimeForPeak = currentTime;
+                        peakLineY = rightReferenceHeight - masterPeak * (leftReferenceHeight / 100);
+                        this.pcbMarkerGrey.Location = new Point(0, peakLineY);
+                       // this.pcbMarkerOrange.Location = new Point(0, peakLineY);
+                        this.pcbMarkerRed.Location = new Point(0, peakLineY);
+                    }
+                    else
+                    {
+                        if (lastCurrentTimeForPeak.Value.AddMilliseconds(1000) < currentTime)
+                        {
+                            lastCurrentTimeForPeak = currentTime;
+
+                            if (peakDecibelList.Count > 0)
+                            {
+                                float averagePeak = peakDecibelList.Max();
+
+                                if (averagePeak != float.NegativeInfinity)
+                                {
+                                    this.lblPeak.Text = averagePeak.ToString("N3") + " dB";
+                                }
+                                else
+                                {
+                                    this.lblPeak.Text ="";
+                                }
+
+                                peakLineY = rightReferenceHeight - masterPeak * (leftReferenceHeight / 100);
+                                this.pcbMarkerGrey.Location = new Point(0, peakLineY);
+                               // this.pcbMarkerOrange.Location = new Point(0, peakLineY);
+                                this.pcbMarkerRed.Location = new Point(0, peakLineY);
+
+                                if (averagePeak > -1)
+                                {
+                                    this.lblPeak.ForeColor = this.WarningColor;
+                                    this.pcbMarkerGrey.Hide();
+                                    //this.pcbMarkerOrange.Hide();
+                                    this.pcbMarkerRed.Show();
+                                }
+                                else if(averagePeak <= -1 && averagePeak > -3)
+                                {
+                                    this.lblPeak.ForeColor = this.FontColor;
+                                    this.pcbMarkerGrey.Show();
+                                   // this.pcbMarkerOrange.Show();
+                                    this.pcbMarkerRed.Hide();
+                                }
+                                else
+                                {
+                                    this.lblPeak.ForeColor = this.FontColor;
+                                    this.pcbMarkerGrey.Show();
+                                   // this.pcbMarkerOrange.Hide();
+                                    this.pcbMarkerRed.Hide();
+                                }
+                               
+                            }
+                        }
+                    }
+
+
+                }
+            }
+        }
+
+        public float ConvertToDecibels(float value)
+        {
+            if (value <= 0)
+            {
+                return float.NegativeInfinity; // Handle log(0) case
+            }
+            return 20 * (float)Math.Log10(value);
+        }
     }
+
 }

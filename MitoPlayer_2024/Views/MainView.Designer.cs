@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainView));
             this.strMenu = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -71,20 +72,27 @@
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStripAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.pnlMainMenu = new System.Windows.Forms.Panel();
+            this.lblPeak = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.pcbMasterPeakRightBackground = new System.Windows.Forms.PictureBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.pcbMasterPeakRightColoured = new System.Windows.Forms.PictureBox();
+            this.pcbMasterPeakLeftBackground = new System.Windows.Forms.PictureBox();
             this.btnHarmonizer = new System.Windows.Forms.Button();
             this.btnTemplates = new System.Windows.Forms.Button();
             this.btnRules = new System.Windows.Forms.Button();
+            this.pcbMasterPeakLeftColoured = new System.Windows.Forms.PictureBox();
             this.btnTracks = new System.Windows.Forms.Button();
             this.btnTagValues = new System.Windows.Forms.Button();
             this.btnPlaylist = new System.Windows.Forms.Button();
             this.pnlMediaPlayer = new System.Windows.Forms.Panel();
-            this.lblVolume = new System.Windows.Forms.Label();
+            this.prbVolume = new System.Windows.Forms.ProgressBar();
+            this.lblCurrentTrack = new System.Windows.Forms.Label();
+            this.lblTrackEnd = new System.Windows.Forms.Label();
             this.btnOpenDirectory = new System.Windows.Forms.Button();
             this.btnOpen = new System.Windows.Forms.Button();
             this.pbrTrackProgress = new System.Windows.Forms.ProgressBar();
             this.chbShuffle = new System.Windows.Forms.CheckBox();
-            this.lblTrackEnd = new System.Windows.Forms.Label();
-            this.trackVolume = new System.Windows.Forms.TrackBar();
             this.chbMute = new System.Windows.Forms.CheckBox();
             this.lblTrackStart = new System.Windows.Forms.Label();
             this.btnNext = new System.Windows.Forms.Button();
@@ -93,11 +101,22 @@
             this.btnPrev = new System.Windows.Forms.Button();
             this.btnPlay = new System.Windows.Forms.Button();
             this.mediaPlayer = new AxWMPLib.AxWindowsMediaPlayer();
+            this.tmrPlayer = new System.Windows.Forms.Timer(this.components);
+            this.tmrPeak = new System.Windows.Forms.Timer(this.components);
+            this.pnlMarkerBackground = new System.Windows.Forms.Panel();
+            this.pcbMarkerGrey = new System.Windows.Forms.PictureBox();
+            this.pcbMarkerRed = new System.Windows.Forms.PictureBox();
             this.strMenu.SuspendLayout();
             this.pnlMainMenu.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pcbMasterPeakRightBackground)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pcbMasterPeakRightColoured)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pcbMasterPeakLeftBackground)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pcbMasterPeakLeftColoured)).BeginInit();
             this.pnlMediaPlayer.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackVolume)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.mediaPlayer)).BeginInit();
+            this.pnlMarkerBackground.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pcbMarkerGrey)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pcbMarkerRed)).BeginInit();
             this.SuspendLayout();
             // 
             // strMenu
@@ -415,17 +434,93 @@
             // 
             // pnlMainMenu
             // 
+            this.pnlMainMenu.Controls.Add(this.lblPeak);
+            this.pnlMainMenu.Controls.Add(this.label2);
+            this.pnlMainMenu.Controls.Add(this.pcbMasterPeakRightBackground);
+            this.pnlMainMenu.Controls.Add(this.label1);
+            this.pnlMainMenu.Controls.Add(this.pcbMasterPeakRightColoured);
+            this.pnlMainMenu.Controls.Add(this.pcbMasterPeakLeftBackground);
             this.pnlMainMenu.Controls.Add(this.btnHarmonizer);
             this.pnlMainMenu.Controls.Add(this.btnTemplates);
             this.pnlMainMenu.Controls.Add(this.btnRules);
+            this.pnlMainMenu.Controls.Add(this.pcbMasterPeakLeftColoured);
             this.pnlMainMenu.Controls.Add(this.btnTracks);
             this.pnlMainMenu.Controls.Add(this.btnTagValues);
             this.pnlMainMenu.Controls.Add(this.btnPlaylist);
+            this.pnlMainMenu.Controls.Add(this.mediaPlayer);
             this.pnlMainMenu.Dock = System.Windows.Forms.DockStyle.Left;
             this.pnlMainMenu.Location = new System.Drawing.Point(0, 24);
             this.pnlMainMenu.Name = "pnlMainMenu";
             this.pnlMainMenu.Size = new System.Drawing.Size(91, 744);
             this.pnlMainMenu.TabIndex = 2;
+            // 
+            // lblPeak
+            // 
+            this.lblPeak.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.lblPeak.Location = new System.Drawing.Point(3, 374);
+            this.lblPeak.Name = "lblPeak";
+            this.lblPeak.Size = new System.Drawing.Size(85, 37);
+            this.lblPeak.TabIndex = 9;
+            this.lblPeak.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label2
+            // 
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(42, 722);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(15, 13);
+            this.label2.TabIndex = 49;
+            this.label2.Text = "R";
+            // 
+            // pcbMasterPeakRightBackground
+            // 
+            this.pcbMasterPeakRightBackground.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.pcbMasterPeakRightBackground.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.pcbMasterPeakRightBackground.Image = global::MitoPlayer_2024.Properties.Resources.MasterPeakBackground;
+            this.pcbMasterPeakRightBackground.Location = new System.Drawing.Point(37, 414);
+            this.pcbMasterPeakRightBackground.Name = "pcbMasterPeakRightBackground";
+            this.pcbMasterPeakRightBackground.Size = new System.Drawing.Size(25, 300);
+            this.pcbMasterPeakRightBackground.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pcbMasterPeakRightBackground.TabIndex = 7;
+            this.pcbMasterPeakRightBackground.TabStop = false;
+            // 
+            // label1
+            // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(11, 722);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(13, 13);
+            this.label1.TabIndex = 48;
+            this.label1.Text = "L";
+            // 
+            // pcbMasterPeakRightColoured
+            // 
+            this.pcbMasterPeakRightColoured.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.pcbMasterPeakRightColoured.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.pcbMasterPeakRightColoured.Image = global::MitoPlayer_2024.Properties.Resources.MasterPeakColoured1;
+            this.pcbMasterPeakRightColoured.Location = new System.Drawing.Point(37, 414);
+            this.pcbMasterPeakRightColoured.Name = "pcbMasterPeakRightColoured";
+            this.pcbMasterPeakRightColoured.Size = new System.Drawing.Size(25, 300);
+            this.pcbMasterPeakRightColoured.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pcbMasterPeakRightColoured.TabIndex = 8;
+            this.pcbMasterPeakRightColoured.TabStop = false;
+            // 
+            // pcbMasterPeakLeftBackground
+            // 
+            this.pcbMasterPeakLeftBackground.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.pcbMasterPeakLeftBackground.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.pcbMasterPeakLeftBackground.Image = global::MitoPlayer_2024.Properties.Resources.MasterPeakBackground;
+            this.pcbMasterPeakLeftBackground.Location = new System.Drawing.Point(6, 414);
+            this.pcbMasterPeakLeftBackground.Name = "pcbMasterPeakLeftBackground";
+            this.pcbMasterPeakLeftBackground.Size = new System.Drawing.Size(25, 300);
+            this.pcbMasterPeakLeftBackground.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pcbMasterPeakLeftBackground.TabIndex = 7;
+            this.pcbMasterPeakLeftBackground.TabStop = false;
             // 
             // btnHarmonizer
             // 
@@ -460,6 +555,19 @@
             this.btnRules.Text = "Rules";
             this.btnRules.UseVisualStyleBackColor = false;
             this.btnRules.Click += new System.EventHandler(this.btnRules_Click);
+            // 
+            // pcbMasterPeakLeftColoured
+            // 
+            this.pcbMasterPeakLeftColoured.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.pcbMasterPeakLeftColoured.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.pcbMasterPeakLeftColoured.Image = global::MitoPlayer_2024.Properties.Resources.MasterPeakColoured1;
+            this.pcbMasterPeakLeftColoured.Location = new System.Drawing.Point(6, 414);
+            this.pcbMasterPeakLeftColoured.Name = "pcbMasterPeakLeftColoured";
+            this.pcbMasterPeakLeftColoured.Size = new System.Drawing.Size(25, 300);
+            this.pcbMasterPeakLeftColoured.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pcbMasterPeakLeftColoured.TabIndex = 8;
+            this.pcbMasterPeakLeftColoured.TabStop = false;
             // 
             // btnTracks
             // 
@@ -496,46 +604,65 @@
             // 
             // pnlMediaPlayer
             // 
-            this.pnlMediaPlayer.Controls.Add(this.lblVolume);
+            this.pnlMediaPlayer.Controls.Add(this.prbVolume);
+            this.pnlMediaPlayer.Controls.Add(this.lblCurrentTrack);
+            this.pnlMediaPlayer.Controls.Add(this.lblTrackEnd);
             this.pnlMediaPlayer.Controls.Add(this.btnOpenDirectory);
             this.pnlMediaPlayer.Controls.Add(this.btnOpen);
             this.pnlMediaPlayer.Controls.Add(this.pbrTrackProgress);
-            this.pnlMediaPlayer.Controls.Add(this.chbShuffle);
-            this.pnlMediaPlayer.Controls.Add(this.lblTrackEnd);
-            this.pnlMediaPlayer.Controls.Add(this.trackVolume);
             this.pnlMediaPlayer.Controls.Add(this.chbMute);
+            this.pnlMediaPlayer.Controls.Add(this.chbShuffle);
             this.pnlMediaPlayer.Controls.Add(this.lblTrackStart);
             this.pnlMediaPlayer.Controls.Add(this.btnNext);
             this.pnlMediaPlayer.Controls.Add(this.btnStop);
             this.pnlMediaPlayer.Controls.Add(this.btnPause);
             this.pnlMediaPlayer.Controls.Add(this.btnPrev);
             this.pnlMediaPlayer.Controls.Add(this.btnPlay);
-            this.pnlMediaPlayer.Controls.Add(this.mediaPlayer);
             this.pnlMediaPlayer.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlMediaPlayer.Location = new System.Drawing.Point(91, 24);
             this.pnlMediaPlayer.Name = "pnlMediaPlayer";
-            this.pnlMediaPlayer.Size = new System.Drawing.Size(1237, 47);
+            this.pnlMediaPlayer.Size = new System.Drawing.Size(1237, 44);
             this.pnlMediaPlayer.TabIndex = 4;
             // 
-            // lblVolume
+            // prbVolume
             // 
-            this.lblVolume.AutoSize = true;
-            this.lblVolume.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.lblVolume.Location = new System.Drawing.Point(482, 15);
-            this.lblVolume.Name = "lblVolume";
-            this.lblVolume.Size = new System.Drawing.Size(50, 20);
-            this.lblVolume.TabIndex = 42;
-            this.lblVolume.Text = "100%";
-            this.lblVolume.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.prbVolume.Location = new System.Drawing.Point(281, 10);
+            this.prbVolume.Name = "prbVolume";
+            this.prbVolume.Size = new System.Drawing.Size(107, 23);
+            this.prbVolume.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            this.prbVolume.TabIndex = 12;
+            this.prbVolume.MouseDown += new System.Windows.Forms.MouseEventHandler(this.prbVolume_MouseDown);
+            // 
+            // lblCurrentTrack
+            // 
+            this.lblCurrentTrack.Location = new System.Drawing.Point(394, 3);
+            this.lblCurrentTrack.Name = "lblCurrentTrack";
+            this.lblCurrentTrack.Size = new System.Drawing.Size(207, 38);
+            this.lblCurrentTrack.TabIndex = 50;
+            this.lblCurrentTrack.Text = "Playing: - ";
+            this.lblCurrentTrack.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lblTrackEnd
+            // 
+            this.lblTrackEnd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblTrackEnd.AutoSize = true;
+            this.lblTrackEnd.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.lblTrackEnd.Location = new System.Drawing.Point(1154, 13);
+            this.lblTrackEnd.Name = "lblTrackEnd";
+            this.lblTrackEnd.Size = new System.Drawing.Size(71, 20);
+            this.lblTrackEnd.TabIndex = 43;
+            this.lblTrackEnd.Text = "00:00:00";
             // 
             // btnOpenDirectory
             // 
+            this.btnOpenDirectory.FlatAppearance.BorderSize = 0;
             this.btnOpenDirectory.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnOpenDirectory.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.btnOpenDirectory.Location = new System.Drawing.Point(279, 3);
+            this.btnOpenDirectory.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.btnOpenDirectory.Location = new System.Drawing.Point(183, 3);
+            this.btnOpenDirectory.Margin = new System.Windows.Forms.Padding(0);
             this.btnOpenDirectory.Name = "btnOpenDirectory";
             this.btnOpenDirectory.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.btnOpenDirectory.Size = new System.Drawing.Size(40, 40);
+            this.btnOpenDirectory.Size = new System.Drawing.Size(30, 30);
             this.btnOpenDirectory.TabIndex = 35;
             this.btnOpenDirectory.Text = "🗁";
             this.btnOpenDirectory.UseVisualStyleBackColor = true;
@@ -543,12 +670,14 @@
             // 
             // btnOpen
             // 
+            this.btnOpen.FlatAppearance.BorderSize = 0;
             this.btnOpen.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnOpen.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.btnOpen.Location = new System.Drawing.Point(233, 3);
+            this.btnOpen.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.btnOpen.Location = new System.Drawing.Point(153, 3);
+            this.btnOpen.Margin = new System.Windows.Forms.Padding(0);
             this.btnOpen.Name = "btnOpen";
             this.btnOpen.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.btnOpen.Size = new System.Drawing.Size(40, 40);
+            this.btnOpen.Size = new System.Drawing.Size(30, 30);
             this.btnOpen.TabIndex = 36;
             this.btnOpen.Text = "⏏";
             this.btnOpen.UseVisualStyleBackColor = true;
@@ -558,9 +687,9 @@
             // 
             this.pbrTrackProgress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.pbrTrackProgress.Location = new System.Drawing.Point(689, 14);
+            this.pbrTrackProgress.Location = new System.Drawing.Point(684, 11);
             this.pbrTrackProgress.Name = "pbrTrackProgress";
-            this.pbrTrackProgress.Size = new System.Drawing.Size(432, 23);
+            this.pbrTrackProgress.Size = new System.Drawing.Size(464, 23);
             this.pbrTrackProgress.Step = 1;
             this.pbrTrackProgress.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.pbrTrackProgress.TabIndex = 45;
@@ -569,7 +698,7 @@
             // chbShuffle
             // 
             this.chbShuffle.AutoSize = true;
-            this.chbShuffle.Location = new System.Drawing.Point(538, 18);
+            this.chbShuffle.Location = new System.Drawing.Point(216, 3);
             this.chbShuffle.Name = "chbShuffle";
             this.chbShuffle.Size = new System.Drawing.Size(59, 17);
             this.chbShuffle.TabIndex = 47;
@@ -577,32 +706,10 @@
             this.chbShuffle.UseVisualStyleBackColor = true;
             this.chbShuffle.CheckedChanged += new System.EventHandler(this.chbShuffle_CheckedChanged);
             // 
-            // lblTrackEnd
-            // 
-            this.lblTrackEnd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblTrackEnd.AutoSize = true;
-            this.lblTrackEnd.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.lblTrackEnd.Location = new System.Drawing.Point(1127, 12);
-            this.lblTrackEnd.Name = "lblTrackEnd";
-            this.lblTrackEnd.Size = new System.Drawing.Size(80, 24);
-            this.lblTrackEnd.TabIndex = 43;
-            this.lblTrackEnd.Text = "00:00:00";
-            // 
-            // trackVolume
-            // 
-            this.trackVolume.Location = new System.Drawing.Point(369, 13);
-            this.trackVolume.Maximum = 100;
-            this.trackVolume.Name = "trackVolume";
-            this.trackVolume.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.trackVolume.Size = new System.Drawing.Size(107, 45);
-            this.trackVolume.TabIndex = 46;
-            this.trackVolume.TickFrequency = 10;
-            this.trackVolume.Scroll += new System.EventHandler(this.trackVolume_Scroll);
-            // 
             // chbMute
             // 
             this.chbMute.AutoSize = true;
-            this.chbMute.Location = new System.Drawing.Point(325, 16);
+            this.chbMute.Location = new System.Drawing.Point(216, 23);
             this.chbMute.Name = "chbMute";
             this.chbMute.Size = new System.Drawing.Size(50, 17);
             this.chbMute.TabIndex = 47;
@@ -612,26 +719,26 @@
             // 
             // lblTrackStart
             // 
-            this.lblTrackStart.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTrackStart.AutoSize = true;
-            this.lblTrackStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.lblTrackStart.Location = new System.Drawing.Point(603, 13);
+            this.lblTrackStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.lblTrackStart.Location = new System.Drawing.Point(607, 13);
             this.lblTrackStart.Name = "lblTrackStart";
             this.lblTrackStart.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.lblTrackStart.Size = new System.Drawing.Size(80, 24);
+            this.lblTrackStart.Size = new System.Drawing.Size(71, 20);
             this.lblTrackStart.TabIndex = 44;
             this.lblTrackStart.Text = "00:00:00";
             this.lblTrackStart.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // btnNext
             // 
+            this.btnNext.FlatAppearance.BorderSize = 0;
             this.btnNext.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnNext.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.btnNext.Location = new System.Drawing.Point(187, 3);
+            this.btnNext.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.btnNext.Location = new System.Drawing.Point(123, 3);
+            this.btnNext.Margin = new System.Windows.Forms.Padding(0);
             this.btnNext.Name = "btnNext";
             this.btnNext.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.btnNext.Size = new System.Drawing.Size(40, 40);
+            this.btnNext.Size = new System.Drawing.Size(30, 30);
             this.btnNext.TabIndex = 37;
             this.btnNext.Text = "⏯️";
             this.btnNext.UseVisualStyleBackColor = true;
@@ -639,11 +746,14 @@
             // 
             // btnStop
             // 
+            this.btnStop.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.btnStop.FlatAppearance.BorderSize = 0;
             this.btnStop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnStop.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.btnStop.Location = new System.Drawing.Point(3, 3);
+            this.btnStop.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.btnStop.Location = new System.Drawing.Point(3, 4);
+            this.btnStop.Margin = new System.Windows.Forms.Padding(0);
             this.btnStop.Name = "btnStop";
-            this.btnStop.Size = new System.Drawing.Size(40, 40);
+            this.btnStop.Size = new System.Drawing.Size(30, 30);
             this.btnStop.TabIndex = 38;
             this.btnStop.Text = "⏹️";
             this.btnStop.UseVisualStyleBackColor = true;
@@ -651,11 +761,13 @@
             // 
             // btnPause
             // 
+            this.btnPause.FlatAppearance.BorderSize = 0;
             this.btnPause.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnPause.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.btnPause.Location = new System.Drawing.Point(49, 3);
+            this.btnPause.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.btnPause.Location = new System.Drawing.Point(33, 3);
+            this.btnPause.Margin = new System.Windows.Forms.Padding(0);
             this.btnPause.Name = "btnPause";
-            this.btnPause.Size = new System.Drawing.Size(40, 40);
+            this.btnPause.Size = new System.Drawing.Size(30, 30);
             this.btnPause.TabIndex = 39;
             this.btnPause.Text = "⏸";
             this.btnPause.UseVisualStyleBackColor = true;
@@ -663,11 +775,13 @@
             // 
             // btnPrev
             // 
+            this.btnPrev.FlatAppearance.BorderSize = 0;
             this.btnPrev.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnPrev.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.btnPrev.Location = new System.Drawing.Point(141, 3);
+            this.btnPrev.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.btnPrev.Location = new System.Drawing.Point(93, 3);
+            this.btnPrev.Margin = new System.Windows.Forms.Padding(0);
             this.btnPrev.Name = "btnPrev";
-            this.btnPrev.Size = new System.Drawing.Size(40, 40);
+            this.btnPrev.Size = new System.Drawing.Size(30, 30);
             this.btnPrev.TabIndex = 40;
             this.btnPrev.Text = "⏮";
             this.btnPrev.UseVisualStyleBackColor = true;
@@ -675,30 +789,72 @@
             // 
             // btnPlay
             // 
+            this.btnPlay.FlatAppearance.BorderSize = 0;
             this.btnPlay.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnPlay.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.btnPlay.Location = new System.Drawing.Point(95, 3);
+            this.btnPlay.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.btnPlay.Location = new System.Drawing.Point(63, 3);
+            this.btnPlay.Margin = new System.Windows.Forms.Padding(0);
             this.btnPlay.Name = "btnPlay";
-            this.btnPlay.Size = new System.Drawing.Size(40, 40);
+            this.btnPlay.Size = new System.Drawing.Size(30, 30);
             this.btnPlay.TabIndex = 41;
-            this.btnPlay.Text = "▶";
+            this.btnPlay.Text = "▷";
             this.btnPlay.UseVisualStyleBackColor = true;
             this.btnPlay.Click += new System.EventHandler(this.btnPlay_Click);
             // 
             // mediaPlayer
             // 
             this.mediaPlayer.Enabled = true;
-            this.mediaPlayer.Location = new System.Drawing.Point(299, 23);
+            this.mediaPlayer.Location = new System.Drawing.Point(65, 21);
             this.mediaPlayer.Name = "mediaPlayer";
             this.mediaPlayer.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("mediaPlayer.OcxState")));
             this.mediaPlayer.Size = new System.Drawing.Size(10, 10);
             this.mediaPlayer.TabIndex = 1;
+            // 
+            // tmrPlayer
+            // 
+            this.tmrPlayer.Tick += new System.EventHandler(this.tmrPlayer_Tick);
+            // 
+            // tmrPeak
+            // 
+            this.tmrPeak.Tick += new System.EventHandler(this.tmrPeak_Tick);
+            // 
+            // pnlMarkerBackground
+            // 
+            this.pnlMarkerBackground.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.pnlMarkerBackground.Controls.Add(this.pcbMarkerGrey);
+            this.pnlMarkerBackground.Controls.Add(this.pcbMarkerRed);
+            this.pnlMarkerBackground.Location = new System.Drawing.Point(65, 438);
+            this.pnlMarkerBackground.Name = "pnlMarkerBackground";
+            this.pnlMarkerBackground.Size = new System.Drawing.Size(20, 300);
+            this.pnlMarkerBackground.TabIndex = 11;
+            // 
+            // pcbMarkerGrey
+            // 
+            this.pcbMarkerGrey.Image = global::MitoPlayer_2024.Properties.Resources.MarkerGrey;
+            this.pcbMarkerGrey.Location = new System.Drawing.Point(0, 300);
+            this.pcbMarkerGrey.Name = "pcbMarkerGrey";
+            this.pcbMarkerGrey.Size = new System.Drawing.Size(20, 6);
+            this.pcbMarkerGrey.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pcbMarkerGrey.TabIndex = 12;
+            this.pcbMarkerGrey.TabStop = false;
+            // 
+            // pcbMarkerRed
+            // 
+            this.pcbMarkerRed.Image = global::MitoPlayer_2024.Properties.Resources.MarkerRed;
+            this.pcbMarkerRed.Location = new System.Drawing.Point(0, 300);
+            this.pcbMarkerRed.Name = "pcbMarkerRed";
+            this.pcbMarkerRed.Size = new System.Drawing.Size(25, 6);
+            this.pcbMarkerRed.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pcbMarkerRed.TabIndex = 14;
+            this.pcbMarkerRed.TabStop = false;
             // 
             // MainView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1328, 768);
+            this.Controls.Add(this.pnlMarkerBackground);
             this.Controls.Add(this.pnlMediaPlayer);
             this.Controls.Add(this.pnlMainMenu);
             this.Controls.Add(this.strMenu);
@@ -713,10 +869,17 @@
             this.strMenu.ResumeLayout(false);
             this.strMenu.PerformLayout();
             this.pnlMainMenu.ResumeLayout(false);
+            this.pnlMainMenu.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pcbMasterPeakRightBackground)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pcbMasterPeakRightColoured)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pcbMasterPeakLeftBackground)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pcbMasterPeakLeftColoured)).EndInit();
             this.pnlMediaPlayer.ResumeLayout(false);
             this.pnlMediaPlayer.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackVolume)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.mediaPlayer)).EndInit();
+            this.pnlMarkerBackground.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pcbMarkerGrey)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pcbMarkerRed)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -767,7 +930,6 @@
         private System.Windows.Forms.Button btnHarmonizer;
         public AxWMPLib.AxWindowsMediaPlayer mediaPlayer;
         private System.Windows.Forms.Panel pnlMediaPlayer;
-        private System.Windows.Forms.TrackBar trackVolume;
         private System.Windows.Forms.Label lblTrackEnd;
         private System.Windows.Forms.Label lblTrackStart;
         private System.Windows.Forms.Button btnOpenDirectory;
@@ -787,7 +949,20 @@
         private System.Windows.Forms.ProgressBar pbrTrackProgress;
         private System.Windows.Forms.CheckBox chbShuffle;
         private System.Windows.Forms.CheckBox chbMute;
-        private System.Windows.Forms.Label lblVolume;
+        private System.Windows.Forms.Timer tmrPlayer;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.PictureBox pcbMasterPeakLeftBackground;
+        private System.Windows.Forms.PictureBox pcbMasterPeakLeftColoured;
+        private System.Windows.Forms.PictureBox pcbMasterPeakRightBackground;
+        private System.Windows.Forms.PictureBox pcbMasterPeakRightColoured;
+        private System.Windows.Forms.Label lblCurrentTrack;
+        private System.Windows.Forms.Label lblPeak;
+        private System.Windows.Forms.Timer tmrPeak;
+        private System.Windows.Forms.PictureBox pcbMarkerGrey;
+        private System.Windows.Forms.Panel pnlMarkerBackground;
+        private System.Windows.Forms.PictureBox pcbMarkerRed;
+        private System.Windows.Forms.ProgressBar prbVolume;
     }
 }
 
