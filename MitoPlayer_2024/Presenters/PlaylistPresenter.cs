@@ -3,6 +3,7 @@ using MitoPlayer_2024.Model;
 using MitoPlayer_2024.Models;
 using MitoPlayer_2024.Views;
 using NAudio.Wave;
+using Org.BouncyCastle.Asn1.Cmp;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -111,6 +112,8 @@ namespace MitoPlayer_2024.Presenters
                 
                 this.InitializeVolume();
                 this.InitializePostKeyAndBpmAnalization();
+
+                this.InitializeCovers();
             }
             catch(Exception ex)
             {
@@ -329,6 +332,10 @@ namespace MitoPlayer_2024.Presenters
 
             this.playlistView.InitializeTrackList(model);
             ((PlaylistView)this.playlistView).UpdateTrackCountAndLength(this.currentPlaylistId);
+
+
+
+            
         }
 
         private MediaPlayerComponent mediaPLayerComponent { get; set; }
@@ -510,6 +517,14 @@ namespace MitoPlayer_2024.Presenters
             }
 
             return result;
+        }
+
+        private void InitializeCovers()
+        {
+            if(this.trackListTable != null && this.trackListTable.Rows.Count > 0)
+            {
+                this.GetNearbyCovers(0);
+            }
         }
 
         #endregion
@@ -1537,6 +1552,95 @@ namespace MitoPlayer_2024.Presenters
         public void SetCurrentTrackEvent(object sender, ListEventArgs e)
         {
             this.mediaPLayerComponent.SetCurrentTrackIndex(e.IntegerField1);
+            if(e.IntegerField1 > -1)
+                this.GetNearbyCovers(e.IntegerField1);
+        }
+
+        private int displayedCoverNumber = 11;
+        private List<Image> coverList;
+
+        private void GetNearbyCovers(int index)
+        {
+            String filePath = String.Empty;
+            List<String> filePathList = new List<String>();
+            coverList = new List<Image>();
+
+            List<bool> mainCoverArray = new List<bool>();
+
+            int startIndex = 0;
+            int finalIndex = 0;
+
+            String selectedPath = this.trackListTable.Rows[index]["Path"].ToString();
+
+            if (this.trackListTable.Rows.Count <= displayedCoverNumber)
+            {
+                startIndex = 0;
+                finalIndex = this.trackListTable.Rows.Count - 1;
+            }
+            else
+            {
+                if(index <= 5)
+                {
+                    startIndex = 0;
+                    finalIndex = displayedCoverNumber;
+                }
+                else if(index > 5 && index + 6 <= this.trackListTable.Rows.Count)
+                {
+                    startIndex = index - 5;
+                    finalIndex = index + 6;
+                }
+                else if (index > 5 && index + 6 > this.trackListTable.Rows.Count)
+                {
+                    startIndex = this.trackListTable.Rows.Count - 10;
+                    finalIndex = this.trackListTable.Rows.Count;
+                }
+            }
+
+            for (int i = startIndex; i < finalIndex; i++)
+            {
+
+                filePath = this.trackListTable.Rows[i]["Path"].ToString();
+                filePathList.Add(filePath);
+
+                if(i == index)
+                {
+                    mainCoverArray.Add(true);
+                }
+                else
+                {
+                    mainCoverArray.Add(false);
+                }
+            }
+
+            if(filePathList != null && filePathList.Count > 0)
+            {
+                foreach(String path in filePathList)
+                {
+                    TagLib.File file = TagLib.File.Create(path);
+                    if (file != null && file.Tag.Pictures.Length > 0)
+                    {
+                        var picture = file.Tag.Pictures[0];
+
+                        using (MemoryStream ms = new MemoryStream(picture.Data.Data))
+                        {
+                            Image coverImage = Image.FromStream(ms);
+                            this.coverList.Add(coverImage);
+                        }
+                    }
+                    else
+                    {
+                    this.coverList.Add(Properties.Resources.MissingCover);
+                    }
+
+                    file.Dispose();
+                }
+                if(this.coverList != null && this.coverList.Count > 0)
+                {
+                    this.playlistView.UpdateCoverList(this.coverList, mainCoverArray);
+                }
+            }
+
+
         }
         public void PlayTrackEvent(object sender, ListEventArgs e)
         {
@@ -2159,7 +2263,16 @@ namespace MitoPlayer_2024.Presenters
             }
 
             this.isFilterModeEnabled = true;
-            this.mediaPLayerComponent.SetWorkingTable(this.trackListTable);
+
+            DataView dv = this.trackListTable.DefaultView;
+            dv.RowFilter = "";
+            DataTable filteredDT = dv.ToTable();
+            this.filteredTrackListTable = filteredDT;
+            this.trackListBindingSource.DataSource = this.filteredTrackListTable;
+            this.InitializeTrackList(this.filteredTrackListTable, this.mediaPLayerComponent.CurrentTrackIdInPlaylist);
+
+            this.isFilterModeEnabled = true;
+            this.mediaPLayerComponent.SetWorkingTable(this.filteredTrackListTable);
         }
         private void EnableSetterModeEvent(object sender, EventArgs e)
         {

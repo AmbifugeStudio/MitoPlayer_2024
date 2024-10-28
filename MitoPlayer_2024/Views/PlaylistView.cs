@@ -8,6 +8,8 @@ using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Printing;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
@@ -77,6 +79,8 @@ namespace MitoPlayer_2024.Views
         private int trackListLeftOffset = 190;
         private int trackListRightOffset = 285;
         private int tagValueEditorPanelBottomOffset = 25;
+        private int coverImageSize = 60;
+        private int mainCoverImageSize = 75;
 
         private bool isFilterEnabled = false;
 
@@ -99,6 +103,7 @@ namespace MitoPlayer_2024.Views
         Color GridPlayingColor = System.Drawing.ColorTranslator.FromHtml("#4d4d4d");
         Color GridSelectionColor = System.Drawing.ColorTranslator.FromHtml("#626262");
         Color ActiveButtonColor = System.Drawing.ColorTranslator.FromHtml("#FFBF80");
+        
         private void SetControlColors()
         {
             this.BackColor = this.BackgroundColor;
@@ -407,6 +412,8 @@ namespace MitoPlayer_2024.Views
         private bool controlKey = false;
         private void dgvTrackList_SelectionChanged(object sender, EventArgs e)
         {
+            if(this.dgvTrackList != null && this.dgvTrackList.SelectedCells.Count > 0)
+                this.SetCurrentTrackEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = this.dgvTrackList.SelectedCells[0].RowIndex });
 
             if (this.dgvTrackList.SelectedRows != null && this.dgvTrackList.SelectedRows.Count > 0)
             {
@@ -490,7 +497,7 @@ namespace MitoPlayer_2024.Views
             {
                 int rowIndex = this.dgvTrackList.Rows.IndexOf(this.dgvTrackList.SelectedRows[0]);
 
-                this.CallSetCurrentTrackEvent(rowIndex);
+               // this.CallSetCurrentTrackEvent(rowIndex);
                 this.CallStopTrackEvent();
                 this.CallPlayTrackEvent();
             }
@@ -581,53 +588,75 @@ namespace MitoPlayer_2024.Views
         private bool prepareToDragOneRow = false;
         private void dgvTrackList_MouseDown(object sender, MouseEventArgs e) 
         {
-          /*  HitTestInfo hitTest = this.dgvTrackList.HitTest(e.X, e.Y);
-            if (hitTest != null && hitTest.RowIndex > -1)
+            /*
+            var hitTestInfo = dgvTrackList.HitTest(e.X, e.Y);
+            if (hitTestInfo.RowIndex >= 0)
             {
-                this.currentRowIndex = hitTest.RowIndex;
-
-                if (this.dgvTrackList.Rows[hitTest.RowIndex].Selected)
-                {
-                    if (!this.controlKey)
-                    {
-                        if (this.dgvTrackList.Rows.Count != this.dgvTrackList.SelectedRows.Count)
-                        {
-                            
-                            if (this.dgvTrackList.SelectedRows.Count > 1)
-                            {
-                                this.dragMultipleRow = true;
-                                this.Drag();
-                            }
-                            else
-                            {
-                                this.prepareToDragOneRow = true;
-                            } 
-                        }
-                    }
-                }
+                string filePath = dgvTrackList.Rows[hitTestInfo.RowIndex].Cells["Path"].Value.ToString();
+                DataObject dataObject = new DataObject(DataFormats.FileDrop, new string[] { filePath });
+                dgvTrackList.DoDragDrop(dataObject, DragDropEffects.Copy);
             }*/
+
+
+
+
+
+
+            /* HitTestInfo hitTest = this.dgvTrackList.HitTest(e.X, e.Y);
+             if (hitTest != null && hitTest.RowIndex > -1)
+             {
+                 this.currentRowIndex = hitTest.RowIndex;
+
+                 if (this.dgvTrackList.Rows[hitTest.RowIndex].Selected)
+                 {
+                     if (!this.controlKey)
+                     {
+                         if (this.dgvTrackList.Rows.Count != this.dgvTrackList.SelectedRows.Count)
+                         {
+
+                             if (this.dgvTrackList.SelectedRows.Count > 1)
+                             {
+                                 this.dragMultipleRow = true;
+                                 this.Drag();
+                             }
+                             else
+                             {
+                                 this.prepareToDragOneRow = true;
+                             } 
+                         }
+                     }
+                 }
+             }*/
         }
         List<String> dragAndDropPathList = new List<String>();
         List<int> dragAndDropTrackIdInPlaylistList = new List<int>();
         private void Drag()
         {
+            int index = 0;
             if (this.dgvTrackList.SelectedRows != null && this.dgvTrackList.SelectedRows.Count > 0)
             {
                 dragAndDropPathList = new List<String>();
+
+                
                 for (int i = 0; i < this.dgvTrackList.Rows.Count; i++)
                 {
                     if (this.dgvTrackList.Rows[i].Selected)
                     {
-                        dragAndDropTrackIdInPlaylistList.Add(Convert.ToInt32(this.dgvTrackList.Rows[i].Cells["TrackIdInPlaylist"].Value));
-                        dragAndDropPathList.Add(this.dgvTrackList.Rows[i].Cells["Path"].Value.ToString());
+                       // dragAndDropTrackIdInPlaylistList.Add(Convert.ToInt32(this.dgvTrackList.Rows[i].Cells["TrackIdInPlaylist"].Value));
+                        //dragAndDropPathList.Add(this.dgvTrackList.Rows[i].Cells["Path"].Value.ToString());
+
+                        index = i;
+                        break;
                     }
                 }
             }
-            this.dgvTrackList.DoDragDrop(dragAndDropTrackIdInPlaylistList, DragDropEffects.Copy);
+           // this.dgvTrackList.DoDragDrop(dragAndDropTrackIdInPlaylistList, DragDropEffects.Copy);
+            this.dgvTrackList.DoDragDrop(new DataObject(DataFormats.FileDrop, new string[] { this.dgvTrackList.Rows[index].Cells["Path"].Value.ToString() }), DragDropEffects.Scroll);
         }
         private int trackListDropLocationRowIndex = -1;
         private void dgvTrackList_DragOver(object sender, DragEventArgs e)
         {
+            /*
             if (!this.dragPlaylist)
             {
                 if (!e.Data.GetDataPresent(DataFormats.FileDrop))
@@ -677,11 +706,25 @@ namespace MitoPlayer_2024.Views
                 Point clientPoint = this.dgvTrackList.PointToClient(new Point(e.X, e.Y));
                 this.trackListDropLocationRowIndex = this.dgvTrackList.HitTest(clientPoint.X, clientPoint.Y).RowIndex;
                 this.dgvTrackList.Invalidate();
+            }*/
+        }
+
+        private void dgvTrackList_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                e.Effect = DragDropEffects.Copy;
+            }
+            else
+            {
+                e.Effect = DragDropEffects.None;
             }
         }
+
+
         private void dgvTrackList_MouseMove(object sender, MouseEventArgs e)
         {
-            if (this.prepareToDragOneRow && e.Button == MouseButtons.Left)
+           /* if (this.prepareToDragOneRow && e.Button == MouseButtons.Left)
             {
                 Point p = this.dgvTrackList.PointToClient(new Point(e.X, e.Y));
                 int dragIndex = this.dgvTrackList.HitTest(p.X, p.Y).RowIndex;
@@ -691,21 +734,21 @@ namespace MitoPlayer_2024.Views
                     this.dragOneRow = true;
                     this.Drag();
                 }
-            }
+            }*/
         }
         Pen pen2 = new Pen(Color.LightSeaGreen, 4);
         private void dgvTrackList_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
-            if((this.dragMultipleRow || this.dragOneRow) && e.RowIndex == this.trackListDropLocationRowIndex - 1)
+          /*  if((this.dragMultipleRow || this.dragOneRow) && e.RowIndex == this.trackListDropLocationRowIndex - 1)
             {
                 e.Graphics.DrawLine(pen2, e.CellBounds.Left, e.CellBounds.Bottom, e.CellBounds.Right, e.CellBounds.Bottom);
                 e.Handled = true;
-            }
+            }*/
         }
         List<int> oldListTrackIdInPlaylistList = new List<int>();
         private void dgvTrackList_DragDrop(object sender, DragEventArgs e)
         {
-            Point p = this.dgvTrackList.PointToClient(new Point(e.X, e.Y));
+           /* Point p = this.dgvTrackList.PointToClient(new Point(e.X, e.Y));
             int dragIndex = this.dgvTrackList.HitTest(p.X, p.Y).RowIndex;
 
             oldListTrackIdInPlaylistList = new List<int>();
@@ -730,11 +773,11 @@ namespace MitoPlayer_2024.Views
             this.dragMultipleRow = false;
             this.prepareToDragOneRow = false;
             this.dragOneRow = false;
-            this.currentRowIndex = -1;
+            this.currentRowIndex = -1;*/
         }
         public void SetSelectionAfterDragAndDrop(List<int> oldListTrackIdInPlaylistList)
         {
-            this.oldListTrackIdInPlaylistList = oldListTrackIdInPlaylistList;
+           /* this.oldListTrackIdInPlaylistList = oldListTrackIdInPlaylistList;
 
             this.BeginInvoke(new Action(() =>
             {
@@ -751,10 +794,10 @@ namespace MitoPlayer_2024.Views
                     }
                 }
                 oldListTrackIdInPlaylistList = new List<int>();
-            }));
+            }));*/
         }
         private void dgvTrackList_QueryContinueDrag(object sender, QueryContinueDragEventArgs e)
-        {
+        {/*
             if (!this.dragPlaylist)
             {
                 if (Control.MouseButtons != MouseButtons.Left)
@@ -774,7 +817,7 @@ namespace MitoPlayer_2024.Views
                     }
                 }
             }
-            
+            */
         }
 
         #endregion
@@ -796,7 +839,7 @@ namespace MitoPlayer_2024.Views
         //EVENT CALLINGS
         public void CallSetCurrentTrackEvent(int rowIndex = -1)
         {
-            this.SetCurrentTrackEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = rowIndex });
+            //this.SetCurrentTrackEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = rowIndex });
         }
         public void CallPlayTrackEvent()
         {
@@ -1249,7 +1292,7 @@ namespace MitoPlayer_2024.Views
                 if (this.currentPlaylistRowIndex != dragIndex)
                 {
                     this.dragPlaylist = true;
-                    this.DragPlaylist();
+                   // this.DragPlaylist();
                 }
             }
         }
@@ -1516,8 +1559,10 @@ namespace MitoPlayer_2024.Views
 
                         txtBox.KeyDown += new KeyEventHandler(
                              (sender, e) => this.txtbSetTagValue_KeyDown(sender, e, btn));
-                        btn.Click += new System.EventHandler(
-                             (sender, e) => this.btnSetTagValue_Click(sender, e));
+                      /*  btn.Click += new System.EventHandler(
+                             (sender, e) => this.btnSetTagValue_Click(sender, e));*/
+                        btn.MouseDown += new MouseEventHandler(
+                               (sender, e) => this.btnSetTagValue_Click(sender, e));
 
                         gp.Controls.Add(txtBox);
                         gp.Controls.Add(btn);
@@ -1535,9 +1580,12 @@ namespace MitoPlayer_2024.Views
 
                         btn.TagName = gp.Text;
 
-                        btn.Click += new System.EventHandler(
-                                (sender, e) => this.btnClearTagValue_Click(sender, e));
+                       /* btn.Click += new System.EventHandler(
+                                (sender, e) => this.btnClearTagValue_Click(sender, e));*/
                         btn.Location = new Point(buttonsIntervalX, buttonsIntervalY);
+
+                        btn.MouseDown += new MouseEventHandler(
+                                (sender, e) => this.btnClearTagValue_Click(sender, e));
 
                         btn.FlatAppearance.BorderSize = 1;
                         btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -1560,8 +1608,10 @@ namespace MitoPlayer_2024.Views
                             btn.TagValueName = btn.Text;
                             btn.TagValueId = tagValueListContainer[i][j - 1].Id;
 
-                            btn.Click += new System.EventHandler(
-                                    (sender, e) => this.btnSetTagValue_Click(sender, e));
+                           /* btn.Click += new System.EventHandler(
+                                    (sender, e) => this.btnSetTagValue_Click(sender, e));*/
+                            btn.MouseDown += new MouseEventHandler(
+                               (sender, e) => this.btnSetTagValue_Click(sender, e));
 
                             btn.FlatAppearance.BorderSize = 1;
                             btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -1871,7 +1921,7 @@ namespace MitoPlayer_2024.Views
                 this.SetTagValue(sender, e, btn);
             }
         }
-        private void btnClearTagValue_Click(object sender, EventArgs e)
+        private void btnClearTagValue_Click(object sender, MouseEventArgs e)
         {
             TagValueButton button = (sender as TagValueButton);
 
@@ -2003,6 +2053,85 @@ namespace MitoPlayer_2024.Views
             this.SaveTrackListEvent?.Invoke(this, new EventArgs());
         }
 
-       
+
+        public void UpdateCoverList(List<Image> coverList, List<bool> mainCoverArray)
+        {
+            this.grbCovers.Controls.Clear();
+
+            int flowLayoutYOffset = 15;
+            int imageXOffset = 10;
+            int imageYOffset = 10;
+
+            int imageCount = coverList.Count;
+            int imageWidth = coverImageSize;
+            int imageHeight = coverImageSize;
+
+            int imageSpacing = 5;
+            int xPos = 10;
+            int yPos = 10;
+
+            int panelWidth = this.grbCovers.Width;
+
+            int flowLayoutWidth = imageXOffset + ( (imageCount - 1) * (imageWidth + imageSpacing) + 10 + mainCoverImageSize);
+            int flowLayoutHeight = imageYOffset + imageHeight + imageSpacing;
+
+            int a = flowLayoutWidth / 2;
+            int b = this.grbCovers.Width / 2;
+            int c = b - a;
+
+            FlowLayoutPanel flowLayoutPanel = new FlowLayoutPanel
+            {
+                FlowDirection = FlowDirection.LeftToRight,
+                Anchor = AnchorStyles.Top  ,
+                Size = new Size(flowLayoutWidth, flowLayoutHeight),
+                Location = new Point(c, 10),
+            };
+
+            int actualY = 0;
+            int actualImageSize = 0;
+
+            for (int i = 0; i < coverList.Count; i++)
+            {
+                actualY = yPos;
+                actualImageSize = coverImageSize;
+
+                if (mainCoverArray[i])
+                {
+                    actualImageSize = mainCoverImageSize;
+                }
+
+
+                PictureBoxExtension pictureBox = new PictureBoxExtension()
+                {
+                    Image = coverList[i],
+                    SizeMode = PictureBoxSizeMode.StretchImage,
+                    Size = new Size(actualImageSize, actualImageSize),
+                    Location = new Point(xPos, actualY),
+                };
+
+               /* pictureBox.MouseClick += new MouseEventHandler(
+                             (sender, e) => this.pcbCover_MouseClick(sender, e));*/
+
+                flowLayoutPanel.Controls.Add(pictureBox);
+                xPos += pictureBox.Width + imageSpacing;
+            }
+
+            
+
+            //flowLayoutPanel.Width = imageXOffset + 5 + (imageWidth * imageCount) + (imageCount * imageSpacing);
+            //flowLayoutPanel.Height = imageYOffset + imageHeight;
+
+            
+
+            //flowLayoutPanel.Left = (this.ClientSize.Width - flowLayoutPanel.Width) / 2;
+
+            //int leftPadding = (flowLayoutPanel.Width - ((imageWidth * imageCount) + (imageCount * imageSpacing))) / 2;
+            //flowLayoutPanel.Padding = new Padding(leftPadding, 0, 0, 0);
+
+            this.grbCovers.Controls.Add(flowLayoutPanel);
+
+        }
+
+        
     }
 }

@@ -76,6 +76,7 @@ namespace MitoPlayer_2024.Views
 
         void UpdateAfterPlayTrack(int currentTrackIndex, int currentTrackId);
         void UpdateAfterPlayTrackAfterPause();
+        
         void UpdateAfterStopTrack();
         void UpdateAfterPauseTrack();
         void UpdateMediaPlayerProgressStatus(double duration, String durationString, double currentPosition, String currentPositionString);
@@ -88,5 +89,7 @@ namespace MitoPlayer_2024.Views
         void SetMuted(bool isMuted);
         void SetKeyAndBpmAnalization(bool showButton);
         void ChangeSaveButtonColor(bool v);
+
+        void UpdateCoverList(List<Image> coverList, List<bool> index);
     }
 }

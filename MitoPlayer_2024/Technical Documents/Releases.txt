@@ -1,19 +1,9 @@
 ﻿
-======================
-v0.12.14.3
-======================
-OK - FEATURE: decibel peak meter
-OK - REFACTOR: playlist view preparing for album covers
-OK - REFACTOR: media player view refactor
-OK - REFACTOR: media player timer refactor
 
 
-- FEATURE: tagvalue editor right button also should work as turn off filter
-- BUG: sorting does not work in filter mode
+- BUG: too much tag - delete tag, navigate to playlist, panel hides clear filter button in the filter mode
 
-OK - FEATURE: playlist save message
 - FEATURE: set debug message timer time in options
-
 - BUG: column visibility - isdisplayed will be turned off after sorting
 - REFACTOR: column visibility dark mode
 - FEATURE: column visibility changes from context menu of the tracklist column header
@@ -32,6 +22,21 @@ OK - FEATURE: playlist save message
 - FEATURE: progress bar for long loading time
 - FEATURE: load tracklist or navigate away: check save status and show dialog window is there are unsaved progress
 
+======================
+v0.12.14.8
+======================
+OK - REFACTOR: volume progress bar
+OK - FEATURE: playlist save message
+OK - FEATURE: tagvalue editor right button also should work as turn off filter
+OK - BUG: sorting does not work in filter mode
+OK - FEATURE: cover browser (in progress)
+======================
+v0.12.14.3
+======================
+OK - FEATURE: decibel peak meter
+OK - REFACTOR: playlist view preparing for album covers
+OK - REFACTOR: media player view refactor
+OK - REFACTOR: media player timer refactor
 ======================
 v0.12.13.42
 ======================

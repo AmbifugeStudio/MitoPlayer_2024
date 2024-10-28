@@ -178,6 +178,9 @@
     <Compile Include="Helpers\Enums.cs" />
     <Compile Include="Helpers\LabelTimer.cs" />
     <Compile Include="Helpers\ListEventArgs.cs" />
+    <Compile Include="Helpers\PictureBoxExtension.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Helpers\ResultOrError.cs" />
     <Compile Include="Helpers\TagValueFilter.cs" />
     <Compile Include="Helpers\VirtualDJReader.cs" />
@@ -476,6 +479,7 @@
     <None Include="Resources\MasterPeakColoured1.png" />
     <None Include="Resources\MasterPeakMeter.png" />
     <None Include="Resources\MarkerGrey.png" />
+    <None Include="Resources\MissingCover.png" />
     <Content Include="Technical Documents\Releases.txt" />
     <Content Include="Technical Documents\DevProcess.txt" />
     <Content Include="Technical Documents\TestCases.txt" />
