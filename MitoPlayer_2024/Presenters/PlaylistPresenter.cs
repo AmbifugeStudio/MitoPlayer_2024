@@ -5,6 +5,7 @@ using MitoPlayer_2024.Views;
 using NAudio.Wave;
 using Org.BouncyCastle.Asn1.Cmp;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
@@ -13,6 +14,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Drawing;
+
 using Type = System.Type;
 
 namespace MitoPlayer_2024.Presenters
@@ -273,7 +276,7 @@ namespace MitoPlayer_2024.Presenters
                 {
                     actualPlaylist = plsList.Find(x => x.Id == this.currentPlaylistId);
                 }
-                trackList = this.trackDao.GetTracklistByPlaylistId(actualPlaylist.Id, this.tagList);
+                trackList = this.trackDao.GetTracklistWithTagsByPlaylistId(actualPlaylist.Id, this.tagList);
                 this.tracklist = tracklist;
             }
 
@@ -320,6 +323,8 @@ namespace MitoPlayer_2024.Presenters
         }
         private void InitializeTrackList(DataTable trackListTable, int currentTrackIdInPlaylist = -1)
         {
+            this.playlistView.ToggleTracklistSelectionChanged(false);
+
             this.trackListBindingSource.DataSource = trackListTable;
 
             DataTableModel model = new DataTableModel()
@@ -331,11 +336,10 @@ namespace MitoPlayer_2024.Presenters
             };
 
             this.playlistView.InitializeTrackList(model);
+
+            this.playlistView.ToggleTracklistSelectionChanged(true);
             ((PlaylistView)this.playlistView).UpdateTrackCountAndLength(this.currentPlaylistId);
 
-
-
-            
         }
 
         private MediaPlayerComponent mediaPLayerComponent { get; set; }
@@ -535,7 +539,7 @@ namespace MitoPlayer_2024.Presenters
         private void LoadPlaylist(Playlist pls)
         {
 
-                List<Track> trackList = this.trackDao.GetTracklistByPlaylistId(pls.Id, tagList);
+                List<Track> trackList = this.trackDao.GetTracklistWithTagsByPlaylistId(pls.Id, tagList);
                 if (trackList != null && trackList.Count > 0)
                 {
                     foreach (Track track in trackList)
@@ -985,7 +989,7 @@ namespace MitoPlayer_2024.Presenters
                 for(int i = 0;i<= e.SelectedRows.Count - 1; i++)
                 {
                     int trackId = (int)e.SelectedRows[i].Cells["Id"].Value;
-                    Track track = this.trackDao.GetTrack(trackId, this.tagList);
+                    Track track = this.trackDao.GetTrackWithTags(trackId, this.tagList);
                     sourceTrackList.Add(track);
                 }
 
@@ -1014,7 +1018,7 @@ namespace MitoPlayer_2024.Presenters
                     for (int i = 0; i <= e.SelectedRows.Count - 1; i++)
                     {
                         int trackId = (int)e.SelectedRows[i].Cells["Id"].Value;
-                        Track track = this.trackDao.GetTrack(trackId, this.tagList);
+                        Track track = this.trackDao.GetTrackWithTags(trackId, this.tagList);
                         sourceTrackList.Add(track);
                     }
 
@@ -1094,7 +1098,7 @@ namespace MitoPlayer_2024.Presenters
                     }
                     else
                     {
-                        Track trackFromDb = this.trackDao.GetTrackByPath(track.Path, tagList);
+                        Track trackFromDb = this.trackDao.GetTrackWithTagsByPath(track.Path, tagList);
                         if (trackFromDb != null)
                             track = trackFromDb;
 
@@ -1240,7 +1244,7 @@ namespace MitoPlayer_2024.Presenters
         }
         private void AddTracksToPlaylist(int playlistId, List<Track> trackList, int dragIndex = -1, bool internalDragAndDrop = false)
         {
-            List<Track> playlistTracklist = this.trackDao.GetTracklistByPlaylistId(playlistId, this.tagList);
+            List<Track> playlistTracklist = this.trackDao.GetTracklistWithTagsByPlaylistId(playlistId, this.tagList);
 
             if (trackList != null && trackList.Count > 0)
             {
@@ -1557,14 +1561,11 @@ namespace MitoPlayer_2024.Presenters
         }
 
         private int displayedCoverNumber = 11;
-        private List<Image> coverList;
+        private ConcurrentQueue<ImageExtension> coverList;
 
         private void GetNearbyCovers(int index)
         {
-            String filePath = String.Empty;
-            List<String> filePathList = new List<String>();
-            coverList = new List<Image>();
-
+            coverList = new ConcurrentQueue<ImageExtension>();
             List<bool> mainCoverArray = new List<bool>();
 
             int startIndex = 0;
@@ -1596,48 +1597,63 @@ namespace MitoPlayer_2024.Presenters
                 }
             }
 
+            ImageExtension coverImage = null;
+
             for (int i = startIndex; i < finalIndex; i++)
             {
-
-                filePath = this.trackListTable.Rows[i]["Path"].ToString();
-                filePathList.Add(filePath);
+                coverImage = new ImageExtension()
+                {
+                    FilePath = this.trackListTable.Rows[i]["Path"].ToString(),
+                    TrackIdInPlaylist = Convert.ToInt32(this.trackListTable.Rows[i]["TrackIdInPlaylist"]),
+                };
 
                 if(i == index)
                 {
-                    mainCoverArray.Add(true);
+                    coverImage.IsMainCover = true;
                 }
                 else
                 {
-                    mainCoverArray.Add(false);
+                    coverImage.IsMainCover = false;
                 }
+                coverList.Enqueue(coverImage);
             }
 
-            if(filePathList != null && filePathList.Count > 0)
+            if(coverList?.Count > 0)
             {
-                foreach(String path in filePathList)
+                Parallel.ForEach(coverList, preparedCoverImage =>
                 {
-                    TagLib.File file = TagLib.File.Create(path);
-                    if (file != null && file.Tag.Pictures.Length > 0)
+                    try
                     {
-                        var picture = file.Tag.Pictures[0];
-
-                        using (MemoryStream ms = new MemoryStream(picture.Data.Data))
+                        using (TagLib.File file = TagLib.File.Create(preparedCoverImage.FilePath))
                         {
-                            Image coverImage = Image.FromStream(ms);
-                            this.coverList.Add(coverImage);
+                            if (file?.Tag.Pictures.Length > 0)
+                            {
+                                var pictureData = file.Tag.Pictures[0].Data.Data;
+
+                                using (MemoryStream ms = new MemoryStream(pictureData))
+                                {
+                                    ms.Position = 0;
+
+                                    using (Image img = Image.FromStream(ms))
+                                    {
+                                        preparedCoverImage.Image = img.GetThumbnailImage(75, 75, () => false, IntPtr.Zero);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                preparedCoverImage.Image = Properties.Resources.MissingCover;
+                            }
                         }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                    this.coverList.Add(Properties.Resources.MissingCover);
+                        Console.WriteLine($"Error processing file {preparedCoverImage.FilePath}: {ex.Message}");
+                        preparedCoverImage.Image = Properties.Resources.MissingCover;
                     }
+                });
 
-                    file.Dispose();
-                }
-                if(this.coverList != null && this.coverList.Count > 0)
-                {
-                    this.playlistView.UpdateCoverList(this.coverList, mainCoverArray);
-                }
+                this.playlistView.UpdateCoverList(this.coverList);
             }
 
 
@@ -2069,7 +2085,7 @@ namespace MitoPlayer_2024.Presenters
                 using (StreamWriter myStream = new StreamWriter(sfd.FileName))
                 {
                     int playlistId = Convert.ToInt32(this.playlistListTable.Rows[e.IntegerField1]["Id"]);
-                    List<Track> trackList = this.trackDao.GetTracklistByPlaylistId(playlistId, this.tagList);
+                    List<Track> trackList = this.trackDao.GetTracklistWithTagsByPlaylistId(playlistId, this.tagList);
                     if (trackList != null && trackList.Count > 0)
                     {
                         foreach (Track track in trackList)
@@ -2107,7 +2123,7 @@ namespace MitoPlayer_2024.Presenters
                 using (StreamWriter myStream = new StreamWriter(sfd.FileName))
                 {
                     int playlistId = Convert.ToInt32(this.playlistListTable.Rows[e.IntegerField1]["Id"]);
-                    List<Track> trackList = this.trackDao.GetTracklistByPlaylistId(playlistId, this.tagList);
+                    List<Track> trackList = this.trackDao.GetTracklistWithTagsByPlaylistId(playlistId, this.tagList);
                     if (trackList != null && trackList.Count > 0)
                     {
                         foreach (Track track in trackList)
@@ -2138,7 +2154,7 @@ namespace MitoPlayer_2024.Presenters
             ExportToDirectoryView exportToDirectoryView = new ExportToDirectoryView();
 
             int playlistId = Convert.ToInt32(this.playlistListTable.Rows[e.IntegerField1]["Id"]);
-            List<Track> trackList = this.trackDao.GetTracklistByPlaylistId(playlistId, this.tagList);
+            List<Track> trackList = this.trackDao.GetTracklistWithTagsByPlaylistId(playlistId, this.tagList);
             if (trackList != null && trackList.Count > 0)
             {
                 ExportToDirectoryPresenter presenter = new ExportToDirectoryPresenter(exportToDirectoryView, trackList, this.tagDao, this.settingDao);
@@ -2207,7 +2223,7 @@ namespace MitoPlayer_2024.Presenters
                     }
                 }
 
-                List<Track> trackList = this.trackDao.GetTracklistByPlaylistId(this.currentPlaylistId, this.tagList);
+                List<Track> trackList = this.trackDao.GetTracklistWithTagsByPlaylistId(this.currentPlaylistId, this.tagList);
                 if (trackList != null && trackList.Count > 0)
                 {
                     foreach (Track track in trackList)
@@ -2268,8 +2284,13 @@ namespace MitoPlayer_2024.Presenters
             dv.RowFilter = "";
             DataTable filteredDT = dv.ToTable();
             this.filteredTrackListTable = filteredDT;
+
+            this.playlistView.ToggleTracklistSelectionChanged(false);
+
             this.trackListBindingSource.DataSource = this.filteredTrackListTable;
             this.InitializeTrackList(this.filteredTrackListTable, this.mediaPLayerComponent.CurrentTrackIdInPlaylist);
+
+            this.playlistView.ToggleTracklistSelectionChanged(true);
 
             this.isFilterModeEnabled = true;
             this.mediaPLayerComponent.SetWorkingTable(this.filteredTrackListTable);
@@ -2284,9 +2305,13 @@ namespace MitoPlayer_2024.Presenters
                 dv.RowFilter = "";
                 DataTable filteredDT = dv.ToTable();
                 this.trackListTable = filteredDT;
-                this.trackListBindingSource.DataSource = this.trackListTable;
 
+                this.playlistView.ToggleTracklistSelectionChanged(false);
+
+                this.trackListBindingSource.DataSource = this.trackListTable;
                 this.InitializeTrackList(this.trackListTable, this.mediaPLayerComponent.CurrentTrackIdInPlaylist);
+
+                this.playlistView.ToggleTracklistSelectionChanged(true);
             }
 
             this.isFilterModeEnabled = false;
@@ -2321,7 +2346,7 @@ namespace MitoPlayer_2024.Presenters
                                         {
                                             if (rows[i].Selected)
                                             {
-                                                Track track = this.trackDao.GetTrack(Convert.ToInt32(this.trackListTable.Rows[i]["Id"]), this.tagList);
+                                                Track track = this.trackDao.GetTrackWithTags(Convert.ToInt32(this.trackListTable.Rows[i]["Id"]), this.tagList);
                                                 if (track != null)
                                                 {
                                                     foreach (TrackTagValue ttv in track.TrackTagValues)
@@ -2350,7 +2375,7 @@ namespace MitoPlayer_2024.Presenters
                                             int trackIdInPlaylist = Convert.ToInt32(this.trackListTable.Rows[i]["TrackIdInPlaylist"]);
                                             if (trackIdInPlaylist == currentTrackIdInPlaylist)
                                             {
-                                                Track track = this.trackDao.GetTrack(Convert.ToInt32(this.trackListTable.Rows[i]["Id"]), this.tagList);
+                                                Track track = this.trackDao.GetTrackWithTags(Convert.ToInt32(this.trackListTable.Rows[i]["Id"]), this.tagList);
                                                 if (track != null)
                                                 {
                                                     foreach (TrackTagValue ttv in track.TrackTagValues)
@@ -2392,7 +2417,7 @@ namespace MitoPlayer_2024.Presenters
                                         {
                                             if (rows[i].Selected)
                                             {
-                                                Track track = this.trackDao.GetTrack(Convert.ToInt32(this.trackListTable.Rows[i]["Id"]), this.tagList);
+                                                Track track = this.trackDao.GetTrackWithTags(Convert.ToInt32(this.trackListTable.Rows[i]["Id"]), this.tagList);
                                                 if (track != null)
                                                 {
                                                     foreach (TrackTagValue ttv in track.TrackTagValues)
@@ -2419,7 +2444,7 @@ namespace MitoPlayer_2024.Presenters
                                             int trackIdInPlaylist = Convert.ToInt32(this.trackListTable.Rows[i]["TrackIdInPlaylist"]);
                                             if (trackIdInPlaylist == currentTrackIdInPlaylist)
                                             {
-                                                Track track = this.trackDao.GetTrack(Convert.ToInt32(this.trackListTable.Rows[i]["Id"]), this.tagList);
+                                                Track track = this.trackDao.GetTrackWithTags(Convert.ToInt32(this.trackListTable.Rows[i]["Id"]), this.tagList);
                                                 if (track != null)
                                                 {
                                                     foreach (TrackTagValue ttv in track.TrackTagValues)
@@ -2565,7 +2590,7 @@ namespace MitoPlayer_2024.Presenters
                                         {
                                             if (e.Rows[i].Selected)
                                             {
-                                                Track track = this.trackDao.GetTrack(Convert.ToInt32(this.trackListTable.Rows[i]["Id"]), this.tagList);
+                                                Track track = this.trackDao.GetTrackWithTags(Convert.ToInt32(this.trackListTable.Rows[i]["Id"]), this.tagList);
                                                 if (track != null)
                                                 {
                                                     foreach (TrackTagValue ttv in track.TrackTagValues)
@@ -2594,7 +2619,7 @@ namespace MitoPlayer_2024.Presenters
                                             int trackIdInPlaylist = Convert.ToInt32(this.trackListTable.Rows[i]["TrackIdInPlaylist"]);
                                             if (trackIdInPlaylist == currentTrackIdInPlaylist)
                                             {
-                                                Track track = this.trackDao.GetTrack(Convert.ToInt32(this.trackListTable.Rows[i]["Id"]), this.tagList);
+                                                Track track = this.trackDao.GetTrackWithTags(Convert.ToInt32(this.trackListTable.Rows[i]["Id"]), this.tagList);
                                                 if (track != null)
                                                 {
                                                     foreach (TrackTagValue ttv in track.TrackTagValues)
@@ -2754,10 +2779,13 @@ namespace MitoPlayer_2024.Presenters
 
                 DataTable filteredDT = dv.ToTable();
                 this.filteredTrackListTable = filteredDT;
-                this.trackListBindingSource.DataSource = this.filteredTrackListTable;
 
+                this.playlistView.ToggleTracklistSelectionChanged(false);
+
+                this.trackListBindingSource.DataSource = this.filteredTrackListTable;
                 this.InitializeTrackList(this.filteredTrackListTable, this.mediaPLayerComponent.CurrentTrackIdInPlaylist);
-                
+
+                this.playlistView.ToggleTracklistSelectionChanged(true);
             }
 
             this.mediaPLayerComponent.SetWorkingTable(this.filteredTrackListTable);

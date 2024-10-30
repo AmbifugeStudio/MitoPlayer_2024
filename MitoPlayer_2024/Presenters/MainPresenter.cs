@@ -15,6 +15,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using static Mysqlx.Expect.Open.Types.Condition.Types;
@@ -784,26 +785,12 @@ namespace MitoPlayer_2024.Presenters
         {
             List<String> filePathList = new List<String>();
             List<Track> trackList = new List<Track>();
+
             if (fileNames != null && fileNames.Length > 0)
             {
-                //PATH-OK ÖSSZEGYŰJTÉSE
-                //kapunk egy csomó fájlnevet, ezek path-ok lesznek
-                //végigmegyünk a fájlneveken, ami mp3,wav,flac, azt hozzáadjuk külön egy path listához
-                //ami m3u, azt beolvassuk. Végigmegyünk az m3u fájl tartalmán és azokat a sorokat megvizgsáljuk, ahol a második karakter kettőspont, a harmadik pedig visszaperjel
-                //ezek a sorok valamilyen útvonalat jelölnek (pl.: "D:\..."), ezért ezeket is hozzáadjuk a fenti path listához
-                //tehát audio fájlok útvonalai, valamint m3u-ban levő audio fájlok útvonalait összegyűjtjük
-
                 foreach (String path in fileNames)
                 {
-                    if (path.Contains(".mp3"))
-                    {
-                        filePathList.Add(path);
-                    }
-                    else if (path.Contains(".wav"))
-                    {
-                        filePathList.Add(path);
-                    }
-                    else if (path.Contains(".flac"))
+                    if (path.EndsWith(".mp3") || path.EndsWith(".wav") || path.EndsWith(".flac"))
                     {
                         filePathList.Add(path);
                     }
@@ -817,9 +804,7 @@ namespace MitoPlayer_2024.Presenters
                             String line;
                             while ((line = streamReader.ReadLine()) != null)
                             {
-                                firstThreeCharacter = line.Substring(0, 3).ToCharArray();
-
-                                if (firstThreeCharacter[1] == ':' && firstThreeCharacter[2] == '\\')
+                                if (line.Length > 2 && line[1] == ':' && line[2] == '\\')
                                 {
                                     filePathList.Add(line);
                                 }
@@ -830,31 +815,11 @@ namespace MitoPlayer_2024.Presenters
 
                 List<Tag> tagList = tagDao.GetAllTag();
 
-                //FÁJLOKBÓL TRACK
-                //végigmegyünk a path list-en, csinálunk egy új Track objektumot, belerakjuk a path-t
-                //levágjuk a path-ból az útvonal elejét és a kiterjesztést, ez lesz a fájlnév, ezt is a Track-be rakjuk
-                //Q: mire használjuk ezt?
-
-                foreach (string path in filePathList)
+                foreach(var path in filePathList)
                 {
-                    string fileName = "";
-
-                    Track track = new Track();
-                    track.Path = path;
-
-                    int extCharCount = path.EndsWith("flac") ? 5 : 4;
-                    fileName = path.Substring(path.LastIndexOf(@"\") + 1);
-                    fileName = fileName.Remove(fileName.LastIndexOf("."), extCharCount);
-
+                    var track = new Track() { Path = path };
+                    var fileName = Path.GetFileNameWithoutExtension(path);
                     track.FileName = fileName;
-                    track.Album = "";
-                    track.Title = "";
-
-                    //METAADATOK GYŰJTÉSE
-                    //ha a path nem létező fájlra mutat, akkor a Track-ben true-ra rakjuk az IsMissing flag-et
-                    //ha létező fájlra mutat, akkor megnézzük, hogy szerepel-e már az adatbázisunkban
-                    //ha szerepel, akkor csak betöltjük
-                    //ha nem szerepel, akkor a fájlból megsejtjük a különböző metaadatokat
 
                     if (!System.IO.File.Exists(path))
                     {
@@ -863,10 +828,7 @@ namespace MitoPlayer_2024.Presenters
                     }
                     else
                     {
-                        //ha a fájlt korábban már beolvastuk, akkor létezik az adatbázisban
-                        //ebben az esetben a metaadatokat onnan szedjük
-
-                        Track trackFromDb = this.trackDao.GetTrackByPath(track.Path, tagList);
+                        Track trackFromDb = this.trackDao.GetTrackWithTagsByPath(track.Path, tagList);
                         if (trackFromDb != null)
                         {
                             track = trackFromDb;
@@ -874,157 +836,80 @@ namespace MitoPlayer_2024.Presenters
                         }
                         else
                         {
-                            //ahol az artist nem sikerül beolvasni, ott az artist a fájlnév lesz
-                            //mp3 esetén TagLib-bel olvassuk be a metaadatokat (artist, title, album, year, length)
-                            //wav esetén csak a számhosszt olvassuk be a WaveFileReader-el
-                            //TODO: flac-nek jó lenne számhossz
-
-                           
-
-                            if (track.Path.Contains(".mp3"))
+                            if (track.Path.EndsWith(".mp3"))
                             {
-                                TagLib.File file = TagLib.File.Create(track.Path);
-                                if (!String.IsNullOrEmpty(file.Tag.FirstArtist))
-                                    track.Artist = file.Tag.FirstArtist;
-                                else if (!String.IsNullOrEmpty(file.Tag.FirstAlbumArtist))
-                                    track.Artist = file.Tag.FirstAlbumArtist;
-                                else if (file.Tag.Artists != null && file.Tag.Artists.Count() > 0)
-                                    track.Artist = file.Tag.Artists[0];
-                                track.Album = file.Tag.Album;
-                                track.Title = file.Tag.Title;
-                                track.Year = (int)file.Tag.Year;
-                                track.Length = file.Properties.Duration.TotalSeconds;
-                                file.Dispose();
-
-                                if (String.IsNullOrEmpty(track.Artist))
-                                    track.Artist = fileName;
-                            }
-                            else if (path.Contains(".wav"))
-                            {
-                                WaveFileReader wf = new WaveFileReader(path);
-                                track.Artist = fileName;
-                                track.Length = wf.TotalTime.TotalSeconds;
-                            }
-                            else if (path.Contains(".flac"))
-                            {
-                                using (FlacFile file = new FlacFile(path))
+                                using (var file = TagLib.File.Create(track.Path))
                                 {
-                                    
+                                    track.Artist = file.Tag.FirstArtist ?? file.Tag.FirstAlbumArtist ?? file.Tag.Artists.FirstOrDefault() ?? fileName;
+                                    track.Album = file.Tag.Album;
+                                    track.Title = file.Tag.Title;
+                                    track.Year = (int)file.Tag.Year;
+                                    track.Length = file.Properties.Duration.TotalSeconds;
+                                }
+                            }
+                            else if (path.EndsWith(".wav"))
+                            {
+                                using (var wf = new WaveFileReader(path))
+                                {
+                                    track.Artist = fileName;
+                                    track.Length = wf.TotalTime.TotalSeconds;
+                                }
+                            }
+                            else if (path.EndsWith(".flac"))
+                            {
+                                using (var file = new FlacFile(path))
+                                {
                                     var vorbisComment = file.VorbisComment;
                                     if (vorbisComment != null)
                                     {
-                                        foreach (var value in vorbisComment.Artist)
-                                        {
-                                            if (value != null)
-                                            {
-                                                track.Artist = value;
-                                                break;
-                                            }
-                                        }
-                                        foreach (var value in vorbisComment.Album)
-                                        {
-                                            if (value != null)
-                                            {
-                                                track.Album = value;
-                                                break;
-                                            }
-                                        }
-                                        foreach (var value in vorbisComment.Title)
-                                        {
-                                            if (value != null)
-                                            {
-                                                track.Title = value;
-                                                break;
-                                            }
-                                        }
-                                        foreach (var value in vorbisComment.Date)
-                                        {
-                                            if (value != null)
-                                            {
-                                                String date = ""; 
-                                                if (value.Length > 4)
-                                                {
-                                                    date = value.Substring(0, 4);
-                                                    track.Year = Int32.Parse(date);
-                                                }
-                                                else
-                                                {
-                                                    track.Year = Int32.Parse(value);
-                                                }
-                                               
-                                                break;
-                                            }
-                                        }
+                                        track.Artist = vorbisComment.Artist.FirstOrDefault() ?? fileName;
+                                        track.Album = vorbisComment.Album.FirstOrDefault();
+                                        track.Title = vorbisComment.Title.FirstOrDefault();
+                                        track.Year = int.TryParse(vorbisComment.Date.FirstOrDefault()?.Substring(0, 4), out int year) ? year : 0;
                                     }
                                     track.Length = file.StreamInfo.Duration;
                                 }
-                                if (String.IsNullOrEmpty(track.Artist))
-                                {
-                                    track.Artist = fileName;
-                                }
-                               
                             }
                             track.IsNew = true;
 
                             track.Id = this.trackDao.GetNextId(TableName.Track.ToString());
                             this.trackDao.CreateTrack(track);
 
-                            track.TrackTagValues = new List<TrackTagValue>();
-
-                            foreach (Tag tag in tagList)
+                            track.TrackTagValues = tagList.Select(tag => new TrackTagValue
                             {
-                                TrackTagValue ttv = new TrackTagValue();
-                                ttv.Id = this.trackDao.GetNextId(TableName.TrackTagValue.ToString());
-                                ttv.TrackId = track.Id;
-                                ttv.TagId = tag.Id;
-                                ttv.TagName = tag.Name;
-                                ttv.TagValueId = -1;
-                                ttv.TagValueName = String.Empty;
-                                ttv.Value ="-1";
-                                ttv.HasValue = false;
-                                ttv.ProfileId = this.trackDao.GetProfileId();
+                                Id = this.trackDao.GetNextId(TableName.TrackTagValue.ToString()),
+                                TrackId = track.Id,
+                                TagId = tag.Id,
+                                TagName = tag.Name,
+                                TagValueId = -1,
+                                TagValueName = string.Empty,
+                                Value = "-1",
+                                HasValue = false,
+                                ProfileId = this.trackDao.GetProfileId()
+                            }).ToList();
+
+                            foreach (var ttv in track.TrackTagValues)
+                            {
                                 this.trackDao.CreateTrackTagValue(ttv);
-                                track.TrackTagValues.Add(ttv);
                             }
-
-                           
                         }
-
-
-
                     }
-
-                    trackList.Add(track);
+                    lock (trackList)
+                    {
+                        trackList.Add(track);
+                    }
                 }
 
                 if (this.HasVirtualDj())
                 {
 
-                    bool automaticKeyImport = this.settingDao.GetBooleanSetting(Settings.AutomaticKeyImport.ToString()).Value;
-                    bool automaticBpmImport = this.settingDao.GetBooleanSetting(Settings.AutomaticBpmImport.ToString()).Value;
+                    var automaticKeyImport = this.settingDao.GetBooleanSetting(Settings.AutomaticKeyImport.ToString()).Value;
+                    var automaticBpmImport = this.settingDao.GetBooleanSetting(Settings.AutomaticBpmImport.ToString()).Value;
 
-                    List<TagValue> keyTagValueList = new List<TagValue>();
-                    List<TagValue> bpmTagValueList = new List<TagValue>();
+                    var keyTagValueList = automaticKeyImport ? this.tagDao.GetTagValuesByTagId(tagList.Find(x => x.Name == "Key")?.Id ?? 0) : new List<TagValue>();
+                    var bpmTagValueList = automaticBpmImport ? this.tagDao.GetTagValuesByTagId(tagList.Find(x => x.Name == "Bpm")?.Id ?? 0) : new List<TagValue>();
 
-                    if (automaticKeyImport)
-                    {
-                        Tag tag = tagList.Find(x => x.Name == "Key");
-                        if (tag != null)
-                        {
-                            keyTagValueList = this.tagDao.GetTagValuesByTagId(tag.Id);
-                        }
-                    }
-                    if (automaticBpmImport)
-                    {
-                        Tag tag = tagList.Find(x => x.Name == "Bpm");
-                        if (tag != null)
-                        {
-                            bpmTagValueList = this.tagDao.GetTagValuesByTagId(tag.Id);
-                        }
-                    }
-
-                    ResultOrError result = new ResultOrError();
-                    result = VirtualDJReader.Instance.ReadKeyAndBpmFromVirtualDJDatabase(ref trackList, this.trackDao, keyTagValueList, bpmTagValueList);
+                    var result = VirtualDJReader.Instance.ReadKeyAndBpmFromVirtualDJDatabase(ref trackList, this.trackDao, keyTagValueList, bpmTagValueList);
                     if (!result.Success)
                     {
                         MessageBox.Show(result.ErrorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);

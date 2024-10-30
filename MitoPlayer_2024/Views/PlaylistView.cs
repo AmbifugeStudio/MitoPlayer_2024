@@ -3,6 +3,7 @@ using MitoPlayer_2024.Helpers;
 using MitoPlayer_2024.Models;
 using NAudio.SoundFont;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
@@ -12,6 +13,7 @@ using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using static System.Windows.Forms.DataGridView;
@@ -304,7 +306,10 @@ namespace MitoPlayer_2024.Views
         }
         public void UpdateTracklistColor(int currentTrackIdInPlaylist = -1)
         {
-            bool isMissing = false;
+            bool isTagValueColoringEnabled = this.tagList != null && this.tagList.Count > 0 && this.tagValueDictionary != null && this.tagValueDictionary.Count > 0;
+
+
+           /* bool isMissing = false;
             int trackIdInPlaylist = -1;
 
             bool isTagValueColoringEnabled = false;
@@ -313,160 +318,132 @@ namespace MitoPlayer_2024.Views
                     this.tagValueDictionary != null && this.tagValueDictionary.Count > 0)
             {
                 isTagValueColoringEnabled = true;
-            }
+            }*/
 
             if (this.dgvTrackList != null && this.dgvTrackList.Rows != null && this.dgvTrackList.Rows.Count > 0)
             {
-                for (int i = 0; i < this.dgvTrackList.Rows.Count; i++)
+                foreach (DataGridViewRow row in this.dgvTrackList.Rows)
                 {
-                    trackIdInPlaylist = (int)this.dgvTrackList.Rows[i].Cells["TrackIdInPlaylist"].Value;
-                    isMissing = (bool)this.dgvTrackList.Rows[i].Cells["IsMissing"].Value;
+                    int trackIdInPlaylist = (int)row.Cells["TrackIdInPlaylist"].Value;
+                    bool isMissing = (bool)row.Cells["IsMissing"].Value;
+
                     if (isMissing)
                     {
-                        this.dgvTrackList.Rows[i].DefaultCellStyle.ForeColor = Color.Salmon;
+                        row.DefaultCellStyle.ForeColor = Color.Salmon;
                     }
                     else
                     {
-                        if (currentTrackIdInPlaylist != -1 && trackIdInPlaylist == currentTrackIdInPlaylist)
-                        {
-                            this.dgvTrackList.Rows[i].DefaultCellStyle.BackColor = this.GridPlayingColor;
-                        }
-                        else
-                        {
-                            if (i == 0 || i % 2 == 0)
-                            {
-                                this.dgvTrackList.Rows[i].DefaultCellStyle.BackColor = this.GridLineColor1;
-                            }
-                            else
-                            {
-                                this.dgvTrackList.Rows[i].DefaultCellStyle.BackColor = this.GridLineColor2;
-                            }
-                        }
+                        row.DefaultCellStyle.BackColor = (currentTrackIdInPlaylist != -1 && trackIdInPlaylist == currentTrackIdInPlaylist)
+                        ? this.GridPlayingColor
+                        : (row.Index % 2 == 0 ? this.GridLineColor1 : this.GridLineColor2);
                     }
 
                     if (isTagValueColoringEnabled)
                     {
-                        for(int j = 0; j < this.tagList.Count; j++)
+                        foreach (var tag in this.tagList)
                         {
-                            String tagName = this.tagList[j].Name;
-                            String tagValueName = this.dgvTrackList.Rows[i].Cells[tagName].Value.ToString();
+                            string tagName = tag.Name;
+                            string tagValueName = row.Cells[tagName].Value?.ToString() ?? string.Empty;
 
-                            if (this.tagList[j].HasMultipleValues)
+                            if (tag.HasMultipleValues)
                             {
                                 tagValueName = tagName;
                             }
 
-                            if (!String.IsNullOrEmpty(tagValueName))
+                            if (!string.IsNullOrEmpty(tagValueName))
                             {
-                                if (this.tagList[j].TextColoring)
+                                if (tag.TextColoring)
                                 {
-                                    this.dgvTrackList.Rows[i].Cells[tagName].Style.ForeColor = this.tagValueDictionary[tagName][tagValueName];
+                                    row.Cells[tagName].Style.ForeColor = this.tagValueDictionary[tagName][tagValueName];
                                 }
                                 else
                                 {
-                                    this.dgvTrackList.Rows[i].Cells[tagName].Style.BackColor = this.tagValueDictionary[tagName][tagValueName];
-
                                     Color color = this.tagValueDictionary[tagName][tagValueName];
-                                    if ((color.R < 100 && color.G < 100) || (color.R < 100 && color.B < 100) || (color.B < 100 && color.G < 100))
-                                    {
-                                        this.dgvTrackList.Rows[i].Cells[tagName].Style.ForeColor = Color.White;
-                                    }
-                                    else
-                                    {
-                                        this.dgvTrackList.Rows[i].Cells[tagName].Style.ForeColor = Color.Black;
-                                    }
+                                    row.Cells[tagName].Style.BackColor = color;
+                                    row.Cells[tagName].Style.ForeColor = (color.R < 100 && color.G < 100) ||
+                                    (color.R < 100 && color.B < 100) ||
+                                    (color.B < 100 && color.G < 100)
+                                    ? Color.White : Color.Black;
                                 }
                             }
                             else
                             {
-                                if (currentTrackIdInPlaylist != -1 && trackIdInPlaylist == currentTrackIdInPlaylist)
-                                {
-                                    this.dgvTrackList.Rows[i].Cells[tagName].Style.BackColor = this.GridPlayingColor;
-                                }
-                                else
-                                {
-                                    if (i == 0 || i % 2 == 0)
-                                    {
-                                        this.dgvTrackList.Rows[i].Cells[tagName].Style.BackColor = this.GridLineColor1;
-                                    }
-                                    else
-                                    {
-                                        this.dgvTrackList.Rows[i].Cells[tagName].Style.BackColor = this.GridLineColor2;
-                                    }
-                                }
-
-
-                                
+                                row.Cells[tagName].Style.BackColor = (currentTrackIdInPlaylist != -1 && trackIdInPlaylist == currentTrackIdInPlaylist)
+                                ? this.GridPlayingColor
+                                : (row.Index % 2 == 0 ? this.GridLineColor1 : this.GridLineColor2);
                             }
-                            
                         }
-                       
                     }
                 }
             }
         }
         #endregion
 
+        private void HandleRowSelection()
+        {
+            // Your function logic here
+            // MessageBox.Show("Row selected!");
+            if (this.dgvTrackList != null && this.dgvTrackList.SelectedCells.Count > 0)
+                this.SetCurrentTrackEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = this.dgvTrackList.SelectedCells[0].RowIndex });
+        }
+
         #region TRACKLIST - ROW SELECTION
         ///az aktuális tracklist elemeinek kijelölésekor megjelenik, hogy hány darab szám lett kijelölve és azoknak mennyi az össz játékideje
         private bool controlKey = false;
+
+        private bool isSelectionHandled = false;
         private void dgvTrackList_SelectionChanged(object sender, EventArgs e)
         {
-            if(this.dgvTrackList != null && this.dgvTrackList.SelectedCells.Count > 0)
-                this.SetCurrentTrackEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = this.dgvTrackList.SelectedCells[0].RowIndex });
+            if (isSelectionHandled)
+                return;
 
-            if (this.dgvTrackList.SelectedRows != null && this.dgvTrackList.SelectedRows.Count > 0)
+            isSelectionHandled = true;
+
+            // Your function to run when a row is selected
+            HandleRowSelection();
+
+            // Reset the flag after a short delay to allow for other selection changes
+            Task.Delay(100).ContinueWith(t => isSelectionHandled = false);
+
+
+            
+
+            /*if (this.dgvTrackList.SelectedRows != null && this.dgvTrackList.SelectedRows.Count > 0)
             {
                 ///ROW COUNT
-                if (this.dgvTrackList.SelectedRows.Count == 1)
-                    this.lblSelectedItemsCount.Text = this.dgvTrackList.SelectedRows.Count.ToString() + " item selected";
-                else
-                    this.lblSelectedItemsCount.Text = this.dgvTrackList.SelectedRows.Count.ToString() + " items selected";
+                this.lblSelectedItemsCount.Text = $"{this.dgvTrackList.SelectedRows.Count} item{(this.dgvTrackList.SelectedRows.Count > 1 ? "s" : "")} selected";
 
-                String[] parts = null;
-                int seconds = 0;
+                int totalSeconds = 0;
 
-                for (int i = 0; i < this.dgvTrackList.SelectedRows.Count; i++)
+                foreach (DataGridViewRow row in this.dgvTrackList.SelectedRows)
                 {
-                    parts = this.dgvTrackList.SelectedRows[i].Cells["Length"].Value.ToString().Split(':');
+                    string[] parts = row.Cells["Length"].Value.ToString().Split(':');
 
                     if (parts.Length == 3)
                     {
-                        seconds += Int32.Parse(parts[0]) * 60 * 60;
-                        seconds += Int32.Parse(parts[1]) * 60;
-                        seconds += Int32.Parse(parts[2]);
+                        totalSeconds += int.Parse(parts[0]) * 3600;
+                        totalSeconds += int.Parse(parts[1]) * 60;
+                        totalSeconds += int.Parse(parts[2]);
                     }
                     else if (parts.Length == 2)
                     {
-                        seconds += Int32.Parse(parts[0]) * 60;
-                        seconds += Int32.Parse(parts[1]);
+                        totalSeconds += int.Parse(parts[0]) * 60;
+                        totalSeconds += int.Parse(parts[1]);
                     }
                     else if (parts.Length == 1)
                     {
-                        seconds += Int32.Parse(parts[0]);
+                        totalSeconds += int.Parse(parts[0]);
                     }
                 }
 
-                ///SUM OF TIME
-                TimeSpan t = TimeSpan.FromSeconds(seconds);
-                String length = String.Empty;
-                if (t.Hours > 0)
-                {
-                    length = string.Format("{0:D2}:{1:D2}:{2:D2}", t.Hours, t.Minutes, t.Seconds);
-                }
-                else
-                {
-                    if (t.Minutes > 0)
-                    {
-                        length = string.Format("{0:D2}:{1:D2}", t.Minutes, t.Seconds);
-                    }
-                    else
-                    {
-                        length = string.Format("{0:D2}:{1:D2}", 0, t.Seconds);
-                    }
-                }
-                this.lblSelectedItemsLength.Text = "Length: " + length.ToString();
-            }
+                // Calculate total time
+                TimeSpan totalTime = TimeSpan.FromSeconds(totalSeconds);
+                string length = totalTime.Hours > 0
+                ? $"{totalTime.Hours:D2}:{totalTime.Minutes:D2}:{totalTime.Seconds:D2}"
+                : $"{totalTime.Minutes:D2}:{totalTime.Seconds:D2}";
+
+                this.lblSelectedItemsLength.Text = $"Length: {length}";
+            }*/
         }
         #endregion
 
@@ -825,7 +802,7 @@ namespace MitoPlayer_2024.Views
         #region MEDIA PLAYER
         private void dgvTrackList_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            this.CallSetCurrentTrackEvent((int)e.RowIndex);
+            //this.CallSetCurrentTrackEvent((int)e.RowIndex);
         }
         private void dgvTrackList_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
@@ -2054,84 +2031,76 @@ namespace MitoPlayer_2024.Views
         }
 
 
-        public void UpdateCoverList(List<Image> coverList, List<bool> mainCoverArray)
+        public void UpdateCoverList(ConcurrentQueue<ImageExtension> coverQueue)
         {
             this.grbCovers.Controls.Clear();
 
-            int flowLayoutYOffset = 15;
+            List<ImageExtension> coverList = coverQueue.ToList();
+
             int imageXOffset = 10;
             int imageYOffset = 10;
+            int imageSpacing = 5;
+            int xPos = 10;
+            int yPos = 10;
 
             int imageCount = coverList.Count;
             int imageWidth = coverImageSize;
             int imageHeight = coverImageSize;
 
-            int imageSpacing = 5;
-            int xPos = 10;
-            int yPos = 10;
-
-            int panelWidth = this.grbCovers.Width;
-
-            int flowLayoutWidth = imageXOffset + ( (imageCount - 1) * (imageWidth + imageSpacing) + 10 + mainCoverImageSize);
+            int flowLayoutWidth = imageXOffset + ((imageCount - 1) * (imageWidth + imageSpacing) + 10 + mainCoverImageSize);
             int flowLayoutHeight = imageYOffset + imageHeight + imageSpacing;
-
-            int a = flowLayoutWidth / 2;
-            int b = this.grbCovers.Width / 2;
-            int c = b - a;
+            int centerOffset = (this.grbCovers.Width - flowLayoutWidth) / 2;
 
             FlowLayoutPanel flowLayoutPanel = new FlowLayoutPanel
             {
                 FlowDirection = FlowDirection.LeftToRight,
                 Anchor = AnchorStyles.Top  ,
                 Size = new Size(flowLayoutWidth, flowLayoutHeight),
-                Location = new Point(c, 10),
+                Location = new Point(centerOffset, 10),
             };
 
-            int actualY = 0;
-            int actualImageSize = 0;
-
-            for (int i = 0; i < coverList.Count; i++)
+            while (coverQueue.TryDequeue(out ImageExtension cover))
             {
-                actualY = yPos;
-                actualImageSize = coverImageSize;
+                int actualImageSize = cover.IsMainCover ? mainCoverImageSize : coverImageSize;
 
-                if (mainCoverArray[i])
+                PictureBoxExtension pictureBox = new PictureBoxExtension
                 {
-                    actualImageSize = mainCoverImageSize;
-                }
-
-
-                PictureBoxExtension pictureBox = new PictureBoxExtension()
-                {
-                    Image = coverList[i],
+                    Image = cover.Image,
+                    FilePath = cover.FilePath,
+                    TrackIdInPlaylist = cover.TrackIdInPlaylist,
                     SizeMode = PictureBoxSizeMode.StretchImage,
                     Size = new Size(actualImageSize, actualImageSize),
-                    Location = new Point(xPos, actualY),
+                    Location = new Point(xPos, yPos),
                 };
 
-               /* pictureBox.MouseClick += new MouseEventHandler(
-                             (sender, e) => this.pcbCover_MouseClick(sender, e));*/
+                pictureBox.MouseDown += new MouseEventHandler(
+                             (sender, e) => this.pcbCover_MouseDown(sender, e));
 
                 flowLayoutPanel.Controls.Add(pictureBox);
                 xPos += pictureBox.Width + imageSpacing;
             }
 
-            
-
-            //flowLayoutPanel.Width = imageXOffset + 5 + (imageWidth * imageCount) + (imageCount * imageSpacing);
-            //flowLayoutPanel.Height = imageYOffset + imageHeight;
-
-            
-
-            //flowLayoutPanel.Left = (this.ClientSize.Width - flowLayoutPanel.Width) / 2;
-
-            //int leftPadding = (flowLayoutPanel.Width - ((imageWidth * imageCount) + (imageCount * imageSpacing))) / 2;
-            //flowLayoutPanel.Padding = new Padding(leftPadding, 0, 0, 0);
-
             this.grbCovers.Controls.Add(flowLayoutPanel);
 
         }
 
-        
+        private void pcbCover_MouseDown(object sender, MouseEventArgs e)
+        {
+            string filePath = ((PictureBoxExtension)sender).FilePath;
+            DataObject dataObject = new DataObject(DataFormats.FileDrop, new string[] { filePath });
+            ((PictureBoxExtension)sender).DoDragDrop(dataObject, DragDropEffects.Copy);
+        }
+
+        public void ToggleTracklistSelectionChanged(bool isEnable)
+        {
+            if(isEnable)
+            {
+                this.dgvTrackList.SelectionChanged += dgvTrackList_SelectionChanged;
+            }
+            else
+            {
+                this.dgvTrackList.SelectionChanged -= dgvTrackList_SelectionChanged;
+            }
+        }
     }
 }

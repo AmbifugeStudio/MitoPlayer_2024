@@ -12,7 +12,7 @@ namespace MitoPlayer_2024.Models
         public int TrackId { get; set; }
         public int TagId { get; set; }
         public string TagName { get; set; }
-        public int TagValueId { get; set; }
+        public int? TagValueId { get; set; }
         public string TagValueName { get; set; }
         public bool HasValue { get; set; }
         public string Value { get; set; }

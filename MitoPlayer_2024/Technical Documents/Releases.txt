@@ -1,6 +1,13 @@
 ﻿
 
 
+
+
+- FEATURE: cover browser click -> select track
+- FEATURE: cover browser drag and drop outside of the app
+- FEATURE: cover browser double click -> play track
+
+
 - BUG: too much tag - delete tag, navigate to playlist, panel hides clear filter button in the filter mode
 
 - FEATURE: set debug message timer time in options
@@ -22,6 +29,15 @@
 - FEATURE: progress bar for long loading time
 - FEATURE: load tracklist or navigate away: check save status and show dialog window is there are unsaved progress
 
+======================
+v0.12.15.0
+======================
+OK - REFACTOR: tracklist colouring optimalization
+OK - REFACTOR: tracklist selection optimalization
+OK - REFACTOR: cover browser load optimalization
+OK - REFACTOR: mainpresenter file add optimalization
+OK - REFACTOR: vdj import optimalization
+OK - REFACTOR: track load sql optimalization
 ======================
 v0.12.14.8
 ======================

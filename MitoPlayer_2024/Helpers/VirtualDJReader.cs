@@ -17,6 +17,7 @@ using MitoPlayer_2024.Views;
 using System.Management.Instrumentation;
 using static Mysqlx.Expect.Open.Types.Condition.Types;
 using System.Diagnostics;
+using System.Collections.Concurrent;
 
 namespace MitoPlayer_2024.Helpers
 {
@@ -301,9 +302,9 @@ namespace MitoPlayer_2024.Helpers
 
             }
 
-            List<String> filePathList = new List<String>();
-            List<String> keyList = new List<String>();
-            List<String> bpmList = new List<String>();
+            ConcurrentQueue<String> filePathList = new ConcurrentQueue<String>();
+            ConcurrentQueue<String> keyList = new ConcurrentQueue<String>();
+            ConcurrentQueue<String> bpmList = new ConcurrentQueue<String>();
 
             if (result.Success)
             {
@@ -316,11 +317,11 @@ namespace MitoPlayer_2024.Helpers
                     this.KeysArray = Array.ConvertAll(keys.Split(','), s => s);
                     this.KeysAlterArray = Array.ConvertAll(keysAlter.Split(','), s => s);
 
-                    for (int i = 0; i < validDriveList.Count; i++)
+                    Parallel.ForEach(validDriveList, (drive, state, index) =>
                     {
-                       
 
-                        String vdjDatabaseFilePath = validDriveList[i] + ":\\VirtualDJ\\database.xml";
+
+                        String vdjDatabaseFilePath = drive + ":\\VirtualDJ\\database.xml";
                         XmlDocument xmlDoc = new XmlDocument();
                         xmlDoc.Load(vdjDatabaseFilePath);
                         XmlNodeList nodeList = xmlDoc.DocumentElement.SelectNodes("Song");
@@ -333,11 +334,11 @@ namespace MitoPlayer_2024.Helpers
                         {
                             if (node.Attributes["FilePath"].Value != null)
                             {
-                                foreach (String filePath in filePathsPerDrive[i])
+                                foreach (String filePath in filePathsPerDrive[(int)index])
                                 {
                                     if (node.Attributes["FilePath"].Value.Contains(filePath))
                                     {
-                                        filePathList.Add(filePath);
+                                        filePathList.Enqueue(filePath);
                                         isEnabledKeyAndBpmReading = true;
                                     }
                                 }
@@ -366,17 +367,17 @@ namespace MitoPlayer_2024.Helpers
                                         }
                                     }
 
-                                    keyList.Add(key);
-                                    bpmList.Add(bpm);
+                                    keyList.Enqueue(key);
+                                    bpmList.Enqueue(bpm);
 
                                     isEnabledKeyAndBpmReading = false;
                                 }
                             }
-                            
+
                         }
 
 
-                    }
+                    });
                 }
                 catch (Exception ex)
                 {
@@ -388,10 +389,13 @@ namespace MitoPlayer_2024.Helpers
             {
                 try
                 {
-                    
+                    List<string> finalFilePathList = filePathList.ToList();
+                    List<string> finalKeyList = keyList.ToList();
+                    List<string> finalBpmList = bpmList.ToList();
+
                     for (int i = 0; i < filePathList.Count; i++)
                     {
-                        Track currentTrack = trackList.Find(x => x.Path == filePathList[i]);
+                        Track currentTrack = trackList.Find(x => x.Path == finalFilePathList[i]);
                         int index = trackList.IndexOf(currentTrack);
                         if (currentTrack != null)
                         {
@@ -399,7 +403,7 @@ namespace MitoPlayer_2024.Helpers
                             {
                                 if (ttv.TagName == "Key" && keyTagValueList != null && keyTagValueList.Count > 0)
                                 {
-                                    TagValue keyTagValue = keyTagValueList.Find(x => x.Name == keyList[i]);
+                                    TagValue keyTagValue = keyTagValueList.Find(x => x.Name == finalKeyList[i]);
                                     if (keyTagValue != null)
                                     {
                                         ttv.TagValueId = keyTagValue.Id;
@@ -414,7 +418,7 @@ namespace MitoPlayer_2024.Helpers
                                     {
                                         ttv.TagValueId = bpmTagValue.Id;
                                         ttv.TagValueName = bpmTagValue.Name;
-                                        ttv.Value = bpmList[i];
+                                        ttv.Value = finalBpmList[i];
                                         ttv.HasValue = true;
                                     }
                                     trackDao.UpdateTrackTagValue(ttv);

@@ -176,6 +176,7 @@
     </Compile>
     <Compile Include="Helpers\DataTableModel.cs" />
     <Compile Include="Helpers\Enums.cs" />
+    <Compile Include="Helpers\ImageExtension.cs" />
     <Compile Include="Helpers\LabelTimer.cs" />
     <Compile Include="Helpers\ListEventArgs.cs" />
     <Compile Include="Helpers\PictureBoxExtension.cs">

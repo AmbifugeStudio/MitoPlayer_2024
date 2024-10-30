@@ -3,6 +3,7 @@ using MitoPlayer_2024.Helpers;
 using MitoPlayer_2024.Model;
 using MitoPlayer_2024.Models;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
@@ -90,6 +91,7 @@ namespace MitoPlayer_2024.Views
         void SetKeyAndBpmAnalization(bool showButton);
         void ChangeSaveButtonColor(bool v);
 
-        void UpdateCoverList(List<Image> coverList, List<bool> index);
+        void UpdateCoverList(ConcurrentQueue<ImageExtension> coverList);
+        void ToggleTracklistSelectionChanged(bool isEnable);
     }
 }

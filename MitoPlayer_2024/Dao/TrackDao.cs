@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace MitoPlayer_2024.Dao
@@ -465,7 +466,7 @@ namespace MitoPlayer_2024.Dao
                 connection.Close();
             }
         }
-        public Track GetTrack(int id, List<Tag> tagList)
+        public Track GetTrackWithTags(int id, List<Tag> tagList)
         {
             Track track = null;
 
@@ -475,38 +476,83 @@ namespace MitoPlayer_2024.Dao
                 connection.Open();
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * FROM Track 
-                                        WHERE Id = @Id 
-                                        AND ProfileId = @ProfileId ";
 
-                command.Parameters.Add("@Id", MySqlDbType.VarChar).Value = id;
-                command.Parameters.Add("@ProfileId", MySqlDbType.VarChar).Value = this.profileId;
+                var tagIdsParameter = string.Join(",", tagList.Select(tag => tag.Id));
+                command.CommandText = $@"
+                                    SELECT 
+                                    tra.Id AS TrackId, 
+                                    tra.Path, 
+                                    tra.FileName, 
+                                    tra.Artist, 
+                                    tra.Title, 
+                                    tra.Album, 
+                                    tra.Year, 
+                                    tra.Length, 
+                                    tra.ProfileId AS TrackProfileId,
+                                    ttv.Id AS TagValueId, 
+                                    ttv.TagId, 
+                                    ttv.TagValueId, 
+                                    ttv.HasValue, 
+                                    ttv.Value, 
+                                    t.Name AS TagName, 
+                                    tv.Name AS TagValueName, 
+                                    ttv.ProfileId AS TagProfileId
+                                    FROM 
+                                    Track tra
+                                    LEFT JOIN TrackTagValue ttv ON tra.Id = ttv.TrackId AND ttv.TagId IN ({tagIdsParameter})
+                                    LEFT JOIN Tag t ON ttv.TagId = t.Id
+                                    LEFT JOIN TagValue tv ON ttv.TagValueId = tv.Id
+                                    WHERE 
+                                    tra.Id = @Id 
+                                    AND tra.ProfileId = @ProfileId";
+
+                command.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
 
                 using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        track = new Track();
-                        track.Id = (int)reader[0];
-                        track.Path = reader[1].ToString();
-                        track.FileName = reader[2].ToString();
-                        track.Artist = reader[3].ToString();
-                        track.Title = reader[4].ToString();
-                        track.Album = reader[5].ToString();
-                        track.Year = (int)reader[6];
-                        track.Length = (int)reader[7];
-                        track.ProfileId = (int)reader[8];
-                        break;
+                        if (track == null)
+                        {
+                            track = new Track
+                            {
+                                Id = reader.GetInt32(0),
+                                Path = reader.GetString(1),
+                                FileName = reader.GetString(2),
+                                Artist = reader.GetString(3),
+                                Title = reader.IsDBNull(4) ? null : reader.GetString(4),
+                                Album = reader.IsDBNull(5) ? null : reader.GetString(5),
+                                Year = reader.GetInt32(6),
+                                Length = reader.GetInt32(7),
+                                ProfileId = reader.GetInt32(8),
+                                TrackTagValues = new List<TrackTagValue>()
+                            };
+                        }
+
+                        if (!reader.IsDBNull(9))
+                        {
+                            var tagValue = new TrackTagValue
+                            {
+                                Id = reader.GetInt32(9),
+                                TrackId = reader.GetInt32(0),
+                                TagId = reader.GetInt32(10),
+                                TagValueId = reader.IsDBNull(11) ? (int?)null : reader.GetInt32(11),
+                                HasValue = reader.GetBoolean(12),
+                                Value = reader.IsDBNull(13) ? null : reader.GetString(13),
+                                TagName = reader.IsDBNull(14) ? null : reader.GetString(14),
+                                TagValueName = reader.IsDBNull(15) ? null : reader.GetString(15),
+                                ProfileId = reader.GetInt32(16)
+                            };
+                            track.TrackTagValues.Add(tagValue);
+                        }
                     }
                 }
             }
 
-            if (track != null)
-                track.TrackTagValues = this.LoadTrackTagValuesByTrackId(track.Id, tagList);
-
             return track;
         }
-        public Track GetTrackByPath(string path, List<Tag> tagList)
+        public Track GetTrackWithTagsByPath(string path, List<Tag> tagList)
         {
             Track track = null;
 
@@ -516,40 +562,86 @@ namespace MitoPlayer_2024.Dao
                 connection.Open();
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * FROM Track 
-                                        WHERE Path = @Path 
-                                        AND ProfileId = @ProfileId ";
+
+                var tagIdsParameter = string.Join(",", tagList.Select(tag => tag.Id));
+                command.CommandText = $@"
+                                        SELECT 
+                                        tra.Id AS TrackId, 
+                                        tra.Path, 
+                                        tra.FileName, 
+                                        tra.Artist, 
+                                        tra.Title, 
+                                        tra.Album, 
+                                        tra.Year, 
+                                        tra.Length, 
+                                        tra.ProfileId AS TrackProfileId,
+                                        ttv.Id AS TagValueId, 
+                                        ttv.TagId, 
+                                        ttv.TagValueId, 
+                                        ttv.HasValue, 
+                                        ttv.Value, 
+                                        t.Name AS TagName, 
+                                        tv.Name AS TagValueName, 
+                                        ttv.ProfileId AS TagProfileId
+                                        FROM 
+                                        Track tra
+                                        LEFT JOIN TrackTagValue ttv ON tra.Id = ttv.TrackId AND ttv.TagId IN ({tagIdsParameter})
+                                        LEFT JOIN Tag t ON ttv.TagId = t.Id
+                                        LEFT JOIN TagValue tv ON ttv.TagValueId = tv.Id
+                                        WHERE 
+                                        tra.Path = @Path 
+                                        AND tra.ProfileId = @ProfileId";
 
                 command.Parameters.Add("@Path", MySqlDbType.VarChar).Value = path;
-                command.Parameters.Add("@ProfileId", MySqlDbType.VarChar).Value = this.profileId;
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
 
                 using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        track = new Track();
-                        track.Id = (int)reader[0];
-                        track.Path = reader[1].ToString();
-                        track.FileName = reader[2].ToString();
-                        track.Artist = reader[3].ToString();
-                        track.Title = reader[4].ToString();
-                        track.Album = reader[5].ToString();
-                        track.Year = (int)reader[6];
-                        track.Length = (int)reader[7];
-                        track.ProfileId = (int)reader[8];
-                        break;
+                        if (track == null)
+                        {
+                            track = new Track
+                            {
+                                Id = reader.GetInt32(0),
+                                Path = reader.GetString(1),
+                                FileName = reader.GetString(2),
+                                Artist = reader.GetString(3),
+                                Title = reader.IsDBNull(4) ? null : reader.GetString(4),
+                                Album = reader.IsDBNull(5) ? null : reader.GetString(5),
+                                Year = reader.GetInt32(6),
+                                Length = reader.GetInt32(7),
+                                ProfileId = reader.GetInt32(8),
+                                TrackTagValues = new List<TrackTagValue>()
+                            };
+                        }
+
+                        if (!reader.IsDBNull(9))
+                        {
+                            var tagValue = new TrackTagValue
+                            {
+                                Id = reader.GetInt32(9),
+                                TrackId = reader.GetInt32(0),
+                                TagId = reader.GetInt32(10),
+                                TagValueId = reader.IsDBNull(11) ? (int?) null : reader.GetInt32(11),
+                                HasValue = reader.GetBoolean(12),
+                                Value = reader.IsDBNull(13) ? null : reader.GetString(13),
+                                TagName = reader.IsDBNull(14) ? null : reader.GetString(14),
+                                TagValueName = reader.IsDBNull(15) ? null : reader.GetString(15),
+                                ProfileId = reader.GetInt32(16)
+                            };
+                            track.TrackTagValues.Add(tagValue);
+                        }
                     }
                 }
             }
 
-            if (track != null)
-                track.TrackTagValues = this.LoadTrackTagValuesByTrackId(track.Id, tagList);
-
             return track;
         }
-        public List<Track> GetTracklistByPlaylistId(int playlistId, List<Tag> tagList)
+        public List<Track> GetTracklistWithTagsByPlaylistId(int playlistId, List<Tag> tagList)
         {
-            List<Track> trackList = null;
+            var trackList = new List<Track>();
+            var trackDictionary = new Dictionary<int, Track>();
 
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
@@ -557,8 +649,11 @@ namespace MitoPlayer_2024.Dao
                 connection.Open();
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT 
-                                        tra.Id, 
+
+                var tagIdsParameter = string.Join(",", tagList.Select(tag => tag.Id));
+                command.CommandText = $@"
+                                        SELECT 
+                                        tra.Id AS TrackId, 
                                         tra.Path, 
                                         tra.FileName, 
                                         tra.Artist, 
@@ -568,51 +663,84 @@ namespace MitoPlayer_2024.Dao
                                         tra.Length, 
                                         plc.OrderInList, 
                                         plc.TrackIdInPlaylist, 
-                                        plc.ProfileId 
-                                        
-                                        FROM Playlist pll, 
-                                        PlaylistContent plc, 
-                                        Track tra 
-
-                                        WHERE pll.Id = plc.PlaylistId 
-                                        AND plc.TrackId = tra.Id 
-                                        AND pll.Id = @PlaylistId 
+                                        plc.ProfileId AS TrackProfileId,
+                                        ttv.Id AS TagValueId, 
+                                        ttv.TagId, 
+                                        ttv.TagValueId, 
+                                        ttv.HasValue, 
+                                        ttv.Value, 
+                                        t.Name AS TagName, 
+                                        tv.Name AS TagValueName, 
+                                        ttv.ProfileId AS TagProfileId
+                                        FROM 
+                                        Playlist pll
+                                        JOIN PlaylistContent plc ON pll.Id = plc.PlaylistId
+                                        JOIN Track tra ON plc.TrackId = tra.Id
+                                        LEFT JOIN TrackTagValue ttv ON tra.Id = ttv.TrackId AND ttv.TagId IN ({tagIdsParameter})
+                                        LEFT JOIN Tag t ON ttv.TagId = t.Id
+                                        LEFT JOIN TagValue tv ON ttv.TagValueId = tv.Id
+                                        WHERE 
+                                        pll.Id = @PlaylistId 
                                         AND plc.ProfileId = @ProfileId 
                                         AND pll.ProfileId = @ProfileId 
                                         AND tra.ProfileId = @ProfileId 
-                                        ORDER BY plc.OrderInList ";
+                                        ORDER BY 
+                                        plc.OrderInList";
 
                 command.Parameters.Add("@PlaylistId", MySqlDbType.Int32).Value = playlistId;
                 command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
 
                 using (var reader = command.ExecuteReader())
                 {
-                    trackList = new List<Track>();
                     while (reader.Read())
                     {
-                        Track track = new Track();
-                        track.Id = (int)reader[0];
-                        track.Path = (string)reader[1];
-                        track.FileName = (string)reader[2];
-                        track.Artist = (string)reader[3];
-                        track.Title =  Convert.ToString(reader[4]);
-                        track.Album = Convert.ToString(reader[5]);
-                        track.Year = (int)reader[6];
-                        track.Length = (int)reader[7];
-                        track.OrderInList = (int)reader[8];
-                        track.TrackIdInPlaylist = (int)reader[9];
-                        track.ProfileId = (int)reader[10];
-                        trackList.Add(track);
+                        int trackId = reader.GetInt32(0);
+
+                        if (!trackDictionary.TryGetValue(trackId, out var track))
+                        {
+                            track = new Track
+                            {
+                                Id = trackId,
+                                Path = reader.GetString(1),
+                                FileName = reader.GetString(2),
+                                Artist = reader.GetString(3),
+                                Title = reader.IsDBNull(4) ? null : reader.GetString(4),
+                                Album = reader.IsDBNull(5) ? null : reader.GetString(5),
+                                Year = reader.GetInt32(6),
+                                Length = reader.GetInt32(7),
+                                OrderInList = reader.GetInt32(8),
+                                TrackIdInPlaylist = reader.GetInt32(9),
+                                ProfileId = reader.GetInt32(10),
+                                TrackTagValues = new List<TrackTagValue>()
+                            };
+                            trackList.Add(track);
+                            trackDictionary[trackId] = track;
+                        }
+
+                        if (!reader.IsDBNull(11))
+                        {
+                            var tagValue = new TrackTagValue
+                            {
+                                Id = reader.GetInt32(11),
+                                TrackId = trackId,
+                                TagId = reader.GetInt32(12),
+
+
+                                TagValueId = reader.IsDBNull(13) ? (int?)null : reader.GetInt32(13),
+                                HasValue = reader.GetBoolean(14),
+                                Value = reader.IsDBNull(15) ? null : reader.GetString(15),
+                                TagName = reader.IsDBNull(16) ? null : reader.GetString(16),
+                                TagValueName = reader.IsDBNull(17) ? null : reader.GetString(17),
+
+                                ProfileId = reader.GetInt32(18)
+                            };
+                            track.TrackTagValues.Add(tagValue);
+                        }
                     }
                 }
-                connection.Close();
-
-                foreach (Track track in trackList)
-                {
-                    track.TrackTagValues = this.LoadTrackTagValuesByTrackId(track.Id, tagList);
-                }
-                return trackList;
             }
+
+            return trackList;
         }
         public List<int> GetAllTrackIdInList()
         {
@@ -969,67 +1097,63 @@ namespace MitoPlayer_2024.Dao
             }
             return result;
         }
-        public List<TrackTagValue> LoadTrackTagValuesByTrackId(int trackId, List<Tag> tagList)
+        public List<TrackTagValue> LoadTrackTagValuesByTrackIds(List<int> trackIds, List<Tag> tagList)
         {
-            List<TrackTagValue> trackTagValueList = new List<TrackTagValue>();
+            var tagValues = new List<TrackTagValue>();
 
-            if (tagList != null && tagList.Count > 0)
+            using (var connection = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand())
             {
-                foreach (Tag tag in tagList)
+                connection.Open();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+
+                var trackIdsParameter = string.Join(",", trackIds);
+                var tagIdsParameter = string.Join(",", tagList.Select(tag => tag.Id));
+                command.CommandText = $@"
+                                        SELECT 
+                                        ttv.Id, 
+                                        ttv.TrackId, 
+                                        ttv.TagId, 
+                                        ttv.TagValueId, 
+                                        ttv.HasValue, 
+                                        ttv.Value, 
+                                        t.Name, 
+                                        tv.Name, 
+                                        ttv.ProfileId 
+                                        FROM 
+                                        TrackTagValue ttv
+                                        LEFT JOIN Tag t ON ttv.TagId = t.Id
+                                        LEFT JOIN TagValue tv ON ttv.TagValueId = tv.Id
+                                        WHERE 
+                                        ttv.TrackId IN ({trackIdsParameter})
+                                        AND ttv.TagId IN ({tagIdsParameter})
+                                        AND ttv.ProfileId = @ProfileId";
+
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
+
+                using (var reader = command.ExecuteReader())
                 {
-                    using (var connection = new MySqlConnection(connectionString))
-                    using (var command = new MySqlCommand())
+                    while (reader.Read())
                     {
-                        connection.Open();
-                        command.Connection = connection;
-                        command.CommandType = CommandType.Text;
-                        command.CommandText = @"SELECT 
-                                                ttv.Id, 
-                                                ttv.TrackId, 
-                                                ttv.TagId,
-                                                ttv.TagValueId,
-                                                ttv.HasValue,
-                                                ttv.Value,
-                                                t.Name,
-                                                tv.Name,
-                                                ttv.ProfileId
-                                                 
-                                                FROM TrackTagValue ttv
-                                                LEFT JOIN Tag t
-                                                ON ttv.TagId=t.Id
-                                                LEFT JOIN TagValue tv
-                                                ON ttv.TagValueId= tv.Id
-                                                 
-                                                WHERE ttv.TrackId = @TrackId
-                                                AND ttv.TagId = @TagId
-                                                AND ttv.ProfileId = @ProfileId ";
-
-                        command.Parameters.Add("@TrackId", MySqlDbType.Int32).Value = trackId;
-                        command.Parameters.Add("@TagId", MySqlDbType.Int32).Value = tag.Id;
-                        command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
-
-                        using (var reader = command.ExecuteReader())
+                        var tagValue = new TrackTagValue
                         {
-                           
-                            while (reader.Read())
-                            {
-                                TrackTagValue ttv = new TrackTagValue();
-                                ttv.Id = (int)reader[0];
-                                ttv.TrackId = (int)reader[1];
-                                ttv.TagId = (int)reader[2];
-                                ttv.TagValueId = (int)reader[3];
-                                ttv.HasValue = Convert.ToBoolean(reader[4]);
-                                ttv.Value = Convert.ToString(reader[5]);
-                                ttv.TagName = (string)reader[6];
-                                ttv.TagValueName = Convert.ToString(reader[7]);
-                                ttv.ProfileId = (int)reader[8];
-                                trackTagValueList.Add(ttv);
-                            }
-                        }
+                            Id = reader.GetInt32(0),
+                            TrackId = reader.GetInt32(1),
+                            TagId = reader.GetInt32(2),
+                            TagValueId = reader.GetInt32(3),
+                            HasValue = reader.GetBoolean(4),
+                            Value = reader.GetString(5),
+                            TagName = reader.GetString(6),
+                            TagValueName = reader.GetString(7),
+                            ProfileId = reader.GetInt32(8)
+                        };
+                        tagValues.Add(tagValue);
                     }
                 }
             }
-            return trackTagValueList;
+
+            return tagValues;
         }
         public void UpdateTrackTagValue(TrackTagValue ttv)
         {
