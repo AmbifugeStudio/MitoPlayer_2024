@@ -27,7 +27,7 @@ namespace MitoPlayer_2024.Views
         event EventHandler<ListEventArgs> NextTrackEvent;
         event EventHandler RandomTrackEvent;
         event EventHandler<ListEventArgs> ChangeVolumeEvent;
-        event EventHandler GetMediaPlayerProgressStatusEvent;
+     //   event EventHandler GetMediaPlayerProgressStatusEvent;
 
         //TRACKLIST
         event EventHandler<ListEventArgs> OrderByColumnEvent;
@@ -61,6 +61,7 @@ namespace MitoPlayer_2024.Views
         event EventHandler<ListEventArgs> ChangeFilterModeEnabled;
         event EventHandler EnableFilterModeEvent;
         event EventHandler EnableSetterModeEvent;
+        event EventHandler<ListEventArgs> LoadCoversEvent;
         event EventHandler<ListEventArgs> ChangeOnlyPlayingRowModeEnabled;
         event EventHandler<ListEventArgs> ChangeFilterParametersEvent;
         event EventHandler RemoveTagValueFilter;
@@ -80,7 +81,7 @@ namespace MitoPlayer_2024.Views
         
         void UpdateAfterStopTrack();
         void UpdateAfterPauseTrack();
-        void UpdateMediaPlayerProgressStatus(double duration, String durationString, double currentPosition, String currentPositionString);
+       // void UpdateMediaPlayerProgressStatus(double duration, String durationString, double currentPosition, String currentPositionString);
 
 
 
@@ -90,6 +91,7 @@ namespace MitoPlayer_2024.Views
         void SetMuted(bool isMuted);
         void SetKeyAndBpmAnalization(bool showButton);
         void ChangeSaveButtonColor(bool v);
+        void ChangeSaveStatus(bool isSaving);
 
         void UpdateCoverList(ConcurrentQueue<ImageExtension> coverList);
         void ToggleTracklistSelectionChanged(bool isEnable);

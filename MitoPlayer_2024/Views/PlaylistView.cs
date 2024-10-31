@@ -38,7 +38,7 @@ namespace MitoPlayer_2024.Views
         public event EventHandler RandomTrackEvent;
         public event EventHandler<ListEventArgs> ChangeVolumeEvent;
         public event EventHandler<ListEventArgs> ChangeProgressEvent;
-        public event EventHandler GetMediaPlayerProgressStatusEvent;
+       // public event EventHandler GetMediaPlayerProgressStatusEvent;
 
         //TRACKLIST
         public event EventHandler<ListEventArgs> OrderByColumnEvent;
@@ -72,6 +72,7 @@ namespace MitoPlayer_2024.Views
         public event EventHandler<ListEventArgs> ChangeFilterModeEnabled;
         public event EventHandler EnableFilterModeEvent;
         public event EventHandler EnableSetterModeEvent;
+        public event EventHandler<ListEventArgs> LoadCoversEvent;
         public event EventHandler<ListEventArgs> ChangeOnlyPlayingRowModeEnabled;
         public event EventHandler<ListEventArgs> ChangeFilterParametersEvent;
         public event EventHandler RemoveTagValueFilter;
@@ -93,6 +94,10 @@ namespace MitoPlayer_2024.Views
 
             this.playlistListBindingSource = new BindingSource();
             this.trackListBindingSource = new BindingSource();
+
+            clickTimer = new Timer();
+            clickTimer.Interval = clickThreshold;
+            clickTimer.Tick += ClickTimer_Tick;
         }
 
         //Dark Color Theme
@@ -168,6 +173,8 @@ namespace MitoPlayer_2024.Views
             this.btnSave.FlatAppearance.BorderColor = this.ButtonBorderColor;
 
             this.lblMessage.ForeColor = this.ActiveButtonColor;
+
+            
 
         }
 
@@ -378,73 +385,11 @@ namespace MitoPlayer_2024.Views
             }
         }
         #endregion
-
-        private void HandleRowSelection()
-        {
-            // Your function logic here
-            // MessageBox.Show("Row selected!");
-            if (this.dgvTrackList != null && this.dgvTrackList.SelectedCells.Count > 0)
-                this.SetCurrentTrackEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = this.dgvTrackList.SelectedCells[0].RowIndex });
-        }
-
         #region TRACKLIST - ROW SELECTION
         ///az aktuális tracklist elemeinek kijelölésekor megjelenik, hogy hány darab szám lett kijelölve és azoknak mennyi az össz játékideje
+
         private bool controlKey = false;
-
-        private bool isSelectionHandled = false;
-        private void dgvTrackList_SelectionChanged(object sender, EventArgs e)
-        {
-            if (isSelectionHandled)
-                return;
-
-            isSelectionHandled = true;
-
-            // Your function to run when a row is selected
-            HandleRowSelection();
-
-            // Reset the flag after a short delay to allow for other selection changes
-            Task.Delay(100).ContinueWith(t => isSelectionHandled = false);
-
-
-            
-
-            /*if (this.dgvTrackList.SelectedRows != null && this.dgvTrackList.SelectedRows.Count > 0)
-            {
-                ///ROW COUNT
-                this.lblSelectedItemsCount.Text = $"{this.dgvTrackList.SelectedRows.Count} item{(this.dgvTrackList.SelectedRows.Count > 1 ? "s" : "")} selected";
-
-                int totalSeconds = 0;
-
-                foreach (DataGridViewRow row in this.dgvTrackList.SelectedRows)
-                {
-                    string[] parts = row.Cells["Length"].Value.ToString().Split(':');
-
-                    if (parts.Length == 3)
-                    {
-                        totalSeconds += int.Parse(parts[0]) * 3600;
-                        totalSeconds += int.Parse(parts[1]) * 60;
-                        totalSeconds += int.Parse(parts[2]);
-                    }
-                    else if (parts.Length == 2)
-                    {
-                        totalSeconds += int.Parse(parts[0]) * 60;
-                        totalSeconds += int.Parse(parts[1]);
-                    }
-                    else if (parts.Length == 1)
-                    {
-                        totalSeconds += int.Parse(parts[0]);
-                    }
-                }
-
-                // Calculate total time
-                TimeSpan totalTime = TimeSpan.FromSeconds(totalSeconds);
-                string length = totalTime.Hours > 0
-                ? $"{totalTime.Hours:D2}:{totalTime.Minutes:D2}:{totalTime.Seconds:D2}"
-                : $"{totalTime.Minutes:D2}:{totalTime.Seconds:D2}";
-
-                this.lblSelectedItemsLength.Text = $"Length: {length}";
-            }*/
-        }
+       
         #endregion
 
         #region TRACKLIST - ORDER BY COLUMN HEADER
@@ -896,10 +841,10 @@ namespace MitoPlayer_2024.Views
             ((MainView)this.parentView).UpdateAfterPauseTrack();
            // this.lblCurrentTrack.Text = this.lblCurrentTrack.Text.Replace("Playing: ", "Paused: ");
         }
-        public void UpdateMediaPlayerProgressStatus(double duration, String durationString, double currentPosition, String currentPositionString)
+       /* public void UpdateMediaPlayerProgressStatus(double duration, String durationString, double currentPosition, String currentPositionString)
         {
             ((MainView)this.parentView).UpdateMediaPlayerProgressStatus(duration, durationString, currentPosition, currentPositionString);
-        }
+        }*/
 
 
         public void UpdateAfterCopyTracksToPlaylist(int count, String playlistName)
@@ -1209,7 +1154,14 @@ namespace MitoPlayer_2024.Views
                     this.LoadPlaylistEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = this.dgvPlaylistList.SelectedRows[0].Index });
                 }
             }
-            
+
+            int rowIndex = 0;
+            if (this.dgvTrackList != null && this.dgvTrackList.SelectedCells.Count > 0)
+            {
+                rowIndex = this.dgvTrackList.SelectedCells[0].RowIndex;
+            }
+            this.LoadCoversEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = rowIndex });
+
         }
         public void CallDeletePlaylistEvent()
         {
@@ -1738,8 +1690,16 @@ namespace MitoPlayer_2024.Views
 
             this.dgvTrackList.Focus();
 
+            
 
             this.EnableFilterModeEvent?.Invoke(this, new EventArgs());
+
+            int rowIndex = 0;
+            if (this.dgvTrackList != null && this.dgvTrackList.SelectedCells.Count > 0)
+            {
+                rowIndex = this.dgvTrackList.SelectedCells[0].RowIndex;
+            }
+            this.LoadCoversEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = rowIndex });
         }
         private void btnSetterModeToggle_Click(object sender, EventArgs e)
         {
@@ -1747,6 +1707,8 @@ namespace MitoPlayer_2024.Views
         }
         private void EnableSetterMode()
         {
+            this.RemoveTagValueFilter?.Invoke(this, new EventArgs());
+
             foreach (Control groupBox in this.tagValueEditorPanel.Controls)
             {
                 if (groupBox.GetType() == typeof(GroupBox))
@@ -1798,6 +1760,13 @@ namespace MitoPlayer_2024.Views
             this.dgvTrackList.Focus();
 
             this.EnableSetterModeEvent?.Invoke(this, new EventArgs());
+
+            int rowIndex = 0;
+            if (this.dgvTrackList != null && this.dgvTrackList.SelectedCells.Count > 0)
+            {
+                rowIndex = this.dgvTrackList.SelectedCells[0].RowIndex;
+            }
+            this.LoadCoversEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = rowIndex });
         }
         private void btnDisplayTagEditor_Click(object sender, EventArgs e)
         {
@@ -1838,59 +1807,73 @@ namespace MitoPlayer_2024.Views
             }
 
             this.ChangeFilterParametersEvent?.Invoke(this, new ListEventArgs() { StringField1 = this.txtbFilter.Text });
+
+
         }
         private void btnSetTagValue_Click(object sender, EventArgs e)
         {
             this.SetTagValue(sender, e, null);
         }
+
+        private bool isSaving = false;
+        public void ChangeSaveStatus(bool isSaving)
+        {
+            this.isSaving = isSaving;
+        }
+
         private void SetTagValue(object sender, EventArgs e, Button btn)
         {
-            TagValueButton button = (sender as TagValueButton);
-
-            if (btn != null)
-                button = (TagValueButton)btn;
-
-            String tagName = button.TagName;
-            String tagValueName = button.TagValueName;
-            int tagValueId = button.TagValueId;
-            String tagValueValue = !String.IsNullOrEmpty(button.TextBox?.Text) ? button.TextBox?.Text : "-1";
-
-            if (!this.isFilterEnabled)
+            if(!this.isSaving)
             {
-                if(button.TextBox != null)
+                TagValueButton button = (sender as TagValueButton);
+
+                if (btn != null)
+                    button = (TagValueButton)btn;
+
+                String tagName = button.TagName;
+                String tagValueName = button.TagValueName;
+                int tagValueId = button.TagValueId;
+                String tagValueValue = !String.IsNullOrEmpty(button.TextBox?.Text) ? button.TextBox?.Text : "-1";
+
+                if (!this.isFilterEnabled)
                 {
-                    button.TextBox.Text = String.Empty;
+                    if (button.TextBox != null)
+                    {
+                        button.TextBox.Text = String.Empty;
+                    }
                 }
-            }
-            else
-            {
-                if (button.TextBox != null && button.IsPressed)
+                else
                 {
-                    button.TextBox.Text = String.Empty;
+                    if (button.TextBox != null && button.IsPressed)
+                    {
+                        button.TextBox.Text = String.Empty;
+                    }
+
+                    button.IsPressed = !button.IsPressed;
                 }
 
-                button.IsPressed = !button.IsPressed;
+                if (button.IsPressed)
+                {
+                    button.FlatAppearance.BorderColor = this.ActiveButtonColor;
+                }
+                else
+                {
+                    button.FlatAppearance.BorderColor = this.ButtonBorderColor;
+                }
 
+                this.SetTagValueEvent?.Invoke(this, new ListEventArgs()
+                {
+                    StringField1 = tagName,
+                    StringField2 = tagValueName,
+                    StringField3 = tagValueValue,
+                    IntegerField1 = tagValueId,
+                    Rows = this.dgvTrackList.Rows
+                });
                 
             }
-
-            if (button.IsPressed)
-            {
-                button.FlatAppearance.BorderColor = this.ActiveButtonColor;
-            }
-            else
-            {
-                button.FlatAppearance.BorderColor = this.ButtonBorderColor;
-            }
-
-            this.SetTagValueEvent?.Invoke(this, new ListEventArgs() { 
-                StringField1 = tagName,
-                StringField2 = tagValueName,
-                StringField3 = tagValueValue, 
-                IntegerField1 = tagValueId, 
-                Rows = this.dgvTrackList.Rows });
             this.dgvTrackList.Focus();
         }
+
         private void txtbSetTagValue_KeyDown(object sender, KeyEventArgs e, Button btn)
         {
             if(e.KeyCode == Keys.Enter)
@@ -1969,7 +1952,17 @@ namespace MitoPlayer_2024.Views
                 }
             }
             this.ChangeFilterParametersEvent?.Invoke(this, new ListEventArgs() { StringField1 = this.txtbFilter.Text });
+
+            int rowIndex = 0;
+            if (this.dgvTrackList != null && this.dgvTrackList.SelectedCells.Count > 0)
+            {
+                rowIndex = this.dgvTrackList.SelectedCells[0].RowIndex;
+            }
+            this.LoadCoversEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = rowIndex });
         }
+
+
+
         private void btnClearTagValueFilter_Click(object sender, EventArgs e)
         {
             foreach (Control groupBox in this.tagValueEditorPanel.Controls)
@@ -1991,7 +1984,16 @@ namespace MitoPlayer_2024.Views
             }
 
             this.RemoveTagValueFilter?.Invoke(this, new EventArgs());
+
+            int rowIndex = 0;
+            if (this.dgvTrackList != null && this.dgvTrackList.SelectedCells.Count > 0)
+            {
+                rowIndex = this.dgvTrackList.SelectedCells[0].RowIndex;
+            }
+            this.LoadCoversEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = rowIndex });
         }
+
+
         private void tagValueEditorPanel_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
             //R - Play random track
@@ -2006,6 +2008,7 @@ namespace MitoPlayer_2024.Views
                 this.CallNextTrackEvent();
             }
         }
+
         public void ChangeSaveButtonColor(bool isTableChanged)
         {
             if (isTableChanged)
@@ -2075,6 +2078,8 @@ namespace MitoPlayer_2024.Views
 
                 pictureBox.MouseDown += new MouseEventHandler(
                              (sender, e) => this.pcbCover_MouseDown(sender, e));
+                pictureBox.MouseUp += new MouseEventHandler(
+                             (sender, e) => this.pcbCover_MouseUp(sender, e));
 
                 flowLayoutPanel.Controls.Add(pictureBox);
                 xPos += pictureBox.Width + imageSpacing;
@@ -2084,11 +2089,83 @@ namespace MitoPlayer_2024.Views
 
         }
 
+
+        private bool isDragging = false;
+        private bool isWaiting = false;
+        private Timer clickTimer;
+        private const int clickThreshold = 1000;
+        private PictureBoxExtension currentPictureBox;
+
+        private void ClickTimer_Tick(object sender, EventArgs e)
+        {
+            if (isWaiting && currentPictureBox != null)
+            {
+                isDragging = true;
+                isWaiting = false;
+                clickTimer.Stop();
+
+                string filePath = currentPictureBox.FilePath;
+                DataObject dataObject = new DataObject(DataFormats.FileDrop, new string[] { filePath });
+                currentPictureBox.DoDragDrop(dataObject, DragDropEffects.Copy);
+            }
+        }
         private void pcbCover_MouseDown(object sender, MouseEventArgs e)
         {
-            string filePath = ((PictureBoxExtension)sender).FilePath;
-            DataObject dataObject = new DataObject(DataFormats.FileDrop, new string[] { filePath });
-            ((PictureBoxExtension)sender).DoDragDrop(dataObject, DragDropEffects.Copy);
+            isWaiting = true;
+            currentPictureBox = sender as PictureBoxExtension;
+            clickTimer.Start();
+        }
+
+        private void pcbCover_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (isWaiting)
+            {
+                pcbCover_MouseClick(sender, e);
+                isWaiting = false;
+                clickTimer.Stop();
+            }
+            isDragging = false;
+        }
+
+
+
+        private void pcbCover_MouseClick(object sender, MouseEventArgs e)
+        {
+            int trackIdInPlaylist = ((PictureBoxExtension)sender).TrackIdInPlaylist;
+
+            ignoreSelectionChange = true;
+
+            dgvTrackList.ClearSelection();
+
+            foreach (DataGridViewRow row in dgvTrackList.Rows)
+            {
+                if (Convert.ToInt32(row.Cells["TrackIdInPlaylist"].Value) == trackIdInPlaylist)
+                {
+                    row.Selected = true;
+
+                    DataGridViewCell firstVisibleCell = null;
+                    foreach (DataGridViewCell cell in row.Cells)
+                    {
+                        if (cell.Visible)
+                        {
+                            firstVisibleCell = cell;
+                            break;
+                        }
+                    }
+
+                    if (firstVisibleCell != null)
+                    {
+                        dgvTrackList.CurrentCell = firstVisibleCell;
+                    }
+                    dgvTrackList.FirstDisplayedScrollingRowIndex = row.Index;
+                    isSelectionHandled = false;
+                    break;
+                }
+            }
+
+            ignoreSelectionChange = false;
+
+            HandleRowSelection();
         }
 
         public void ToggleTracklistSelectionChanged(bool isEnable)
@@ -2100,6 +2177,61 @@ namespace MitoPlayer_2024.Views
             else
             {
                 this.dgvTrackList.SelectionChanged -= dgvTrackList_SelectionChanged;
+            }
+        }
+
+        private bool isSelectionHandled = false;
+        private bool ignoreSelectionChange = false;
+        private void HandleRowSelection()
+        {
+            if (this.dgvTrackList != null && this.dgvTrackList.SelectedCells.Count > 0) 
+                this.SetCurrentTrackEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = this.dgvTrackList.SelectedCells[0].RowIndex });
+        }
+
+        private void dgvTrackList_SelectionChanged(object sender, EventArgs e)
+        {
+            if (ignoreSelectionChange || isSelectionHandled)
+                return;
+
+            isSelectionHandled = true;
+            HandleRowSelection();
+            Task.Delay(100).ContinueWith(t => isSelectionHandled = false);
+
+            if (this.dgvTrackList.SelectedRows != null && this.dgvTrackList.SelectedRows.Count > 0)
+            {
+                ///ROW COUNT
+                this.lblSelectedItemsCount.Text = $"{this.dgvTrackList.SelectedRows.Count} item{(this.dgvTrackList.SelectedRows.Count > 1 ? "s" : "")} selected";
+
+                int totalSeconds = 0;
+
+                foreach (DataGridViewRow row in this.dgvTrackList.SelectedRows)
+                {
+                    string[] parts = row.Cells["Length"].Value.ToString().Split(':');
+
+                    if (parts.Length == 3)
+                    {
+                        totalSeconds += int.Parse(parts[0]) * 3600;
+                        totalSeconds += int.Parse(parts[1]) * 60;
+                        totalSeconds += int.Parse(parts[2]);
+                    }
+                    else if (parts.Length == 2)
+                    {
+                        totalSeconds += int.Parse(parts[0]) * 60;
+                        totalSeconds += int.Parse(parts[1]);
+                    }
+                    else if (parts.Length == 1)
+                    {
+                        totalSeconds += int.Parse(parts[0]);
+                    }
+                }
+
+                // Calculate total time
+                TimeSpan totalTime = TimeSpan.FromSeconds(totalSeconds);
+                string length = totalTime.Hours > 0
+                ? $"{totalTime.Hours:D2}:{totalTime.Minutes:D2}:{totalTime.Seconds:D2}"
+                : $"{totalTime.Minutes:D2}:{totalTime.Seconds:D2}";
+
+                this.lblSelectedItemsLength.Text = $"Length: {length}";
             }
         }
     }

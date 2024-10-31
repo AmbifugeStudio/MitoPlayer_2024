@@ -44,7 +44,7 @@ namespace MitoPlayer_2024.Presenters
             this.playlistView.PrevTrackEvent += PrevTrackEvent;
             this.playlistView.NextTrackEvent += NextTrackEvent;
             this.playlistView.RandomTrackEvent += RandomTrackEvent;
-            this.playlistView.GetMediaPlayerProgressStatusEvent += GetMediaPlayerProgressStatusEvent;
+            
             //this.playlistView.SetCurrentTrackColorEvent += SetCurrentTrackColorEvent;
 
             //TRACKLIST
@@ -79,6 +79,7 @@ namespace MitoPlayer_2024.Presenters
 
             this.playlistView.EnableFilterModeEvent += EnableFilterModeEvent;
             this.playlistView.EnableSetterModeEvent += EnableSetterModeEvent;
+            this.playlistView.LoadCoversEvent += LoadCoversEvent;
             this.playlistView.ChangeOnlyPlayingRowModeEnabled += ChangeOnlyPlayingRowModeEnabled;
             this.playlistView.ChangeFilterParametersEvent += ChangeFilterParameters;
             this.playlistView.RemoveTagValueFilter += RemoveTagValueFilter;
@@ -106,10 +107,11 @@ namespace MitoPlayer_2024.Presenters
                 this.InitializeTagComponent();
                 
 
-                if (this.mediaPLayerComponent == null)
+                if (this.mediaPlayerComponent == null)
                 {
-                    this.mediaPLayerComponent = mediaPlayer;
-                    this.mediaPLayerComponent.Initialize(this.trackListTable);
+                    this.mediaPlayerComponent = mediaPlayer;
+                    this.mediaPlayerComponent.Initialize(this.trackListTable);
+                    this.mediaPlayerComponent.MediaPlayer.PlayStateChange += new AxWMPLib._WMPOCXEvents_PlayStateChangeEventHandler(MediaPlayer_PlayStateChange);
                 }
                 this.InitializedPlaylistList();
                 
@@ -117,12 +119,39 @@ namespace MitoPlayer_2024.Presenters
                 this.InitializePostKeyAndBpmAnalization();
 
                 this.InitializeCovers();
+
+                playNextTrackTimer = new System.Windows.Forms.Timer();
+                playNextTrackTimer.Interval = 100; // 100 milliseconds delay
+                playNextTrackTimer.Tick += PlayNextTrackTimer_Tick;
             }
             catch(Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+        private System.Windows.Forms.Timer playNextTrackTimer;
+
+        private void PlayNextTrackTimer_Tick(object sender, EventArgs e)
+        {
+            playNextTrackTimer.Stop();
+            if (this.mediaPlayerComponent.IsShuffleEnabled)
+            {
+                PlayRandomTrack();
+            }
+            else
+            {
+                PlayNextTrack();
+            }
+        }
+
+        private void MediaPlayer_PlayStateChange(object sender, AxWMPLib._WMPOCXEvents_PlayStateChangeEvent e)
+        {
+            if (e.newState == (int)WMPLib.WMPPlayState.wmppsMediaEnded)
+            {
+                playNextTrackTimer.Start();
+            }
+        }
+
 
         private List<Tag> tagList { get; set; }
         private Dictionary<String, Dictionary<String, Color>> tagValueDictionary { get; set; }
@@ -342,17 +371,17 @@ namespace MitoPlayer_2024.Presenters
 
         }
 
-        private MediaPlayerComponent mediaPLayerComponent { get; set; }
+        private MediaPlayerComponent mediaPlayerComponent { get; set; }
         private void ReloadTrackList()
         {
             int currentTrackIdInPlaylist = -1;
 
-            if (this.mediaPLayerComponent != null)
+            if (this.mediaPlayerComponent != null)
             {
-                if (this.mediaPLayerComponent.MediaPlayer.playState == WMPLib.WMPPlayState.wmppsPlaying ||
-                   this.mediaPLayerComponent.MediaPlayer.playState == WMPLib.WMPPlayState.wmppsPaused)
+                if (this.mediaPlayerComponent.MediaPlayer.playState == WMPLib.WMPPlayState.wmppsPlaying ||
+                   this.mediaPlayerComponent.MediaPlayer.playState == WMPLib.WMPPlayState.wmppsPaused)
                 {
-                    currentTrackIdInPlaylist = this.mediaPLayerComponent.CurrentTrackIdInPlaylist;
+                    currentTrackIdInPlaylist = this.mediaPlayerComponent.CurrentTrackIdInPlaylist;
 
                     ///elindítunk egy számot, betöltünk egy másik listát, majd visszatöltjük az eredetit, akkor meg kellene jelölni a számot
                     int trackIdInPlaylist = -1;
@@ -361,7 +390,7 @@ namespace MitoPlayer_2024.Presenters
                         trackIdInPlaylist = Convert.ToInt32(this.trackListTable.Rows[i]["TrackIdInPlaylist"]);
                         if (trackIdInPlaylist == currentTrackIdInPlaylist)
                         {
-                            currentTrackIdInPlaylist = this.mediaPLayerComponent.CurrentTrackIdInPlaylist;
+                            currentTrackIdInPlaylist = this.mediaPlayerComponent.CurrentTrackIdInPlaylist;
                             break;
                         }
                     }
@@ -487,7 +516,7 @@ namespace MitoPlayer_2024.Presenters
             this.playlistView.SetVolume(volume);
             this.playlistView.SetMuted(isMuted);
 
-            this.mediaPLayerComponent.MediaPlayer.settings.volume = volume;
+            this.mediaPlayerComponent.MediaPlayer.settings.volume = volume;
         }
 
         private void InitializePostKeyAndBpmAnalization()
@@ -658,6 +687,7 @@ namespace MitoPlayer_2024.Presenters
                 finally
                 {
                     isSaving = false;
+                    this.playlistView.ChangeSaveStatus(false);
                 }
             }
         }
@@ -774,7 +804,7 @@ namespace MitoPlayer_2024.Presenters
             this.isTrackListChanged = true;
 
             this.playlistView.ChangeSaveButtonColor(true);
-            this.mediaPLayerComponent.SetWorkingTable(trackListTable);
+            this.mediaPlayerComponent.SetWorkingTable(trackListTable);
         }
 
         private async void SaveTrackList()
@@ -807,6 +837,7 @@ namespace MitoPlayer_2024.Presenters
                     if (readyToSave)
                     {
                         isSaving = true;
+                        this.playlistView.ChangeSaveStatus(true);
 
                         try
                         {
@@ -816,6 +847,7 @@ namespace MitoPlayer_2024.Presenters
                         {
                             isSaving = false;
                             this.playlistView.ChangeSaveButtonColor(false);
+                            this.playlistView.ChangeSaveStatus(false);
                         }
                     }
                 }
@@ -1258,9 +1290,9 @@ namespace MitoPlayer_2024.Presenters
                     plc.OrderInList = orderInList;
                     plc.TrackIdInPlaylist = this.trackDao.GetNextSmallestTrackIdInPlaylist();
 
-                    if (internalDragAndDrop && track.TrackIdInPlaylist == this.mediaPLayerComponent.CurrentTrackIdInPlaylist)
+                    if (internalDragAndDrop && track.TrackIdInPlaylist == this.mediaPlayerComponent.CurrentTrackIdInPlaylist)
                     {
-                        this.mediaPLayerComponent.CurrentTrackIdInPlaylist = plc.TrackIdInPlaylist;
+                        this.mediaPlayerComponent.CurrentTrackIdInPlaylist = plc.TrackIdInPlaylist;
                     }
 
                     track.TrackIdInPlaylist = plc.TrackIdInPlaylist;
@@ -1275,9 +1307,9 @@ namespace MitoPlayer_2024.Presenters
                     bool playTrackAfterOpenFiles = this.settingDao.GetBooleanSetting(Settings.PlayTrackAfterOpenFiles.ToString()).Value;
                     if (playTrackAfterOpenFiles)
                     {
-                        if (this.mediaPLayerComponent.MediaPlayer.playState != WMPLib.WMPPlayState.wmppsPlaying)
+                        if (this.mediaPlayerComponent.MediaPlayer.playState != WMPLib.WMPPlayState.wmppsPlaying)
                         {
-                            this.mediaPLayerComponent.SetCurrentTrackIndex(0);
+                            this.mediaPlayerComponent.SetCurrentTrackIndex(0);
                             this.PlayTrack();
                         }
                     }
@@ -1493,7 +1525,7 @@ namespace MitoPlayer_2024.Presenters
                         if (!trackIds.Contains(Convert.ToInt32(this.trackListTable.Rows[i]["Id"])))
                         {
                             trackIdInPlaylist = Convert.ToInt32(this.trackListTable.Rows[i]["TrackIdInPlaylist"]);
-                            if (this.mediaPLayerComponent.CurrentTrackIdInPlaylist != trackIdInPlaylist)
+                            if (this.mediaPlayerComponent.CurrentTrackIdInPlaylist != trackIdInPlaylist)
                             {
                                 trackIds.Add(Convert.ToInt32(this.trackListTable.Rows[i]["Id"]));
                             }
@@ -1555,7 +1587,8 @@ namespace MitoPlayer_2024.Presenters
         ///FONTOS: ha a progress bar betelik, akkor a media player STÁTUSZA alapján ugrik a következő számra, frissíti a felületet a fentiekkel
         public void SetCurrentTrackEvent(object sender, ListEventArgs e)
         {
-            this.mediaPLayerComponent.SetCurrentTrackIndex(e.IntegerField1);
+            this.mediaPlayerComponent.SetCurrentTrackIndex(e.IntegerField1);
+
             if(e.IntegerField1 > -1)
                 this.GetNearbyCovers(e.IntegerField1);
         }
@@ -1566,12 +1599,78 @@ namespace MitoPlayer_2024.Presenters
         private void GetNearbyCovers(int index)
         {
             coverList = new ConcurrentQueue<ImageExtension>();
-            List<bool> mainCoverArray = new List<bool>();
+            List<DataRow> trackList = this.isFilterModeEnabled ? this.filteredTrackListTable.Rows.Cast<DataRow>().ToList() : trackListTable.Rows.Cast<DataRow>().ToList();
+
+            int startIndex = Math.Max(0, index - 5);
+            int finalIndex = Math.Min(trackList.Count, index + 6);
+
+            if (trackList.Count > displayedCoverNumber)
+            {
+                if (index <= 5)
+                {
+                    finalIndex = Math.Min(trackList.Count, displayedCoverNumber);
+                }
+                else if (index + 6 > trackList.Count)
+                {
+                    startIndex = Math.Max(0, trackList.Count - displayedCoverNumber);
+                }
+            }
+
+            for (int i = startIndex; i < finalIndex; i++)
+            {
+                var coverImage = new ImageExtension
+                {
+                    FilePath = trackList[i]["Path"].ToString(),
+                    TrackIdInPlaylist = Convert.ToInt32(trackList[i]["TrackIdInPlaylist"]),
+                    IsMainCover = (i == index)
+                };
+                coverList.Enqueue(coverImage);
+            }
+
+            if (coverList.Count > 0)
+            {
+                Parallel.ForEach(coverList, preparedCoverImage =>
+                {
+                    try
+                    {
+                        using (var file = TagLib.File.Create(preparedCoverImage.FilePath))
+                        {
+                            if (file?.Tag.Pictures.Length > 0)
+                            {
+                                var pictureData = file.Tag.Pictures[0].Data.Data;
+                                using (var ms = new MemoryStream(pictureData))
+                                {
+                                    ms.Position = 0;
+                                    using (var img = Image.FromStream(ms))
+                                    {
+                                        preparedCoverImage.Image = img.GetThumbnailImage(75, 75, () => false, IntPtr.Zero);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                preparedCoverImage.Image = Properties.Resources.MissingCover;
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error processing file {preparedCoverImage.FilePath}: {ex.Message}");
+                        preparedCoverImage.Image = Properties.Resources.MissingCover;
+                    }
+                });
+
+                this.playlistView.UpdateCoverList(this.coverList);
+            }
+
+
+            /*
+        List<bool> mainCoverArray = new List<bool>();
 
             int startIndex = 0;
             int finalIndex = 0;
 
-            String selectedPath = this.trackListTable.Rows[index]["Path"].ToString();
+            String selectedPath =  this.trackListTable.Rows[index]["Path"].ToString();
 
             if (this.trackListTable.Rows.Count <= displayedCoverNumber)
             {
@@ -1656,7 +1755,7 @@ namespace MitoPlayer_2024.Presenters
                 this.playlistView.UpdateCoverList(this.coverList);
             }
 
-
+            */
         }
         public void PlayTrackEvent(object sender, ListEventArgs e)
         {
@@ -1664,13 +1763,13 @@ namespace MitoPlayer_2024.Presenters
         }
         public void PlayTrack()
         {
-            MediaPlayerUpdateState updateState = this.mediaPLayerComponent.PlayTrack();
+            MediaPlayerUpdateState updateState = this.mediaPlayerComponent.PlayTrack();
 
             if (updateState == MediaPlayerUpdateState.AfterPlay)
             {
                 if (this.trackListTable != null && this.trackListTable.Rows != null && this.trackListTable.Rows.Count > 0)
                 {
-                    this.playlistView.UpdateAfterPlayTrack(this.mediaPLayerComponent.GetCurrentTrackIndex(), this.mediaPLayerComponent.CurrentTrackIdInPlaylist);
+                    this.playlistView.UpdateAfterPlayTrack(this.mediaPlayerComponent.GetCurrentTrackIndex(), this.mediaPlayerComponent.CurrentTrackIdInPlaylist);
                 }
             }
             else if (updateState == MediaPlayerUpdateState.AfterPlayAfterPause)
@@ -1680,9 +1779,9 @@ namespace MitoPlayer_2024.Presenters
         }
         public void PauseTrackEvent(object sender, EventArgs e)
         {
-            if (this.mediaPLayerComponent.MediaPlayer.playState == WMPLib.WMPPlayState.wmppsPaused)
+            if (this.mediaPlayerComponent.MediaPlayer.playState == WMPLib.WMPPlayState.wmppsPaused)
             {
-                MediaPlayerUpdateState updateState = this.mediaPLayerComponent.PlayTrack();
+                MediaPlayerUpdateState updateState = this.mediaPlayerComponent.PlayTrack();
 
                 if (updateState == MediaPlayerUpdateState.AfterPlayAfterPause)
                 {
@@ -1691,14 +1790,14 @@ namespace MitoPlayer_2024.Presenters
             }
             else
             {
-                this.mediaPLayerComponent.PauseTrack();
+                this.mediaPlayerComponent.PauseTrack();
                 this.playlistView.UpdateAfterPauseTrack();
             }
            
         }
         public void StopTrackEvent(object sender, EventArgs e)
         {
-            this.mediaPLayerComponent.StopTrack();
+            this.mediaPlayerComponent.StopTrack();
             this.playlistView.UpdateAfterStopTrack();
         }
 
@@ -1706,11 +1805,11 @@ namespace MitoPlayer_2024.Presenters
         {
             if (this.trackListTable != null && this.trackListTable.Rows != null && this.trackListTable.Rows.Count > 0)
             {
-                MediaPlayerUpdateState updateState = this.mediaPLayerComponent.PrevTrack();
+                MediaPlayerUpdateState updateState = this.mediaPlayerComponent.PrevTrack();
 
                 if (updateState == MediaPlayerUpdateState.AfterPlay)
                 {
-                    this.playlistView.UpdateAfterPlayTrack(this.mediaPLayerComponent.GetCurrentTrackIndex(), this.mediaPLayerComponent.CurrentTrackIdInPlaylist);
+                    this.playlistView.UpdateAfterPlayTrack(this.mediaPlayerComponent.GetCurrentTrackIndex(), this.mediaPlayerComponent.CurrentTrackIdInPlaylist);
                 }
                 else if (updateState == MediaPlayerUpdateState.AfterPlayAfterPause)
                 {
@@ -1721,14 +1820,14 @@ namespace MitoPlayer_2024.Presenters
         }
         public void NextTrackEvent(object sender, ListEventArgs e)
         {
-            if (this.mediaPLayerComponent.IsShuffleEnabled)
+            if (this.mediaPlayerComponent.IsShuffleEnabled)
             {
                 if (this.trackListTable != null && this.trackListTable.Rows != null && this.trackListTable.Rows.Count > 0)
                 {
-                    MediaPlayerUpdateState updateState = this.mediaPLayerComponent.RandomTrack();
+                    MediaPlayerUpdateState updateState = this.mediaPlayerComponent.RandomTrack();
                     if (updateState == MediaPlayerUpdateState.AfterPlay)
                     {
-                        this.playlistView.UpdateAfterPlayTrack(this.mediaPLayerComponent.GetCurrentTrackIndex(), this.mediaPLayerComponent.CurrentTrackIdInPlaylist);
+                        this.playlistView.UpdateAfterPlayTrack(this.mediaPlayerComponent.GetCurrentTrackIndex(), this.mediaPlayerComponent.CurrentTrackIdInPlaylist);
                     }
                     else
                     {
@@ -1740,11 +1839,11 @@ namespace MitoPlayer_2024.Presenters
             {
                 if (this.trackListTable != null && this.trackListTable.Rows != null && this.trackListTable.Rows.Count > 0)
                 {
-                    MediaPlayerUpdateState updateState = this.mediaPLayerComponent.NextTrack();
+                    MediaPlayerUpdateState updateState = this.mediaPlayerComponent.NextTrack();
 
                     if (updateState == MediaPlayerUpdateState.AfterPlay)
                     {
-                        this.playlistView.UpdateAfterPlayTrack(this.mediaPLayerComponent.GetCurrentTrackIndex(), this.mediaPLayerComponent.CurrentTrackIdInPlaylist);
+                        this.playlistView.UpdateAfterPlayTrack(this.mediaPlayerComponent.GetCurrentTrackIndex(), this.mediaPlayerComponent.CurrentTrackIdInPlaylist);
                     }
                     else if (updateState == MediaPlayerUpdateState.AfterPlayAfterPause)
                     {
@@ -1758,10 +1857,10 @@ namespace MitoPlayer_2024.Presenters
         {
             if (this.trackListTable != null && this.trackListTable.Rows != null && this.trackListTable.Rows.Count > 0)
             {
-                MediaPlayerUpdateState updateState = this.mediaPLayerComponent.RandomTrack();
+                MediaPlayerUpdateState updateState = this.mediaPlayerComponent.RandomTrack();
                 if (updateState == MediaPlayerUpdateState.AfterPlay)
                 {
-                    this.playlistView.UpdateAfterPlayTrack(this.mediaPLayerComponent.GetCurrentTrackIndex(), this.mediaPLayerComponent.CurrentTrackIdInPlaylist);
+                    this.playlistView.UpdateAfterPlayTrack(this.mediaPlayerComponent.GetCurrentTrackIndex(), this.mediaPlayerComponent.CurrentTrackIdInPlaylist);
                 }
                 else
                 {
@@ -1769,62 +1868,49 @@ namespace MitoPlayer_2024.Presenters
                 }
             } 
         }
-        private void GetMediaPlayerProgressStatusEvent(object sender, EventArgs e)
+
+        
+
+
+
+        private void PlayRandomTrack()
         {
-            if (this.mediaPLayerComponent.MediaPlayer.playState == WMPLib.WMPPlayState.wmppsPlaying)
+            if (this.trackListTable != null && this.trackListTable.Rows.Count > 0)
             {
-                double duration = mediaPLayerComponent.GetDuration();
-                String durationString = mediaPLayerComponent.GetDurationString();
-                double currentPosition = mediaPLayerComponent.GetCurrentPosition();
-                String currentPositionString = mediaPLayerComponent.GetCurrentPositionString();
-
-                if ((duration > 0 && currentPosition >= duration))
-                {
-                    if (this.mediaPLayerComponent.IsShuffleEnabled)
-                    {
-                        if (this.trackListTable != null && this.trackListTable.Rows != null && this.trackListTable.Rows.Count > 0)
-                        {
-                            MediaPlayerUpdateState updateState = this.mediaPLayerComponent.RandomTrack();
-                            if (updateState == MediaPlayerUpdateState.AfterPlay)
-                            {
-                                this.playlistView.UpdateAfterPlayTrack(this.mediaPLayerComponent.GetCurrentTrackIndex(), this.mediaPLayerComponent.CurrentTrackIdInPlaylist);
-                            }
-                            else
-                            {
-                                this.playlistView.UpdateAfterPlayTrackAfterPause();
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (this.trackListTable != null && this.trackListTable.Rows != null && this.trackListTable.Rows.Count > 0)
-                        {
-                            MediaPlayerUpdateState updateState = this.mediaPLayerComponent.NextTrack();
-
-                            if (updateState == MediaPlayerUpdateState.AfterPlay)
-                            {
-                                this.playlistView.UpdateAfterPlayTrack(this.mediaPLayerComponent.GetCurrentTrackIndex(), this.mediaPLayerComponent.CurrentTrackIdInPlaylist);
-                            }
-                            else if (updateState == MediaPlayerUpdateState.AfterPlayAfterPause)
-                            {
-                                this.playlistView.UpdateAfterPlayTrackAfterPause();
-                            }
-                        }
-                    }
-
-                }
-                this.playlistView.UpdateMediaPlayerProgressStatus(duration, durationString, currentPosition, currentPositionString);
-            }           
+                MediaPlayerUpdateState updateState = this.mediaPlayerComponent.RandomTrack();
+                UpdatePlaylistView(updateState);
+            }
         }
+
+        private void PlayNextTrack()
+        {
+            if (this.trackListTable != null && this.trackListTable.Rows.Count > 0)
+            {
+                MediaPlayerUpdateState updateState = this.mediaPlayerComponent.NextTrack();
+                UpdatePlaylistView(updateState);
+            }
+        }
+        private void UpdatePlaylistView(MediaPlayerUpdateState updateState)
+        {
+            if (updateState == MediaPlayerUpdateState.AfterPlay)
+            {
+                this.playlistView.UpdateAfterPlayTrack(this.mediaPlayerComponent.GetCurrentTrackIndex(), this.mediaPlayerComponent.CurrentTrackIdInPlaylist);
+            }
+            else if (updateState == MediaPlayerUpdateState.AfterPlayAfterPause)
+            {
+                this.playlistView.UpdateAfterPlayTrackAfterPause();
+            }
+        }
+
 
         internal void CallChangeProgressEvent(int currentPosX, int width)
         {
-            this.mediaPLayerComponent.ChangeProgress(currentPosX, width);
+            this.mediaPlayerComponent.ChangeProgress(currentPosX, width);
         }
 
         internal void CallChangeVolumeEvent(int volume)
         {
-            this.mediaPLayerComponent.ChangeVolume(volume);
+            this.mediaPlayerComponent.ChangeVolume(volume);
             this.settingDao.SetIntegerSetting(Settings.Volume.ToString(), volume);
             this.settingDao.SetBooleanSetting(Settings.IsMuteEnabled.ToString(), false);
         }
@@ -1836,19 +1922,19 @@ namespace MitoPlayer_2024.Presenters
             if (isMuteEnabled)
             {
                 volume = 0;
-                this.mediaPLayerComponent.ChangeVolume(volume);
+                this.mediaPlayerComponent.ChangeVolume(volume);
                 this.playlistView.SetVolume(volume);
             }
             else
             {
                 volume = this.settingDao.GetIntegerSetting(Settings.Volume.ToString());
-                this.mediaPLayerComponent.ChangeVolume(volume);
+                this.mediaPlayerComponent.ChangeVolume(volume);
                 this.playlistView.SetVolume(volume);
             }
         }
         internal void CallChangeShuffleEvent(bool isShuffleEnabled)
         {
-            this.mediaPLayerComponent.ChangeShuffle(isShuffleEnabled);
+            this.mediaPlayerComponent.ChangeShuffle(isShuffleEnabled);
             this.settingDao.SetBooleanSetting(Settings.IsShuffleEnabled.ToString(), isShuffleEnabled);
         }
         #endregion
@@ -1906,7 +1992,7 @@ namespace MitoPlayer_2024.Presenters
             this.ReloadPlaylist();
             this.InitializeTrackListRows(this.trackListTable, null);
 
-            this.mediaPLayerComponent.SetWorkingTable(this.trackListTable);
+            this.mediaPlayerComponent.SetWorkingTable(this.trackListTable);
         }
 
         /*
@@ -2009,7 +2095,7 @@ namespace MitoPlayer_2024.Presenters
                             this.ReloadPlaylist();
 
                             this.InitializeTrackListRows(this.trackListTable,null);
-                            this.mediaPLayerComponent.SetWorkingTable(this.trackListTable);
+                            this.mediaPlayerComponent.SetWorkingTable(this.trackListTable);
                         }
                         else
                         {
@@ -2288,12 +2374,12 @@ namespace MitoPlayer_2024.Presenters
             this.playlistView.ToggleTracklistSelectionChanged(false);
 
             this.trackListBindingSource.DataSource = this.filteredTrackListTable;
-            this.InitializeTrackList(this.filteredTrackListTable, this.mediaPLayerComponent.CurrentTrackIdInPlaylist);
+            this.InitializeTrackList(this.filteredTrackListTable, this.mediaPlayerComponent.CurrentTrackIdInPlaylist);
 
             this.playlistView.ToggleTracklistSelectionChanged(true);
 
             this.isFilterModeEnabled = true;
-            this.mediaPLayerComponent.SetWorkingTable(this.filteredTrackListTable);
+            this.mediaPlayerComponent.SetWorkingTable(this.filteredTrackListTable);
         }
         private void EnableSetterModeEvent(object sender, EventArgs e)
         {
@@ -2309,13 +2395,13 @@ namespace MitoPlayer_2024.Presenters
                 this.playlistView.ToggleTracklistSelectionChanged(false);
 
                 this.trackListBindingSource.DataSource = this.trackListTable;
-                this.InitializeTrackList(this.trackListTable, this.mediaPLayerComponent.CurrentTrackIdInPlaylist);
+                this.InitializeTrackList(this.trackListTable, this.mediaPlayerComponent.CurrentTrackIdInPlaylist);
 
                 this.playlistView.ToggleTracklistSelectionChanged(true);
             }
 
             this.isFilterModeEnabled = false;
-            this.mediaPLayerComponent.SetWorkingTable(this.trackListTable);
+            this.mediaPlayerComponent.SetWorkingTable(this.trackListTable);
         }
         private void ChangeOnlyPlayingRowModeEnabled(object sender, ListEventArgs e)
         {
@@ -2369,7 +2455,7 @@ namespace MitoPlayer_2024.Presenters
                                     }
                                     else
                                     {
-                                        int currentTrackIdInPlaylist = this.mediaPLayerComponent.CurrentTrackIdInPlaylist;
+                                        int currentTrackIdInPlaylist = this.mediaPlayerComponent.CurrentTrackIdInPlaylist;
                                         for (int i = rows.Count - 1; i >= 0; i--)
                                         {
                                             int trackIdInPlaylist = Convert.ToInt32(this.trackListTable.Rows[i]["TrackIdInPlaylist"]);
@@ -2438,7 +2524,7 @@ namespace MitoPlayer_2024.Presenters
                                     }
                                     else
                                     {
-                                        int currentTrackIdInPlaylist = this.mediaPLayerComponent.CurrentTrackIdInPlaylist;
+                                        int currentTrackIdInPlaylist = this.mediaPlayerComponent.CurrentTrackIdInPlaylist;
                                         for (int i = rows.Count - 1; i >= 0; i--)
                                         {
                                             int trackIdInPlaylist = Convert.ToInt32(this.trackListTable.Rows[i]["TrackIdInPlaylist"]);
@@ -2552,6 +2638,12 @@ namespace MitoPlayer_2024.Presenters
                 }               
             }
            ((PlaylistView)this.playlistView).SetTagValueFilter(this.tagValueFilterList);
+
+        }
+
+        private void LoadCoversEvent(object sender, ListEventArgs e)
+        {
+            this.GetNearbyCovers(e.IntegerField1);
         }
 
         private void SetTagValueEvent(object sender, ListEventArgs e)
@@ -2613,7 +2705,7 @@ namespace MitoPlayer_2024.Presenters
                                     }
                                     else
                                     {
-                                        int currentTrackIdInPlaylist = this.mediaPLayerComponent.CurrentTrackIdInPlaylist;
+                                        int currentTrackIdInPlaylist = this.mediaPlayerComponent.CurrentTrackIdInPlaylist;
                                         for (int i = e.Rows.Count - 1; i >= 0; i--)
                                         {
                                             int trackIdInPlaylist = Convert.ToInt32(this.trackListTable.Rows[i]["TrackIdInPlaylist"]);
@@ -2783,12 +2875,12 @@ namespace MitoPlayer_2024.Presenters
                 this.playlistView.ToggleTracklistSelectionChanged(false);
 
                 this.trackListBindingSource.DataSource = this.filteredTrackListTable;
-                this.InitializeTrackList(this.filteredTrackListTable, this.mediaPLayerComponent.CurrentTrackIdInPlaylist);
+                this.InitializeTrackList(this.filteredTrackListTable, this.mediaPlayerComponent.CurrentTrackIdInPlaylist);
 
                 this.playlistView.ToggleTracklistSelectionChanged(true);
             }
 
-            this.mediaPLayerComponent.SetWorkingTable(this.filteredTrackListTable);
+            this.mediaPlayerComponent.SetWorkingTable(this.filteredTrackListTable);
         }
 
     }

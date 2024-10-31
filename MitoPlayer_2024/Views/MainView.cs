@@ -486,22 +486,73 @@ namespace MitoPlayer_2024
             this.pcbMasterPeakLeftBackground.Height = leftReferenceHeight;
             this.pcbMasterPeakRightBackground.Height = rightReferenceHeight;
         }
-        private int leftReferenceHeight = 0;
-        private int rightReferenceHeight = 0;
+        //private int leftReferenceHeight = 0;
+        // private int rightReferenceHeight = 0;
 
-        public void UpdateMediaPlayerProgressStatus(double duration, String durationString, double currentPosition, String currentPositionString)
+
+        public void InitializeMediaPlayerProgressStatus(double duration, String durationString, double currentPosition, String currentPositionString)
         {
-            if((int)currentPosition > 0)
-            {
-                this.pbrTrackProgress.Show();
-                this.lblTrackStart.Show();
-                this.lblTrackEnd.Show();
-            }
+            this.pbrTrackProgress.Show();
+            this.lblTrackStart.Show();
+            this.lblTrackEnd.Show();
             this.pbrTrackProgress.Maximum = (int)duration;
             this.pbrTrackProgress.Value = (int)currentPosition;
             this.lblTrackEnd.Text = durationString;
             this.lblTrackStart.Text = currentPositionString;
+        }
 
+        public void ResetMediaPlayerProgressStatus()
+        {
+            this.pbrTrackProgress.Hide();
+            this.lblTrackStart.Hide();
+            this.lblTrackEnd.Hide();
+
+            this.pbrTrackProgress.Value = 0;
+            this.lblTrackEnd.Text = "";
+            this.lblTrackStart.Text = "";
+        }
+
+        public void UpdateMediaPlayerProgressStatus(double duration, String durationString, double currentPosition, String currentPositionString)
+        {
+            if((int)Math.Ceiling(currentPosition) > 0 && (int)Math.Ceiling(currentPosition) < (int)Math.Ceiling(duration))
+            {
+                if (!this.pbrTrackProgress.Visible)
+                {
+                    this.pbrTrackProgress.Show();
+                    this.lblTrackStart.Show();
+                    this.lblTrackEnd.Show();
+                }
+               
+
+                if (this.pbrTrackProgress.Maximum == 0)
+                {
+                    this.pbrTrackProgress.Maximum = (int)Math.Ceiling(duration);
+                }
+
+                if(this.pbrTrackProgress.Maximum >= (int)Math.Ceiling(currentPosition))
+                {
+                    this.pbrTrackProgress.Value = (int)Math.Ceiling(currentPosition);
+                }
+
+                this.lblTrackEnd.Text = durationString;
+                this.lblTrackStart.Text = currentPositionString;
+            }
+            else
+            {
+                if (this.pbrTrackProgress.Visible)
+                {
+                    this.pbrTrackProgress.Hide();
+                    this.lblTrackStart.Hide();
+                    this.lblTrackEnd.Hide();
+                }
+              
+                this.pbrTrackProgress.Maximum = 0;
+                this.pbrTrackProgress.Value = 0;
+                this.lblTrackEnd.Text = "";
+                this.lblTrackStart.Text = "";
+            }
+
+            
         }
 
         private bool masterPeakLeftGreenEnabled = false;
@@ -523,13 +574,12 @@ namespace MitoPlayer_2024
 
 
 
-        private DateTime? currentTime = null;
+
         private DateTime? lastCurrentTime = null;
         private DateTime? lastCurrentTimeForPeak = null;
         private List<float> peakDecibelList = new List<float>();
 
-        int leftPeak, rightPeak, masterPeak;
-        float masterPeakInDecibel;
+
         int peakLineY;
 
         private void prbVolume_MouseDown(object sender, MouseEventArgs e)
@@ -548,113 +598,76 @@ namespace MitoPlayer_2024
             this.ChangeVolume?.Invoke(this, new ListEventArgs() { IntegerField1 = e.X });
         }
 
+        private int leftReferenceHeight;
+        private int rightReferenceHeight;
+        private int leftPeak;
+        private int rightPeak;
+        private int masterPeak;
+        private float masterPeakInDecibel;
+        private DateTime currentTime;
+
         private void tmrPeak_Tick(object sender, EventArgs e)
         {
-            if (this.mmDevice != null)
+            if (this.mmDevice == null || this.mmDevice.AudioMeterInformation.PeakValues.Count <= 1) return;
+
+            leftReferenceHeight = this.pcbMasterPeakLeftColoured.Height;
+            rightReferenceHeight = this.pcbMasterPeakLeftColoured.Height;
+
+            leftPeak = (int)(Math.Round(this.mmDevice.AudioMeterInformation.PeakValues[0] * 100));
+            rightPeak = (int)(Math.Round(this.mmDevice.AudioMeterInformation.PeakValues[1] * 100));
+            masterPeak = (int)(Math.Round(this.mmDevice.AudioMeterInformation.MasterPeakValue * 100));
+
+            masterPeakInDecibel = this.ConvertToDecibels(this.mmDevice.AudioMeterInformation.MasterPeakValue);
+
+            this.pcbMasterPeakLeftBackground.Height = leftReferenceHeight - leftPeak * (leftReferenceHeight / 100);
+            this.pcbMasterPeakRightBackground.Height = rightReferenceHeight - rightPeak * (leftReferenceHeight / 100);
+
+            currentTime = DateTime.Now;
+
+            if (!lastCurrentTime.HasValue || lastCurrentTime.Value.AddMilliseconds(100) < currentTime)
             {
-                if (this.mmDevice.AudioMeterInformation.PeakValues.Count > 1)
+                lastCurrentTime = currentTime;
+                peakDecibelList.Insert(0, masterPeakInDecibel);
+                if (peakDecibelList.Count > 10)
                 {
-                    leftReferenceHeight = this.pcbMasterPeakLeftColoured.Height;
-                    rightReferenceHeight = this.pcbMasterPeakLeftColoured.Height;
+                    peakDecibelList.RemoveAt(peakDecibelList.Count - 1);
+                }
+            }
 
-                    leftPeak = (int)(Math.Round(this.mmDevice.AudioMeterInformation.PeakValues[0] * 100));
-                    rightPeak = (int)(Math.Round(this.mmDevice.AudioMeterInformation.PeakValues[1] * 100));
-                    masterPeak = (int)(Math.Round(this.mmDevice.AudioMeterInformation.MasterPeakValue * 100));
+            if (!lastCurrentTimeForPeak.HasValue || lastCurrentTimeForPeak.Value.AddMilliseconds(1000) < currentTime)
+            {
+                lastCurrentTimeForPeak = currentTime;
 
-                    masterPeakInDecibel = this.ConvertToDecibels(this.mmDevice.AudioMeterInformation.MasterPeakValue);
+                if (peakDecibelList.Count > 0)
+                {
+                    float averagePeak = peakDecibelList.Max();
+                    this.lblPeak.Text = averagePeak != float.NegativeInfinity ? $"{averagePeak:N3} dB" : string.Empty;
 
-                    this.pcbMasterPeakLeftBackground.Height = leftReferenceHeight - leftPeak * (leftReferenceHeight / 100);
-                    this.pcbMasterPeakRightBackground.Height = rightReferenceHeight - rightPeak * (leftReferenceHeight / 100);
+                    int peakLineY = rightReferenceHeight - masterPeak * (leftReferenceHeight / 100);
+                    this.pcbMarkerGrey.Location = new Point(0, peakLineY);
+                    this.pcbMarkerRed.Location = new Point(0, peakLineY);
 
-                    currentTime = DateTime.Now;
-
-                    if(!lastCurrentTime.HasValue)
+                    if (averagePeak > -1)
                     {
-                        lastCurrentTime = currentTime;
+                        this.lblPeak.ForeColor = this.WarningColor;
+                        this.pcbMarkerGrey.Hide();
+                        this.pcbMarkerRed.Show();
+                    }
+                    else if (averagePeak <= -1 && averagePeak > -3)
+                    {
+                        this.lblPeak.ForeColor = this.FontColor;
+                        this.pcbMarkerGrey.Show();
+                        this.pcbMarkerRed.Hide();
                     }
                     else
                     {
-                        if (lastCurrentTime.Value.AddMilliseconds(100) < currentTime)
-                        {
-                            lastCurrentTime = currentTime;
-
-                            if(peakDecibelList.Count() < 10)
-                            {
-                                peakDecibelList.Insert(0, masterPeakInDecibel);
-                                
-                            }
-                            else
-                            {
-                                peakDecibelList.Insert(0, masterPeakInDecibel);
-                                peakDecibelList.RemoveAt(peakDecibelList.Count - 1);
-                               
-                            }
-                        }
+                        this.lblPeak.ForeColor = this.FontColor;
+                        this.pcbMarkerGrey.Show();
+                        this.pcbMarkerRed.Hide();
                     }
-
-                    if (!lastCurrentTimeForPeak.HasValue)
-                    {
-                        lastCurrentTimeForPeak = currentTime;
-                        peakLineY = rightReferenceHeight - masterPeak * (leftReferenceHeight / 100);
-                        this.pcbMarkerGrey.Location = new Point(0, peakLineY);
-                       // this.pcbMarkerOrange.Location = new Point(0, peakLineY);
-                        this.pcbMarkerRed.Location = new Point(0, peakLineY);
-                    }
-                    else
-                    {
-                        if (lastCurrentTimeForPeak.Value.AddMilliseconds(1000) < currentTime)
-                        {
-                            lastCurrentTimeForPeak = currentTime;
-
-                            if (peakDecibelList.Count > 0)
-                            {
-                                float averagePeak = peakDecibelList.Max();
-
-                                if (averagePeak != float.NegativeInfinity)
-                                {
-                                    this.lblPeak.Text = averagePeak.ToString("N3") + " dB";
-                                }
-                                else
-                                {
-                                    this.lblPeak.Text ="";
-                                }
-
-                                peakLineY = rightReferenceHeight - masterPeak * (leftReferenceHeight / 100);
-                                this.pcbMarkerGrey.Location = new Point(0, peakLineY);
-                               // this.pcbMarkerOrange.Location = new Point(0, peakLineY);
-                                this.pcbMarkerRed.Location = new Point(0, peakLineY);
-
-                                if (averagePeak > -1)
-                                {
-                                    this.lblPeak.ForeColor = this.WarningColor;
-                                    this.pcbMarkerGrey.Hide();
-                                    //this.pcbMarkerOrange.Hide();
-                                    this.pcbMarkerRed.Show();
-                                }
-                                else if(averagePeak <= -1 && averagePeak > -3)
-                                {
-                                    this.lblPeak.ForeColor = this.FontColor;
-                                    this.pcbMarkerGrey.Show();
-                                   // this.pcbMarkerOrange.Show();
-                                    this.pcbMarkerRed.Hide();
-                                }
-                                else
-                                {
-                                    this.lblPeak.ForeColor = this.FontColor;
-                                    this.pcbMarkerGrey.Show();
-                                   // this.pcbMarkerOrange.Hide();
-                                    this.pcbMarkerRed.Hide();
-                                }
-                               
-                            }
-                        }
-                    }
-
-
                 }
             }
         }
-
         public float ConvertToDecibels(float value)
         {
             if (value <= 0)

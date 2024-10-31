@@ -981,12 +981,15 @@ namespace MitoPlayer_2024.Presenters
         {
             if (this.mediaPlayerComponent.MediaPlayer.playState == WMPLib.WMPPlayState.wmppsPlaying)
             {
-                double duration = mediaPlayerComponent.GetDuration();
-                String durationString = mediaPlayerComponent.GetDurationString();
-                double currentPosition = mediaPlayerComponent.GetCurrentPosition();
-                String currentPositionString = mediaPlayerComponent.GetCurrentPositionString();
-
-                this.mainView.UpdateMediaPlayerProgressStatus(duration, durationString, currentPosition, currentPositionString);
+                this.mainView.UpdateMediaPlayerProgressStatus(
+                    this.mediaPlayerComponent.GetDuration(),
+                    this.mediaPlayerComponent.GetDurationString(),
+                    this.mediaPlayerComponent.GetCurrentPosition(),
+                    this.mediaPlayerComponent.GetCurrentPositionString());
+            }
+            else
+            {
+                this.mainView.ResetMediaPlayerProgressStatus();
             }
         }
     }

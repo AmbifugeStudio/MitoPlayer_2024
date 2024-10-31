@@ -3,11 +3,6 @@
 
 
 
-- FEATURE: cover browser click -> select track
-- FEATURE: cover browser drag and drop outside of the app
-- FEATURE: cover browser double click -> play track
-
-
 - BUG: too much tag - delete tag, navigate to playlist, panel hides clear filter button in the filter mode
 
 - FEATURE: set debug message timer time in options
@@ -29,6 +24,16 @@
 - FEATURE: progress bar for long loading time
 - FEATURE: load tracklist or navigate away: check save status and show dialog window is there are unsaved progress
 
+======================
+v0.12.15.7
+======================
+OK - BUG: play next song after the previous one ended
+OK - BUG: track progress bar displays less value and it does not working well, when the track is ended
+OK - BUG: filter does not filter because of the saving
+OK - BUG: cover browser changing after load playlist, set setter and set filter and filter
+OK - BUG: current selected cover stays after cover browser change
+OK - FEATURE: cover browser drag and drop outside of the app
+OK - FEATURE: cover browser click -> select track
 ======================
 v0.12.15.0
 ======================
