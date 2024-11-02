@@ -211,14 +211,14 @@ namespace MitoPlayer_2024.Helpers
         }
 
 
-        public ResultOrError ReadKeyAndBpmFromVirtualDJDatabase(ref List<Track> trackList,ITrackDao trackDao, List<TagValue> keyTagValueList, List<TagValue> bpmTagValueList)
+        public ResultOrError ReadKeyAndBpmFromVirtualDJDatabase(ref List<Model.Track> trackList,ITrackDao trackDao, List<TagValue> keyTagValueList, List<TagValue> bpmTagValueList)
         {
             ResultOrError result = new ResultOrError();
 
             String currentDrive = String.Empty;
             List<String> driveList = new List<String>();
             List<String> validDriveList = new List<String>();
-            List<Track> filteredTrackList = trackList.FindAll(x => x.IsNew);
+            List<Model.Track> filteredTrackList = trackList.FindAll(x => x.IsNew);
 
             try
             {
@@ -395,7 +395,7 @@ namespace MitoPlayer_2024.Helpers
 
                     for (int i = 0; i < filePathList.Count; i++)
                     {
-                        Track currentTrack = trackList.Find(x => x.Path == finalFilePathList[i]);
+                        Model.Track currentTrack = trackList.Find(x => x.Path == finalFilePathList[i]);
                         int index = trackList.IndexOf(currentTrack);
                         if (currentTrack != null)
                         {
@@ -546,16 +546,16 @@ namespace MitoPlayer_2024.Helpers
             return vdjDatabaseFilePath;
         } 
 
-        public void ReadVirtualDJDatabase(ref List<Track> trackList, List<TagValue> keyList)
+        public void ReadVirtualDJDatabase(ref List<Model.Track> trackList, List<TagValue> keyList)
         {
             if(trackList != null && trackList.Count > 0)
             {
                 trackList = trackList.OrderBy(x => x.Path).ToList();
 
-                foreach (Track track in trackList)
+                foreach (Model.Track track in trackList)
                 {
                     VDJTrack vdjTrack = this.VDJTracklist.Find(x => x.Path == track.Path);
-                    if (vdjTrack!= null)
+                    if (vdjTrack != null)
                     {
                         TrackTagValue ttvBpm = track.TrackTagValues.Find(x => x.TagName == "Bpm");
                         if (ttvBpm != null)

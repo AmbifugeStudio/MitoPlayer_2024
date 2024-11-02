@@ -466,7 +466,7 @@ namespace MitoPlayer_2024.Presenters
             //lementjük setting-be az utoljára beállított fájl kiterjesztést
             //a létrejött Track-eket hozzáadjuk az aktuális TrackList-hez
 
-            List<Track> trackList = new List<Track>();
+            List<Model.Track> trackList = new List<Model.Track>();
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Multiselect = true;
             ofd.Filter = "Audio files (*.mp3,*.wav,*.flac)|*.mp3;*.wav;*.flac|Playlist files (*.m3u)|*.m3u";
@@ -482,7 +482,7 @@ namespace MitoPlayer_2024.Presenters
         private void OpenDirectory(object sender, EventArgs e)
         {
             scannedFileNames = null;
-            List<Track> trackList = new List<Track>();
+            List<Model.Track> trackList = new List<Model.Track>();
 
             using (var fbd = new FolderBrowserDialog())
             {
@@ -752,7 +752,7 @@ namespace MitoPlayer_2024.Presenters
         }
 
         //ADD FILES
-        private void AddTracksToTrackList(List<Track> trackList, int dragIndex = -1)
+        private void AddTracksToTrackList(List<Model.Track> trackList, int dragIndex = -1)
         {
             if (this.actualView != null && this.actualView.GetType() == typeof(PlaylistView))
                 this.playlistPresenter.CallAddTrackToTrackListEvent(trackList, dragIndex);
@@ -781,10 +781,10 @@ namespace MitoPlayer_2024.Presenters
             }
         }
         
-        private List<Track> ReadFiles(string[] fileNames)
+        private List<Model.Track> ReadFiles(string[] fileNames)
         {
             List<String> filePathList = new List<String>();
-            List<Track> trackList = new List<Track>();
+            List<Model.Track> trackList = new List<Model.Track>();
 
             if (fileNames != null && fileNames.Length > 0)
             {
@@ -817,7 +817,7 @@ namespace MitoPlayer_2024.Presenters
 
                 foreach(var path in filePathList)
                 {
-                    var track = new Track() { Path = path };
+                    var track = new Model.Track() { Path = path };
                     var fileName = Path.GetFileNameWithoutExtension(path);
                     track.FileName = fileName;
 
@@ -828,7 +828,7 @@ namespace MitoPlayer_2024.Presenters
                     }
                     else
                     {
-                        Track trackFromDb = this.trackDao.GetTrackWithTagsByPath(track.Path, tagList);
+                        Model.Track trackFromDb = this.trackDao.GetTrackWithTagsByPath(track.Path, tagList);
                         if (trackFromDb != null)
                         {
                             track = trackFromDb;
@@ -946,12 +946,12 @@ namespace MitoPlayer_2024.Presenters
         }
 
         private String[] scannedFiles;
-        private List<Track> trackList = new List<Track>();
+        private List<Model.Track> trackList = new List<Model.Track>();
         private void ScanFiles(object sender, ListEventArgs e)
         {
             string[] mediaFiles;
             string[] directories;
-            trackList = new List<Track>();
+            trackList = new List<Model.Track>();
             int dragIndex = e.IntegerField1;
             if (e.DragAndDropFilePathArray != null && e.DragAndDropFilePathArray.Length > 0)
             {

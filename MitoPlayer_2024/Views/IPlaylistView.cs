@@ -68,6 +68,10 @@ namespace MitoPlayer_2024.Views
 
         event EventHandler SaveTrackListEvent;
 
+        event EventHandler TrainKeyDetectorEvent;
+        event EventHandler<ListEventArgs> DetectKeyEvent;
+        event EventHandler<ListEventArgs> AddToKeyDetectorEvent;
+        event EventHandler CreateModelEvent;
         void InitializeTagsAndTagValues(List<Tag> tagList, Dictionary<String, Dictionary<String, Color>> tagValueListList);
         void InitializePlaylistList(DataTableModel model);
         void ReloadPlaylistList(DataTableModel model);

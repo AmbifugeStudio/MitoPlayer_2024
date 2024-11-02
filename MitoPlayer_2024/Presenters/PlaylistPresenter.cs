@@ -17,6 +17,10 @@ using System.Windows.Forms;
 using System.Drawing;
 
 using Type = System.Type;
+using NAudio.SoundFont;
+using static System.Runtime.CompilerServices.RuntimeHelpers;
+using System.Collections;
+using System.Threading;
 
 namespace MitoPlayer_2024.Presenters
 {
@@ -85,7 +89,14 @@ namespace MitoPlayer_2024.Presenters
             this.playlistView.RemoveTagValueFilter += RemoveTagValueFilter;
 
             this.playlistView.SaveTrackListEvent += SaveTrackListEvent;
+
+            this.playlistView.TrainKeyDetectorEvent += TrainKeyDetectorEvent;
+            this.playlistView.DetectKeyEvent += DetectKeyEvent;
+            this.playlistView.AddToKeyDetectorEvent += AddToKeyDetectorEvent;
+            this.playlistView.CreateModelEvent += CreateModelEvent;
         }
+
+        
 
 
         #region INITIALIZE
@@ -254,7 +265,7 @@ namespace MitoPlayer_2024.Presenters
 
         private BindingSource trackListBindingSource { get; set; }
         private DataTable trackListTable { get; set; }
-        private List<Track> tracklist { get; set; }
+        private List<Model.Track> tracklist { get; set; }
         private DataTable filteredTrackListTable { get; set; }
         private Dictionary<string, int> columnOrderStates { get; set; }
         private int[] trackColumnDisplayIndexArray { get; set; }
@@ -293,7 +304,7 @@ namespace MitoPlayer_2024.Presenters
                 this.trackColumnVisibilityArray = tpList.Select(x => x.IsEnabled).ToArray();
             }
         }
-        private void InitializeTrackListRows(DataTable tracklistTable, List<Track> trackList)
+        private void InitializeTrackListRows(DataTable tracklistTable, List<Model.Track> trackList)
         {
             tracklistTable.Clear();
 
@@ -311,7 +322,7 @@ namespace MitoPlayer_2024.Presenters
 
             if (trackList != null && trackList.Count > 0)
             {
-                foreach (Track track in trackList)
+                foreach (Model.Track track in trackList)
                 {
                     DataRow dataRow = tracklistTable.NewRow();
                     dataRow["Id"] = track.Id;
@@ -568,12 +579,12 @@ namespace MitoPlayer_2024.Presenters
         private void LoadPlaylist(Playlist pls)
         {
 
-                List<Track> trackList = this.trackDao.GetTracklistWithTagsByPlaylistId(pls.Id, tagList);
+            List<Model.Track> trackList = this.trackDao.GetTracklistWithTagsByPlaylistId(pls.Id, tagList);
                 if (trackList != null && trackList.Count > 0)
                 {
-                    foreach (Track track in trackList)
+                    foreach (Model.Track track in trackList)
                     {
-                        String length = this.LengthToString(track.Length);
+                    String length = this.LengthToString(track.Length);
 
                         int tagCount = 0;
                         if (track.TrackTagValues != null && track.TrackTagValues.Count > 0)
@@ -742,9 +753,9 @@ namespace MitoPlayer_2024.Presenters
                 try
                 {
                     this.trackDao.DeletePlaylistContentByPlaylistId(this.currentPlaylistId);
-                    List<Track> tracklist = this.ConvertTrackDataTableToList(this.trackListTable);
+                    List<Model.Track> tracklist = this.ConvertTrackDataTableToList(this.trackListTable);
                     int orderInList = 0;
-                    foreach (Track track in tracklist)
+                    foreach (Model.Track track in tracklist)
                     {
                         track.OrderInList = orderInList;
 
@@ -772,9 +783,9 @@ namespace MitoPlayer_2024.Presenters
             try
             {
                 this.trackDao.DeletePlaylistContentByPlaylistId(this.currentPlaylistId);
-                List<Track> tracklist = this.ConvertTrackDataTableToList(this.trackListTable);
+                List<Model.Track> tracklist = this.ConvertTrackDataTableToList(this.trackListTable);
                 int orderInList = 0;
-                foreach (Track track in tracklist)
+                foreach (Model.Track track in tracklist)
                 {
                     track.OrderInList = orderInList;
 
@@ -861,13 +872,13 @@ namespace MitoPlayer_2024.Presenters
 
 
 
-        private List<Track> ConvertTrackDataTableToList(DataTable dt)
+        private List<Model.Track> ConvertTrackDataTableToList(DataTable dt)
         {
-            List<Track> trackList = new List<Track>();
+            List<Model.Track> trackList = new List<Model.Track>();
 
             for (int i = 0; i < dt.Rows.Count; i++)
             {
-                Track track = new Track();
+                Model.Track track = new Model.Track();
                 track.Id = Convert.ToInt32(dt.Rows[i]["Id"]);
                 track.OrderInList = Convert.ToInt32(dt.Rows[i]["OrderInList"]);
                 track.TrackIdInPlaylist = Convert.ToInt32(dt.Rows[i]["TrackIdInPlaylist"]);
@@ -1015,13 +1026,13 @@ namespace MitoPlayer_2024.Presenters
 
         private void InternalDragAndDropIntoTracklistEvent(object sender, ListEventArgs e)
         {
-            List<Track> sourceTrackList = new List<Track>();
+            List<Model.Track> sourceTrackList = new List<Model.Track>();
             if (e.SelectedRows != null && e.SelectedRows.Count > 0)
             {
                 for(int i = 0;i<= e.SelectedRows.Count - 1; i++)
                 {
                     int trackId = (int)e.SelectedRows[i].Cells["Id"].Value;
-                    Track track = this.trackDao.GetTrackWithTags(trackId, this.tagList);
+                    Model.Track track = this.trackDao.GetTrackWithTags(trackId, this.tagList);
                     sourceTrackList.Add(track);
                 }
 
@@ -1033,7 +1044,7 @@ namespace MitoPlayer_2024.Presenters
         }
         private void InternalDragAndDropIntoPlaylistEvent(object sender, ListEventArgs e)
         {
-            List<Track> sourceTrackList = new List<Track>();
+            List<Model.Track> sourceTrackList = new List<Model.Track>();
             DataRow playlistRow = null;
             int playlistId = -1;
 
@@ -1050,7 +1061,7 @@ namespace MitoPlayer_2024.Presenters
                     for (int i = 0; i <= e.SelectedRows.Count - 1; i++)
                     {
                         int trackId = (int)e.SelectedRows[i].Cells["Id"].Value;
-                        Track track = this.trackDao.GetTrackWithTags(trackId, this.tagList);
+                        Model.Track track = this.trackDao.GetTrackWithTags(trackId, this.tagList);
                         sourceTrackList.Add(track);
                     }
 
@@ -1065,10 +1076,10 @@ namespace MitoPlayer_2024.Presenters
         }
 
         private string[] scannedFileNames;
-        private List<Track> ReadFiles(string[] fileNames)
+        private List<Model.Track> ReadFiles(string[] fileNames)
         {
             List<String> filePathList = new List<String>();
-            List<Track> trackList = new List<Track>();
+            List<Model.Track> trackList = new List<Model.Track>();
             if (fileNames != null && fileNames.Length > 0)
             {
                 foreach (String path in fileNames)
@@ -1112,7 +1123,7 @@ namespace MitoPlayer_2024.Presenters
                 {
                     string fileName = "";
 
-                    Track track = new Track();
+                    Model.Track track = new Model.Track();
                     track.Path = path;
 
                     int extCharCount = path.EndsWith("flac") ? 5 : 4;
@@ -1130,7 +1141,7 @@ namespace MitoPlayer_2024.Presenters
                     }
                     else
                     {
-                        Track trackFromDb = this.trackDao.GetTrackWithTagsByPath(track.Path, tagList);
+                        Model.Track trackFromDb = this.trackDao.GetTrackWithTagsByPath(track.Path, tagList);
                         if (trackFromDb != null)
                             track = trackFromDb;
 
@@ -1210,7 +1221,7 @@ namespace MitoPlayer_2024.Presenters
         }
         private void ExternalDragAndDropIntoTracklistEvent(object sender, ListEventArgs e)
         {
-            List<Track> trackList = new List<Track>();
+            List<Model.Track> trackList = new List<Model.Track>();
             string[] mediaFiles;
             string[] directories;
 
@@ -1239,7 +1250,7 @@ namespace MitoPlayer_2024.Presenters
         }
         private void ExternalDragAndDropIntoPlaylistEvent(object sender, ListEventArgs e)
         {
-            List<Track> trackList = new List<Track>();
+            List<Model.Track> trackList = new List<Model.Track>();
             string[] mediaFiles;
             string[] directories;
             DataRow playlistRow = null;
@@ -1274,14 +1285,14 @@ namespace MitoPlayer_2024.Presenters
                 this.AddTracksToPlaylist(playlistId, trackList);
             }
         }
-        private void AddTracksToPlaylist(int playlistId, List<Track> trackList, int dragIndex = -1, bool internalDragAndDrop = false)
+        private void AddTracksToPlaylist(int playlistId, List<Model.Track> trackList, int dragIndex = -1, bool internalDragAndDrop = false)
         {
-            List<Track> playlistTracklist = this.trackDao.GetTracklistWithTagsByPlaylistId(playlistId, this.tagList);
+            List<Model.Track> playlistTracklist = this.trackDao.GetTracklistWithTagsByPlaylistId(playlistId, this.tagList);
 
             if (trackList != null && trackList.Count > 0)
             {
                 int orderInList = playlistTracklist.Count;
-                foreach (Track track in trackList)
+                foreach (Model.Track track in trackList)
                 {
                     PlaylistContent plc = new PlaylistContent();
                     plc.Id = this.trackDao.GetNextId(TableName.PlaylistContent.ToString());
@@ -1354,15 +1365,15 @@ namespace MitoPlayer_2024.Presenters
             this.SavePlaylistList();
             this.ReloadPlaylist();
         }
-        internal void CallAddTrackToTrackListEvent(List<Track> trackList, int dragIndex)
+        internal void CallAddTrackToTrackListEvent(List<Model.Track> trackList, int dragIndex)
         {
             this.AddTracksToPlaylist(this.currentPlaylistId, trackList, dragIndex);
         }
-        private void LoadTrackList(List<Track> trackList, int dragIndex)
+        private void LoadTrackList(List<Model.Track> trackList, int dragIndex)
         {
             if (trackList != null && trackList.Count > 0)
             {
-                foreach (Track track in trackList)
+                foreach (Model.Track track in trackList)
                 {
                     String length = this.LengthToString(track.Length);
 
@@ -1598,164 +1609,77 @@ namespace MitoPlayer_2024.Presenters
 
         private void GetNearbyCovers(int index)
         {
-            coverList = new ConcurrentQueue<ImageExtension>();
+         /*   coverList = new ConcurrentQueue<ImageExtension>();
             List<DataRow> trackList = this.isFilterModeEnabled ? this.filteredTrackListTable.Rows.Cast<DataRow>().ToList() : trackListTable.Rows.Cast<DataRow>().ToList();
 
-            int startIndex = Math.Max(0, index - 5);
-            int finalIndex = Math.Min(trackList.Count, index + 6);
-
-            if (trackList.Count > displayedCoverNumber)
+            if(trackList != null && trackList.Count > 0)
             {
-                if (index <= 5)
-                {
-                    finalIndex = Math.Min(trackList.Count, displayedCoverNumber);
-                }
-                else if (index + 6 > trackList.Count)
-                {
-                    startIndex = Math.Max(0, trackList.Count - displayedCoverNumber);
-                }
-            }
+                int startIndex = Math.Max(0, index - 5);
+                int finalIndex = Math.Min(trackList.Count, index + 6);
 
-            for (int i = startIndex; i < finalIndex; i++)
-            {
-                var coverImage = new ImageExtension
+                if (trackList.Count > displayedCoverNumber)
                 {
-                    FilePath = trackList[i]["Path"].ToString(),
-                    TrackIdInPlaylist = Convert.ToInt32(trackList[i]["TrackIdInPlaylist"]),
-                    IsMainCover = (i == index)
-                };
-                coverList.Enqueue(coverImage);
-            }
-
-            if (coverList.Count > 0)
-            {
-                Parallel.ForEach(coverList, preparedCoverImage =>
-                {
-                    try
+                    if (index <= 5)
                     {
-                        using (var file = TagLib.File.Create(preparedCoverImage.FilePath))
+                        finalIndex = Math.Min(trackList.Count, displayedCoverNumber);
+                    }
+                    else if (index + 6 > trackList.Count)
+                    {
+                        startIndex = Math.Max(0, trackList.Count - displayedCoverNumber);
+                    }
+                }
+
+                for (int i = startIndex; i < finalIndex; i++)
+                {
+                    var coverImage = new ImageExtension
+                    {
+                        FilePath = trackList[i]["Path"].ToString(),
+                        TrackIdInPlaylist = Convert.ToInt32(trackList[i]["TrackIdInPlaylist"]),
+                        IsMainCover = (i == index)
+                    };
+                    coverList.Enqueue(coverImage);
+                }
+
+                if (coverList.Count > 0)
+                {
+                    Parallel.ForEach(coverList, preparedCoverImage =>
+                    {
+                        try
                         {
-                            if (file?.Tag.Pictures.Length > 0)
+                            using (var file = TagLib.File.Create(preparedCoverImage.FilePath))
                             {
-                                var pictureData = file.Tag.Pictures[0].Data.Data;
-                                using (var ms = new MemoryStream(pictureData))
+                                if (file?.Tag.Pictures.Length > 0)
                                 {
-                                    ms.Position = 0;
-                                    using (var img = Image.FromStream(ms))
+                                    var pictureData = file.Tag.Pictures[0].Data.Data;
+                                    using (var ms = new MemoryStream(pictureData))
                                     {
-                                        preparedCoverImage.Image = img.GetThumbnailImage(75, 75, () => false, IntPtr.Zero);
+                                        ms.Position = 0;
+                                        using (var img = Image.FromStream(ms))
+                                        {
+                                            preparedCoverImage.Image = img.GetThumbnailImage(75, 75, () => false, IntPtr.Zero);
+                                        }
                                     }
                                 }
-                            }
-                            else
-                            {
-                                preparedCoverImage.Image = Properties.Resources.MissingCover;
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Error processing file {preparedCoverImage.FilePath}: {ex.Message}");
-                        preparedCoverImage.Image = Properties.Resources.MissingCover;
-                    }
-                });
-
-                this.playlistView.UpdateCoverList(this.coverList);
-            }
-
-
-            /*
-        List<bool> mainCoverArray = new List<bool>();
-
-            int startIndex = 0;
-            int finalIndex = 0;
-
-            String selectedPath =  this.trackListTable.Rows[index]["Path"].ToString();
-
-            if (this.trackListTable.Rows.Count <= displayedCoverNumber)
-            {
-                startIndex = 0;
-                finalIndex = this.trackListTable.Rows.Count - 1;
-            }
-            else
-            {
-                if(index <= 5)
-                {
-                    startIndex = 0;
-                    finalIndex = displayedCoverNumber;
-                }
-                else if(index > 5 && index + 6 <= this.trackListTable.Rows.Count)
-                {
-                    startIndex = index - 5;
-                    finalIndex = index + 6;
-                }
-                else if (index > 5 && index + 6 > this.trackListTable.Rows.Count)
-                {
-                    startIndex = this.trackListTable.Rows.Count - 10;
-                    finalIndex = this.trackListTable.Rows.Count;
-                }
-            }
-
-            ImageExtension coverImage = null;
-
-            for (int i = startIndex; i < finalIndex; i++)
-            {
-                coverImage = new ImageExtension()
-                {
-                    FilePath = this.trackListTable.Rows[i]["Path"].ToString(),
-                    TrackIdInPlaylist = Convert.ToInt32(this.trackListTable.Rows[i]["TrackIdInPlaylist"]),
-                };
-
-                if(i == index)
-                {
-                    coverImage.IsMainCover = true;
-                }
-                else
-                {
-                    coverImage.IsMainCover = false;
-                }
-                coverList.Enqueue(coverImage);
-            }
-
-            if(coverList?.Count > 0)
-            {
-                Parallel.ForEach(coverList, preparedCoverImage =>
-                {
-                    try
-                    {
-                        using (TagLib.File file = TagLib.File.Create(preparedCoverImage.FilePath))
-                        {
-                            if (file?.Tag.Pictures.Length > 0)
-                            {
-                                var pictureData = file.Tag.Pictures[0].Data.Data;
-
-                                using (MemoryStream ms = new MemoryStream(pictureData))
+                                else
                                 {
-                                    ms.Position = 0;
-
-                                    using (Image img = Image.FromStream(ms))
-                                    {
-                                        preparedCoverImage.Image = img.GetThumbnailImage(75, 75, () => false, IntPtr.Zero);
-                                    }
+                                    preparedCoverImage.Image = Properties.Resources.MissingCover;
                                 }
                             }
-                            else
-                            {
-                                preparedCoverImage.Image = Properties.Resources.MissingCover;
-                            }
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Error processing file {preparedCoverImage.FilePath}: {ex.Message}");
-                        preparedCoverImage.Image = Properties.Resources.MissingCover;
-                    }
-                });
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Error processing file {preparedCoverImage.FilePath}: {ex.Message}");
+                            preparedCoverImage.Image = Properties.Resources.MissingCover;
+                        }
+                    });
 
-                this.playlistView.UpdateCoverList(this.coverList);
+                    this.playlistView.UpdateCoverList(this.coverList);
+                }
             }
 
+            
             */
+
         }
         public void PlayTrackEvent(object sender, ListEventArgs e)
         {
@@ -2171,14 +2095,14 @@ namespace MitoPlayer_2024.Presenters
                 using (StreamWriter myStream = new StreamWriter(sfd.FileName))
                 {
                     int playlistId = Convert.ToInt32(this.playlistListTable.Rows[e.IntegerField1]["Id"]);
-                    List<Track> trackList = this.trackDao.GetTracklistWithTagsByPlaylistId(playlistId, this.tagList);
+                    List<Model.Track> trackList = this.trackDao.GetTracklistWithTagsByPlaylistId(playlistId, this.tagList);
                     if (trackList != null && trackList.Count > 0)
                     {
-                        foreach (Track track in trackList)
+                        foreach (Model.Track track in trackList)
                         {
                             row = "#EXTVDJ:";
                             row += track.Length.ToString() + "," ;
-                            if (!String.IsNullOrEmpty(track.Title))
+                            if (!string.IsNullOrEmpty(track.Title))
                             {
                                 row += track.Artist + " - " + track.Title;
                             }
@@ -2209,14 +2133,14 @@ namespace MitoPlayer_2024.Presenters
                 using (StreamWriter myStream = new StreamWriter(sfd.FileName))
                 {
                     int playlistId = Convert.ToInt32(this.playlistListTable.Rows[e.IntegerField1]["Id"]);
-                    List<Track> trackList = this.trackDao.GetTracklistWithTagsByPlaylistId(playlistId, this.tagList);
+                    List<Model.Track> trackList = this.trackDao.GetTracklistWithTagsByPlaylistId(playlistId, this.tagList);
                     if (trackList != null && trackList.Count > 0)
                     {
-                        foreach (Track track in trackList)
+                        foreach (Model.Track track in trackList)
                         {
                             row = index.ToString() + ". ";
                             
-                            if (!String.IsNullOrEmpty(track.Title))
+                            if (!string.IsNullOrEmpty(track.Title))
                             {
                                 row += track.Artist + " - " + track.Title;
                             }
@@ -2240,7 +2164,7 @@ namespace MitoPlayer_2024.Presenters
             ExportToDirectoryView exportToDirectoryView = new ExportToDirectoryView();
 
             int playlistId = Convert.ToInt32(this.playlistListTable.Rows[e.IntegerField1]["Id"]);
-            List<Track> trackList = this.trackDao.GetTracklistWithTagsByPlaylistId(playlistId, this.tagList);
+            List<Model.Track> trackList = this.trackDao.GetTracklistWithTagsByPlaylistId(playlistId, this.tagList);
             if (trackList != null && trackList.Count > 0)
             {
                 ExportToDirectoryPresenter presenter = new ExportToDirectoryPresenter(exportToDirectoryView, trackList, this.tagDao, this.settingDao);
@@ -2309,10 +2233,10 @@ namespace MitoPlayer_2024.Presenters
                     }
                 }
 
-                List<Track> trackList = this.trackDao.GetTracklistWithTagsByPlaylistId(this.currentPlaylistId, this.tagList);
+                List<Model.Track> trackList = this.trackDao.GetTracklistWithTagsByPlaylistId(this.currentPlaylistId, this.tagList);
                 if (trackList != null && trackList.Count > 0)
                 {
-                    foreach (Track track in trackList)
+                    foreach (Model.Track track in trackList)
                     {
                         if (track.TrackTagValues != null && track.TrackTagValues.Count > 0)
                         {
@@ -2432,7 +2356,7 @@ namespace MitoPlayer_2024.Presenters
                                         {
                                             if (rows[i].Selected)
                                             {
-                                                Track track = this.trackDao.GetTrackWithTags(Convert.ToInt32(this.trackListTable.Rows[i]["Id"]), this.tagList);
+                                                Model.Track track = this.trackDao.GetTrackWithTags(Convert.ToInt32(this.trackListTable.Rows[i]["Id"]), this.tagList);
                                                 if (track != null)
                                                 {
                                                     foreach (TrackTagValue ttv in track.TrackTagValues)
@@ -2461,7 +2385,7 @@ namespace MitoPlayer_2024.Presenters
                                             int trackIdInPlaylist = Convert.ToInt32(this.trackListTable.Rows[i]["TrackIdInPlaylist"]);
                                             if (trackIdInPlaylist == currentTrackIdInPlaylist)
                                             {
-                                                Track track = this.trackDao.GetTrackWithTags(Convert.ToInt32(this.trackListTable.Rows[i]["Id"]), this.tagList);
+                                                Model.Track track = this.trackDao.GetTrackWithTags(Convert.ToInt32(this.trackListTable.Rows[i]["Id"]), this.tagList);
                                                 if (track != null)
                                                 {
                                                     foreach (TrackTagValue ttv in track.TrackTagValues)
@@ -2503,7 +2427,7 @@ namespace MitoPlayer_2024.Presenters
                                         {
                                             if (rows[i].Selected)
                                             {
-                                                Track track = this.trackDao.GetTrackWithTags(Convert.ToInt32(this.trackListTable.Rows[i]["Id"]), this.tagList);
+                                                Model.Track track = this.trackDao.GetTrackWithTags(Convert.ToInt32(this.trackListTable.Rows[i]["Id"]), this.tagList);
                                                 if (track != null)
                                                 {
                                                     foreach (TrackTagValue ttv in track.TrackTagValues)
@@ -2530,7 +2454,7 @@ namespace MitoPlayer_2024.Presenters
                                             int trackIdInPlaylist = Convert.ToInt32(this.trackListTable.Rows[i]["TrackIdInPlaylist"]);
                                             if (trackIdInPlaylist == currentTrackIdInPlaylist)
                                             {
-                                                Track track = this.trackDao.GetTrackWithTags(Convert.ToInt32(this.trackListTable.Rows[i]["Id"]), this.tagList);
+                                                Model.Track track = this.trackDao.GetTrackWithTags(Convert.ToInt32(this.trackListTable.Rows[i]["Id"]), this.tagList);
                                                 if (track != null)
                                                 {
                                                     foreach (TrackTagValue ttv in track.TrackTagValues)
@@ -2682,7 +2606,7 @@ namespace MitoPlayer_2024.Presenters
                                         {
                                             if (e.Rows[i].Selected)
                                             {
-                                                Track track = this.trackDao.GetTrackWithTags(Convert.ToInt32(this.trackListTable.Rows[i]["Id"]), this.tagList);
+                                                Model.Track track = this.trackDao.GetTrackWithTags(Convert.ToInt32(this.trackListTable.Rows[i]["Id"]), this.tagList);
                                                 if (track != null)
                                                 {
                                                     foreach (TrackTagValue ttv in track.TrackTagValues)
@@ -2711,7 +2635,7 @@ namespace MitoPlayer_2024.Presenters
                                             int trackIdInPlaylist = Convert.ToInt32(this.trackListTable.Rows[i]["TrackIdInPlaylist"]);
                                             if (trackIdInPlaylist == currentTrackIdInPlaylist)
                                             {
-                                                Track track = this.trackDao.GetTrackWithTags(Convert.ToInt32(this.trackListTable.Rows[i]["Id"]), this.tagList);
+                                                Model.Track track = this.trackDao.GetTrackWithTags(Convert.ToInt32(this.trackListTable.Rows[i]["Id"]), this.tagList);
                                                 if (track != null)
                                                 {
                                                     foreach (TrackTagValue ttv in track.TrackTagValues)
@@ -2883,5 +2807,201 @@ namespace MitoPlayer_2024.Presenters
             this.mediaPlayerComponent.SetWorkingTable(this.filteredTrackListTable);
         }
 
+
+        KeyTrainingDataGenerator keyModelTrainer = new KeyTrainingDataGenerator();
+
+       /* private void AddToKeyDetectorEvent(object sender, ListEventArgs e)
+        {
+            this.keyModelTrainer = KeyTrainingDataGenerator.GetInstance();
+
+            List<Track> tracks = new List<Track>();
+
+            if (this.trackListTable != null && this.trackListTable.Rows != null && this.trackListTable.Rows.Count > 0)
+            {
+                for (int i = e.Rows.Count - 1; i >= 0; i--)
+                {
+                    if (e.Rows[i].Selected)
+                    {
+                        int trackId = (int)e.Rows[i].Cells["Id"].Value;
+                        Model.Track track = this.trackDao.GetTrackWithTags(trackId, this.tagList);
+                        tracks.Add(track);
+                    }
+                }
+
+                if (tracks != null && tracks.Count > 0)
+                {
+                    ConcurrentBag<Track> concurrentTracks = new ConcurrentBag<Track>(tracks);
+
+                    int sum = 0;
+                    int totalTracks = tracks.Count;
+
+                    Parallel.ForEach(concurrentTracks, track =>
+                    {
+                        if (track.TrackTagValues.Exists(x => x.TagName == "Key"))
+                        {
+                            String trainingKey = track.TrackTagValues.Find(x => x.TagName == "Key").TagValueName;
+                            if (!String.IsNullOrEmpty(trainingKey))
+                            {
+                                this.keyModelTrainer.AddTrack(track.Path, trainingKey);
+                                Interlocked.Increment(ref sum);
+
+                                Console.WriteLine($"Add to model: {sum}/{totalTracks} ready");
+                            }
+                        }
+                    });
+
+                     ((PlaylistView)this.playlistView).UpdateLog("ADDED TO MODEL");
+
+                    if (this.keyModelTrainer.tracks != null)
+                        ((PlaylistView)this.playlistView).UpdateTrackCountInModel(this.keyModelTrainer.tracks.Count);
+                }
+            }
+        }*/
+
+        private void AddToKeyDetectorEvent(object sender, ListEventArgs e)
+        {
+            this.keyModelTrainer = KeyTrainingDataGenerator.GetInstance();
+
+            List<Track> tracks = new List<Track>();
+
+            if (this.trackListTable != null && this.trackListTable.Rows != null && this.trackListTable.Rows.Count > 0)
+            {
+                for (int i = e.Rows.Count - 1; i >= 0; i--)
+                {
+                    if (e.Rows[i].Selected)
+                    {
+                        int trackId = (int)e.Rows[i].Cells["Id"].Value;
+                        Model.Track track = this.trackDao.GetTrackWithTags(trackId, this.tagList);
+                        tracks.Add(track);
+                    }
+                }
+
+                if (tracks != null && tracks.Count > 0)
+                {
+                    int batchSize = 20; // Adjust the batch size as needed
+                    int totalTracks = tracks.Count;
+                    int sum = 0;
+
+                    for (int i = 0; i < totalTracks; i += batchSize)
+                    {
+                        var batch = tracks.Skip(i).Take(batchSize).ToList();
+                        ConcurrentBag<Track> concurrentTracks = new ConcurrentBag<Track>(batch);
+
+                        Parallel.ForEach(concurrentTracks, track =>
+                        {
+                            if (track.TrackTagValues.Exists(x => x.TagName == "Key"))
+                            {
+                                String trainingKey = track.TrackTagValues.Find(x => x.TagName == "Key").TagValueName;
+                                if (!String.IsNullOrEmpty(trainingKey))
+                                {
+                                    this.keyModelTrainer.AddTrack(track.Path, trainingKey);
+                                    Interlocked.Increment(ref sum);
+
+                                    Console.WriteLine($"Add to model: {sum}/{totalTracks} ready");
+                                }
+                            }
+                        });
+
+                        // Write the current batch to the CSV file
+                        this.keyModelTrainer.WriteToCsv("keyTrainingData.csv");
+
+                        ((PlaylistView)this.playlistView).UpdateLog($"Batch {i / batchSize + 1} added to model");
+
+                        if (this.keyModelTrainer.tracks != null)
+                            ((PlaylistView)this.playlistView).UpdateTrackCountInModel(this.keyModelTrainer.tracks.Count);
+                    }
+                }
+            }
+        }
+
+        private void CreateModelEvent(object sender, EventArgs e)
+        {
+           // this.keyModelTrainer.GenerateCsv("keyTrainingData.csv");
+            ((PlaylistView)this.playlistView).UpdateTrackCountInModel(0);
+            ((PlaylistView)this.playlistView).UpdateLog("MODEL CREATED");
+        }
+
+        KeyDetector detector = new KeyDetector();
+
+        private void TrainKeyDetectorEvent(object sender, EventArgs e)
+        {
+            ((PlaylistView)this.playlistView).UpdateLog("MODEL TRAINING");
+            KeyDetector.GetInstance().TrainKeyDetector("keyTrainingData.csv");
+            ((PlaylistView)this.playlistView).UpdateLog("MODEL READY");
+        }
+        private void DetectKeyEvent(object sender, ListEventArgs e)
+        {
+            List<Track> tracks = new List<Track>();
+
+            Tag currentTag = this.tagList.Find(x => x.Name == "Key");
+            List<TagValue> tagValueList = this.tagDao.GetTagValuesByTagId(currentTag.Id);
+            Dictionary<int, String> idAndKey = new Dictionary<int, String>();
+
+            if (this.trackListTable != null && this.trackListTable.Rows != null && this.trackListTable.Rows.Count > 0)
+            {
+                for (int i = e.Rows.Count - 1; i >= 0; i--)
+                {
+                    if (e.Rows[i].Selected)
+                    {
+                        int trackId = (int)e.Rows[i].Cells["Id"].Value;
+                        Model.Track track = this.trackDao.GetTrackWithTags(trackId, this.tagList);
+                        tracks.Add(track);
+                    }
+                }
+
+                if (tracks != null && tracks.Count > 0)
+                {
+                    ConcurrentBag<Track> concurrentTracks = new ConcurrentBag<Track>(tracks);
+
+                    ((PlaylistView)this.playlistView).UpdateLog("KEY DETECTING");
+                    Parallel.ForEach(concurrentTracks, track =>
+                    {
+                        String predictedKey = KeyDetector.GetInstance().DetectKey(track.Path);
+                        if (predictedKey != "Unknown")
+                            idAndKey.Add(track.Id, predictedKey);
+                    });
+
+                    for (int i = e.Rows.Count - 1; i >= 0; i--)
+                    {
+                        if (e.Rows[i].Selected)
+                        {
+                            int trackId = (int)e.Rows[i].Cells["Id"].Value;
+                            if (idAndKey.ContainsKey(trackId))
+                            {
+
+                                Track track = tracks.Find(x => x.Id == trackId);
+                                if (track != null)
+                                {
+                                    TagValue tv = tagValueList.Find(x => x.Name.Equals(idAndKey[trackId]));
+                                    if (tv != null)
+                                    {
+                                        foreach (TrackTagValue ttv in track.TrackTagValues)
+                                        {
+                                            if (ttv.TagId == currentTag.Id)
+                                            {
+                                                ttv.TagValueId = tv.Id;
+                                                ttv.TagValueName = tv.Name;
+                                                this.trackDao.UpdateTrackTagValue(ttv);
+                                                break;
+                                            }
+                                        }
+
+                                    }
+                                    this.trackListTable.Rows[i][currentTag.Name] = tv.Name;
+                                    this.trackListTable.Rows[i][currentTag.Name + "TagValueId"] = tv.Id;
+                                }
+
+                                
+                            }
+                        }
+                    }
+
+                    ((PlaylistView)this.playlistView).UpdateLog("KEY DETECTION READY");
+
+                }
+
+            }
+
+        }
     }
 }

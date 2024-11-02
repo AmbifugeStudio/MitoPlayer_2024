@@ -81,7 +81,13 @@
             this.btnFilterModeToggle = new System.Windows.Forms.Button();
             this.grbCovers = new System.Windows.Forms.GroupBox();
             this.lblMessage = new System.Windows.Forms.Label();
+            this.btnCreateModel = new System.Windows.Forms.Button();
             this.btnColumnVisibilityWithTagEditor = new System.Windows.Forms.Button();
+            this.btnDetectKey = new System.Windows.Forms.Button();
+            this.btnAddTrackToModel = new System.Windows.Forms.Button();
+            this.lblTracksInTheModel = new System.Windows.Forms.Label();
+            this.lblLog = new System.Windows.Forms.Label();
+            this.btnTrainModel = new System.Windows.Forms.Button();
             this.contextMenuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPlaylistList)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTrackList)).BeginInit();
@@ -584,6 +590,17 @@
             this.lblMessage.TabIndex = 51;
             this.lblMessage.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
+            // btnCreateModel
+            // 
+            this.btnCreateModel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnCreateModel.Location = new System.Drawing.Point(498, 646);
+            this.btnCreateModel.Name = "btnCreateModel";
+            this.btnCreateModel.Size = new System.Drawing.Size(85, 23);
+            this.btnCreateModel.TabIndex = 52;
+            this.btnCreateModel.Text = "Create Model";
+            this.btnCreateModel.UseVisualStyleBackColor = true;
+            this.btnCreateModel.Click += new System.EventHandler(this.btnCreateModel_Click);
+            // 
             // btnColumnVisibilityWithTagEditor
             // 
             this.btnColumnVisibilityWithTagEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -596,12 +613,69 @@
             this.btnColumnVisibilityWithTagEditor.UseVisualStyleBackColor = true;
             this.btnColumnVisibilityWithTagEditor.Click += new System.EventHandler(this.btnColumnVisibility_Click);
             // 
+            // btnDetectKey
+            // 
+            this.btnDetectKey.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnDetectKey.Location = new System.Drawing.Point(679, 646);
+            this.btnDetectKey.Name = "btnDetectKey";
+            this.btnDetectKey.Size = new System.Drawing.Size(86, 23);
+            this.btnDetectKey.TabIndex = 52;
+            this.btnDetectKey.Text = "Detect Key";
+            this.btnDetectKey.UseVisualStyleBackColor = true;
+            this.btnDetectKey.Click += new System.EventHandler(this.btnDetectKey_Click);
+            // 
+            // btnAddTrackToModel
+            // 
+            this.btnAddTrackToModel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnAddTrackToModel.Location = new System.Drawing.Point(300, 646);
+            this.btnAddTrackToModel.Name = "btnAddTrackToModel";
+            this.btnAddTrackToModel.Size = new System.Drawing.Size(86, 23);
+            this.btnAddTrackToModel.TabIndex = 52;
+            this.btnAddTrackToModel.Text = "Add To Model";
+            this.btnAddTrackToModel.UseVisualStyleBackColor = true;
+            this.btnAddTrackToModel.Click += new System.EventHandler(this.btnAddTrackToModel_Click);
+            // 
+            // lblTracksInTheModel
+            // 
+            this.lblTracksInTheModel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblTracksInTheModel.AutoSize = true;
+            this.lblTracksInTheModel.Location = new System.Drawing.Point(392, 651);
+            this.lblTracksInTheModel.Name = "lblTracksInTheModel";
+            this.lblTracksInTheModel.Size = new System.Drawing.Size(100, 13);
+            this.lblTracksInTheModel.TabIndex = 53;
+            this.lblTracksInTheModel.Text = "0 track in the model";
+            // 
+            // lblLog
+            // 
+            this.lblLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblLog.Location = new System.Drawing.Point(966, 638);
+            this.lblLog.Name = "lblLog";
+            this.lblLog.Size = new System.Drawing.Size(274, 31);
+            this.lblLog.TabIndex = 53;
+            // 
+            // btnTrainModel
+            // 
+            this.btnTrainModel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnTrainModel.Location = new System.Drawing.Point(589, 646);
+            this.btnTrainModel.Name = "btnTrainModel";
+            this.btnTrainModel.Size = new System.Drawing.Size(84, 23);
+            this.btnTrainModel.TabIndex = 54;
+            this.btnTrainModel.Text = "Train Model";
+            this.btnTrainModel.UseVisualStyleBackColor = true;
+            this.btnTrainModel.Click += new System.EventHandler(this.btnTrainModel_Click);
+            // 
             // PlaylistView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(1252, 678);
+            this.Controls.Add(this.btnTrainModel);
+            this.Controls.Add(this.lblLog);
+            this.Controls.Add(this.lblTracksInTheModel);
+            this.Controls.Add(this.btnDetectKey);
+            this.Controls.Add(this.btnAddTrackToModel);
+            this.Controls.Add(this.btnCreateModel);
             this.Controls.Add(this.lblMessage);
             this.Controls.Add(this.grbCovers);
             this.Controls.Add(this.lblTrackSumLength);
@@ -684,5 +758,11 @@
         private System.Windows.Forms.Button btnFilter;
         private System.Windows.Forms.GroupBox grbCovers;
         private System.Windows.Forms.Label lblMessage;
+        private System.Windows.Forms.Button btnCreateModel;
+        private System.Windows.Forms.Button btnDetectKey;
+        private System.Windows.Forms.Button btnAddTrackToModel;
+        private System.Windows.Forms.Label lblTracksInTheModel;
+        private System.Windows.Forms.Label lblLog;
+        private System.Windows.Forms.Button btnTrainModel;
     }
 }

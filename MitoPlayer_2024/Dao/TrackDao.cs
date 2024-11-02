@@ -427,7 +427,7 @@ namespace MitoPlayer_2024.Dao
         #endregion
 
         #region TRACK
-        public void CreateTrack(Track track)
+        public void CreateTrack(Model.Track track)
         {
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
@@ -466,9 +466,9 @@ namespace MitoPlayer_2024.Dao
                 connection.Close();
             }
         }
-        public Track GetTrackWithTags(int id, List<Tag> tagList)
+        public Model.Track GetTrackWithTags(int id, List<Tag> tagList)
         {
-            Track track = null;
+            Model.Track track = null;
 
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
@@ -515,7 +515,7 @@ namespace MitoPlayer_2024.Dao
                     {
                         if (track == null)
                         {
-                            track = new Track
+                            track = new Model.Track
                             {
                                 Id = reader.GetInt32(0),
                                 Path = reader.GetString(1),
@@ -552,9 +552,9 @@ namespace MitoPlayer_2024.Dao
 
             return track;
         }
-        public Track GetTrackWithTagsByPath(string path, List<Tag> tagList)
+        public Model.Track GetTrackWithTagsByPath(string path, List<Tag> tagList)
         {
-            Track track = null;
+            Model.Track track = null;
 
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
@@ -601,7 +601,7 @@ namespace MitoPlayer_2024.Dao
                     {
                         if (track == null)
                         {
-                            track = new Track
+                            track = new Model.Track
                             {
                                 Id = reader.GetInt32(0),
                                 Path = reader.GetString(1),
@@ -638,10 +638,10 @@ namespace MitoPlayer_2024.Dao
 
             return track;
         }
-        public List<Track> GetTracklistWithTagsByPlaylistId(int playlistId, List<Tag> tagList)
+        public List<Model.Track> GetTracklistWithTagsByPlaylistId(int playlistId, List<Tag> tagList)
         {
-            var trackList = new List<Track>();
-            var trackDictionary = new Dictionary<int, Track>();
+            var trackList = new List<Model.Track>();
+            var trackDictionary = new Dictionary<int, Model.Track>();
 
             using (var connection = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand())
@@ -698,7 +698,7 @@ namespace MitoPlayer_2024.Dao
 
                         if (!trackDictionary.TryGetValue(trackId, out var track))
                         {
-                            track = new Track
+                            track = new Model.Track
                             {
                                 Id = trackId,
                                 Path = reader.GetString(1),

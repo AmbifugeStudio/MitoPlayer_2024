@@ -25,6 +25,8 @@ namespace MitoPlayer_2024.Model
         public int ProfileId { get; set; }
         public List<TrackTagValue> TrackTagValues { get; set; }
         public bool IsNew { get; set; }
+        public string Key { get; set; }
+        public float[] Features { get; set; }
 
         public Track() {
             this.Id = -1;

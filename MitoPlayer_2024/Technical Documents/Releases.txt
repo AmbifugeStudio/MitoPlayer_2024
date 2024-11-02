@@ -2,28 +2,30 @@
 
 
 
+adj hozzá több sázz fájlt és javítsd a hibákat
+a filtered lista elemeit írja ki a playlist tack coujnt - ki kéne írni, hogy ez szűrt,pl 500 számból 32
 
 - BUG: too much tag - delete tag, navigate to playlist, panel hides clear filter button in the filter mode
-
 - FEATURE: set debug message timer time in options
 - BUG: column visibility - isdisplayed will be turned off after sorting
 - REFACTOR: column visibility dark mode
 - FEATURE: column visibility changes from context menu of the tracklist column header
-- FEATURE: sound volume bars
 - BUG: column visibility reorder orders the wrong column
 - FEATURE: navigate away from playlist view -> autosave
 - FEATURE: preview setting (music start at certain point on the next track button)
 - FEATURE: visualizer
-- FEATURE: uv meter
-- FEATURE: track cover browser
 - FEATURE: column visibility
 - FEATURE: tag editor - export/import key/bpm and custom tag values
-- BUG: automatic next track stops - after list reorder and the current playing track was at the end of the original list (list has not been updated in the player?) - or not. Objectiv - Fighting Chance stops at the end
 - FEATURE: reorder tags and tagvalues
 - FEATURE: tag editor - display according to tag/tagvalue order
 - FEATURE: progress bar for long loading time
 - FEATURE: load tracklist or navigate away: check save status and show dialog window is there are unsaved progress
 
+======================
+v0.12.15.8
+======================
+OK - BUG: automatic next track stops - after list reorder and the current playing track was at the end of the original list (list has not been updated in the player?) - or not. Objectiv - Fighting Chance stops at the end
+- FEATURE: key detection experiment
 ======================
 v0.12.15.7
 ======================

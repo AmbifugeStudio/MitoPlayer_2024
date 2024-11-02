@@ -79,6 +79,11 @@ namespace MitoPlayer_2024.Views
 
         public event EventHandler SaveTrackListEvent;
 
+        public event EventHandler TrainKeyDetectorEvent;
+        public event EventHandler<ListEventArgs> DetectKeyEvent;
+        public event EventHandler<ListEventArgs> AddToKeyDetectorEvent;
+        public event EventHandler CreateModelEvent;
+
         private int trackListLeftOffset = 190;
         private int trackListRightOffset = 285;
         private int tagValueEditorPanelBottomOffset = 25;
@@ -2233,6 +2238,54 @@ namespace MitoPlayer_2024.Views
 
                 this.lblSelectedItemsLength.Text = $"Length: {length}";
             }
+        }
+
+        private void btnTrainKeyDetector_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnDetectKey_Click(object sender, EventArgs e)
+        {
+            if (this.dgvTrackList.SelectedRows.Count > 0)
+            {
+                this.DetectKeyEvent?.Invoke(this, new ListEventArgs() { Rows = this.dgvTrackList.Rows });
+            }
+        }
+
+        private void btnAddTrackToModel_Click(object sender, EventArgs e)
+        {
+            if (this.dgvTrackList.SelectedRows.Count > 0)
+            {
+                this.AddToKeyDetectorEvent?.Invoke(this, new ListEventArgs() { Rows = this.dgvTrackList.Rows });
+            }
+        }
+
+        public void UpdateTrackCountInModel(int count)
+        {
+            if(count > 0)
+            {
+                this.lblTracksInTheModel.Text = "Tracks in model:" + count.ToString();
+            }
+            else
+            {
+                this.lblTracksInTheModel.Text = "";
+            }
+            
+        }
+        public void UpdateLog(String message)
+        {
+            this.lblLog.Text = message;
+        }
+
+        private void btnCreateModel_Click(object sender, EventArgs e)
+        {
+            this.CreateModelEvent?.Invoke(this, new EventArgs());
+        }
+
+        private void btnTrainModel_Click(object sender, EventArgs e)
+        {
+            this.TrainKeyDetectorEvent?.Invoke(this, new EventArgs());
         }
     }
 }

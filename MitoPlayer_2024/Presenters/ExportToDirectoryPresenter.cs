@@ -28,11 +28,11 @@ namespace MitoPlayer_2024.Presenters
         private bool isTrunkedTitleChecked { get; set; }
         private decimal artistMinimumCharacter { get; set; }
         private decimal titleMinimumCharacter { get; set; }
-        private List<Track> trackList { get; set; }
+        private List<Model.Track> trackList { get; set; }
         private DataTable trackTable { get; set; }
         private BindingSource trackListBindingSource { get; set; }
 
-        public ExportToDirectoryPresenter(IExportToDirectoryView exportToDirectoryView,List<Track> trackList, ITagDao tagDao, ISettingDao settingDao)
+        public ExportToDirectoryPresenter(IExportToDirectoryView exportToDirectoryView,List<Model.Track> trackList, ITagDao tagDao, ISettingDao settingDao)
         {
             this.view = exportToDirectoryView;
             this.tagDao = tagDao;
