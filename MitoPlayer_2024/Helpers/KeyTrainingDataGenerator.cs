@@ -12,22 +12,14 @@ using static System.Runtime.CompilerServices.RuntimeHelpers;
 using MitoPlayer_2024.Views;
 using System.Windows.Forms;
 using System.Collections.Concurrent;
+using Org.BouncyCastle.Pqc.Crypto.Lms;
+using HDF.PInvoke;
+using System.Runtime.InteropServices;
 
 namespace MitoPlayer_2024.Helpers
 {
     public class KeyTrainingDataGenerator
     {
-        public static KeyTrainingDataGenerator instance;
-        public static KeyTrainingDataGenerator GetInstance()
-        {
-            if (instance == null)
-            {
-                instance = new KeyTrainingDataGenerator();
-            }
-
-            return instance;
-        }
-
         public KeyTrainingDataGenerator()
         {
 
@@ -82,6 +74,55 @@ namespace MitoPlayer_2024.Helpers
                     writer.WriteLine(line);
                 }
             }
+        }
+
+        public void WriteToHDF5(string fileName)
+        {
+            string debugDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            string fullPath = Path.Combine(debugDirectory, fileName);
+
+            // Create or open the HDF5 file
+            long fileId = H5F.create(fullPath, H5F.ACC_TRUNC);
+            if (fileId < 0)
+            {
+                throw new Exception("Failed to create HDF5 file.");
+            }
+
+            foreach (var track in tracks)
+            {
+                // Create a group for each track
+                long groupId = H5G.create(fileId, track.Path);
+                if (groupId < 0)
+                {
+                    throw new Exception($"Failed to create group for track {track.Path}.");
+                }
+
+                // Save key as an attribute
+                long keyAttrType = H5T.copy(H5T.C_S1);
+                H5T.set_size(keyAttrType, new IntPtr(track.Key.Length));
+                long keyAttrSpace = H5S.create(H5S.class_t.SCALAR);
+                long keyAttrId = H5A.create(groupId, "Key", keyAttrType, keyAttrSpace);
+                byte[] keyBytes = System.Text.Encoding.ASCII.GetBytes(track.Key);
+                GCHandle keyHandle = GCHandle.Alloc(keyBytes, GCHandleType.Pinned);
+                H5A.write(keyAttrId, keyAttrType, keyHandle.AddrOfPinnedObject());
+                keyHandle.Free();
+                H5A.close(keyAttrId);
+                H5S.close(keyAttrSpace);
+                H5T.close(keyAttrType);
+
+                // Save features as a dataset
+                long spaceId = H5S.create_simple(1, new ulong[] { (ulong)track.Features.Length }, null);
+                long datasetId = H5D.create(groupId, "Features", H5T.NATIVE_FLOAT, spaceId);
+                GCHandle handle = GCHandle.Alloc(track.Features, GCHandleType.Pinned);
+                H5D.write(datasetId, H5T.NATIVE_FLOAT, H5S.ALL, H5S.ALL, H5P.DEFAULT, handle.AddrOfPinnedObject());
+                handle.Free();
+                H5D.close(datasetId);
+                H5S.close(spaceId);
+
+                H5G.close(groupId);
+            }
+
+            H5F.close(fileId);
         }
 
         public void GenerateCsv(string fileName)

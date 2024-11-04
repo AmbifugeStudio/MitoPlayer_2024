@@ -1,4 +1,5 @@
-﻿using Microsoft.ML;
+﻿
+using Microsoft.ML;
 using Microsoft.ML.Data;
 using Microsoft.ML.Trainers.LightGbm;
 using NAudio.Dsp;
@@ -9,6 +10,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NAudio.Wave;
+using MathNet.Numerics.IntegralTransforms;
+using MathNet.Numerics;
 
 namespace MitoPlayer_2024.Helpers
 {
@@ -42,12 +46,13 @@ namespace MitoPlayer_2024.Helpers
         }
 
         public string DetectKey(string filePath)
-        {
-            var features = ExtractFeatures(filePath);
-            var predictionEngine = _mlContext.Model.CreatePredictionEngine<AudioData, KeyPrediction>(_model);
-            var prediction = predictionEngine.Predict(new AudioData { Features = features });
-            return TransformKeyToKeyCode(prediction.PredictedKey);
+        {            
+             var features = ExtractFeatures(filePath);
+             var predictionEngine = _mlContext.Model.CreatePredictionEngine<AudioData, KeyPrediction>(_model);
+             var prediction = predictionEngine.Predict(new AudioData { Features = features });
+             return TransformKeyToKeyCode(prediction.PredictedKey);
         }
+
 
         private float[] ExtractChromaFeatures(string filePath)
         {

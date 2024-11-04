@@ -350,6 +350,7 @@ namespace MitoPlayer_2024.Helpers
                                         OrderInList int(11) NOT NULL, 
                                         Hotkey int(11) NOT NULL, 
                                         IsActive tinyint(4) NOT NULL, 
+                                        IsModelTrainer tinyint(4) NOT NULL, 
                                         ProfileId int(11) DEFAULT NULL, 
 
                                         PRIMARY KEY (Id)) 

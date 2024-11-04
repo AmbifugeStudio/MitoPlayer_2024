@@ -22,7 +22,9 @@ namespace MitoPlayer_2024.Presenters
 
         public Playlist newPlaylist;
         private String playlistName;
+        private String originalPlaylistName;
         private int playlistHotkey;
+        private bool isModelTrainer;
 
         public PlaylistEditorPresenter(IPlaylistEditorView view, ITrackDao trackDao, ISettingDao settingDao)
         {
@@ -34,6 +36,7 @@ namespace MitoPlayer_2024.Presenters
             this.playlistHotkey = 0;
             ((PlaylistEditorView)this.view).SetPlaylistName(this.playlistName);
             ((PlaylistEditorView)this.view).SetHotkey(this.playlistHotkey);
+            ((PlaylistEditorView)this.view).SetIsModelTrainer(this.playlistName, this.isModelTrainer);
 
             this.view.ChangeName += ChangeName;
             this.view.ChangeHotkey += ChangeHotkey;
@@ -49,13 +52,17 @@ namespace MitoPlayer_2024.Presenters
             this.newPlaylist = playlist;
 
             this.playlistName = this.newPlaylist.Name;
+            this.originalPlaylistName = this.newPlaylist.Name;
             this.playlistHotkey = this.newPlaylist.Hotkey;
+            this.isModelTrainer = this.newPlaylist.IsModelTrainer;
 
             ((PlaylistEditorView)this.view).SetPlaylistName(this.playlistName, true);
             ((PlaylistEditorView)this.view).SetHotkey(this.playlistHotkey);
+            ((PlaylistEditorView)this.view).SetIsModelTrainer(this.playlistName, this.isModelTrainer);
 
             this.view.ChangeName += ChangeName;
             this.view.ChangeHotkey += ChangeHotkey;
+            this.view.ChangeIsModelTrainer += ChangeIsModelTrainer;
             this.view.CloseWithOk += CloseWithOk;
             this.view.CloseWithCancel += CloseWithCancel;
         }
@@ -73,6 +80,10 @@ namespace MitoPlayer_2024.Presenters
         private void ChangeHotkey(object sender, ListEventArgs e)
         {
             this.playlistHotkey = e.IntegerField1;
+        }
+        private void ChangeIsModelTrainer(object sender, ListEventArgs e)
+        {
+            this.isModelTrainer = e.BooleanField1;
         }
         private void CloseWithOk(object sender, EventArgs e)
         {
@@ -93,12 +104,16 @@ namespace MitoPlayer_2024.Presenters
             }
             if (result)
             {
-                if (playlistList != null && playlistList.Count > 0 &&
-                    playlistList.Exists(x => x.Name == this.playlistName))
+                if(this.playlistName != this.originalPlaylistName)
                 {
-                    result = false;
-                    MessageBox.Show("Playlist name already exists!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    if (playlistList != null && playlistList.Count > 0 &&
+                    playlistList.Exists(x => x.Name == this.playlistName))
+                    {
+                        result = false;
+                        MessageBox.Show("Playlist name already exists!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
                 }
+                
             }
             if (result)
             {
@@ -130,6 +145,7 @@ namespace MitoPlayer_2024.Presenters
                     playlist.QuickListGroup = 0;
                     playlist.IsActive = false;
                     playlist.Hotkey = this.playlistHotkey;
+                    playlist.IsModelTrainer = this.isModelTrainer;
                     this.newPlaylist = playlist;
                     try
                     {
@@ -144,6 +160,7 @@ namespace MitoPlayer_2024.Presenters
                 {
                     this.newPlaylist.Name = this.playlistName;
                     this.newPlaylist.Hotkey = this.playlistHotkey;
+                    this.newPlaylist.IsModelTrainer = this.isModelTrainer;
                     try
                     {
                         this.trackDao.UpdatePlaylist(this.newPlaylist);

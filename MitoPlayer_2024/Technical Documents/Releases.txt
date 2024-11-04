@@ -1,7 +1,6 @@
 ﻿
 
 
-
 adj hozzá több sázz fájlt és javítsd a hibákat
 a filtered lista elemeit írja ki a playlist tack coujnt - ki kéne írni, hogy ez szűrt,pl 500 számból 32
 
@@ -21,6 +20,11 @@ a filtered lista elemeit írja ki a playlist tack coujnt - ki kéne írni, hogy 
 - FEATURE: progress bar for long loading time
 - FEATURE: load tracklist or navigate away: check save status and show dialog window is there are unsaved progress
 
+======================
+v0.14.0.0
+======================
+OK - REFACTOR: complete drag and drop refactor (in progress)
+OK - FEATURE: key detector model training and key detecting (in progress)
 ======================
 v0.12.15.8
 ======================

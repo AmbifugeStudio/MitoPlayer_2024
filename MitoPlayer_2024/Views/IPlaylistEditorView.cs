@@ -13,6 +13,7 @@ namespace MitoPlayer_2024.Views
 
         event EventHandler<ListEventArgs> ChangeName;
         event EventHandler<ListEventArgs> ChangeHotkey;
+        event EventHandler<ListEventArgs> ChangeIsModelTrainer;
         event EventHandler CloseWithOk;
         event EventHandler CloseWithCancel;
 

@@ -16,6 +16,7 @@ namespace MitoPlayer_2024.Models
         public int OrderInList { get; set; }
         public int QuickListGroup { get; set; }
         public bool IsActive { get; set; }
+        public bool IsModelTrainer { get; set; }
         public int ProfileId { get; set; }
         public int Hotkey { get; set; }
 

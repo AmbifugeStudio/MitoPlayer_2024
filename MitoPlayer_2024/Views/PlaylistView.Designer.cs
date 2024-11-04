@@ -82,12 +82,12 @@
             this.grbCovers = new System.Windows.Forms.GroupBox();
             this.lblMessage = new System.Windows.Forms.Label();
             this.btnCreateModel = new System.Windows.Forms.Button();
-            this.btnColumnVisibilityWithTagEditor = new System.Windows.Forms.Button();
             this.btnDetectKey = new System.Windows.Forms.Button();
             this.btnAddTrackToModel = new System.Windows.Forms.Button();
             this.lblTracksInTheModel = new System.Windows.Forms.Label();
             this.lblLog = new System.Windows.Forms.Label();
             this.btnTrainModel = new System.Windows.Forms.Button();
+            this.btnColumnVisibilityWithTagEditor = new System.Windows.Forms.Button();
             this.contextMenuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPlaylistList)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTrackList)).BeginInit();
@@ -137,7 +137,7 @@
             // 
             this.renameToolStripMenuItem.Name = "renameToolStripMenuItem";
             this.renameToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
-            this.renameToolStripMenuItem.Text = "Rename";
+            this.renameToolStripMenuItem.Text = "Edit";
             this.renameToolStripMenuItem.Click += new System.EventHandler(this.menuStripRenamePlaylist_Click);
             // 
             // deleteToolStripMenuItem
@@ -403,13 +403,19 @@
             this.dgvPlaylistList.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvPlaylistList_CellDoubleClick);
             this.dgvPlaylistList.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.dgvPlaylistList_CellPainting);
             this.dgvPlaylistList.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this.dgvPlaylistList_DataBindingComplete);
+            this.dgvPlaylistList.SelectionChanged += new System.EventHandler(this.dgvPlaylistList_SelectionChanged);
             this.dgvPlaylistList.DragDrop += new System.Windows.Forms.DragEventHandler(this.dgvPlaylistList_DragDrop);
+            this.dgvPlaylistList.DragEnter += new System.Windows.Forms.DragEventHandler(this.dgvPlaylistList_DragEnter);
             this.dgvPlaylistList.DragOver += new System.Windows.Forms.DragEventHandler(this.dgvPlaylistList_DragOver);
+            this.dgvPlaylistList.DragLeave += new System.EventHandler(this.dgvPlaylistList_DragLeave);
+            this.dgvPlaylistList.Paint += new System.Windows.Forms.PaintEventHandler(this.dgvPlaylistList_Paint);
             this.dgvPlaylistList.QueryContinueDrag += new System.Windows.Forms.QueryContinueDragEventHandler(this.dgvPlaylistList_QueryContinueDrag);
             this.dgvPlaylistList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvPlaylistList_KeyDown);
             this.dgvPlaylistList.MouseClick += new System.Windows.Forms.MouseEventHandler(this.dgvPlaylistList_MouseClick);
+            this.dgvPlaylistList.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.dgvPlaylistList_MouseDoubleClick);
             this.dgvPlaylistList.MouseDown += new System.Windows.Forms.MouseEventHandler(this.dgvPlaylistList_MouseDown);
             this.dgvPlaylistList.MouseMove += new System.Windows.Forms.MouseEventHandler(this.dgvPlaylistList_MouseMove);
+            this.dgvPlaylistList.MouseUp += new System.Windows.Forms.MouseEventHandler(this.dgvPlaylistList_MouseUp);
             // 
             // dgvTrackList
             // 
@@ -432,7 +438,6 @@
             this.dgvTrackList.Size = new System.Drawing.Size(761, 539);
             this.dgvTrackList.TabIndex = 16;
             this.dgvTrackList.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTrackList_CellClick);
-            this.dgvTrackList.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTrackList_CellDoubleClick);
             this.dgvTrackList.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.dgvTrackList_CellPainting);
             this.dgvTrackList.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvTrackList_ColumnHeaderMouseClick);
             this.dgvTrackList.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this.dgvTrackList_DataBindingComplete);
@@ -440,11 +445,15 @@
             this.dgvTrackList.DragDrop += new System.Windows.Forms.DragEventHandler(this.dgvTrackList_DragDrop);
             this.dgvTrackList.DragEnter += new System.Windows.Forms.DragEventHandler(this.dgvTrackList_DragEnter);
             this.dgvTrackList.DragOver += new System.Windows.Forms.DragEventHandler(this.dgvTrackList_DragOver);
+            this.dgvTrackList.DragLeave += new System.EventHandler(this.dgvTrackList_DragLeave);
+            this.dgvTrackList.Paint += new System.Windows.Forms.PaintEventHandler(this.dgvTrackList_Paint);
             this.dgvTrackList.QueryContinueDrag += new System.Windows.Forms.QueryContinueDragEventHandler(this.dgvTrackList_QueryContinueDrag);
             this.dgvTrackList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvTrackList_KeyDown);
             this.dgvTrackList.KeyUp += new System.Windows.Forms.KeyEventHandler(this.dgvTrackList_KeyUp);
+            this.dgvTrackList.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.dgvTrackList_MouseDoubleClick);
             this.dgvTrackList.MouseDown += new System.Windows.Forms.MouseEventHandler(this.dgvTrackList_MouseDown);
             this.dgvTrackList.MouseMove += new System.Windows.Forms.MouseEventHandler(this.dgvTrackList_MouseMove);
+            this.dgvTrackList.MouseUp += new System.Windows.Forms.MouseEventHandler(this.dgvTrackList_MouseUp);
             // 
             // tagValueEditorPanel
             // 
@@ -601,18 +610,6 @@
             this.btnCreateModel.UseVisualStyleBackColor = true;
             this.btnCreateModel.Click += new System.EventHandler(this.btnCreateModel_Click);
             // 
-            // btnColumnVisibilityWithTagEditor
-            // 
-            this.btnColumnVisibilityWithTagEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnColumnVisibilityWithTagEditor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnColumnVisibilityWithTagEditor.Image = ((System.Drawing.Image)(resources.GetObject("btnColumnVisibilityWithTagEditor.Image")));
-            this.btnColumnVisibilityWithTagEditor.Location = new System.Drawing.Point(1171, 14);
-            this.btnColumnVisibilityWithTagEditor.Name = "btnColumnVisibilityWithTagEditor";
-            this.btnColumnVisibilityWithTagEditor.Size = new System.Drawing.Size(31, 23);
-            this.btnColumnVisibilityWithTagEditor.TabIndex = 24;
-            this.btnColumnVisibilityWithTagEditor.UseVisualStyleBackColor = true;
-            this.btnColumnVisibilityWithTagEditor.Click += new System.EventHandler(this.btnColumnVisibility_Click);
-            // 
             // btnDetectKey
             // 
             this.btnDetectKey.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -663,6 +660,18 @@
             this.btnTrainModel.Text = "Train Model";
             this.btnTrainModel.UseVisualStyleBackColor = true;
             this.btnTrainModel.Click += new System.EventHandler(this.btnTrainModel_Click);
+            // 
+            // btnColumnVisibilityWithTagEditor
+            // 
+            this.btnColumnVisibilityWithTagEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnColumnVisibilityWithTagEditor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnColumnVisibilityWithTagEditor.Image = ((System.Drawing.Image)(resources.GetObject("btnColumnVisibilityWithTagEditor.Image")));
+            this.btnColumnVisibilityWithTagEditor.Location = new System.Drawing.Point(1171, 14);
+            this.btnColumnVisibilityWithTagEditor.Name = "btnColumnVisibilityWithTagEditor";
+            this.btnColumnVisibilityWithTagEditor.Size = new System.Drawing.Size(31, 23);
+            this.btnColumnVisibilityWithTagEditor.TabIndex = 24;
+            this.btnColumnVisibilityWithTagEditor.UseVisualStyleBackColor = true;
+            this.btnColumnVisibilityWithTagEditor.Click += new System.EventHandler(this.btnColumnVisibility_Click);
             // 
             // PlaylistView
             // 

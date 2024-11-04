@@ -39,7 +39,9 @@ namespace MitoPlayer_2024.Views
        // event EventHandler<ListEventArgs> ChangeTracklistColorEvent;
         event EventHandler ShowColumnVisibilityEditorEvent;
         event EventHandler ScanKeyAndBpmEvent;
-        
+
+        event EventHandler<ListEventArgs> MoveTracklistRowsEvent;
+
         //PLAYLIST
         event EventHandler<ListEventArgs> CreatePlaylist;
         event EventHandler<ListEventArgs> EditPlaylist;
@@ -50,6 +52,7 @@ namespace MitoPlayer_2024.Views
         event EventHandler<ListEventArgs> ExportToM3UEvent;
         event EventHandler<ListEventArgs> ExportToTXTEvent;
         event EventHandler<ListEventArgs> ExportToDirectoryEvent;
+        event EventHandler<ListEventArgs> MovePlaylistRowEvent;
         event EventHandler DisplayPlaylistListEvent;
 
         //TAG EDITOR

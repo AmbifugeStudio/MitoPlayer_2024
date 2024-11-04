@@ -26,6 +26,7 @@ namespace MitoPlayer_2024.Helpers
         public bool BooleanField1 { get; set; }
         public bool BooleanField2 { get; set; }
         public bool BooleanField3 { get; set; }
+        public List<int> SelectedIndices { get; internal set; }
     }
    
 }

@@ -10,6 +10,7 @@ namespace MitoPlayer_2024.Views
 
         public event EventHandler<ListEventArgs> ChangeName;
         public event EventHandler<ListEventArgs> ChangeHotkey;
+        public event EventHandler<ListEventArgs> ChangeIsModelTrainer;
         public event EventHandler CloseWithOk;
         public event EventHandler CloseWithCancel;
 
@@ -83,6 +84,15 @@ namespace MitoPlayer_2024.Views
                 rdb0.Checked = true;
             }
         }
+        public void SetIsModelTrainer(String playlistName, bool isModelTrainer)
+        {
+            if (playlistName.Equals("Default Playlist"))
+            {
+                this.chbIsModelTrainer.Enabled = false;
+            }
+            this.chbIsModelTrainer.Checked = isModelTrainer;
+        }
+
 
         private void txtPlaylistName_TextChanged(object sender, EventArgs e)
         {
@@ -135,8 +145,9 @@ namespace MitoPlayer_2024.Views
             }
         }
 
-        
-
-        
+        private void chbIsModelTrainer_CheckedChanged(object sender, EventArgs e)
+        {
+            this.ChangeIsModelTrainer?.Invoke(this, new ListEventArgs() { BooleanField1 = this.chbIsModelTrainer.Checked });
+        }
     }
 }

@@ -59,6 +59,8 @@ namespace MitoPlayer_2024.Presenters
             this.playlistView.InternalDragAndDropIntoPlaylistEvent += InternalDragAndDropIntoPlaylistEvent;
             this.playlistView.ExternalDragAndDropIntoTracklistEvent += ExternalDragAndDropIntoTracklistEvent;
             this.playlistView.ExternalDragAndDropIntoPlaylistEvent += ExternalDragAndDropIntoPlaylistEvent;
+
+            this.playlistView.MoveTracklistRowsEvent += MoveTracklistRowsEvent;
            // this.playlistView.ChangeTracklistColorEvent += ChangeTracklistColorEvent;
 
             this.playlistView.ShowColumnVisibilityEditorEvent += ShowColumnVisibilityEditorEvent;
@@ -75,6 +77,7 @@ namespace MitoPlayer_2024.Presenters
             this.playlistView.ExportToM3UEvent += ExportToM3UEvent;
             this.playlistView.ExportToTXTEvent += ExportToTXTEvent;
             this.playlistView.DisplayPlaylistListEvent += DisplayPlaylistListEvent;
+            this.playlistView.MovePlaylistRowEvent += MovePlaylistRowEvent;
 
             //TAG EDITOR
             this.playlistView.DisplayTagEditorEvent += DisplayTagComponentEvent;
@@ -96,7 +99,79 @@ namespace MitoPlayer_2024.Presenters
             this.playlistView.CreateModelEvent += CreateModelEvent;
         }
 
-        
+        private void MoveTracklistRowsEvent(object sender, ListEventArgs e)
+        {
+
+            List<int> sourceIndices = e.SelectedIndices;
+            int targetIndex = e.IntegerField1;
+
+            // Create a list to hold the rows to be moved
+            List<DataRow> rowsToMove = new List<DataRow>();
+
+            // Collect the rows to be moved
+            foreach (int sourceIndex in sourceIndices.OrderByDescending(i => i))
+            {
+                DataRow row = trackListTable.NewRow();
+                row.ItemArray = trackListTable.Rows[sourceIndex].ItemArray;
+                rowsToMove.Add(row);
+                trackListTable.Rows.RemoveAt(sourceIndex);
+            }
+
+            // Adjust the target index if necessary
+            if (targetIndex > sourceIndices.Min())
+            {
+                targetIndex -= rowsToMove.Count;
+            }
+
+            // Insert the rows at the target index
+            foreach (DataRow row in rowsToMove)
+            {
+                trackListTable.Rows.InsertAt(row, targetIndex);
+                targetIndex++;
+            }
+
+            this.ReloadTrackList();
+            this.TrackListChanged();
+        }
+
+        private void MovePlaylistRowEvent(object sender, ListEventArgs e)
+        {
+
+            int sourceIndex = e.IntegerField1;
+            int targetIndex = e.IntegerField2;
+
+            if (sourceIndex == targetIndex || sourceIndex <= 0 || targetIndex <= 0)
+            {
+                return; // No move needed or invalid indices
+            }
+
+            // Create a list to hold the row to be moved
+            List<DataRow> rowsToMove = new List<DataRow>();
+
+            // Collect the row to be moved
+            DataRow row = playlistListTable.NewRow();
+            row.ItemArray = playlistListTable.Rows[sourceIndex].ItemArray;
+            rowsToMove.Add(row);
+            playlistListTable.Rows.RemoveAt(sourceIndex);
+
+            // Adjust the target index if necessary
+            if (targetIndex > sourceIndex)
+            {
+                targetIndex -= rowsToMove.Count;
+            }
+
+            // Insert the row at the target index
+            foreach (DataRow r in rowsToMove)
+            {
+                playlistListTable.Rows.InsertAt(r, targetIndex);
+                targetIndex++;
+            }
+
+            this.SavePlaylistList();
+            this.ReloadPlaylist();
+        }
+
+
 
 
         #region INITIALIZE
@@ -238,6 +313,7 @@ namespace MitoPlayer_2024.Presenters
                     dataRow["OrderInList"] = playlist.OrderInList;
                     dataRow["ProfileId"] = playlist.ProfileId;
                     dataRow["IsActive"] = playlist.IsActive;
+                    dataRow["IsModelTrainer"] = playlist.IsModelTrainer;
 
                     this.playlistListTable.Rows.Add(dataRow);
                 }
@@ -738,6 +814,7 @@ namespace MitoPlayer_2024.Presenters
                 playlist.OrderInList = Convert.ToInt32(dt.Rows[i]["OrderInList"]);
                 playlist.ProfileId = Convert.ToInt32(dt.Rows[i]["ProfileId"]);
                 playlist.IsActive = Convert.ToBoolean(dt.Rows[i]["IsActive"]);
+                playlist.IsModelTrainer = Convert.ToBoolean(dt.Rows[i]["IsModelTrainer"]);
                 playlistList.Add(playlist);
             }
 
@@ -1341,6 +1418,7 @@ namespace MitoPlayer_2024.Presenters
             row["OrderInList"] = this.playlistListTable.Rows[e.IntegerField1]["OrderInList"];
             row["ProfileId"] = this.playlistListTable.Rows[e.IntegerField1]["ProfileId"];
             row["IsActive"] = this.playlistListTable.Rows[e.IntegerField1]["IsActive"];
+            row["IsModelTrainer"] = this.playlistListTable.Rows[e.IntegerField1]["IsModelTrainer"];
 
             this.playlistListTable.Rows.InsertAt(row, e.IntegerField2);
 
@@ -1873,7 +1951,7 @@ namespace MitoPlayer_2024.Presenters
             PlaylistEditorPresenter presenter = new PlaylistEditorPresenter(playlistEditorView, this.trackDao, this.settingDao);
             if (playlistEditorView.ShowDialog((PlaylistView)this.playlistView) == DialogResult.OK)
             {
-                this.playlistListTable.Rows.Add(presenter.newPlaylist.Id, presenter.newPlaylist.Name, presenter.newPlaylist.OrderInList, presenter.newPlaylist.ProfileId, presenter.newPlaylist.IsActive);
+                this.playlistListTable.Rows.Add(presenter.newPlaylist.Id, presenter.newPlaylist.Name, presenter.newPlaylist.OrderInList, presenter.newPlaylist.ProfileId, presenter.newPlaylist.IsActive, presenter.newPlaylist.IsModelTrainer);
                 this.SavePlaylistList();
                 this.ReloadPlaylist();
             }
@@ -1894,6 +1972,7 @@ namespace MitoPlayer_2024.Presenters
                 if (playlistEditorView.ShowDialog((PlaylistView)this.playlistView) == DialogResult.OK)
                 {
                     this.playlistListTable.Rows[playlistIndex]["Name"] = presenter.newPlaylist?.Name;
+                    this.playlistListTable.Rows[playlistIndex]["IsModelTrainer"] = presenter.newPlaylist?.IsModelTrainer;
 
                     this.SavePlaylistList();
                     this.ReloadPlaylist();
@@ -2860,7 +2939,7 @@ namespace MitoPlayer_2024.Presenters
 
         private void AddToKeyDetectorEvent(object sender, ListEventArgs e)
         {
-            this.keyModelTrainer = KeyTrainingDataGenerator.GetInstance();
+            //this.keyModelTrainer = KeyTrainingDataGenerator.GetInstance();
 
             List<Track> tracks = new List<Track>();
 

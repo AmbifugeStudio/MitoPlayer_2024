@@ -38,6 +38,7 @@
             this.rdb0 = new System.Windows.Forms.RadioButton();
             this.rdb1 = new System.Windows.Forms.RadioButton();
             this.btnCancel = new System.Windows.Forms.Button();
+            this.chbIsModelTrainer = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -65,7 +66,7 @@
             this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btnOk.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnOk.Location = new System.Drawing.Point(161, 89);
+            this.btnOk.Location = new System.Drawing.Point(161, 112);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(75, 23);
             this.btnOk.TabIndex = 2;
@@ -78,6 +79,7 @@
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.chbIsModelTrainer);
             this.groupBox1.Controls.Add(this.rdb4);
             this.groupBox1.Controls.Add(this.rdb3);
             this.groupBox1.Controls.Add(this.rdb2);
@@ -85,7 +87,7 @@
             this.groupBox1.Controls.Add(this.rdb1);
             this.groupBox1.Location = new System.Drawing.Point(15, 39);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(302, 44);
+            this.groupBox1.Size = new System.Drawing.Size(302, 67);
             this.groupBox1.TabIndex = 12;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Hotkey";
@@ -155,7 +157,7 @@
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnCancel.Location = new System.Drawing.Point(242, 89);
+            this.btnCancel.Location = new System.Drawing.Point(242, 112);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 2;
@@ -163,11 +165,22 @@
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
+            // chbIsModelTrainer
+            // 
+            this.chbIsModelTrainer.AutoSize = true;
+            this.chbIsModelTrainer.Location = new System.Drawing.Point(6, 42);
+            this.chbIsModelTrainer.Name = "chbIsModelTrainer";
+            this.chbIsModelTrainer.Size = new System.Drawing.Size(102, 17);
+            this.chbIsModelTrainer.TabIndex = 1;
+            this.chbIsModelTrainer.Text = "Is Model Trainer";
+            this.chbIsModelTrainer.UseVisualStyleBackColor = true;
+            this.chbIsModelTrainer.CheckedChanged += new System.EventHandler(this.chbIsModelTrainer_CheckedChanged);
+            // 
             // PlaylistEditorView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(326, 121);
+            this.ClientSize = new System.Drawing.Size(326, 144);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOk);
@@ -196,5 +209,6 @@
         private System.Windows.Forms.RadioButton rdb0;
         private System.Windows.Forms.RadioButton rdb1;
         private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.CheckBox chbIsModelTrainer;
     }
 }
