@@ -101,7 +101,7 @@ namespace MitoPlayer_2024.Views
         void ChangeSaveStatus(bool isSaving);
 
         void UpdateCoverList(ConcurrentQueue<ImageExtension> coverList);
-        void ToggleTracklistSelectionChanged(bool isEnable);
+
 
     }
 }

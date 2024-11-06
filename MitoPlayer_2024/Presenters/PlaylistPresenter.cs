@@ -33,6 +33,8 @@ namespace MitoPlayer_2024.Presenters
         private ITagDao tagDao { get; set; }
         private ISettingDao settingDao { get; set; }
 
+        private bool isInitializing = true;
+
         public PlaylistPresenter(IPlaylistView view, ITrackDao trackDao, ITagDao tagValueDao, ISettingDao settingDao)
         {
             //INITIALIZE
@@ -49,21 +51,17 @@ namespace MitoPlayer_2024.Presenters
             this.playlistView.PrevTrackEvent += PrevTrackEvent;
             this.playlistView.NextTrackEvent += NextTrackEvent;
             this.playlistView.RandomTrackEvent += RandomTrackEvent;
-            
-            //this.playlistView.SetCurrentTrackColorEvent += SetCurrentTrackColorEvent;
 
             //TRACKLIST
             this.playlistView.OrderByColumnEvent += OrderByColumnEvent;
             this.playlistView.DeleteTracksEvent += DeleteTracksEvent;
 
+            this.playlistView.MoveTracklistRowsEvent += MoveTracklistRowsEvent;
             this.playlistView.InternalDragAndDropIntoTracklistEvent += InternalDragAndDropIntoTracklistEvent;
             this.playlistView.InternalDragAndDropIntoPlaylistEvent += InternalDragAndDropIntoPlaylistEvent;
             this.playlistView.ExternalDragAndDropIntoTracklistEvent += ExternalDragAndDropIntoTracklistEvent;
             this.playlistView.ExternalDragAndDropIntoPlaylistEvent += ExternalDragAndDropIntoPlaylistEvent;
-
-            this.playlistView.MoveTracklistRowsEvent += MoveTracklistRowsEvent;
-           // this.playlistView.ChangeTracklistColorEvent += ChangeTracklistColorEvent;
-
+            
             this.playlistView.ShowColumnVisibilityEditorEvent += ShowColumnVisibilityEditorEvent;
             this.playlistView.ScanKeyAndBpmEvent += ScanKeyAndBpmEvent;
             this.playlistView.ExportToDirectoryEvent += ExportToDirectoryEvent;
@@ -87,7 +85,7 @@ namespace MitoPlayer_2024.Presenters
 
             this.playlistView.EnableFilterModeEvent += EnableFilterModeEvent;
             this.playlistView.EnableSetterModeEvent += EnableSetterModeEvent;
-            this.playlistView.LoadCoversEvent += LoadCoversEvent;
+           
             this.playlistView.ChangeOnlyPlayingRowModeEnabled += ChangeOnlyPlayingRowModeEnabled;
             this.playlistView.ChangeFilterParametersEvent += ChangeFilterParameters;
             this.playlistView.RemoveTagValueFilter += RemoveTagValueFilter;
@@ -98,79 +96,14 @@ namespace MitoPlayer_2024.Presenters
             this.playlistView.DetectKeyEvent += DetectKeyEvent;
             this.playlistView.AddToKeyDetectorEvent += AddToKeyDetectorEvent;
             this.playlistView.CreateModelEvent += CreateModelEvent;
+
+
+
+            //COVER BROWSER
+            this.playlistView.LoadCoversEvent += LoadCoversEvent;
         }
 
-        private void MoveTracklistRowsEvent(object sender, ListEventArgs e)
-        {
-
-            List<int> sourceIndices = e.SelectedIndices;
-            int targetIndex = e.IntegerField1;
-
-            // Create a list to hold the rows to be moved
-            List<DataRow> rowsToMove = new List<DataRow>();
-
-            // Collect the rows to be moved
-            foreach (int sourceIndex in sourceIndices.OrderByDescending(i => i))
-            {
-                DataRow row = trackListTable.NewRow();
-                row.ItemArray = trackListTable.Rows[sourceIndex].ItemArray;
-                rowsToMove.Add(row);
-                trackListTable.Rows.RemoveAt(sourceIndex);
-            }
-
-            // Adjust the target index if necessary
-            if (targetIndex > sourceIndices.Min())
-            {
-                targetIndex -= rowsToMove.Count;
-            }
-
-            // Insert the rows at the target index
-            foreach (DataRow row in rowsToMove)
-            {
-                trackListTable.Rows.InsertAt(row, targetIndex);
-                targetIndex++;
-            }
-
-            this.ReloadTrackList();
-            this.TrackListChanged();
-        }
-
-        private void MovePlaylistRowEvent(object sender, ListEventArgs e)
-        {
-
-            int sourceIndex = e.IntegerField1;
-            int targetIndex = e.IntegerField2;
-
-            if (sourceIndex == targetIndex || sourceIndex <= 0 || targetIndex <= 0)
-            {
-                return; // No move needed or invalid indices
-            }
-
-            // Create a list to hold the row to be moved
-            List<DataRow> rowsToMove = new List<DataRow>();
-
-            // Collect the row to be moved
-            DataRow row = playlistListTable.NewRow();
-            row.ItemArray = playlistListTable.Rows[sourceIndex].ItemArray;
-            rowsToMove.Add(row);
-            playlistListTable.Rows.RemoveAt(sourceIndex);
-
-            // Adjust the target index if necessary
-            if (targetIndex > sourceIndex)
-            {
-                targetIndex -= rowsToMove.Count;
-            }
-
-            // Insert the row at the target index
-            foreach (DataRow r in rowsToMove)
-            {
-                playlistListTable.Rows.InsertAt(r, targetIndex);
-                targetIndex++;
-            }
-
-            this.SavePlaylistList();
-            this.ReloadPlaylist();
-        }
+        
 
 
 
@@ -179,7 +112,8 @@ namespace MitoPlayer_2024.Presenters
 
         public void Initialize(MediaPlayerComponent mediaPlayer)
         {
-            using(LoadingDialog loadingDialog = new LoadingDialog())
+            isInitializing = true;
+            using (LoadingDialog loadingDialog = new LoadingDialog())
             {
                 loadingDialog.Show();
                
@@ -230,38 +164,26 @@ namespace MitoPlayer_2024.Presenters
 
                     this.InitializeCovers();
 
-                    playNextTrackTimer = new System.Windows.Forms.Timer();
-                    playNextTrackTimer.Interval = 100; // 100 milliseconds delay
-                    playNextTrackTimer.Tick += PlayNextTrackTimer_Tick;
+                    this.InitializeTimers();
+                   
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+            isInitializing = false;
         }
         private System.Windows.Forms.Timer playNextTrackTimer;
 
-        private void PlayNextTrackTimer_Tick(object sender, EventArgs e)
-        {
-            playNextTrackTimer.Stop();
-            if (this.mediaPlayerComponent.IsShuffleEnabled)
-            {
-                PlayRandomTrack();
-            }
-            else
-            {
-                PlayNextTrack();
-            }
-        }
 
-        private void MediaPlayer_PlayStateChange(object sender, AxWMPLib._WMPOCXEvents_PlayStateChangeEvent e)
+        private void InitializeTimers()
         {
-            if (e.newState == (int)WMPLib.WMPPlayState.wmppsMediaEnded)
-            {
-                playNextTrackTimer.Start();
-            }
+            playNextTrackTimer = new System.Windows.Forms.Timer();
+            playNextTrackTimer.Interval = 100; // 100 milliseconds delay
+            playNextTrackTimer.Tick += PlayNextTrackTimer_Tick;
         }
+       
 
 
         private List<Tag> tagList { get; set; }
@@ -478,7 +400,8 @@ namespace MitoPlayer_2024.Presenters
         }
         private void InitializeTrackList(DataTable trackListTable, int currentTrackIdInPlaylist = -1)
         {
-            this.playlistView.ToggleTracklistSelectionChanged(false);
+            if(!isInitializing)
+                ((PlaylistView)this.playlistView).ToggleTracklistSelection(false);
 
             this.trackListBindingSource.DataSource = trackListTable;
 
@@ -492,7 +415,9 @@ namespace MitoPlayer_2024.Presenters
 
             this.playlistView.InitializeTrackList(model);
 
-            this.playlistView.ToggleTracklistSelectionChanged(true);
+            if (!isInitializing)
+                ((PlaylistView)this.playlistView).ToggleTracklistSelection(true);
+
             ((PlaylistView)this.playlistView).UpdateTrackCountAndLength(this.currentPlaylistId);
 
         }
@@ -682,7 +607,7 @@ namespace MitoPlayer_2024.Presenters
         {
             if(this.trackListTable != null && this.trackListTable.Rows.Count > 0)
             {
-                this.GetNearbyCovers(0);
+                this.UpdateCoverBrowser(0);
             }
         }
 
@@ -951,76 +876,64 @@ namespace MitoPlayer_2024.Presenters
         }
         #endregion
 
+
         #region TRACKLIST - ORDER
+
         public void OrderByArtist()
         {
             this.OrderByColumn("Artist");
         }
-
         public void OrderByTitle()
         {
             this.OrderByColumn("Title");
         }
-
         public void OrderByFileName()
         {
             this.OrderByColumn("FileName");
         }
-
         public void Reverse()
         {
-         
-                if (this.trackListTable != null && this.trackListTable.Rows != null && this.trackListTable.Rows.Count > 0 && !isSaving)
-                {
-                    DataTable reversedDt = this.trackListTable.Clone();
-                    for (var row = this.trackListTable.Rows.Count - 1; row >= 0; row--)
-                        reversedDt.ImportRow(this.trackListTable.Rows[row]);
-                    this.trackListTable = reversedDt;
+            if (this.trackListTable != null && this.trackListTable.Rows != null && this.trackListTable.Rows.Count > 0 && !isSaving)
+            {
+                DataTable reversedDt = this.trackListTable.Clone();
+                for (var row = this.trackListTable.Rows.Count - 1; row >= 0; row--)
+                    reversedDt.ImportRow(this.trackListTable.Rows[row]);
+                this.trackListTable = reversedDt;
 
-
-                    this.ReloadTrackList();
-                    this.TrackListChanged();
-                }
-            
-            
+                this.ReloadTrackList();
+                this.TrackListChanged();
+            }
         }
-
         public void Shuffle()
         {
-          
+            if (this.trackListTable != null && this.trackListTable.Rows != null && this.trackListTable.Rows.Count > 0 && !isSaving)
+            {
+                DataTable shuffledDt = this.trackListTable.Copy();
 
-                if (this.trackListTable != null && this.trackListTable.Rows != null && this.trackListTable.Rows.Count > 0 && !isSaving)
+                if (!shuffledDt.Columns.Contains("SortBy"))
+                    shuffledDt.Columns.Add("SortBy", typeof(Int32));
+
+                Random rnd = new Random();
+                foreach (DataRow row in shuffledDt.Rows)
                 {
-                    DataTable shuffledDt = this.trackListTable.Copy();
-
-                    if (!shuffledDt.Columns.Contains("SortBy"))
-                        shuffledDt.Columns.Add("SortBy", typeof(Int32));
-
-                    Random rnd = new Random();
-                    foreach (DataRow row in shuffledDt.Rows)
-                    {
-                        row["SortBy"] = rnd.Next(1, 100);
-                    }
-                    DataView dv = shuffledDt.DefaultView;
-                    dv.Sort = "SortBy";
-                    DataTable sortedDT = dv.ToTable();
-                    sortedDT.Columns.Remove("SortBy");
-                    this.trackListTable = sortedDT;
-
-
-                    this.ReloadTrackList();
-                    this.TrackListChanged();
+                    row["SortBy"] = rnd.Next(1, 100);
                 }
-            
-        }
+                DataView dv = shuffledDt.DefaultView;
+                dv.Sort = "SortBy";
+                DataTable sortedDT = dv.ToTable();
+                sortedDT.Columns.Remove("SortBy");
+                this.trackListTable = sortedDT;
 
+                this.ReloadTrackList();
+                this.TrackListChanged();
+            }
+        }
         public void OrderByColumnEvent(object sender, ListEventArgs e)
         {
             this.OrderByColumn(e.StringField1);
         }
         private void OrderByColumn(String columnName)
         {
-            
             if (this.trackListTable != null && this.trackListTable.Rows != null && this.trackListTable.Rows.Count > 0 && !isSaving)
             {
                 DataView dv = new DataView();
@@ -1075,18 +988,51 @@ namespace MitoPlayer_2024.Presenters
                         this.trackListTable = sortedDT;
                 }
 
-
                 this.ReloadTrackList();
                 this.TrackListChanged();
-
-            }
-            
-                
+            }                
         }
+
         #endregion
 
-        #region TRACKLIST - TRACK COPY TO PLAYLIST
 
+        #region TRACKLIST/PLAYLIST - DRAG AND DROP
+
+        private void MoveTracklistRowsEvent(object sender, ListEventArgs e)
+        {
+
+            List<int> sourceIndices = e.SelectedIndices;
+            int targetIndex = e.IntegerField1;
+
+            // Create a list to hold the rows to be moved
+            List<DataRow> rowsToMove = new List<DataRow>();
+
+            // Collect the rows to be moved
+            foreach (int sourceIndex in sourceIndices.OrderByDescending(i => i))
+            {
+                DataRow row = trackListTable.NewRow();
+                row.ItemArray = trackListTable.Rows[sourceIndex].ItemArray;
+                rowsToMove.Add(row);
+                trackListTable.Rows.RemoveAt(sourceIndex);
+            }
+
+            // Adjust the target index if necessary
+            if (targetIndex > sourceIndices.Min())
+            {
+                targetIndex -= rowsToMove.Count;
+            }
+
+            // Insert the rows at the target index
+            foreach (DataRow row in rowsToMove)
+            {
+                trackListTable.Rows.InsertAt(row, targetIndex);
+                targetIndex++;
+            }
+
+            this.ReloadTrackList();
+            this.TrackListChanged();
+        }
+       
         private void InternalDragAndDropIntoTracklistEvent(object sender, ListEventArgs e)
         {
             List<Model.Track> sourceTrackList = new List<Model.Track>();
@@ -1424,16 +1370,47 @@ namespace MitoPlayer_2024.Presenters
                                 this.PlayTrack();
                             }
                         }
-
                     }
-
                 }
             }
             
         }
+        private void MovePlaylistRowEvent(object sender, ListEventArgs e)
+        {
 
-      
+            int sourceIndex = e.IntegerField1;
+            int targetIndex = e.IntegerField2;
 
+            if (sourceIndex == targetIndex || sourceIndex <= 0 || targetIndex <= 0)
+            {
+                return; // No move needed or invalid indices
+            }
+
+            // Create a list to hold the row to be moved
+            List<DataRow> rowsToMove = new List<DataRow>();
+
+            // Collect the row to be moved
+            DataRow row = playlistListTable.NewRow();
+            row.ItemArray = playlistListTable.Rows[sourceIndex].ItemArray;
+            rowsToMove.Add(row);
+            playlistListTable.Rows.RemoveAt(sourceIndex);
+
+            // Adjust the target index if necessary
+            if (targetIndex > sourceIndex)
+            {
+                targetIndex -= rowsToMove.Count;
+            }
+
+            // Insert the row at the target index
+            foreach (DataRow r in rowsToMove)
+            {
+                playlistListTable.Rows.InsertAt(r, targetIndex);
+                targetIndex++;
+            }
+
+            this.SavePlaylistList();
+            this.ReloadPlaylist();
+        }
         private void MovePlaylistEvent(object sender, ListEventArgs e)
         {
             int oldId = Convert.ToInt32(this.playlistListTable.Rows[e.IntegerField1]["Id"]);
@@ -1575,44 +1552,36 @@ namespace MitoPlayer_2024.Presenters
         }
         #endregion
 
+
         #region TRACKLIST - REMOVE TRACKS
+
+        //In the case of tracklist remove, selection change evetn must be turn off and on again to NOT load the UpdateCoverBrowser unnecessary
         private void DeleteTracksEvent(object sender, ListEventArgs e)
         {
-            /*if (!this.isFilterModeEnabled && !isSaving)
-            {
-
-                    if (this.trackListTable != null && this.trackListTable.Rows != null && this.trackListTable.Rows.Count > 0)
-                    {
-                        for (int i = e.Rows.Count - 1; i >= 0; i--)
-                        {
-                            if (e.Rows[i].Selected)
-                            {
-                                this.trackListTable.Rows[i].Delete();
-                            }
-                        }
-
-                        this.ReloadTrackList();
-                        this.TrackListChanged();
-                        ((PlaylistView)this.playlistView).UpdateTrackCountAndLength(this.currentPlaylistId);
-                    }
-                
-               
-            }*/
-
+            // Check if filter mode is disabled and saving is not in progress
             if (!this.isFilterModeEnabled && !isSaving)
             {
+                // Check if the track list table is not null and has rows
                 if (this.trackListTable != null && this.trackListTable.Rows != null && this.trackListTable.Rows.Count > 0)
                 {
+                    // Temporarily disable tracklist selection
+                    ((PlaylistView)this.playlistView).ToggleTracklistSelection(false);
+
                     using (LoadingDialog loadingDialog = new LoadingDialog())
                     {
                         loadingDialog.Show();
-                        loadingDialog.SetProcessDescription("Delete tracks from playlist/tracklist..."); 
+                        loadingDialog.SetProcessDescription("Delete tracks from playlist/tracklist...");
                         loadingDialog.Refresh();
 
-                        // Use LINQ to find the selected rows and mark them for deletion
-                        var rowsToDelete = e.Rows.Cast<DataGridViewRow>().Where(row => row.Selected).Select(row => row.Index).ToList();
+                        // Find the selected rows and mark them for deletion
+                        var rowsToDelete = e.Rows.Cast<DataGridViewRow>()
+                        .Where(row => row.Selected)
+                        .Select(row => row.Index)
+                        .ToList();
+
                         if (rowsToDelete != null && rowsToDelete.Count == this.trackListTable.Rows.Count)
                         {
+                            // Clear the entire table if all rows are selected
                             this.trackListTable.Rows.Clear();
                         }
                         else
@@ -1625,13 +1594,20 @@ namespace MitoPlayer_2024.Presenters
                         }
                     }
 
+                    // Adjust the index to be within the valid range
+                    int newIndex = Math.Min(this.mediaPlayerComponent.GetCurrentTrackIndex(), this.trackListTable.Rows.Count - 1);
+                    newIndex = Math.Max(newIndex, 0); // Ensure the index is not negative
+
                     // Perform UI updates after all deletions are done
                     this.ReloadTrackList();
                     this.TrackListChanged();
                     ((PlaylistView)this.playlistView).UpdateTrackCountAndLength(this.currentPlaylistId);
+                    ((PlaylistView)this.playlistView).ToggleTracklistSelection(true);
+
+                    // Update the cover browser with the adjusted index
+                    this.UpdateCoverBrowser(newIndex);
                 }
             }
-
         }
         public void RemoveMissingTracks()
         {
@@ -1639,10 +1615,11 @@ namespace MitoPlayer_2024.Presenters
             {
                 if (this.trackListTable != null && this.trackListTable.Rows != null && this.trackListTable.Rows.Count > 0)
                 {
+                    ((PlaylistView)this.playlistView).ToggleTracklistSelection(false);
                     using (LoadingDialog loadingDialog = new LoadingDialog())
                     {
                         loadingDialog.Show();
-                        loadingDialog.SetProcessDescription("Remove missing tracks to playlist/tracklist..."); 
+                        loadingDialog.SetProcessDescription("Remove missing tracks from playlist/tracklist...");
                         loadingDialog.Refresh();
 
                         for (int i = this.trackListTable.Rows.Count - 1; i >= 0; i--)
@@ -1654,13 +1631,18 @@ namespace MitoPlayer_2024.Presenters
                         }
                     }
 
-                    
+                    // Adjust the index to be within the valid range
+                    int newIndex = Math.Min(this.mediaPlayerComponent.GetCurrentTrackIndex(), this.trackListTable.Rows.Count - 1);
+                    newIndex = Math.Max(newIndex, 0); // Ensure the index is not negative
+
                     this.ReloadTrackList();
                     this.TrackListChanged();
                     ((PlaylistView)this.playlistView).UpdateTrackCountAndLength(this.currentPlaylistId);
+                    ((PlaylistView)this.playlistView).ToggleTracklistSelection(true);
+                    // Update the cover browser with the adjusted index
+                    this.UpdateCoverBrowser(newIndex);
                 }
             }
-                
         }
         public void RemoveDuplicatedTracks()
         {
@@ -1668,10 +1650,11 @@ namespace MitoPlayer_2024.Presenters
             {
                 if (this.trackListTable != null && this.trackListTable.Rows != null && this.trackListTable.Rows.Count > 0)
                 {
+                    ((PlaylistView)this.playlistView).ToggleTracklistSelection(false);
                     using (LoadingDialog loadingDialog = new LoadingDialog())
                     {
                         loadingDialog.Show();
-                        loadingDialog.SetProcessDescription("Remove duplicated tracks to playlist/tracklist..."); 
+                        loadingDialog.SetProcessDescription("Remove duplicated tracks from playlist/tracklist...");
                         loadingDialog.Refresh();
 
                         List<int> trackIds = new List<int>();
@@ -1710,28 +1693,45 @@ namespace MitoPlayer_2024.Presenters
                         }
                     }
 
-                    
+                    // Adjust the index to be within the valid range
+                    int newIndex = Math.Min(this.mediaPlayerComponent.GetCurrentTrackIndex(), this.trackListTable.Rows.Count - 1);
+                    newIndex = Math.Max(newIndex, 0); // Ensure the index is not negative
+
                     this.ReloadTrackList();
                     this.TrackListChanged();
                     ((PlaylistView)this.playlistView).UpdateTrackCountAndLength(this.currentPlaylistId);
+                    ((PlaylistView)this.playlistView).ToggleTracklistSelection(true);
+                    // Update the cover browser with the adjusted index
+                    this.UpdateCoverBrowser(newIndex);
                 }
             }
-               
         }
         public void Clear()
         {
+            // Check if filter mode is disabled and saving is not in progress
             if (!this.isFilterModeEnabled && !isSaving)
             {
+                // Temporarily disable tracklist selection
+                ((PlaylistView)this.playlistView).ToggleTracklistSelection(false);
+
+                // Clear all rows in the track list table
                 this.trackListTable.Rows.Clear();
 
-                
+                // Perform UI updates after clearing the track list
                 this.ReloadTrackList();
                 this.TrackListChanged();
                 ((PlaylistView)this.playlistView).UpdateTrackCountAndLength(this.currentPlaylistId);
+
+                // Re-enable tracklist selection
+                ((PlaylistView)this.playlistView).ToggleTracklistSelection(true);
+
+                // Update the cover browser with the adjusted index
+               this.UpdateCoverBrowser(0); // Clear operation, so start from the beginning
             }
-                
         }
+
         #endregion
+
 
         #region PLAYER
         ///meghívja a media player függvényeit, amelyek beállítják a lejátszó STÁTUSZÁT
@@ -1750,85 +1750,7 @@ namespace MitoPlayer_2024.Presenters
             this.mediaPlayerComponent.SetCurrentTrackIndex(e.IntegerField1);
 
             if(e.IntegerField1 > -1)
-                this.GetNearbyCovers(e.IntegerField1);
-        }
-
-        private int displayedCoverNumber = 11;
-        private ConcurrentQueue<ImageExtension> coverList;
-
-        private void GetNearbyCovers(int index)
-        {
-         /*   coverList = new ConcurrentQueue<ImageExtension>();
-            List<DataRow> trackList = this.isFilterModeEnabled ? this.filteredTrackListTable.Rows.Cast<DataRow>().ToList() : trackListTable.Rows.Cast<DataRow>().ToList();
-
-            if(trackList != null && trackList.Count > 0)
-            {
-                int startIndex = Math.Max(0, index - 5);
-                int finalIndex = Math.Min(trackList.Count, index + 6);
-
-                if (trackList.Count > displayedCoverNumber)
-                {
-                    if (index <= 5)
-                    {
-                        finalIndex = Math.Min(trackList.Count, displayedCoverNumber);
-                    }
-                    else if (index + 6 > trackList.Count)
-                    {
-                        startIndex = Math.Max(0, trackList.Count - displayedCoverNumber);
-                    }
-                }
-
-                for (int i = startIndex; i < finalIndex; i++)
-                {
-                    var coverImage = new ImageExtension
-                    {
-                        FilePath = trackList[i]["Path"].ToString(),
-                        TrackIdInPlaylist = Convert.ToInt32(trackList[i]["TrackIdInPlaylist"]),
-                        IsMainCover = (i == index)
-                    };
-                    coverList.Enqueue(coverImage);
-                }
-
-                if (coverList.Count > 0)
-                {
-                    Parallel.ForEach(coverList, preparedCoverImage =>
-                    {
-                        try
-                        {
-                            using (var file = TagLib.File.Create(preparedCoverImage.FilePath))
-                            {
-                                if (file?.Tag.Pictures.Length > 0)
-                                {
-                                    var pictureData = file.Tag.Pictures[0].Data.Data;
-                                    using (var ms = new MemoryStream(pictureData))
-                                    {
-                                        ms.Position = 0;
-                                        using (var img = Image.FromStream(ms))
-                                        {
-                                            preparedCoverImage.Image = img.GetThumbnailImage(75, 75, () => false, IntPtr.Zero);
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    preparedCoverImage.Image = Properties.Resources.MissingCover;
-                                }
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"Error processing file {preparedCoverImage.FilePath}: {ex.Message}");
-                            preparedCoverImage.Image = Properties.Resources.MissingCover;
-                        }
-                    });
-
-                    this.playlistView.UpdateCoverList(this.coverList);
-                }
-            }
-
-            
-            */
-
+                this.UpdateCoverBrowser(e.IntegerField1);
         }
         public void PlayTrackEvent(object sender, ListEventArgs e)
         {
@@ -1923,7 +1845,26 @@ namespace MitoPlayer_2024.Presenters
                         this.playlistView.UpdateAfterPlayTrackAfterPause();
                     }
 
+                }
             }
+        }
+        private void MediaPlayer_PlayStateChange(object sender, AxWMPLib._WMPOCXEvents_PlayStateChangeEvent e)
+        {
+            if (e.newState == (int)WMPLib.WMPPlayState.wmppsMediaEnded)
+            {
+                playNextTrackTimer.Start();
+            }
+        }
+        private void PlayNextTrackTimer_Tick(object sender, EventArgs e)
+        {
+            playNextTrackTimer.Stop();
+            if (this.mediaPlayerComponent.IsShuffleEnabled)
+            {
+                PlayRandomTrack();
+            }
+            else
+            {
+                PlayNextTrack();
             }
         }
         public void RandomTrackEvent(object sender, EventArgs e)
@@ -1941,10 +1882,6 @@ namespace MitoPlayer_2024.Presenters
                 }
             } 
         }
-
-        
-
-
 
         private void PlayRandomTrack()
         {
@@ -1974,7 +1911,6 @@ namespace MitoPlayer_2024.Presenters
                 this.playlistView.UpdateAfterPlayTrackAfterPause();
             }
         }
-
 
         internal void CallChangeProgressEvent(int currentPosX, int width)
         {
@@ -2010,8 +1946,106 @@ namespace MitoPlayer_2024.Presenters
             this.mediaPlayerComponent.ChangeShuffle(isShuffleEnabled);
             this.settingDao.SetBooleanSetting(Settings.IsShuffleEnabled.ToString(), isShuffleEnabled);
         }
+
+       
+
+       
         #endregion
 
+
+
+        #region COVER BROWSER
+
+        private int displayedCoverNumber = 11;
+        private ConcurrentQueue<ImageExtension> coverList;
+        private void LoadCoversEvent(object sender, ListEventArgs e)
+        {
+            this.UpdateCoverBrowser(e.IntegerField1);
+        }
+        private void UpdateCoverBrowser(int index)
+        {
+            coverList = new ConcurrentQueue<ImageExtension>();
+            List<DataRow> trackList = this.isFilterModeEnabled ? this.filteredTrackListTable.Rows.Cast<DataRow>().ToList() : trackListTable.Rows.Cast<DataRow>().ToList();
+
+            // Handle the empty track list case
+            if (trackList == null || trackList.Count == 0)
+            {
+                this.playlistView.UpdateCoverList(this.coverList); // Clear the cover list in the view
+                return;
+            }
+
+            // Adjust the index to be within the valid range
+            index = Math.Min(index, trackList.Count - 1);
+            index = Math.Max(index, 0); // Ensure the index is not negative
+
+            int startIndex = Math.Max(0, index - 5);
+            int finalIndex = Math.Min(trackList.Count, index + 6);
+
+            // Adjust start and final indices based on the displayed cover number
+            if (trackList.Count > displayedCoverNumber)
+            {
+                if (index <= 5)
+                {
+                    finalIndex = Math.Min(trackList.Count, displayedCoverNumber);
+                }
+                else if (index + 6 > trackList.Count)
+                {
+                    startIndex = Math.Max(0, trackList.Count - displayedCoverNumber);
+                }
+            }
+
+            // Enqueue cover images for the specified range
+            for (int i = startIndex; i < finalIndex; i++)
+            {
+                var coverImage = new ImageExtension
+                {
+                    FilePath = trackList[i]["Path"].ToString(),
+                    TrackIdInPlaylist = Convert.ToInt32(trackList[i]["TrackIdInPlaylist"]),
+                    IsMainCover = (i == index)
+                };
+                coverList.Enqueue(coverImage);
+            }
+
+            // Process and update cover images in parallel
+            if (coverList.Count > 0)
+            {
+                Parallel.ForEach(coverList, preparedCoverImage =>
+                {
+                    try
+                    {
+                        using (var file = TagLib.File.Create(preparedCoverImage.FilePath))
+                        {
+                            if (file?.Tag.Pictures.Length > 0)
+                            {
+                                var pictureData = file.Tag.Pictures[0].Data.Data;
+                                using (var ms = new MemoryStream(pictureData))
+                                {
+                                    ms.Position = 0;
+                                    using (var img = Image.FromStream(ms))
+                                    {
+                                        preparedCoverImage.Image = img.GetThumbnailImage(75, 75, () => false, IntPtr.Zero);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                preparedCoverImage.Image = Properties.Resources.MissingCover;
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error processing file {preparedCoverImage.FilePath}: {ex.Message}");
+                        preparedCoverImage.Image = Properties.Resources.MissingCover;
+                    }
+                });
+
+                // Update the cover list in the view
+                this.playlistView.UpdateCoverList(this.coverList);
+            }
+        }
+
+        #endregion
 
 
         #region PLAYLIST
@@ -2458,12 +2492,12 @@ namespace MitoPlayer_2024.Presenters
                 DataTable filteredDT = dv.ToTable();
                 this.filteredTrackListTable = filteredDT;
 
-                this.playlistView.ToggleTracklistSelectionChanged(false);
+                ((PlaylistView)this.playlistView).ToggleTracklistSelection(false);
 
                 this.trackListBindingSource.DataSource = this.filteredTrackListTable;
                 this.InitializeTrackList(this.filteredTrackListTable, this.mediaPlayerComponent.CurrentTrackIdInPlaylist);
 
-                this.playlistView.ToggleTracklistSelectionChanged(true);
+                ((PlaylistView)this.playlistView).ToggleTracklistSelection(true);
 
                 this.isFilterModeEnabled = true;
                 this.mediaPlayerComponent.SetWorkingTable(this.filteredTrackListTable);
@@ -2480,12 +2514,12 @@ namespace MitoPlayer_2024.Presenters
                 DataTable filteredDT = dv.ToTable();
                 this.trackListTable = filteredDT;
 
-                this.playlistView.ToggleTracklistSelectionChanged(false);
+                ((PlaylistView)this.playlistView).ToggleTracklistSelection(false);
 
                 this.trackListBindingSource.DataSource = this.trackListTable;
                 this.InitializeTrackList(this.trackListTable, this.mediaPlayerComponent.CurrentTrackIdInPlaylist);
 
-                this.playlistView.ToggleTracklistSelectionChanged(true);
+                ((PlaylistView)this.playlistView).ToggleTracklistSelection(true);
             }
 
             this.isFilterModeEnabled = false;
@@ -2729,10 +2763,7 @@ namespace MitoPlayer_2024.Presenters
 
         }
 
-        private void LoadCoversEvent(object sender, ListEventArgs e)
-        {
-            this.GetNearbyCovers(e.IntegerField1);
-        }
+        
 
         private void SetTagValueEvent(object sender, ListEventArgs e)
         {
@@ -2960,12 +2991,12 @@ namespace MitoPlayer_2024.Presenters
                 DataTable filteredDT = dv.ToTable();
                 this.filteredTrackListTable = filteredDT;
 
-                this.playlistView.ToggleTracklistSelectionChanged(false);
+                ((PlaylistView)this.playlistView).ToggleTracklistSelection(false);
 
                 this.trackListBindingSource.DataSource = this.filteredTrackListTable;
                 this.InitializeTrackList(this.filteredTrackListTable, this.mediaPlayerComponent.CurrentTrackIdInPlaylist);
 
-                this.playlistView.ToggleTracklistSelectionChanged(true);
+                ((PlaylistView)this.playlistView).ToggleTracklistSelection(true);
             }
 
             this.mediaPlayerComponent.SetWorkingTable(this.filteredTrackListTable);

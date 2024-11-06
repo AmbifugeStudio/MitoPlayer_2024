@@ -105,9 +105,10 @@ namespace MitoPlayer_2024.Views
         private int mainCoverImageSize = 75;
 
         private bool isFilterEnabled = false;
-
+        private bool isInitializing = true;
         public PlaylistView()
         {
+
             this.InitializeComponent();
             this.SetControlColors();
 
@@ -117,16 +118,22 @@ namespace MitoPlayer_2024.Views
             dgvTrackList.AllowDrop = true;
             dgvPlaylistList.AllowDrop = true;
 
-            clickTimer = new System.Windows.Forms.Timer();
-            clickTimer.Interval = doubleClickTime;
-            clickTimer.Tick += ClickTimer_Tick;
+            tracklistClickTimer = new System.Windows.Forms.Timer();
+            tracklistClickTimer.Interval = tracklistDoubleClickTime;
+            tracklistClickTimer.Tick += TracklistClickTimer_Tick;
 
-            playlistClickTimer = new System.Windows.Forms.Timer();
-            playlistClickTimer.Interval = playlistDoubleClickTime;
-            playlistClickTimer.Tick += PlaylistClickTimer_Tick;
-
+            playlistListClickTimer = new System.Windows.Forms.Timer();
+            playlistListClickTimer.Interval = playlistListDoubleClickTime;
+            playlistListClickTimer.Tick += PlaylistListClickTimer_Tick;
+            
+            coverBrowserClickTimer = new System.Windows.Forms.Timer();
+            coverBrowserClickTimer.Interval = coverBrowserDoubleClickTime;
+            coverBrowserClickTimer.Tick += CoverBrowserClickTimer_Tick;
+            
             autoScrollTimer.Interval = 100; // Adjust the interval as needed
             autoScrollTimer.Tick += AutoScrollTimer_Tick;
+
+            isInitializing = true;
 
             //InitializeBackgroundWorker();
         }
@@ -333,6 +340,7 @@ namespace MitoPlayer_2024.Views
             this.trackListBindingSource.ResetBindings(false);
 
             this.UpdateTracklistColor(model.CurrentTrackIdInPlaylist);
+
         }
         private void dgvTrackList_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
         {
@@ -1250,6 +1258,7 @@ namespace MitoPlayer_2024.Views
             {
                 rowIndex = this.dgvTrackList.SelectedCells[0].RowIndex;
             }
+
             this.LoadCoversEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = rowIndex });
         }
         private void btnSetterModeToggle_Click(object sender, EventArgs e)
@@ -1258,6 +1267,7 @@ namespace MitoPlayer_2024.Views
         }
         private void EnableSetterMode()
         {
+
             this.RemoveTagValueFilter?.Invoke(this, new EventArgs());
 
             foreach (Control groupBox in this.tagValueEditorPanel.Controls)
@@ -1317,6 +1327,8 @@ namespace MitoPlayer_2024.Views
             {
                 rowIndex = this.dgvTrackList.SelectedCells[0].RowIndex;
             }
+
+
             this.LoadCoversEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = rowIndex });
         }
         private void btnDisplayTagEditor_Click(object sender, EventArgs e)
@@ -1585,68 +1597,15 @@ namespace MitoPlayer_2024.Views
         }
 
 
-        public void UpdateCoverList(ConcurrentQueue<ImageExtension> coverQueue)
-        {
-            this.grbCovers.Controls.Clear();
-
-            List<ImageExtension> coverList = coverQueue.ToList();
-
-            int imageXOffset = 10;
-            int imageYOffset = 10;
-            int imageSpacing = 5;
-            int xPos = 10;
-            int yPos = 10;
-
-            int imageCount = coverList.Count;
-            int imageWidth = coverImageSize;
-            int imageHeight = coverImageSize;
-
-            int flowLayoutWidth = imageXOffset + ((imageCount - 1) * (imageWidth + imageSpacing) + 10 + mainCoverImageSize);
-            int flowLayoutHeight = imageYOffset + imageHeight + imageSpacing;
-            int centerOffset = (this.grbCovers.Width - flowLayoutWidth) / 2;
-
-            FlowLayoutPanel flowLayoutPanel = new FlowLayoutPanel
-            {
-                FlowDirection = FlowDirection.LeftToRight,
-                Anchor = AnchorStyles.Top  ,
-                Size = new Size(flowLayoutWidth, flowLayoutHeight),
-                Location = new Point(centerOffset, 10),
-            };
-
-            while (coverQueue.TryDequeue(out ImageExtension cover))
-            {
-                int actualImageSize = cover.IsMainCover ? mainCoverImageSize : coverImageSize;
-
-                PictureBoxExtension pictureBox = new PictureBoxExtension
-                {
-                    Image = cover.Image,
-                    FilePath = cover.FilePath,
-                    TrackIdInPlaylist = cover.TrackIdInPlaylist,
-                    SizeMode = PictureBoxSizeMode.StretchImage,
-                    Size = new Size(actualImageSize, actualImageSize),
-                    Location = new Point(xPos, yPos),
-                };
-
-                pictureBox.MouseDown += new MouseEventHandler(
-                             (sender, e) => this.pcbCover_MouseDown(sender, e));
-                pictureBox.MouseUp += new MouseEventHandler(
-                             (sender, e) => this.pcbCover_MouseUp(sender, e));
-
-                flowLayoutPanel.Controls.Add(pictureBox);
-                xPos += pictureBox.Width + imageSpacing;
-            }
-            this.grbCovers.Controls.Add(flowLayoutPanel);
-        }
-
-
-
-
-
        
+
+
+
+
         // Timer to handle double-click detection
-        private System.Windows.Forms.Timer clickTimer;
+        private System.Windows.Forms.Timer tracklistClickTimer;
         // Time interval for detecting double-clicks
-        private const int doubleClickTime = 2000; // Adjust the delay as needed
+        private const int tracklistDoubleClickTime = 2000; // Adjust the delay as needed
                                                  // Flags to track dragging state
         private bool isDragging = false;
         private bool isMouseDown = false;
@@ -1656,14 +1615,61 @@ namespace MitoPlayer_2024.Views
         // Index of the first selected row
         private int firstSelectedRowIndex = -1;
 
+
+        
+        public void ToggleTracklistSelection(bool enabled)
+        {
+            isInitializing = !enabled;
+        }
+
+        private bool isCoverBrowserUpdateEnabled = true;
+        private bool isDragAndDropInProgress = false;
         // Event handler for selection changes in the DataGridView
         private void dgvTrackList_SelectionChanged(object sender, EventArgs e)
         {
-            if (dgvTrackList.SelectedRows.Count > 0)
+        if (isInitializing || !isCoverBrowserUpdateEnabled || isDragAndDropInProgress)
+        {
+            return; // Ignore the event if initializing
+        }
+
+        if (dgvTrackList.SelectedRows.Count > 0)
             {
-                int selectedIndex = dgvTrackList.SelectedRows[dgvTrackList.SelectedRows.Count - 1].Index;
-                firstSelectedRowIndex = selectedIndex;
-                this.CallSetCurrentTrackEvent(selectedIndex);
+            int selectedIndex = dgvTrackList.SelectedRows[dgvTrackList.SelectedRows.Count - 1].Index;
+            firstSelectedRowIndex = selectedIndex;
+            this.CallSetCurrentTrackEvent(selectedIndex);
+
+            this.lblSelectedItemsCount.Text = $"{this.dgvTrackList.SelectedRows.Count} item{(this.dgvTrackList.SelectedRows.Count > 1 ? "s" : "")} selected";
+
+                int totalSeconds = 0;
+
+                foreach (DataGridViewRow row in this.dgvTrackList.SelectedRows)
+                {
+                    string[] parts = row.Cells["Length"].Value.ToString().Split(':');
+
+                    if (parts.Length == 3)
+                    {
+                        totalSeconds += int.Parse(parts[0]) * 3600;
+                        totalSeconds += int.Parse(parts[1]) * 60;
+                        totalSeconds += int.Parse(parts[2]);
+                    }
+                    else if (parts.Length == 2)
+                    {
+                        totalSeconds += int.Parse(parts[0]) * 60;
+                        totalSeconds += int.Parse(parts[1]);
+                    }
+                    else if (parts.Length == 1)
+                    {
+                        totalSeconds += int.Parse(parts[0]);
+                    }
+                }
+
+                // Calculate total time
+                TimeSpan totalTime = TimeSpan.FromSeconds(totalSeconds);
+                string length = totalTime.Hours > 0
+                ? $"{totalTime.Hours:D2}:{totalTime.Minutes:D2}:{totalTime.Seconds:D2}"
+                : $"{totalTime.Minutes:D2}:{totalTime.Seconds:D2}";
+
+                this.lblSelectedItemsLength.Text = $"Length: {length}";
             }
         }
 
@@ -1686,6 +1692,8 @@ namespace MitoPlayer_2024.Views
             var hitTestInfo = dgvTrackList.HitTest(e.X, e.Y);
             if (hitTestInfo.RowIndex >= 0 && e.Button == MouseButtons.Left)
             {
+                lastMouseDownRowIndex = hitTestInfo.RowIndex; // Capture the index
+                isCoverBrowserUpdateEnabled = false; // Disable cover browser update
                 if (ModifierKeys.HasFlag(Keys.Shift) || ModifierKeys.HasFlag(Keys.Control))
                 {
                     // Handle multi-row selection with Shift or Ctrl key
@@ -1695,11 +1703,13 @@ namespace MitoPlayer_2024.Views
                 if (dgvTrackList.SelectedRows.Count > 1)
                 {
                     // Multiple rows are selected, start drag-and-drop immediately
+                    isDragAndDropInProgress = true; // Set the flag
                     StartDragAndDrop(e.Location);
                 }
                 else if (dgvTrackList.SelectedRows.Cast<DataGridViewRow>().Any(row => row.Index == hitTestInfo.RowIndex))
                 {
                     // Single row is already selected, start drag-and-drop
+                    isDragAndDropInProgress = true; // Set the flag
                     PrepareForDrag(e.Location, hitTestInfo.RowIndex);
                 }
                 else
@@ -1707,6 +1717,7 @@ namespace MitoPlayer_2024.Views
                     // Row is not selected, select it and start drag-and-drop
                     dgvTrackList.ClearSelection();
                     dgvTrackList.Rows[hitTestInfo.RowIndex].Selected = true;
+                    isDragAndDropInProgress = true; // Set the flag
                     PrepareForDrag(e.Location, hitTestInfo.RowIndex);
                 }
             }
@@ -1727,7 +1738,7 @@ namespace MitoPlayer_2024.Views
             isDragging = false;
             dragStartPoint = location;
             firstSelectedRowIndex = rowIndex;
-            clickTimer.Start();
+            tracklistClickTimer.Start();
         }
         // Event handler for mouse move events in the DataGridView
         private void dgvTrackList_MouseMove(object sender, MouseEventArgs e)
@@ -1738,27 +1749,34 @@ namespace MitoPlayer_2024.Views
                 Math.Abs(e.Y - dragStartPoint.Y) > SystemInformation.DragSize.Height)
                 {
                     isDragging = true;
-                    clickTimer.Stop();
+                    tracklistClickTimer.Stop();
                     dgvTrackList.DoDragDrop(new DataObject(TrackListDataFormat, dgvTrackList.SelectedRows.Cast<DataGridViewRow>().ToArray()), DragDropEffects.Move | DragDropEffects.Copy);
                 }
             }
         }
-
+        private int lastMouseDownRowIndex = -1;
         // Event handler for mouse up events in the DataGridView
         private void dgvTrackList_MouseUp(object sender, MouseEventArgs e)
         {
             isMouseDown = false;
             if (!isDragging)
             {
-                clickTimer.Stop();
+                tracklistClickTimer.Stop();
             }
             isDragging = false;
+            isCoverBrowserUpdateEnabled = true; // Enable cover browser update
+            isDragAndDropInProgress = false; // Clear the flag
+
+            if (lastMouseDownRowIndex >= 0)
+            {
+                UpdateCoverBrowser(lastMouseDownRowIndex); // Update the cover browser with the captured index
+            }
         }
 
         // Timer tick event handler to handle single-click actions
-        private void ClickTimer_Tick(object sender, EventArgs e)
+        private void TracklistClickTimer_Tick(object sender, EventArgs e)
         {
-            clickTimer.Stop();
+            tracklistClickTimer.Stop();
             if (!isDragging)
             {
                 var hitTestInfo = dgvTrackList.HitTest(dragStartPoint.X, dragStartPoint.Y);
@@ -1874,7 +1892,7 @@ namespace MitoPlayer_2024.Views
             var hitTestInfo = dgvTrackList.HitTest(clientPoint.X, clientPoint.Y);
             int targetIndex = hitTestInfo.RowIndex >= 0 ? hitTestInfo.RowIndex : dgvTrackList.Rows.Count;
 
-            if (targetIndex < 0 || targetIndex == dgvTrackList.Rows.Count) // Prevent dropping above the header or at an invalid index
+            if (targetIndex < 0 || targetIndex > dgvTrackList.Rows.Count) // Allow dropping at the end
             {
                 return;
             }
@@ -1905,8 +1923,11 @@ namespace MitoPlayer_2024.Views
                     int newIndex = targetIndex;
                     foreach (int index in selectedIndices)
                     {
-                        dgvTrackList.Rows[newIndex].Selected = true;
-                        newIndex++;
+                        if (newIndex < dgvTrackList.Rows.Count)
+                        {
+                            dgvTrackList.Rows[newIndex].Selected = true;
+                            newIndex++;
+                        }
                     }
                 }));
 
@@ -1915,6 +1936,19 @@ namespace MitoPlayer_2024.Views
                 dgvTrackList.Invalidate(); // Clear the line
             }
 
+            isCoverBrowserUpdateEnabled = true; // Enable cover browser update
+            if (lastMouseDownRowIndex >= 0)
+            {
+                UpdateCoverBrowser(lastMouseDownRowIndex); // Update the cover browser with the captured index
+            }
+        }
+        private void UpdateCoverBrowser(int index)
+        {
+            if (isCoverBrowserUpdateEnabled)
+            {
+                // Call the method to update the cover browser
+                this.SetCurrentTrackEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = index });
+            }
         }
 
         // Event handler for paint events in the DataGridView
@@ -1950,6 +1984,7 @@ namespace MitoPlayer_2024.Views
             if (!isFilterEnabled)
             {
                 autoScrollTimer.Start();
+                isCoverBrowserUpdateEnabled = false; // Disable cover browser update
 
                 if (e.Data.GetDataPresent(DataFormats.FileDrop))
                 {
@@ -1960,21 +1995,31 @@ namespace MitoPlayer_2024.Views
                     e.Effect = DragDropEffects.None;
                 }
             }
-                
+
         }
         private void dgvTrackList_DragLeave(object sender, EventArgs e)
         {
-
             autoScrollTimer.Stop();
             insertionLineIndex = -1;
             dgvTrackList.Invalidate(); // Clear the line
 
-            /* if (dgvTrackList.SelectedRows.Count > 0)
-             {
-                 string filePath = dgvTrackList.SelectedRows[0].Cells["Path"].Value.ToString();
-                 DataObject dataObject = new DataObject(DataFormats.FileDrop, new string[] { filePath });
-                 dgvTrackList.DoDragDrop(dataObject, DragDropEffects.Copy); // Allow file drop when dragging outside
-             }*/
+            if (isDragging)
+            {
+                // Handle the drag leave event to initiate a file drop
+                StartFileDrop();
+            }
+        }
+        private void StartFileDrop()
+        {
+            if (dgvTrackList.SelectedRows.Count == 1)
+            {
+                DataGridViewRow selectedRow = dgvTrackList.SelectedRows[0];
+                string trackPath = dgvTrackList.SelectedRows[0].Cells["Path"].Value.ToString();
+
+                // Initiate the file drop operation
+                DataObject dataObject = new DataObject(DataFormats.FileDrop, new string[] { trackPath });
+                DragDropEffects effect = DoDragDrop(dataObject, DragDropEffects.Copy);
+            }
         }
 
         private System.Windows.Forms.Timer autoScrollTimer = new System.Windows.Forms.Timer();
@@ -2030,9 +2075,9 @@ namespace MitoPlayer_2024.Views
         private const string TrackListDataFormat = "TrackListData";
         private const string PlaylistListDataFormat = "PlaylistListData";
         // Timer to handle double-click detection for playlist list
-        private System.Windows.Forms.Timer playlistClickTimer;
+        private System.Windows.Forms.Timer playlistListClickTimer;
         // Time interval for detecting double-clicks
-        private const int playlistDoubleClickTime = 2000; // Adjust the delay as needed
+        private const int playlistListDoubleClickTime = 2000; // Adjust the delay as needed
                                                          // Flags to track dragging state for playlist list
         private bool isPlaylistDragging = false;
         private bool isPlaylistMouseDown = false;
@@ -2058,7 +2103,8 @@ namespace MitoPlayer_2024.Views
         {
             if (!isPlaylistDragging)
             {
-                this.LoadPlaylistEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = this.dgvPlaylistList.SelectedRows[0].Index });
+               // this.LoadPlaylistEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = this.dgvPlaylistList.SelectedRows[0].Index });
+                this.CallLoadPlaylistEvent();
             }
         }
         // Event handler for mouse down events in the playlist DataGridView
@@ -2074,7 +2120,7 @@ namespace MitoPlayer_2024.Views
                     isPlaylistDragging = false;
                     playlistDragStartPoint = e.Location;
                     firstSelectedPlaylistRowIndex = hitTestInfo.RowIndex;
-                    playlistClickTimer.Start();
+                    playlistListClickTimer.Start();
                 }
                 else
                 {
@@ -2085,7 +2131,7 @@ namespace MitoPlayer_2024.Views
                     isPlaylistDragging = false;
                     playlistDragStartPoint = e.Location;
                     firstSelectedPlaylistRowIndex = hitTestInfo.RowIndex;
-                    playlistClickTimer.Start();
+                    playlistListClickTimer.Start();
                 }
             }
         }
@@ -2098,7 +2144,7 @@ namespace MitoPlayer_2024.Views
                 Math.Abs(e.Y - playlistDragStartPoint.Y) > SystemInformation.DragSize.Height)
                 {
                     isPlaylistDragging = true;
-                    playlistClickTimer.Stop();
+                    playlistListClickTimer.Stop();
                     dgvPlaylistList.DoDragDrop(new DataObject(PlaylistListDataFormat, dgvPlaylistList.SelectedRows[0]), DragDropEffects.Move);
                 }
             }
@@ -2109,17 +2155,18 @@ namespace MitoPlayer_2024.Views
             isPlaylistMouseDown = false;
             if (!isPlaylistDragging)
             {
-                playlistClickTimer.Stop();
+                playlistListClickTimer.Stop();
             }
             isPlaylistDragging = false;
         }
         // Timer tick event handler to handle single-click actions for playlist list
-        private void PlaylistClickTimer_Tick(object sender, EventArgs e)
+        private void PlaylistListClickTimer_Tick(object sender, EventArgs e)
         {
-            playlistClickTimer.Stop();
+            playlistListClickTimer.Stop();
             if (!isPlaylistDragging)
             {
-                this.LoadPlaylistEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = this.dgvPlaylistList.SelectedRows[0].Index });
+                this.CallLoadPlaylistEvent();
+               // this.LoadPlaylistEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = this.dgvPlaylistList.SelectedRows[0].Index });
             }
         }
         // Field to track the index of the row with the colored border
@@ -2304,49 +2351,96 @@ namespace MitoPlayer_2024.Views
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-       // private bool isDragging = false;
         private bool isWaiting = false;
-        private System.Windows.Forms.Timer clickTimer3;
-        private const int clickThreshold = 1000;
+        private System.Windows.Forms.Timer coverBrowserClickTimer;
+        private const int coverBrowserDoubleClickTime = 200;
         private PictureBoxExtension currentPictureBox;
+
+        public void UpdateCoverList(ConcurrentQueue<ImageExtension> coverQueue)
+        {
+            this.grbCovers.Controls.Clear();
+
+            List<ImageExtension> coverList = coverQueue.ToList();
+
+            int imageXOffset = 10;
+            int imageYOffset = 10;
+            int imageSpacing = 5;
+            int xPos = 10;
+            int yPos = 10;
+
+            int imageCount = coverList.Count;
+            int imageWidth = coverImageSize;
+            int imageHeight = coverImageSize;
+
+            int flowLayoutWidth = imageXOffset + ((imageCount - 1) * (imageWidth + imageSpacing) + 10 + mainCoverImageSize);
+            int flowLayoutHeight = imageYOffset + imageHeight + imageSpacing;
+            int centerOffset = (this.grbCovers.Width - flowLayoutWidth) / 2;
+
+            FlowLayoutPanel flowLayoutPanel = new FlowLayoutPanel
+            {
+                FlowDirection = FlowDirection.LeftToRight,
+                Anchor = AnchorStyles.Top,
+                Size = new Size(flowLayoutWidth, flowLayoutHeight),
+                Location = new Point(centerOffset, 10),
+            };
+
+            while (coverQueue.TryDequeue(out ImageExtension cover))
+            {
+                int actualImageSize = cover.IsMainCover ? mainCoverImageSize : coverImageSize;
+
+                PictureBoxExtension pictureBox = new PictureBoxExtension
+                {
+                    Image = cover.Image,
+                    FilePath = cover.FilePath,
+                    TrackIdInPlaylist = cover.TrackIdInPlaylist,
+                    SizeMode = PictureBoxSizeMode.StretchImage,
+                    Size = new Size(actualImageSize, actualImageSize),
+                    Location = new Point(xPos, yPos),
+                };
+
+                pictureBox.MouseDown += new MouseEventHandler(pcbCover_MouseDown);
+                pictureBox.MouseUp += new MouseEventHandler(pcbCover_MouseUp);
+                pictureBox.MouseDoubleClick += new MouseEventHandler(pcbCover_MouseDoubleClick);
+
+                flowLayoutPanel.Controls.Add(pictureBox);
+                xPos += pictureBox.Width + imageSpacing;
+            }
+            this.grbCovers.Controls.Add(flowLayoutPanel);
+        }
+
+        private void CoverBrowserClickTimer_Tick(object sender, EventArgs e)
+        {
+            if (isWaiting && currentPictureBox != null)
+            {
+                isWaiting = false;
+                coverBrowserClickTimer.Stop();
+
+                string filePath = currentPictureBox.FilePath;
+                DataObject dataObject = new DataObject(DataFormats.FileDrop, new string[] { filePath });
+                currentPictureBox.DoDragDrop(dataObject, DragDropEffects.Copy);
+            }
+        }
 
 
         private void pcbCover_MouseDown(object sender, MouseEventArgs e)
         {
             isWaiting = true;
             currentPictureBox = sender as PictureBoxExtension;
-            clickTimer3.Start();
+            coverBrowserClickTimer.Start();
         }
 
         private void pcbCover_MouseUp(object sender, MouseEventArgs e)
         {
             if (isWaiting)
             {
-                pcbCover_MouseClick(sender, e);
                 isWaiting = false;
-                clickTimer3.Stop();
+                coverBrowserClickTimer.Stop();
             }
-           // isDragging = false;
         }
 
-
-
-        private void pcbCover_MouseClick(object sender, MouseEventArgs e)
+        private void pcbCover_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             int trackIdInPlaylist = ((PictureBoxExtension)sender).TrackIdInPlaylist;
-
-            //ignoreSelectionChange = true;
 
             dgvTrackList.ClearSelection();
 
@@ -2371,82 +2465,11 @@ namespace MitoPlayer_2024.Views
                         dgvTrackList.CurrentCell = firstVisibleCell;
                     }
                     dgvTrackList.FirstDisplayedScrollingRowIndex = row.Index;
-                 //   isSelectionHandled = false;
                     break;
                 }
             }
-
-            //ignoreSelectionChange = false;
-
-            //HandleRowSelection();
         }
 
-        public void ToggleTracklistSelectionChanged(bool isEnable)
-        {
-            if(isEnable)
-            {
-                this.dgvTrackList.SelectionChanged += dgvTrackList_SelectionChanged;
-            }
-            else
-            {
-                this.dgvTrackList.SelectionChanged -= dgvTrackList_SelectionChanged;
-            }
-        }
-
-      /*  private bool isSelectionHandled = false;
-        private bool ignoreSelectionChange = false;
-        private void HandleRowSelection()
-        {
-            if (this.dgvTrackList != null && this.dgvTrackList.SelectedCells.Count > 0) 
-                this.SetCurrentTrackEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = this.dgvTrackList.SelectedCells[0].RowIndex });
-        }
-
-        private void dgvTrackList_SelectionChanged(object sender, EventArgs e)
-        {
-            if (ignoreSelectionChange || isSelectionHandled)
-                return;
-
-            isSelectionHandled = true;
-            HandleRowSelection();
-            Task.Delay(100).ContinueWith(t => isSelectionHandled = false);
-
-            if (this.dgvTrackList.SelectedRows != null && this.dgvTrackList.SelectedRows.Count > 0)
-            {
-                ///ROW COUNT
-                this.lblSelectedItemsCount.Text = $"{this.dgvTrackList.SelectedRows.Count} item{(this.dgvTrackList.SelectedRows.Count > 1 ? "s" : "")} selected";
-
-                int totalSeconds = 0;
-
-                foreach (DataGridViewRow row in this.dgvTrackList.SelectedRows)
-                {
-                    string[] parts = row.Cells["Length"].Value.ToString().Split(':');
-
-                    if (parts.Length == 3)
-                    {
-                        totalSeconds += int.Parse(parts[0]) * 3600;
-                        totalSeconds += int.Parse(parts[1]) * 60;
-                        totalSeconds += int.Parse(parts[2]);
-                    }
-                    else if (parts.Length == 2)
-                    {
-                        totalSeconds += int.Parse(parts[0]) * 60;
-                        totalSeconds += int.Parse(parts[1]);
-                    }
-                    else if (parts.Length == 1)
-                    {
-                        totalSeconds += int.Parse(parts[0]);
-                    }
-                }
-
-                // Calculate total time
-                TimeSpan totalTime = TimeSpan.FromSeconds(totalSeconds);
-                string length = totalTime.Hours > 0
-                ? $"{totalTime.Hours:D2}:{totalTime.Minutes:D2}:{totalTime.Seconds:D2}"
-                : $"{totalTime.Minutes:D2}:{totalTime.Seconds:D2}";
-
-                this.lblSelectedItemsLength.Text = $"Length: {length}";
-            }
-        }*/
 
         private void btnTrainKeyDetector_Click(object sender, EventArgs e)
         {
@@ -2496,6 +2519,9 @@ namespace MitoPlayer_2024.Views
             this.TrainKeyDetectorEvent?.Invoke(this, new EventArgs());
         }
 
-        
+        private void PlaylistView_Shown(object sender, EventArgs e)
+        {
+            this.ToggleTracklistSelection(true);
+        }
     }
 }

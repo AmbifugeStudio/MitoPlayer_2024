@@ -386,6 +386,7 @@ namespace MitoPlayer_2024.Presenters
 
             this.playlistPresenter.Initialize(this.mediaPlayerComponent);
             ((PlaylistView)this.playlistView).Show();
+            //((PlaylistView)this.playlistView).EnableTracklistSelection();
 
             this.actualView = this.playlistView;
             ((MainView)mainView).SetMenuStripAccessibility(this.actualView);
