@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -529,8 +530,8 @@ namespace MitoPlayer_2024.Dao
                                 Path = reader.GetString(1),
                                 FileName = reader.GetString(2),
                                 Artist = reader.GetString(3),
-                                Title = reader.IsDBNull(4) ? null : reader.GetString(4),
-                                Album = reader.IsDBNull(5) ? null : reader.GetString(5),
+                                Title = reader.IsDBNull(4) ? "" : reader.GetString(4),
+                                Album = reader.IsDBNull(5) ? "" : reader.GetString(5),
                                 Year = reader.GetInt32(6),
                                 Length = reader.GetInt32(7),
                                 ProfileId = reader.GetInt32(8),
@@ -546,10 +547,10 @@ namespace MitoPlayer_2024.Dao
                                 TrackId = reader.GetInt32(0),
                                 TagId = reader.GetInt32(10),
                                 TagValueId = reader.IsDBNull(11) ? (int?)null : reader.GetInt32(11),
-                                HasValue = reader.GetBoolean(12),
-                                Value = reader.IsDBNull(13) ? null : reader.GetString(13),
-                                TagName = reader.IsDBNull(14) ? null : reader.GetString(14),
-                                TagValueName = reader.IsDBNull(15) ? null : reader.GetString(15),
+                                HasMultipleValues = reader.GetBoolean(12),
+                                Value = reader.IsDBNull(13) ? "" : reader.GetString(13),
+                                TagName = reader.IsDBNull(14) ? "" : reader.GetString(14),
+                                TagValueName = reader.IsDBNull(15) ? "" : reader.GetString(15),
                                 ProfileId = reader.GetInt32(16)
                             };
                             track.TrackTagValues.Add(tagValue);
@@ -615,8 +616,8 @@ namespace MitoPlayer_2024.Dao
                                 Path = reader.GetString(1),
                                 FileName = reader.GetString(2),
                                 Artist = reader.GetString(3),
-                                Title = reader.IsDBNull(4) ? null : reader.GetString(4),
-                                Album = reader.IsDBNull(5) ? null : reader.GetString(5),
+                                Title = reader.IsDBNull(4) ? "" : reader.GetString(4),
+                                Album = reader.IsDBNull(5) ? "" : reader.GetString(5),
                                 Year = reader.GetInt32(6),
                                 Length = reader.GetInt32(7),
                                 ProfileId = reader.GetInt32(8),
@@ -632,10 +633,10 @@ namespace MitoPlayer_2024.Dao
                                 TrackId = reader.GetInt32(0),
                                 TagId = reader.GetInt32(10),
                                 TagValueId = reader.IsDBNull(11) ? (int?) null : reader.GetInt32(11),
-                                HasValue = reader.GetBoolean(12),
-                                Value = reader.IsDBNull(13) ? null : reader.GetString(13),
-                                TagName = reader.IsDBNull(14) ? null : reader.GetString(14),
-                                TagValueName = reader.IsDBNull(15) ? null : reader.GetString(15),
+                                HasMultipleValues = reader.GetBoolean(12),
+                                Value = reader.IsDBNull(13) ? "" : reader.GetString(13),
+                                TagName = reader.IsDBNull(14) ? "" : reader.GetString(14),
+                                TagValueName = reader.IsDBNull(15) ? "" : reader.GetString(15),
                                 ProfileId = reader.GetInt32(16)
                             };
                             track.TrackTagValues.Add(tagValue);
@@ -712,8 +713,8 @@ namespace MitoPlayer_2024.Dao
                                 Path = reader.GetString(1),
                                 FileName = reader.GetString(2),
                                 Artist = reader.GetString(3),
-                                Title = reader.IsDBNull(4) ? null : reader.GetString(4),
-                                Album = reader.IsDBNull(5) ? null : reader.GetString(5),
+                                Title = reader.IsDBNull(4) ? "" : reader.GetString(4),
+                                Album = reader.IsDBNull(5) ? "" : reader.GetString(5),
                                 Year = reader.GetInt32(6),
                                 Length = reader.GetInt32(7),
                                 OrderInList = reader.GetInt32(8),
@@ -735,10 +736,10 @@ namespace MitoPlayer_2024.Dao
 
 
                                 TagValueId = reader.IsDBNull(13) ? (int?)null : reader.GetInt32(13),
-                                HasValue = reader.GetBoolean(14),
-                                Value = reader.IsDBNull(15) ? null : reader.GetString(15),
-                                TagName = reader.IsDBNull(16) ? null : reader.GetString(16),
-                                TagValueName = reader.IsDBNull(17) ? null : reader.GetString(17),
+                                HasMultipleValues = reader.GetBoolean(14),
+                                Value = reader.IsDBNull(15) ? "" : reader.GetString(15),
+                                TagName = reader.IsDBNull(16) ? "" : reader.GetString(16),
+                                TagValueName = reader.IsDBNull(17) ? "" : reader.GetString(17),
 
                                 ProfileId = reader.GetInt32(18)
                             };
@@ -899,6 +900,27 @@ namespace MitoPlayer_2024.Dao
                     MessageBox.Show("PlaylistContent is not inserted. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 connection.Close();
+            }
+        }
+        public void CreatePlaylistContentBatch(List<PlaylistContent> playlistContents)
+        {
+            using (var connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                using (var transaction = connection.BeginTransaction())
+                {
+                    foreach (var plc in playlistContents)
+                    {
+                        var command = new SqlCommand("INSERT INTO PlaylistContent (Id, PlaylistId, TrackId, OrderInList, TrackIdInPlaylist) VALUES (@Id, @PlaylistId, @TrackId, @OrderInList, @TrackIdInPlaylist)", connection, transaction);
+                        command.Parameters.AddWithValue("@Id", plc.Id);
+                        command.Parameters.AddWithValue("@PlaylistId", plc.PlaylistId);
+                        command.Parameters.AddWithValue("@TrackId", plc.TrackId);
+                        command.Parameters.AddWithValue("@OrderInList", plc.OrderInList);
+                        command.Parameters.AddWithValue("@TrackIdInPlaylist", plc.TrackIdInPlaylist);
+                        command.ExecuteNonQuery();
+                    }
+                    transaction.Commit();
+                }
             }
         }
         public PlaylistContent GetPlaylistContentByTrackIdInPlaylist(int trackIdInPlaylist)
@@ -1089,7 +1111,7 @@ namespace MitoPlayer_2024.Dao
                 command.Parameters.Add("@TrackId", MySqlDbType.VarChar).Value = ttv.TrackId;
                 command.Parameters.Add("@TagId", MySqlDbType.VarChar).Value = ttv.TagId;
                 command.Parameters.Add("@TagValueId", MySqlDbType.VarChar).Value = ttv.TagValueId;
-                command.Parameters.Add("@HasValue", MySqlDbType.Bit).Value = ttv.HasValue;
+                command.Parameters.Add("@HasValue", MySqlDbType.Bit).Value = ttv.HasMultipleValues;
                 command.Parameters.Add("@Value", MySqlDbType.VarChar).Value = ttv.Value;
                 command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
 
@@ -1150,7 +1172,7 @@ namespace MitoPlayer_2024.Dao
                             TrackId = reader.GetInt32(1),
                             TagId = reader.GetInt32(2),
                             TagValueId = reader.GetInt32(3),
-                            HasValue = reader.GetBoolean(4),
+                            HasMultipleValues = reader.GetBoolean(4),
                             Value = reader.GetString(5),
                             TagName = reader.GetString(6),
                             TagValueName = reader.GetString(7),
@@ -1182,7 +1204,7 @@ namespace MitoPlayer_2024.Dao
 
                 command.Parameters.Add("@Id", MySqlDbType.Int32).Value = ttv.Id;
                 command.Parameters.Add("@TagValueId", MySqlDbType.Int32).Value = ttv.TagValueId;
-                command.Parameters.Add("@HasValue", MySqlDbType.Bit).Value = ttv.HasValue;
+                command.Parameters.Add("@HasValue", MySqlDbType.Bit).Value = ttv.HasMultipleValues;
                 command.Parameters.Add("@Value", MySqlDbType.VarChar).Value = ttv.Value;
                 command.Parameters.Add("@TrackId", MySqlDbType.Int32).Value = ttv.TrackId;
                 command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
@@ -1222,7 +1244,7 @@ namespace MitoPlayer_2024.Dao
                     command.Parameters.Add("@TrackId", MySqlDbType.Int32).Value = ttv.TrackId;
                     command.Parameters.Add("@TagId", MySqlDbType.Int32).Value = ttv.TagId;
                     command.Parameters.Add("@TagValueId", MySqlDbType.Int32).Value = ttv.TagValueId;
-                    command.Parameters.Add("@HasValue", MySqlDbType.Bit).Value = ttv.HasValue;
+                    command.Parameters.Add("@HasValue", MySqlDbType.Bit).Value = ttv.HasMultipleValues;
                     command.Parameters.Add("@Value", MySqlDbType.VarChar).Value = ttv.Value;
                     command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
 

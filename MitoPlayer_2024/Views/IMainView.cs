@@ -67,5 +67,6 @@ namespace MitoPlayer_2024.Views
         void InitializeMediaPlayerProgressStatus(double duration, String durationString, double currentPosition, String currentPositionString);
         void UpdateMediaPlayerProgressStatus(double duration, String durationString, double currentPosition, String currentPositionString);
         void ResetMediaPlayerProgressStatus();
+
     }
 }

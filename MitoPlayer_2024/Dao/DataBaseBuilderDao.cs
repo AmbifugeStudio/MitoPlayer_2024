@@ -381,7 +381,7 @@ namespace MitoPlayer_2024.Helpers
 
                                         Id int(11) NOT NULL, 
                                         Path varchar(255) NOT NULL, 
-                                        FileName varchar(100) NOT NULL, 
+                                        FileName varchar(255) NOT NULL, 
                                         Artist varchar(100) DEFAULT NULL, 
                                         Title varchar(100) DEFAULT NULL, 
                                         Album varchar(100) DEFAULT NULL, 

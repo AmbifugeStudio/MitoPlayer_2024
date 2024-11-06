@@ -1,8 +1,11 @@
 ﻿
 
 
-adj hozzá több sázz fájlt és javítsd a hibákat
+
+BUG: selected element info fix
+
 a filtered lista elemeit írja ki a playlist tack coujnt - ki kéne írni, hogy ez szűrt,pl 500 számból 32
+- a drag and drop-ot végig kellene checkoln i, hogy ha üre s alista, akkor mia helzet?
 
 - BUG: too much tag - delete tag, navigate to playlist, panel hides clear filter button in the filter mode
 - FEATURE: set debug message timer time in options
@@ -17,9 +20,20 @@ a filtered lista elemeit írja ki a playlist tack coujnt - ki kéne írni, hogy 
 - FEATURE: tag editor - export/import key/bpm and custom tag values
 - FEATURE: reorder tags and tagvalues
 - FEATURE: tag editor - display according to tag/tagvalue order
-- FEATURE: progress bar for long loading time
 - FEATURE: load tracklist or navigate away: check save status and show dialog window is there are unsaved progress
 
+======================
+v0.14.2.7
+======================
+OK - REFACTOR: complete drag and drop refactor (in progress)
+OK - REFACTOR: playlistpresenter add file/directory refactor
+OK - FEATURE: loading screen in the case of slow processes
+OK - BUG: too long filename database fix
+OK - BUG: bpm HasValue fix
+OK - BUG: drag and drop disable in filter mode
+OK - BUG: tracktagvalue parallel mode reverse / get id fix
+OK - REFACTOR: tracklist grid scrolling 
+OK - BUG: tracklist insertion line fix
 ======================
 v0.14.0.0
 ======================
@@ -29,7 +43,6 @@ OK - FEATURE: key detector model training and key detecting (in progress)
 v0.12.15.8
 ======================
 OK - BUG: automatic next track stops - after list reorder and the current playing track was at the end of the original list (list has not been updated in the player?) - or not. Objectiv - Fighting Chance stops at the end
-- FEATURE: key detection experiment
 ======================
 v0.12.15.7
 ======================

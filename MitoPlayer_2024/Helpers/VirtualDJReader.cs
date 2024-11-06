@@ -18,6 +18,7 @@ using System.Management.Instrumentation;
 using static Mysqlx.Expect.Open.Types.Condition.Types;
 using System.Diagnostics;
 using System.Collections.Concurrent;
+using System.Threading;
 
 namespace MitoPlayer_2024.Helpers
 {
@@ -210,7 +211,32 @@ namespace MitoPlayer_2024.Helpers
             return result;
         }
 
+        private Thread loadingThread;
+        private LoadingDialog loadingDialog;
+        private void ShowLoadingDialog()
+        {
+            loadingDialog = new LoadingDialog();
+            loadingDialog.ShowDialog();
+        }
 
+        private void CloseLoadingDialog()
+        {
+            if (loadingDialog != null && loadingDialog.InvokeRequired)
+            {
+                loadingDialog.Invoke(new Action(() => loadingDialog.Close()));
+            }
+            else
+            {
+                loadingDialog?.Close();
+            }
+
+            // Ensure the thread is properly terminated
+            if (loadingThread != null && loadingThread.IsAlive)
+            {
+                loadingThread.Join();
+                loadingThread = null;
+            }
+        }
         public ResultOrError ReadKeyAndBpmFromVirtualDJDatabase(ref List<Model.Track> trackList,ITrackDao trackDao, List<TagValue> keyTagValueList, List<TagValue> bpmTagValueList)
         {
             ResultOrError result = new ResultOrError();
@@ -408,6 +434,7 @@ namespace MitoPlayer_2024.Helpers
                                     {
                                         ttv.TagValueId = keyTagValue.Id;
                                         ttv.TagValueName = keyTagValue.Name;
+                                        ttv.HasMultipleValues = false;
                                     }
                                     trackDao.UpdateTrackTagValue(ttv);
                                 }
@@ -419,7 +446,7 @@ namespace MitoPlayer_2024.Helpers
                                         ttv.TagValueId = bpmTagValue.Id;
                                         ttv.TagValueName = bpmTagValue.Name;
                                         ttv.Value = finalBpmList[i];
-                                        ttv.HasValue = true;
+                                        ttv.HasMultipleValues = true;
                                     }
                                     trackDao.UpdateTrackTagValue(ttv);
                                 }
@@ -561,6 +588,7 @@ namespace MitoPlayer_2024.Helpers
                         if (ttvBpm != null)
                         {
                             ttvBpm.Value = vdjTrack.Bpm.ToString("N1");
+                            ttvBpm.HasMultipleValues = true;
                             //trackDao.UpdateTrackTagValue(ttvBpm);
                         }
 
@@ -570,7 +598,7 @@ namespace MitoPlayer_2024.Helpers
                         {
                             ttvKey.TagValueId = keyTagValue.Id;
                             ttvKey.TagValueName = keyTagValue.Name;
-                            ttvKey.HasValue = true;
+                            ttvKey.HasMultipleValues = false;
                             //trackDao.UpdateTrackTagValue(ttvKey);
                         }
                     }

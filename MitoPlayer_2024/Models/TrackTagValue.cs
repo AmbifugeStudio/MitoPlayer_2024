@@ -14,7 +14,7 @@ namespace MitoPlayer_2024.Models
         public string TagName { get; set; }
         public int? TagValueId { get; set; }
         public string TagValueName { get; set; }
-        public bool HasValue { get; set; }
+        public bool HasMultipleValues { get; set; }
         public string Value { get; set; }
         public int ProfileId { get; set; }
 

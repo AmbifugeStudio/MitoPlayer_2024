@@ -15,6 +15,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
@@ -475,10 +476,14 @@ namespace MitoPlayer_2024.Presenters
             {
                 trackList = this.ReadFiles(ofd.FileNames);
             }
-            this.settingDao.SetIntegerSetting(Settings.LastOpenFilesFilterIndex.ToString(), ofd.FilterIndex); 
+            this.settingDao.SetIntegerSetting(Settings.LastOpenFilesFilterIndex.ToString(), ofd.FilterIndex);
 
             this.AddTracksToTrackList(trackList);
+
         }
+
+        
+
         private void OpenDirectory(object sender, EventArgs e)
         {
             scannedFileNames = null;
@@ -502,8 +507,9 @@ namespace MitoPlayer_2024.Presenters
             }
 
             this.AddTracksToTrackList(trackList);
-
         }
+       
+
         private void CreatePlaylist(object sender, EventArgs e)
         {
             if (this.actualView != null && this.actualView.GetType() == typeof(PlaylistView))
@@ -783,140 +789,158 @@ namespace MitoPlayer_2024.Presenters
         
         private List<Model.Track> ReadFiles(string[] fileNames)
         {
-            List<String> filePathList = new List<String>();
-            List<Model.Track> trackList = new List<Model.Track>();
-
-            if (fileNames != null && fileNames.Length > 0)
+            using (LoadingDialog loadingDialog = new LoadingDialog())
             {
-                foreach (String path in fileNames)
+                loadingDialog.Show();
+               
+                loadingDialog.SetProcessDescription("Read files and creating/loading tracks...");
+                loadingDialog.Refresh();
+
+                List<String> filePathList = new List<String>();
+                List<Model.Track> trackList = new List<Model.Track>();
+
+                if (fileNames != null && fileNames.Length > 0)
                 {
-                    if (path.EndsWith(".mp3") || path.EndsWith(".wav") || path.EndsWith(".flac"))
+                    foreach (String path in fileNames)
                     {
-                        filePathList.Add(path);
-                    }
-                    else if (path.Contains(".m3u"))
-                    {
-                        const Int32 BufferSize = 128;
-                        char[] firstThreeCharacter;
-                        using (var fileStream = System.IO.File.OpenRead(path))
-                        using (var streamReader = new StreamReader(fileStream, Encoding.UTF8, true, BufferSize))
+                        if (path.EndsWith(".mp3") || path.EndsWith(".wav") || path.EndsWith(".flac"))
                         {
-                            String line;
-                            while ((line = streamReader.ReadLine()) != null)
+                            filePathList.Add(path);
+                        }
+                        else if (path.Contains(".m3u"))
+                        {
+                            const Int32 BufferSize = 128;
+                            char[] firstThreeCharacter;
+                            using (var fileStream = System.IO.File.OpenRead(path))
+                            using (var streamReader = new StreamReader(fileStream, Encoding.UTF8, true, BufferSize))
                             {
-                                if (line.Length > 2 && line[1] == ':' && line[2] == '\\')
+                                String line;
+                                while ((line = streamReader.ReadLine()) != null)
                                 {
-                                    filePathList.Add(line);
+                                    if (line.Length > 2 && line[1] == ':' && line[2] == '\\')
+                                    {
+                                        filePathList.Add(line);
+                                    }
                                 }
                             }
                         }
                     }
-                }
 
-                List<Tag> tagList = tagDao.GetAllTag();
+                    List<Tag> tagList = tagDao.GetAllTag();
 
-                foreach(var path in filePathList)
-                {
-                    var track = new Model.Track() { Path = path };
-                    var fileName = Path.GetFileNameWithoutExtension(path);
-                    track.FileName = fileName;
-
-                    if (!System.IO.File.Exists(path))
+                    foreach (var path in filePathList)
                     {
-                        track.Artist = fileName;
-                        track.IsMissing = true;
-                    }
-                    else
-                    {
-                        Model.Track trackFromDb = this.trackDao.GetTrackWithTagsByPath(track.Path, tagList);
-                        if (trackFromDb != null)
+                        var track = new Model.Track() { Path = path };
+                        var fileName = Path.GetFileNameWithoutExtension(path);
+                        track.FileName = fileName;
+
+                        if (!System.IO.File.Exists(path))
                         {
-                            track = trackFromDb;
-                            track.IsNew = false;
+                            track.Artist = fileName;
+                            track.IsMissing = true;
                         }
                         else
                         {
-                            if (track.Path.EndsWith(".mp3"))
+                            Model.Track trackFromDb = this.trackDao.GetTrackWithTagsByPath(track.Path, tagList);
+                            if (trackFromDb != null)
                             {
-                                using (var file = TagLib.File.Create(track.Path))
-                                {
-                                    track.Artist = file.Tag.FirstArtist ?? file.Tag.FirstAlbumArtist ?? file.Tag.Artists.FirstOrDefault() ?? fileName;
-                                    track.Album = file.Tag.Album;
-                                    track.Title = file.Tag.Title;
-                                    track.Year = (int)file.Tag.Year;
-                                    track.Length = file.Properties.Duration.TotalSeconds;
-                                }
+                                track = trackFromDb;
+                                track.IsNew = false;
                             }
-                            else if (path.EndsWith(".wav"))
+                            else
                             {
-                                using (var wf = new WaveFileReader(path))
+                                if (track.Path.EndsWith(".mp3"))
                                 {
-                                    track.Artist = fileName;
-                                    track.Length = wf.TotalTime.TotalSeconds;
-                                }
-                            }
-                            else if (path.EndsWith(".flac"))
-                            {
-                                using (var file = new FlacFile(path))
-                                {
-                                    var vorbisComment = file.VorbisComment;
-                                    if (vorbisComment != null)
+                                    using (var file = TagLib.File.Create(track.Path))
                                     {
-                                        track.Artist = vorbisComment.Artist.FirstOrDefault() ?? fileName;
-                                        track.Album = vorbisComment.Album.FirstOrDefault();
-                                        track.Title = vorbisComment.Title.FirstOrDefault();
-                                        track.Year = int.TryParse(vorbisComment.Date.FirstOrDefault()?.Substring(0, 4), out int year) ? year : 0;
+                                        track.Artist = file.Tag.FirstArtist ?? file.Tag.FirstAlbumArtist ?? file.Tag.Artists.FirstOrDefault() ?? fileName;
+                                        track.Album = file.Tag.Album;
+                                        track.Title = file.Tag.Title;
+                                        track.Year = (int)file.Tag.Year;
+                                        track.Length = file.Properties.Duration.TotalSeconds;
                                     }
-                                    track.Length = file.StreamInfo.Duration;
                                 }
-                            }
-                            track.IsNew = true;
+                                else if (path.EndsWith(".wav"))
+                                {
+                                    using (var wf = new WaveFileReader(path))
+                                    {
+                                        track.Artist = fileName;
+                                        track.Length = wf.TotalTime.TotalSeconds;
+                                    }
+                                }
+                                else if (path.EndsWith(".flac"))
+                                {
+                                    using (var file = new FlacFile(path))
+                                    {
+                                        var vorbisComment = file.VorbisComment;
+                                        if (vorbisComment != null)
+                                        {
+                                            track.Artist = vorbisComment.Artist.FirstOrDefault() ?? fileName;
+                                            track.Album = vorbisComment.Album.FirstOrDefault();
+                                            track.Title = vorbisComment.Title.FirstOrDefault();
+                                            track.Year = int.TryParse(vorbisComment.Date.FirstOrDefault()?.Substring(0, 4), out int year) ? year : 0;
+                                        }
+                                        track.Length = file.StreamInfo.Duration;
+                                    }
+                                }
+                                track.IsNew = true;
 
-                            track.Id = this.trackDao.GetNextId(TableName.Track.ToString());
-                            this.trackDao.CreateTrack(track);
+                                track.Id = this.trackDao.GetNextId(TableName.Track.ToString());
 
-                            track.TrackTagValues = tagList.Select(tag => new TrackTagValue
-                            {
-                                Id = this.trackDao.GetNextId(TableName.TrackTagValue.ToString()),
-                                TrackId = track.Id,
-                                TagId = tag.Id,
-                                TagName = tag.Name,
-                                TagValueId = -1,
-                                TagValueName = string.Empty,
-                                Value = "-1",
-                                HasValue = false,
-                                ProfileId = this.trackDao.GetProfileId()
-                            }).ToList();
+                                try
+                                {
+                                    this.trackDao.CreateTrack(track);
+                                }
+                                catch (Exception ex)
+                                {
+                                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                }
 
-                            foreach (var ttv in track.TrackTagValues)
-                            {
-                                this.trackDao.CreateTrackTagValue(ttv);
+                                track.TrackTagValues = new List<TrackTagValue>();
+
+                                foreach (Tag tag in tagList)
+                                {
+                                    TrackTagValue ttv = new TrackTagValue();
+                                    ttv.Id = this.trackDao.GetNextId(TableName.TrackTagValue.ToString());
+                                    ttv.TrackId = track.Id;
+                                    ttv.TagId = tag.Id;
+                                    ttv.TagName = tag.Name;
+                                    ttv.TagValueId = -1;
+                                    ttv.TagValueName = String.Empty;
+                                    ttv.Value = "-1";
+                                    ttv.HasMultipleValues = tag.HasMultipleValues;
+                                    ttv.ProfileId = this.trackDao.GetProfileId();
+                                    this.trackDao.CreateTrackTagValue(ttv);
+                                    track.TrackTagValues.Add(ttv);
+                                }
+
+
                             }
                         }
+                        lock (trackList)
+                        {
+                            trackList.Add(track);
+                        }
                     }
-                    lock (trackList)
+
+                    if (this.HasVirtualDj())
                     {
-                        trackList.Add(track);
+
+                        var automaticKeyImport = this.settingDao.GetBooleanSetting(Settings.AutomaticKeyImport.ToString()).Value;
+                        var automaticBpmImport = this.settingDao.GetBooleanSetting(Settings.AutomaticBpmImport.ToString()).Value;
+
+                        var keyTagValueList = automaticKeyImport ? this.tagDao.GetTagValuesByTagId(tagList.Find(x => x.Name == "Key")?.Id ?? 0) : new List<TagValue>();
+                        var bpmTagValueList = automaticBpmImport ? this.tagDao.GetTagValuesByTagId(tagList.Find(x => x.Name == "Bpm")?.Id ?? 0) : new List<TagValue>();
+
+                        var result = VirtualDJReader.Instance.ReadKeyAndBpmFromVirtualDJDatabase(ref trackList, this.trackDao, keyTagValueList, bpmTagValueList);
+                        if (!result.Success)
+                        {
+                            MessageBox.Show(result.ErrorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                     }
                 }
-
-                if (this.HasVirtualDj())
-                {
-
-                    var automaticKeyImport = this.settingDao.GetBooleanSetting(Settings.AutomaticKeyImport.ToString()).Value;
-                    var automaticBpmImport = this.settingDao.GetBooleanSetting(Settings.AutomaticBpmImport.ToString()).Value;
-
-                    var keyTagValueList = automaticKeyImport ? this.tagDao.GetTagValuesByTagId(tagList.Find(x => x.Name == "Key")?.Id ?? 0) : new List<TagValue>();
-                    var bpmTagValueList = automaticBpmImport ? this.tagDao.GetTagValuesByTagId(tagList.Find(x => x.Name == "Bpm")?.Id ?? 0) : new List<TagValue>();
-
-                    var result = VirtualDJReader.Instance.ReadKeyAndBpmFromVirtualDJDatabase(ref trackList, this.trackDao, keyTagValueList, bpmTagValueList);
-                    if (!result.Success)
-                    {
-                        MessageBox.Show(result.ErrorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
+                return trackList;
             }
-            return trackList;
         }
 
         private bool HasVirtualDj()
