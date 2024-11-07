@@ -86,6 +86,7 @@ namespace MitoPlayer_2024.Presenters
             this.mainView.ChangeProgress += ChangeProgress;
             this.mainView.ChangeMute += ChangeMute;
             this.mainView.ChangeShuffle += ChangeShuffle;
+            this.mainView.ChangePreview += ChangePreview;
             //Tracklist
             this.mainView.OpenFiles += OpenFiles;
             this.mainView.OpenDirectory += OpenDirectory;
@@ -135,7 +136,7 @@ namespace MitoPlayer_2024.Presenters
 
             this.actualView = null;
             this.mediaPlayerComponent = null;
-            this.mediaPlayerComponent = new MediaPlayerComponent(((MainView)this.mainView).mediaPlayer);
+            this.mediaPlayerComponent = new MediaPlayerComponent(((MainView)this.mainView).mediaPlayer, this.settingDao);
 
             Profile profile = this.profileDao.GetActiveProfile();
             if (profile == null)
@@ -751,6 +752,15 @@ namespace MitoPlayer_2024.Presenters
             else if (this.actualView != null && this.actualView.GetType() == typeof(HarmonizerView))
                 this.harmonizerPresenter.CallChangeShuffleEvent(e.BooleanField1);
         }
+        private void ChangePreview(object sender, ListEventArgs e)
+        {
+            if (this.actualView != null && this.actualView.GetType() == typeof(PlaylistView))
+                this.playlistPresenter.CallChangePreviewEvent(e.BooleanField1);
+            else if (this.actualView != null && this.actualView.GetType() == typeof(TrackEditorView))
+                this.trackEditorPresenter.CallChangePreviewEvent(e.BooleanField1);
+            else if (this.actualView != null && this.actualView.GetType() == typeof(HarmonizerView))
+                this.harmonizerPresenter.CallChangePreviewEvent(e.BooleanField1);
+        }
 
         //HELP
         private void About(object sender, EventArgs e)
@@ -762,7 +772,9 @@ namespace MitoPlayer_2024.Presenters
         private void AddTracksToTrackList(List<Model.Track> trackList, int dragIndex = -1)
         {
             if (this.actualView != null && this.actualView.GetType() == typeof(PlaylistView))
+            {
                 this.playlistPresenter.CallAddTrackToTrackListEvent(trackList, dragIndex);
+            }
             else if (this.actualView != null && this.actualView.GetType() == typeof(TrackEditorView))
                 this.trackEditorPresenter.CallAddTrackToTrackListEvent(trackList, dragIndex);
             else if (this.actualView != null && this.actualView.GetType() == typeof(HarmonizerView))
@@ -1011,6 +1023,7 @@ namespace MitoPlayer_2024.Presenters
                     this.mediaPlayerComponent.GetDurationString(),
                     this.mediaPlayerComponent.GetCurrentPosition(),
                     this.mediaPlayerComponent.GetCurrentPositionString());
+                
             }
             else
             {

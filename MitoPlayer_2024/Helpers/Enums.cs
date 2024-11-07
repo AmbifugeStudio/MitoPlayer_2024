@@ -41,6 +41,8 @@ namespace MitoPlayer_2024.Helpers
         Volume,   
         IsMuteEnabled,
         IsShuffleEnabled,
+        IsPreviewEnabled,
+        PreviewPercentage,
         LastOpenFilesFilterIndex,
         LastOpenDirectoryPath,
         LastGeneratedPlaylistId,

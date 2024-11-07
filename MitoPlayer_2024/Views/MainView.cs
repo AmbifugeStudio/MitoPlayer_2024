@@ -55,6 +55,7 @@ namespace MitoPlayer_2024
         public event EventHandler<ListEventArgs> ChangeVolume;
         public event EventHandler<ListEventArgs> ChangeShuffle;
         public event EventHandler<ListEventArgs> ChangeMute;
+        public event EventHandler<ListEventArgs> ChangePreview;
 
         public event EventHandler About;
 
@@ -523,13 +524,9 @@ namespace MitoPlayer_2024
                     this.lblTrackEnd.Show();
                 }
                
+                this.pbrTrackProgress.Maximum = (int)Math.Ceiling(duration);
 
-                if (this.pbrTrackProgress.Maximum == 0)
-                {
-                    this.pbrTrackProgress.Maximum = (int)Math.Ceiling(duration);
-                }
-
-                if(this.pbrTrackProgress.Maximum >= (int)Math.Ceiling(currentPosition))
+                if (this.pbrTrackProgress.Maximum >= (int)Math.Ceiling(currentPosition))
                 {
                     this.pbrTrackProgress.Value = (int)Math.Ceiling(currentPosition);
                 }
@@ -608,7 +605,7 @@ namespace MitoPlayer_2024
 
         private void tmrPeak_Tick(object sender, EventArgs e)
         {
-            if (this.mmDevice == null || this.mmDevice.AudioMeterInformation.PeakValues.Count <= 1) return;
+            if (this.mmDevice == null || this.mmDevice.AudioMeterInformation.PeakValues.Count < 1) return;
 
             leftReferenceHeight = this.pcbMasterPeakLeftColoured.Height;
             rightReferenceHeight = this.pcbMasterPeakLeftColoured.Height;
@@ -675,6 +672,11 @@ namespace MitoPlayer_2024
                 return float.NegativeInfinity; // Handle log(0) case
             }
             return 20 * (float)Math.Log10(value);
+        }
+
+        private void chbPreview_CheckedChanged(object sender, EventArgs e)
+        {
+            this.ChangePreview?.Invoke(this, new ListEventArgs() { BooleanField1 = this.chbPreview.Checked });
         }
     }
 

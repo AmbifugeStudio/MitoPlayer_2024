@@ -85,6 +85,7 @@
             this.btnTracks = new System.Windows.Forms.Button();
             this.btnTagValues = new System.Windows.Forms.Button();
             this.btnPlaylist = new System.Windows.Forms.Button();
+            this.mediaPlayer = new AxWMPLib.AxWindowsMediaPlayer();
             this.pnlMediaPlayer = new System.Windows.Forms.Panel();
             this.prbVolume = new System.Windows.Forms.ProgressBar();
             this.lblCurrentTrack = new System.Windows.Forms.Label();
@@ -92,15 +93,15 @@
             this.btnOpenDirectory = new System.Windows.Forms.Button();
             this.btnOpen = new System.Windows.Forms.Button();
             this.pbrTrackProgress = new System.Windows.Forms.ProgressBar();
-            this.chbShuffle = new System.Windows.Forms.CheckBox();
             this.chbMute = new System.Windows.Forms.CheckBox();
+            this.chbPreview = new System.Windows.Forms.CheckBox();
+            this.chbShuffle = new System.Windows.Forms.CheckBox();
             this.lblTrackStart = new System.Windows.Forms.Label();
             this.btnNext = new System.Windows.Forms.Button();
             this.btnStop = new System.Windows.Forms.Button();
             this.btnPause = new System.Windows.Forms.Button();
             this.btnPrev = new System.Windows.Forms.Button();
             this.btnPlay = new System.Windows.Forms.Button();
-            this.mediaPlayer = new AxWMPLib.AxWindowsMediaPlayer();
             this.tmrPlayer = new System.Windows.Forms.Timer(this.components);
             this.tmrPeak = new System.Windows.Forms.Timer(this.components);
             this.pnlMarkerBackground = new System.Windows.Forms.Panel();
@@ -112,8 +113,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.pcbMasterPeakRightColoured)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pcbMasterPeakLeftBackground)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pcbMasterPeakLeftColoured)).BeginInit();
-            this.pnlMediaPlayer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mediaPlayer)).BeginInit();
+            this.pnlMediaPlayer.SuspendLayout();
             this.pnlMarkerBackground.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pcbMarkerGrey)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pcbMarkerRed)).BeginInit();
@@ -602,6 +603,15 @@
             this.btnPlaylist.UseVisualStyleBackColor = false;
             this.btnPlaylist.Click += new System.EventHandler(this.btnPlaylist_Click);
             // 
+            // mediaPlayer
+            // 
+            this.mediaPlayer.Enabled = true;
+            this.mediaPlayer.Location = new System.Drawing.Point(65, 21);
+            this.mediaPlayer.Name = "mediaPlayer";
+            this.mediaPlayer.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("mediaPlayer.OcxState")));
+            this.mediaPlayer.Size = new System.Drawing.Size(10, 10);
+            this.mediaPlayer.TabIndex = 1;
+            // 
             // pnlMediaPlayer
             // 
             this.pnlMediaPlayer.Controls.Add(this.prbVolume);
@@ -611,6 +621,7 @@
             this.pnlMediaPlayer.Controls.Add(this.btnOpen);
             this.pnlMediaPlayer.Controls.Add(this.pbrTrackProgress);
             this.pnlMediaPlayer.Controls.Add(this.chbMute);
+            this.pnlMediaPlayer.Controls.Add(this.chbPreview);
             this.pnlMediaPlayer.Controls.Add(this.chbShuffle);
             this.pnlMediaPlayer.Controls.Add(this.lblTrackStart);
             this.pnlMediaPlayer.Controls.Add(this.btnNext);
@@ -626,7 +637,7 @@
             // 
             // prbVolume
             // 
-            this.prbVolume.Location = new System.Drawing.Point(281, 10);
+            this.prbVolume.Location = new System.Drawing.Point(351, 10);
             this.prbVolume.Name = "prbVolume";
             this.prbVolume.Size = new System.Drawing.Size(107, 23);
             this.prbVolume.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
@@ -635,7 +646,7 @@
             // 
             // lblCurrentTrack
             // 
-            this.lblCurrentTrack.Location = new System.Drawing.Point(394, 3);
+            this.lblCurrentTrack.Location = new System.Drawing.Point(463, 0);
             this.lblCurrentTrack.Name = "lblCurrentTrack";
             this.lblCurrentTrack.Size = new System.Drawing.Size(207, 38);
             this.lblCurrentTrack.TabIndex = 50;
@@ -687,24 +698,13 @@
             // 
             this.pbrTrackProgress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.pbrTrackProgress.Location = new System.Drawing.Point(684, 11);
+            this.pbrTrackProgress.Location = new System.Drawing.Point(753, 10);
             this.pbrTrackProgress.Name = "pbrTrackProgress";
-            this.pbrTrackProgress.Size = new System.Drawing.Size(464, 23);
+            this.pbrTrackProgress.Size = new System.Drawing.Size(395, 24);
             this.pbrTrackProgress.Step = 1;
             this.pbrTrackProgress.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.pbrTrackProgress.TabIndex = 45;
             this.pbrTrackProgress.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pBar_MouseDown);
-            // 
-            // chbShuffle
-            // 
-            this.chbShuffle.AutoSize = true;
-            this.chbShuffle.Location = new System.Drawing.Point(216, 3);
-            this.chbShuffle.Name = "chbShuffle";
-            this.chbShuffle.Size = new System.Drawing.Size(59, 17);
-            this.chbShuffle.TabIndex = 47;
-            this.chbShuffle.Text = "Shuffle";
-            this.chbShuffle.UseVisualStyleBackColor = true;
-            this.chbShuffle.CheckedChanged += new System.EventHandler(this.chbShuffle_CheckedChanged);
             // 
             // chbMute
             // 
@@ -717,11 +717,33 @@
             this.chbMute.UseVisualStyleBackColor = true;
             this.chbMute.CheckedChanged += new System.EventHandler(this.chbMute_CheckedChanged);
             // 
+            // chbPreview
+            // 
+            this.chbPreview.AutoSize = true;
+            this.chbPreview.Location = new System.Drawing.Point(281, 3);
+            this.chbPreview.Name = "chbPreview";
+            this.chbPreview.Size = new System.Drawing.Size(64, 17);
+            this.chbPreview.TabIndex = 47;
+            this.chbPreview.Text = "Preview";
+            this.chbPreview.UseVisualStyleBackColor = true;
+            this.chbPreview.CheckedChanged += new System.EventHandler(this.chbPreview_CheckedChanged);
+            // 
+            // chbShuffle
+            // 
+            this.chbShuffle.AutoSize = true;
+            this.chbShuffle.Location = new System.Drawing.Point(216, 3);
+            this.chbShuffle.Name = "chbShuffle";
+            this.chbShuffle.Size = new System.Drawing.Size(59, 17);
+            this.chbShuffle.TabIndex = 47;
+            this.chbShuffle.Text = "Shuffle";
+            this.chbShuffle.UseVisualStyleBackColor = true;
+            this.chbShuffle.CheckedChanged += new System.EventHandler(this.chbShuffle_CheckedChanged);
+            // 
             // lblTrackStart
             // 
             this.lblTrackStart.AutoSize = true;
             this.lblTrackStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.lblTrackStart.Location = new System.Drawing.Point(607, 13);
+            this.lblTrackStart.Location = new System.Drawing.Point(676, 13);
             this.lblTrackStart.Name = "lblTrackStart";
             this.lblTrackStart.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.lblTrackStart.Size = new System.Drawing.Size(71, 20);
@@ -801,15 +823,6 @@
             this.btnPlay.UseVisualStyleBackColor = true;
             this.btnPlay.Click += new System.EventHandler(this.btnPlay_Click);
             // 
-            // mediaPlayer
-            // 
-            this.mediaPlayer.Enabled = true;
-            this.mediaPlayer.Location = new System.Drawing.Point(65, 21);
-            this.mediaPlayer.Name = "mediaPlayer";
-            this.mediaPlayer.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("mediaPlayer.OcxState")));
-            this.mediaPlayer.Size = new System.Drawing.Size(10, 10);
-            this.mediaPlayer.TabIndex = 1;
-            // 
             // tmrPlayer
             // 
             this.tmrPlayer.Tick += new System.EventHandler(this.tmrPlayer_Tick);
@@ -874,9 +887,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.pcbMasterPeakRightColoured)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pcbMasterPeakLeftBackground)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pcbMasterPeakLeftColoured)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.mediaPlayer)).EndInit();
             this.pnlMediaPlayer.ResumeLayout(false);
             this.pnlMediaPlayer.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.mediaPlayer)).EndInit();
             this.pnlMarkerBackground.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pcbMarkerGrey)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pcbMarkerRed)).EndInit();
@@ -963,6 +976,7 @@
         private System.Windows.Forms.Panel pnlMarkerBackground;
         private System.Windows.Forms.PictureBox pcbMarkerRed;
         private System.Windows.Forms.ProgressBar prbVolume;
+        private System.Windows.Forms.CheckBox chbPreview;
     }
 }
 

@@ -31,6 +31,8 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabGeneral = new System.Windows.Forms.TabPage();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.nmdPreviewPercentage = new System.Windows.Forms.NumericUpDown();
             this.chbPlayTrackAfterOpenFiles = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.txtBoxVirtualDjDatabasePath = new System.Windows.Forms.TextBox();
@@ -44,6 +46,7 @@
             this.tabControl1.SuspendLayout();
             this.tabGeneral.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nmdPreviewPercentage)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -75,13 +78,37 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.label2);
+            this.groupBox3.Controls.Add(this.nmdPreviewPercentage);
             this.groupBox3.Controls.Add(this.chbPlayTrackAfterOpenFiles);
             this.groupBox3.Location = new System.Drawing.Point(6, 112);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(437, 47);
+            this.groupBox3.Size = new System.Drawing.Size(437, 75);
             this.groupBox3.TabIndex = 4;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Player";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(7, 46);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(62, 13);
+            this.label2.TabIndex = 2;
+            this.label2.Text = "Preview (%)";
+            // 
+            // nmdPreviewPercentage
+            // 
+            this.nmdPreviewPercentage.Location = new System.Drawing.Point(75, 42);
+            this.nmdPreviewPercentage.Name = "nmdPreviewPercentage";
+            this.nmdPreviewPercentage.Size = new System.Drawing.Size(76, 20);
+            this.nmdPreviewPercentage.TabIndex = 1;
+            this.nmdPreviewPercentage.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nmdPreviewPercentage.ValueChanged += new System.EventHandler(this.nmdPreviewPercentage_ValueChanged);
             // 
             // chbPlayTrackAfterOpenFiles
             // 
@@ -205,6 +232,7 @@
             this.tabGeneral.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nmdPreviewPercentage)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
@@ -227,5 +255,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.CheckBox chbPlayTrackAfterOpenFiles;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.NumericUpDown nmdPreviewPercentage;
     }
 }

@@ -87,5 +87,10 @@ namespace MitoPlayer_2024.Presenters
         {
             throw new NotImplementedException();
         }
+
+        internal void CallChangePreviewEvent(bool booleanField1)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

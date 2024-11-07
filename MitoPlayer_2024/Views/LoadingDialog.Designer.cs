@@ -47,13 +47,14 @@
             this.lblProcessDescription.Name = "lblProcessDescription";
             this.lblProcessDescription.Size = new System.Drawing.Size(413, 17);
             this.lblProcessDescription.TabIndex = 2;
+            this.lblProcessDescription.Text = "Loading...";
             this.lblProcessDescription.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // LoadingDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(437, 54);
+            this.ClientSize = new System.Drawing.Size(437, 59);
             this.Controls.Add(this.lblProcessDescription);
             this.Controls.Add(this.label1);
             this.Cursor = System.Windows.Forms.Cursors.Default;

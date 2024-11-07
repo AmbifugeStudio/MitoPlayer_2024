@@ -1,4 +1,6 @@
-﻿namespace MitoPlayer_2024.Views
+﻿using MitoPlayer_2024.Helpers;
+
+namespace MitoPlayer_2024.Views
 {
     partial class PlaylistView
     {
@@ -67,7 +69,7 @@
             this.btnPlaylistListPanelToggle = new System.Windows.Forms.Button();
             this.btnDisplayTagComponentToggle = new System.Windows.Forms.Button();
             this.dgvPlaylistList = new System.Windows.Forms.DataGridView();
-            this.dgvTrackList = new System.Windows.Forms.DataGridView();
+            this.dgvTrackList = new CustomDataGridView();
             this.tagValueEditorPanel = new System.Windows.Forms.Panel();
             this.chbOnlyPlayingRowModeEnabled = new System.Windows.Forms.CheckBox();
             this.txtbFilter = new System.Windows.Forms.TextBox();
@@ -736,7 +738,7 @@
         private System.Windows.Forms.Button btnDisplayTagComponentToggle;
         private System.Windows.Forms.Button btnColumnVisibilityWithTagEditor;
         private System.Windows.Forms.DataGridView dgvPlaylistList;
-        private System.Windows.Forms.DataGridView dgvTrackList;
+        private CustomDataGridView dgvTrackList;
         private System.Windows.Forms.ToolStripMenuItem createPlaylistToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem renameToolStripMenuItem;

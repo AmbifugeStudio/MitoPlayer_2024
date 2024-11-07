@@ -1,9 +1,11 @@
 ﻿using AxWMPLib;
 using MitoPlayer_2024.Helpers;
+using MitoPlayer_2024.Models;
 using MitoPlayer_2024.Views;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -20,14 +22,39 @@ namespace MitoPlayer_2024.Presenters
         public int selectedRowIndex { get; set; }
         private double currentPlayPosition { get; set; }
         public bool IsShuffleEnabled { get; set; }
+        public bool IsPreviewEnabled { get; set; }
+        public int PreviewPercent { get; set; }
+        private ISettingDao settingDao { get; set; }
 
-        public MediaPlayerComponent(AxWindowsMediaPlayer mediaPLayer)
+        public MediaPlayerComponent(AxWindowsMediaPlayer mediaPLayer, ISettingDao settingDao)
         {
             this.MediaPlayer = mediaPLayer;
+            this.settingDao = settingDao;
 
             this.CurrentTrackIdInPlaylist = -1;
             this.selectedRowIndex = -1;
             this.currentPlayPosition = 0;
+            this.PreviewPercent = 0;
+
+            this.MediaPlayer.PlayStateChange += new AxWMPLib._WMPOCXEvents_PlayStateChangeEventHandler(MediaPlayer_PlayStateChange);
+
+        }
+        private void MediaPlayer_PlayStateChange(object sender, AxWMPLib._WMPOCXEvents_PlayStateChangeEvent e)
+        {
+            if (e.newState == (int)WMPLib.WMPPlayState.wmppsPlaying)
+            {
+                if (this.IsPreviewEnabled)
+                {
+                    this.PreviewPercent = this.settingDao.GetIntegerSetting(Settings.PreviewPercentage.ToString());
+                    this.currentPlayPosition = this.MediaPlayer.currentMedia.duration / 100 * this.PreviewPercent;
+                    this.MediaPlayer.Ctlcontrols.currentPosition = this.currentPlayPosition;
+                }
+                else
+                {
+                    this.currentPlayPosition = 0;
+                    this.MediaPlayer.Ctlcontrols.currentPosition = 0;
+                }
+            }
         }
         public void Initialize(DataTable workingTable)
         {
@@ -114,9 +141,8 @@ namespace MitoPlayer_2024.Presenters
 
                     if (System.IO.File.Exists(path))
                     {
-                        this.currentPlayPosition = 0;
                         this.MediaPlayer.URL = path;
-                        this.MediaPlayer.Ctlcontrols.currentPosition = 0;
+                        this.currentPlayPosition = 0;
                         this.MediaPlayer.Ctlcontrols.play();
 
                         result = MediaPlayerUpdateState.AfterPlay;
@@ -135,9 +161,8 @@ namespace MitoPlayer_2024.Presenters
 
                         if (System.IO.File.Exists(path))
                         {
-                            this.currentPlayPosition = 0;
                             this.MediaPlayer.URL = path;
-                            this.MediaPlayer.Ctlcontrols.currentPosition = 0;
+                            this.currentPlayPosition = 0;
                             this.MediaPlayer.Ctlcontrols.play();
 
                             result = MediaPlayerUpdateState.AfterPlay;
@@ -154,6 +179,8 @@ namespace MitoPlayer_2024.Presenters
             }
 
             return result;
+
+         
         }
         public void PauseTrack()
         {
@@ -317,6 +344,11 @@ namespace MitoPlayer_2024.Presenters
             this.playedTrackIdInPlaylistList = new List<int>();
         }
 
+        public void ChangePreview(bool isPreviewEnabled)
+        {
+            this.IsPreviewEnabled = isPreviewEnabled;
+        }
+
 
         public void ChangeProgress(int position, int length)
         {
@@ -325,6 +357,7 @@ namespace MitoPlayer_2024.Presenters
                 this.currentPlayPosition = this.MediaPlayer.currentMedia.duration * position / length;
                 this.MediaPlayer.Ctlcontrols.currentPosition = this.currentPlayPosition;
             }
+           
         }
         public int GetDuration()
         {

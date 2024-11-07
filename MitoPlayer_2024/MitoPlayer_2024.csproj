@@ -17,7 +17,9 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
     <IsWebBootstrapper>false</IsWebBootstrapper>
-    <PublishUrl>C:\Users\Mitoklin\Desktop\MitoPlayer\MitopLayer2024_v0.12.13.22\</PublishUrl>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <PublishUrl>C:\Users\Mitoklin\Desktop\MitoPlayer\MitopLayer2024_v0.14.3.4\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -28,15 +30,13 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <AutorunEnabled>true</AutorunEnabled>
-    <ApplicationRevision>22</ApplicationRevision>
-    <ApplicationVersion>0.12.13.22</ApplicationVersion>
+    <ApplicationRevision>4</ApplicationRevision>
+    <ApplicationVersion>0.14.3.4</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <BootstrapperComponentsLocation>Absolute</BootstrapperComponentsLocation>
     <BootstrapperComponentsUrl>https://www.apachefriends.org/hu/download.html</BootstrapperComponentsUrl>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -264,8 +264,17 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Helpers\Class1.cs" />
+    <Compile Include="Helpers\CustomDataGridView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Helpers\CustomHScrollBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Helpers\DataTableModel.cs" />
     <Compile Include="Helpers\Enums.cs" />
+    <Compile Include="Helpers\CustomVScrollBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Helpers\ImageExtension.cs" />
     <Compile Include="Helpers\KeyDetector.cs" />
     <Compile Include="Helpers\KeyPrediction.cs" />

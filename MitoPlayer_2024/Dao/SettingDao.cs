@@ -205,7 +205,11 @@ namespace MitoPlayer_2024.Dao
             if (result.Success)
                 this.InitializeBooleanSetting(Settings.InitialTracklistLeftValue.ToString());
             if (result.Success)
-                this.InitializeBooleanSetting(Settings.InitialTracklistWidth.ToString());
+                this.InitializeBooleanSetting(Settings.InitialTracklistWidth.ToString()); 
+            if (result.Success)
+                this.InitializeBooleanSetting(Settings.IsPreviewEnabled.ToString());
+            if (result.Success)
+                this.InitializeIntegerSetting(Settings.PreviewPercentage.ToString());
 
             return result;
         }

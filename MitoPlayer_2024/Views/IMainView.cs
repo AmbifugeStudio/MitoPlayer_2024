@@ -53,6 +53,7 @@ namespace MitoPlayer_2024.Views
         event EventHandler<ListEventArgs> ChangeVolume;
         event EventHandler<ListEventArgs> ChangeShuffle;
         event EventHandler<ListEventArgs> ChangeMute;
+        event EventHandler<ListEventArgs> ChangePreview;
 
         event EventHandler GetMediaPlayerProgressStatusEvent;
         //HELP

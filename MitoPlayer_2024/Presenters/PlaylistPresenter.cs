@@ -1448,12 +1448,20 @@ namespace MitoPlayer_2024.Presenters
         }
         internal void CallAddTrackToTrackListEvent(List<Model.Track> trackList, int dragIndex)
         {
+            ((PlaylistView)this.playlistView).ToggleTracklistSelection(false);
             this.AddTracksToPlaylist(this.currentPlaylistId, trackList, dragIndex);
+            ((PlaylistView)this.playlistView).ToggleTracklistSelection(true);
+            this.UpdateCoverBrowser(dragIndex);
         }
         private void LoadTrackList(List<Model.Track> trackList, int dragIndex)
         {
+            
+
             if (trackList != null && trackList.Count > 0)
             {
+                if (!isInitializing)
+                    ((PlaylistView)this.playlistView).ToggleTracklistSelection(false);
+
                 foreach (Model.Track track in trackList)
                 {
                     String length = this.LengthToString(track.Length);
@@ -1544,7 +1552,10 @@ namespace MitoPlayer_2024.Presenters
                     }
                 }
 
-               
+                if (!isInitializing)
+                    ((PlaylistView)this.playlistView).ToggleTracklistSelection(true);
+
+
                 this.ReloadTrackList();
                 this.TrackListChanged();
                 ((PlaylistView)this.playlistView).UpdateTrackCountAndLength(this.currentPlaylistId);
@@ -1945,6 +1956,11 @@ namespace MitoPlayer_2024.Presenters
         {
             this.mediaPlayerComponent.ChangeShuffle(isShuffleEnabled);
             this.settingDao.SetBooleanSetting(Settings.IsShuffleEnabled.ToString(), isShuffleEnabled);
+        }
+        internal void CallChangePreviewEvent(bool isPreviewEnabled)
+        {
+            this.mediaPlayerComponent.ChangePreview(isPreviewEnabled);
+            this.settingDao.SetBooleanSetting(Settings.IsPreviewEnabled.ToString(), isPreviewEnabled);
         }
 
        

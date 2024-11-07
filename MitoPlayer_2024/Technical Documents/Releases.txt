@@ -4,6 +4,15 @@
 
 
 
+- BUG - peak meter freezez somethimes
+- BUG: cover browser update bug after key import
+elmegyek a tageditorra, miközben szól egy zene, visszajövök, nem állítódik be a szine
+
+- FEATURE: tagvalue editor view - reorder tag values by drag and drop
+
+- FEATURE: cover browser turn on and off button (with button position change)
+
+
 a filtered lista elemeit írja ki a playlist tack coujnt - ki kéne írni, hogy ez szűrt,pl 500 számból 32
 
 - BUG: too much tag - delete tag, navigate to playlist, panel hides clear filter button in the filter mode
@@ -21,6 +30,13 @@ a filtered lista elemeit írja ki a playlist tack coujnt - ki kéne írni, hogy 
 - FEATURE: tag editor - display according to tag/tagvalue order
 - FEATURE: load tracklist or navigate away: check save status and show dialog window is there are unsaved progress
 
+======================
+v0.14.3.8
+======================
+OK - FEATURE: preview and preview setting
+OK - BUG: after tagvalue setting, the colouring of the row stay grey
+OK - BUG: after directory scan, cover browser load only the first element
+OK - BUG: selected items label not working
 ======================
 v0.14.3.4
 ======================

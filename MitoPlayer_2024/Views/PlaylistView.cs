@@ -391,6 +391,9 @@ namespace MitoPlayer_2024.Views
                                     if (tag.TextColoring)
                                     {
                                         row.Cells[tagName].Style.ForeColor = this.tagValueDictionary[tagName][tagValueName];
+                                        row.Cells[tagName].Style.BackColor = (currentTrackIdInPlaylist != -1 && trackIdInPlaylist == currentTrackIdInPlaylist)
+                                       ? this.GridPlayingColor
+                                       : (row.Index % 2 == 0 ? this.GridLineColor1 : this.GridLineColor2);
                                     }
                                     else
                                     {
@@ -1627,18 +1630,23 @@ namespace MitoPlayer_2024.Views
         // Event handler for selection changes in the DataGridView
         private void dgvTrackList_SelectionChanged(object sender, EventArgs e)
         {
-        if (isInitializing || !isCoverBrowserUpdateEnabled || isDragAndDropInProgress)
-        {
-            return; // Ignore the event if initializing
-        }
-
-        if (dgvTrackList.SelectedRows.Count > 0)
+            if (isInitializing || !isCoverBrowserUpdateEnabled || isDragAndDropInProgress)
             {
-            int selectedIndex = dgvTrackList.SelectedRows[dgvTrackList.SelectedRows.Count - 1].Index;
-            firstSelectedRowIndex = selectedIndex;
-            this.CallSetCurrentTrackEvent(selectedIndex);
 
-            this.lblSelectedItemsCount.Text = $"{this.dgvTrackList.SelectedRows.Count} item{(this.dgvTrackList.SelectedRows.Count > 1 ? "s" : "")} selected";
+            }
+            else
+            {
+                if (dgvTrackList.SelectedRows.Count > 0)
+                {
+                    int selectedIndex = dgvTrackList.SelectedRows[dgvTrackList.SelectedRows.Count - 1].Index;
+                    firstSelectedRowIndex = selectedIndex;
+                    this.CallSetCurrentTrackEvent(selectedIndex);
+                }
+            }
+
+            if (dgvTrackList.SelectedRows.Count > 0)
+            {
+                this.lblSelectedItemsCount.Text = $"{this.dgvTrackList.SelectedRows.Count} item{(this.dgvTrackList.SelectedRows.Count > 1 ? "s" : "")} selected";
 
                 int totalSeconds = 0;
 
@@ -1672,6 +1680,7 @@ namespace MitoPlayer_2024.Views
                 this.lblSelectedItemsLength.Text = $"Length: {length}";
             }
         }
+       
 
         // Event handler for double-clicks in the DataGridView
         private void dgvTrackList_MouseDoubleClick(object sender, MouseEventArgs e)

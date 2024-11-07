@@ -16,7 +16,8 @@ namespace MitoPlayer_2024.Views
         event EventHandler<ListEventArgs> SetAutomaticKeyImportEvent;
         event EventHandler<ListEventArgs> SetVirtualDjDatabasePathEvent;
         event EventHandler<ListEventArgs> SetPlayTrackAfterOpenFilesEvent;
+        event EventHandler<ListEventArgs> SetPreviewPercentageEvent;
 
-        void SetImportSettings(bool automaticBpmImport, bool automaticKeyImport, String virtualDjDatabasePath, bool playTrackAfterOpenFiles, bool hasVirtualDj);
+        void SetImportSettings(bool automaticBpmImport, bool automaticKeyImport, String virtualDjDatabasePath, bool playTrackAfterOpenFiles, bool hasVirtualDj, int previewPercentage);
     }
 }
