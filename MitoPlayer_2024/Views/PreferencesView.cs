@@ -21,6 +21,8 @@ namespace MitoPlayer_2024.Views
         public event EventHandler<ListEventArgs> SetVirtualDjDatabasePathEvent;
         public event EventHandler<ListEventArgs> SetPlayTrackAfterOpenFilesEvent;
         public event EventHandler<ListEventArgs> SetPreviewPercentageEvent;
+        public event EventHandler<ListEventArgs> SetShortTrackColouringEvent;
+        public event EventHandler<ListEventArgs> SetShortTrackColouringThresholdEvent;
 
 
 
@@ -76,13 +78,24 @@ namespace MitoPlayer_2024.Views
         {
             this.SetAutomaticKeyImportEvent?.Invoke(this, new ListEventArgs { BooleanField1 = this.chbAutomaticKeyImport.Checked });
         }
-        public void SetImportSettings(bool automaticBpmImport, bool automaticKeyImport, String virtualDjDatabasePath, bool playTrackAfterOpenFiles, bool hasVirtualDj, int previewPercentage)
+        public void SetImportSettings(
+            bool automaticBpmImport, 
+            bool automaticKeyImport, 
+            String virtualDjDatabasePath, 
+            bool playTrackAfterOpenFiles, 
+            bool hasVirtualDj, 
+            int previewPercentage,
+            bool isShortTrackColouringEnabled,
+            decimal shortTrackColouringThreshold)
         {
             this.chbAutomaticBpmImport.Checked = automaticBpmImport;
             this.chbAutomaticKeyImport.Checked = automaticKeyImport;
             this.txtBoxVirtualDjDatabasePath.Text = virtualDjDatabasePath;
             this.chbPlayTrackAfterOpenFiles.Checked = playTrackAfterOpenFiles;
             this.nmdPreviewPercentage.Value = previewPercentage;
+            this.chbShortTrackColouring.Enabled = isShortTrackColouringEnabled;
+            this.txtbShortTrackColouringThreshold.Text = shortTrackColouringThreshold.ToString("N2");
+
             if (!hasVirtualDj)
             {
                 this.chbAutomaticBpmImport.Checked = false;
@@ -107,6 +120,29 @@ namespace MitoPlayer_2024.Views
         private void nmdPreviewPercentage_ValueChanged(object sender, EventArgs e)
         {
             this.SetPreviewPercentageEvent?.Invoke(this, new ListEventArgs { DecimalField1 = this.nmdPreviewPercentage.Value });
+        }
+
+        private void chbShortTrackColouring_CheckedChanged(object sender, EventArgs e)
+        {
+            this.SetShortTrackColouringEvent?.Invoke(this, new ListEventArgs { BooleanField1 = this.chbShortTrackColouring.Checked });
+        }
+
+        private void txtbShortTrackColouringThreshold_TextChanged(object sender, EventArgs e)
+        {
+            if (!String.IsNullOrEmpty(this.txtbShortTrackColouringThreshold.Text))
+            {
+                decimal threshold = Decimal.Parse(this.txtbShortTrackColouringThreshold.Text);
+                if(threshold > 0)
+                {
+                    this.SetShortTrackColouringThresholdEvent?.Invoke(this, new ListEventArgs { DecimalField1 = threshold });
+                }
+                else
+                {
+                    this.txtbShortTrackColouringThreshold.Text = "";
+                }
+            }
+
+           
         }
     }
 }

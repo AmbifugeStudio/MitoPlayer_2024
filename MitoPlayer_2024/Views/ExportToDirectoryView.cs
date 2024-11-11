@@ -67,8 +67,16 @@ namespace MitoPlayer_2024.Views
 
         }
 
-        public void InitializeView(String path,bool isRowNumberChecked,bool isKeyCodeChecked,bool isBpmNumberChecked, bool isTrunkBpmChecked,
-            bool isTrunkedArtistChecked,bool isTrunkedTitleChecked, decimal artistMinimumCharacter, decimal titleMinimumCharacter)
+        public void InitializeView(
+            String path,
+            bool isRowNumberChecked,
+            bool isKeyCodeChecked,
+            bool isBpmNumberChecked, 
+            bool isTrunkBpmChecked,
+            bool isTrunkedArtistChecked,
+            bool isTrunkedTitleChecked, 
+            decimal artistMinimumCharacter, 
+            decimal titleMinimumCharacter)
         {
             this.txtBoxPath.Text = path;
             this.chbRowNumber.Checked = isRowNumberChecked;

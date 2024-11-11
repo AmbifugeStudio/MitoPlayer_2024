@@ -33,7 +33,8 @@ namespace MitoPlayer_2024.Helpers
         Profile,
         Setting,
         TrackProperty,
-        TrackTagValue
+        TrackTagValue,
+        TrainingData
     }
     public enum Settings
     {
@@ -85,7 +86,13 @@ namespace MitoPlayer_2024.Helpers
         IsFilterModeEnabled,
 
         InitialTracklistLeftValue,
-        InitialTracklistWidth
+        InitialTracklistWidth,
+
+        IsShortTrackColouringEnabled,
+        ShortTrackColouringThreshold,
+
+        TrainingModelBatchCount,
+        IsTracklistDetailsDisplayed
     }
 
     public enum MediaPlayerUpdateState

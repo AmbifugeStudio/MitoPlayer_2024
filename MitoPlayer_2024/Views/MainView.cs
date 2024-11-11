@@ -70,7 +70,7 @@ namespace MitoPlayer_2024
             this.InitializeComponent();
             this.SetControlColors();
 
-            this.pbrTrackProgress.Hide();
+            this.prbTrackProgress.Hide();
             this.lblTrackStart.Hide();
             this.lblTrackEnd.Hide();
 
@@ -141,13 +141,14 @@ namespace MitoPlayer_2024
             this.btnOpenDirectory.ForeColor = this.FontColor;
             this.btnOpenDirectory.FlatAppearance.BorderColor = this.ButtonBorderColor;
 
-            this.pbrTrackProgress.BackColor = this.FontColor;
-            this.pbrTrackProgress.ForeColor = this.BackgroundColor;
+            this.prbTrackProgress.BackColor = this.ButtonColor;
+            this.prbTrackProgress.ForeColor = this.BackgroundColor;
+            this.prbVolume.BackColor = this.ButtonColor;
+            this.prbVolume.ForeColor = this.BackgroundColor;
 
             this.pnlMarkerBackground.BackColor = this.BackgroundColor;
 
-            this.prbVolume.BackColor = this.FontColor;
-            this.prbVolume.ForeColor = this.BackgroundColor;
+            
 
         }
 
@@ -283,8 +284,8 @@ namespace MitoPlayer_2024
 
             this.lblTrackStart.Text = "";
             this.lblTrackEnd.Text = "";
-            this.pbrTrackProgress.Value = 0;
-            this.pbrTrackProgress.Hide();
+            this.prbTrackProgress.Value = 0;
+            this.prbTrackProgress.Hide();
             this.lblTrackStart.Hide();
             this.lblTrackEnd.Hide();
         }
@@ -397,8 +398,8 @@ namespace MitoPlayer_2024
             this.StopTrack?.Invoke(this, EventArgs.Empty);
             this.lblTrackStart.Text = "";
             this.lblTrackEnd.Text = "";
-            this.pbrTrackProgress.Value = 0;
-            this.pbrTrackProgress.Hide();
+            this.prbTrackProgress.Value = 0;
+            this.prbTrackProgress.Hide();
             this.lblTrackStart.Hide();
             this.lblTrackEnd.Hide();
         }
@@ -416,7 +417,7 @@ namespace MitoPlayer_2024
         }
         private void pBar_MouseDown(object sender, MouseEventArgs e)
         {
-            this.ChangeProgress?.Invoke(this, new ListEventArgs() { IntegerField1 = e.X, IntegerField2 = pbrTrackProgress.Width });
+            this.ChangeProgress?.Invoke(this, new ListEventArgs() { IntegerField1 = e.X, IntegerField2 = prbTrackProgress.Width });
         }
 
         private void chbMute_CheckedChanged(object sender, EventArgs e)
@@ -493,22 +494,22 @@ namespace MitoPlayer_2024
 
         public void InitializeMediaPlayerProgressStatus(double duration, String durationString, double currentPosition, String currentPositionString)
         {
-            this.pbrTrackProgress.Show();
+            this.prbTrackProgress.Show();
             this.lblTrackStart.Show();
             this.lblTrackEnd.Show();
-            this.pbrTrackProgress.Maximum = (int)duration;
-            this.pbrTrackProgress.Value = (int)currentPosition;
+            this.prbTrackProgress.Maximum = (int)duration;
+            this.prbTrackProgress.Value = (int)currentPosition;
             this.lblTrackEnd.Text = durationString;
             this.lblTrackStart.Text = currentPositionString;
         }
 
         public void ResetMediaPlayerProgressStatus()
         {
-            this.pbrTrackProgress.Hide();
+            this.prbTrackProgress.Hide();
             this.lblTrackStart.Hide();
             this.lblTrackEnd.Hide();
 
-            this.pbrTrackProgress.Value = 0;
+            this.prbTrackProgress.Value = 0;
             this.lblTrackEnd.Text = "";
             this.lblTrackStart.Text = "";
         }
@@ -517,18 +518,18 @@ namespace MitoPlayer_2024
         {
             if((int)Math.Ceiling(currentPosition) > 0 && (int)Math.Ceiling(currentPosition) < (int)Math.Ceiling(duration))
             {
-                if (!this.pbrTrackProgress.Visible)
+                if (!this.prbTrackProgress.Visible)
                 {
-                    this.pbrTrackProgress.Show();
+                    this.prbTrackProgress.Show();
                     this.lblTrackStart.Show();
                     this.lblTrackEnd.Show();
                 }
                
-                this.pbrTrackProgress.Maximum = (int)Math.Ceiling(duration);
+                this.prbTrackProgress.Maximum = (int)Math.Ceiling(duration);
 
-                if (this.pbrTrackProgress.Maximum >= (int)Math.Ceiling(currentPosition))
+                if (this.prbTrackProgress.Maximum >= (int)Math.Ceiling(currentPosition))
                 {
-                    this.pbrTrackProgress.Value = (int)Math.Ceiling(currentPosition);
+                    this.prbTrackProgress.Value = (int)Math.Ceiling(currentPosition);
                 }
 
                 this.lblTrackEnd.Text = durationString;
@@ -536,15 +537,15 @@ namespace MitoPlayer_2024
             }
             else
             {
-                if (this.pbrTrackProgress.Visible)
+                if (this.prbTrackProgress.Visible)
                 {
-                    this.pbrTrackProgress.Hide();
+                    this.prbTrackProgress.Hide();
                     this.lblTrackStart.Hide();
                     this.lblTrackEnd.Hide();
                 }
               
-                this.pbrTrackProgress.Maximum = 0;
-                this.pbrTrackProgress.Value = 0;
+                this.prbTrackProgress.Maximum = 0;
+                this.prbTrackProgress.Value = 0;
                 this.lblTrackEnd.Text = "";
                 this.lblTrackStart.Text = "";
             }

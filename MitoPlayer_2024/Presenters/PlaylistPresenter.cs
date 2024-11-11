@@ -97,13 +97,26 @@ namespace MitoPlayer_2024.Presenters
             this.playlistView.AddToKeyDetectorEvent += AddToKeyDetectorEvent;
             this.playlistView.CreateModelEvent += CreateModelEvent;
 
+            this.playlistView.OpenModelTrainerEvent += OpenModelTrainerEvent;
+
 
 
             //COVER BROWSER
             this.playlistView.LoadCoversEvent += LoadCoversEvent;
         }
 
-        
+        private void OpenModelTrainerEvent(object sender, EventArgs e)
+        {
+            ModelTrainerView modelTrainerView = new ModelTrainerView();
+            ModelTrainerPresenter presenter = new ModelTrainerPresenter(modelTrainerView, this.tagDao, this.trackDao, this.settingDao);
+
+            if (modelTrainerView.ShowDialog((PlaylistView)this.playlistView) == DialogResult.OK)
+            {
+
+            }
+        }
+
+
 
 
 
@@ -3019,7 +3032,7 @@ namespace MitoPlayer_2024.Presenters
         }
 
 
-        KeyTrainingDataGenerator keyModelTrainer = new KeyTrainingDataGenerator();
+     //   KeyTrainingDataGenerator keyModelTrainer = new KeyTrainingDataGenerator();
 
        /* private void AddToKeyDetectorEvent(object sender, ListEventArgs e)
         {
@@ -3073,7 +3086,7 @@ namespace MitoPlayer_2024.Presenters
         {
             //this.keyModelTrainer = KeyTrainingDataGenerator.GetInstance();
 
-            List<Track> tracks = new List<Track>();
+           /* List<Track> tracks = new List<Track>();
 
             if (this.trackListTable != null && this.trackListTable.Rows != null && this.trackListTable.Rows.Count > 0)
             {
@@ -3122,27 +3135,27 @@ namespace MitoPlayer_2024.Presenters
                             ((PlaylistView)this.playlistView).UpdateTrackCountInModel(this.keyModelTrainer.tracks.Count);
                     }
                 }
-            }
+            }*/
         }
 
         private void CreateModelEvent(object sender, EventArgs e)
         {
            // this.keyModelTrainer.GenerateCsv("keyTrainingData.csv");
-            ((PlaylistView)this.playlistView).UpdateTrackCountInModel(0);
-            ((PlaylistView)this.playlistView).UpdateLog("MODEL CREATED");
+           // ((PlaylistView)this.playlistView).UpdateTrackCountInModel(0);
+           // ((PlaylistView)this.playlistView).UpdateLog("MODEL CREATED");
         }
 
-        KeyDetector detector = new KeyDetector();
+        //KeyDetector detector = new KeyDetector();
 
         private void TrainKeyDetectorEvent(object sender, EventArgs e)
         {
-            ((PlaylistView)this.playlistView).UpdateLog("MODEL TRAINING");
-            KeyDetector.GetInstance().TrainKeyDetector("keyTrainingData.csv");
-            ((PlaylistView)this.playlistView).UpdateLog("MODEL READY");
+           // ((PlaylistView)this.playlistView).UpdateLog("MODEL TRAINING");
+           // KeyDetector.GetInstance().TrainKeyDetector("keyTrainingData.csv");
+           // ((PlaylistView)this.playlistView).UpdateLog("MODEL READY");
         }
         private void DetectKeyEvent(object sender, ListEventArgs e)
         {
-            List<Track> tracks = new List<Track>();
+           /* List<Track> tracks = new List<Track>();
 
             Tag currentTag = this.tagList.Find(x => x.Name == "Key");
             List<TagValue> tagValueList = this.tagDao.GetTagValuesByTagId(currentTag.Id);
@@ -3211,7 +3224,7 @@ namespace MitoPlayer_2024.Presenters
 
                 }
 
-            }
+            }*/
 
         }
     }

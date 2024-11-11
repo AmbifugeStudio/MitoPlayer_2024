@@ -222,7 +222,6 @@ namespace MitoPlayer_2024.Helpers
                 return features.ToArray();
             }
         }
-
         private float[] ExtractChromaFeatures(Complex[] fftBuffer)
         {
             float[] chromaFeatures = new float[12];
@@ -519,7 +518,6 @@ namespace MitoPlayer_2024.Helpers
 
             return (harmonic, percussive);
         }
-
         private float[][] ComputeSpectrogram(float[] buffer, int sampleRate, int fftSize = 512, int hopSize = 256)
         {
             int numFrames = (buffer.Length - fftSize) / hopSize + 1;
@@ -557,9 +555,6 @@ namespace MitoPlayer_2024.Helpers
 
             return spectrogram;
         }
-
-
-
         private float[][] ApplyMedianFilter(float[][] spectrogram, string filterDirection)
         {
             int numRows = spectrogram.Length;
@@ -625,7 +620,6 @@ namespace MitoPlayer_2024.Helpers
 
             return filteredSpectrogram;
         }
-
         private float[] InverseSpectrogram(float[][] spectrogram, int sampleRate, int fftSize = 512, int hopSize = 256)
         {
             int numFrames = spectrogram.Length;

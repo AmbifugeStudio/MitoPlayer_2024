@@ -4,6 +4,30 @@
 
 
 
+
+
+- BUG: modeltrainer - samples 125/124 100% display does not disappear error
+- FEATURE: modeltrainer - owerwrite mhd5 does not work
+- BUG: where is the filter clear button?
+- FEATURE: tag value import - automatic loads the last used/saved script
+- FEATURE: tag value import - generate button generate the script about the current tags and tagvalues into the script textfields
+- FEATURE: tag values import - save button saves your last script
+
+- FEATURE: already played today - external drag and drop
+- FEATURE: track count - external drag and drop
+- FEATURE: length of short tracks display in red
+
+- REFACTOR: hdm5 file create, when save dialog press ok
+
+- ninc sspecial tracktagvalue-ja a számoknak??
+- warning se jó, törölni meg újralétrehozni kellett
+- és a sorting id alapján jelenik meg, nem a legváégán, ha újra létrehozom
+
+
+- BUG: tracklist display index - sorting id fix
+
+
+- FEATURE: virtual dj open vs. scan bpm dialog windows
 - BUG - peak meter freezez somethimes
 - BUG: cover browser update bug after key import
 elmegyek a tageditorra, miközben szól egy zene, visszajövök, nem állítódik be a szine
@@ -30,6 +54,19 @@ a filtered lista elemeit írja ki a playlist tack coujnt - ki kéne írni, hogy 
 - FEATURE: tag editor - display according to tag/tagvalue order
 - FEATURE: load tracklist or navigate away: check save status and show dialog window is there are unsaved progress
 
+
+======================
+v0.15.0.9
+======================
+OK - BIG FEATURE: modeltrainer - complete modell trainer view
+OK - FEATURE: modeltrainer - tagvalue should be coloured in the input tracklist
+OK - BUG: modeltrainer - cancel should be stop the progress bar and clear the processed, eta and size labels
+OK - FEATURE: modeltrainer tracklist result dialog enable/disable in setting
+OK - FEATURE: modeltrainer tracklist result button
+OK - BUG: there is an additional button on the screen
+OK - BUG: tageditor can't edit a tag, which has index of prevously deleted tag
+OK - BUG: after delete tag, playlist gets error because of wrong display index
+OK - BUG: tageditor does not display the last tag
 ======================
 v0.14.3.8
 ======================

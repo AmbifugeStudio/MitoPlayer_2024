@@ -1,4 +1,6 @@
-﻿namespace MitoPlayer_2024
+﻿using MitoPlayer_2024.Helpers;
+
+namespace MitoPlayer_2024
 {
     partial class MainView
     {
@@ -87,12 +89,12 @@
             this.btnPlaylist = new System.Windows.Forms.Button();
             this.mediaPlayer = new AxWMPLib.AxWindowsMediaPlayer();
             this.pnlMediaPlayer = new System.Windows.Forms.Panel();
-            this.prbVolume = new System.Windows.Forms.ProgressBar();
+            this.prbVolume = new CustomProgressBar();
             this.lblCurrentTrack = new System.Windows.Forms.Label();
             this.lblTrackEnd = new System.Windows.Forms.Label();
             this.btnOpenDirectory = new System.Windows.Forms.Button();
             this.btnOpen = new System.Windows.Forms.Button();
-            this.pbrTrackProgress = new System.Windows.Forms.ProgressBar();
+            this.prbTrackProgress = new CustomProgressBar();
             this.chbMute = new System.Windows.Forms.CheckBox();
             this.chbPreview = new System.Windows.Forms.CheckBox();
             this.chbShuffle = new System.Windows.Forms.CheckBox();
@@ -129,7 +131,7 @@
             this.helpToolStripMenuItem});
             this.strMenu.Location = new System.Drawing.Point(0, 0);
             this.strMenu.Name = "strMenu";
-            this.strMenu.Size = new System.Drawing.Size(1328, 24);
+            this.strMenu.Size = new System.Drawing.Size(1904, 24);
             this.strMenu.TabIndex = 0;
             this.strMenu.Text = "menuStrip1";
             // 
@@ -452,7 +454,7 @@
             this.pnlMainMenu.Dock = System.Windows.Forms.DockStyle.Left;
             this.pnlMainMenu.Location = new System.Drawing.Point(0, 24);
             this.pnlMainMenu.Name = "pnlMainMenu";
-            this.pnlMainMenu.Size = new System.Drawing.Size(91, 744);
+            this.pnlMainMenu.Size = new System.Drawing.Size(91, 1017);
             this.pnlMainMenu.TabIndex = 2;
             // 
             // lblPeak
@@ -468,7 +470,7 @@
             // 
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(42, 722);
+            this.label2.Location = new System.Drawing.Point(42, 995);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(15, 13);
             this.label2.TabIndex = 49;
@@ -482,7 +484,7 @@
             this.pcbMasterPeakRightBackground.Image = global::MitoPlayer_2024.Properties.Resources.MasterPeakBackground;
             this.pcbMasterPeakRightBackground.Location = new System.Drawing.Point(37, 414);
             this.pcbMasterPeakRightBackground.Name = "pcbMasterPeakRightBackground";
-            this.pcbMasterPeakRightBackground.Size = new System.Drawing.Size(25, 300);
+            this.pcbMasterPeakRightBackground.Size = new System.Drawing.Size(25, 573);
             this.pcbMasterPeakRightBackground.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pcbMasterPeakRightBackground.TabIndex = 7;
             this.pcbMasterPeakRightBackground.TabStop = false;
@@ -491,7 +493,7 @@
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(11, 722);
+            this.label1.Location = new System.Drawing.Point(11, 995);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(13, 13);
             this.label1.TabIndex = 48;
@@ -505,7 +507,7 @@
             this.pcbMasterPeakRightColoured.Image = global::MitoPlayer_2024.Properties.Resources.MasterPeakColoured1;
             this.pcbMasterPeakRightColoured.Location = new System.Drawing.Point(37, 414);
             this.pcbMasterPeakRightColoured.Name = "pcbMasterPeakRightColoured";
-            this.pcbMasterPeakRightColoured.Size = new System.Drawing.Size(25, 300);
+            this.pcbMasterPeakRightColoured.Size = new System.Drawing.Size(25, 573);
             this.pcbMasterPeakRightColoured.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pcbMasterPeakRightColoured.TabIndex = 8;
             this.pcbMasterPeakRightColoured.TabStop = false;
@@ -518,7 +520,7 @@
             this.pcbMasterPeakLeftBackground.Image = global::MitoPlayer_2024.Properties.Resources.MasterPeakBackground;
             this.pcbMasterPeakLeftBackground.Location = new System.Drawing.Point(6, 414);
             this.pcbMasterPeakLeftBackground.Name = "pcbMasterPeakLeftBackground";
-            this.pcbMasterPeakLeftBackground.Size = new System.Drawing.Size(25, 300);
+            this.pcbMasterPeakLeftBackground.Size = new System.Drawing.Size(25, 573);
             this.pcbMasterPeakLeftBackground.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pcbMasterPeakLeftBackground.TabIndex = 7;
             this.pcbMasterPeakLeftBackground.TabStop = false;
@@ -565,7 +567,7 @@
             this.pcbMasterPeakLeftColoured.Image = global::MitoPlayer_2024.Properties.Resources.MasterPeakColoured1;
             this.pcbMasterPeakLeftColoured.Location = new System.Drawing.Point(6, 414);
             this.pcbMasterPeakLeftColoured.Name = "pcbMasterPeakLeftColoured";
-            this.pcbMasterPeakLeftColoured.Size = new System.Drawing.Size(25, 300);
+            this.pcbMasterPeakLeftColoured.Size = new System.Drawing.Size(25, 573);
             this.pcbMasterPeakLeftColoured.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pcbMasterPeakLeftColoured.TabIndex = 8;
             this.pcbMasterPeakLeftColoured.TabStop = false;
@@ -619,7 +621,7 @@
             this.pnlMediaPlayer.Controls.Add(this.lblTrackEnd);
             this.pnlMediaPlayer.Controls.Add(this.btnOpenDirectory);
             this.pnlMediaPlayer.Controls.Add(this.btnOpen);
-            this.pnlMediaPlayer.Controls.Add(this.pbrTrackProgress);
+            this.pnlMediaPlayer.Controls.Add(this.prbTrackProgress);
             this.pnlMediaPlayer.Controls.Add(this.chbMute);
             this.pnlMediaPlayer.Controls.Add(this.chbPreview);
             this.pnlMediaPlayer.Controls.Add(this.chbShuffle);
@@ -632,7 +634,7 @@
             this.pnlMediaPlayer.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlMediaPlayer.Location = new System.Drawing.Point(91, 24);
             this.pnlMediaPlayer.Name = "pnlMediaPlayer";
-            this.pnlMediaPlayer.Size = new System.Drawing.Size(1237, 44);
+            this.pnlMediaPlayer.Size = new System.Drawing.Size(1813, 44);
             this.pnlMediaPlayer.TabIndex = 4;
             // 
             // prbVolume
@@ -658,7 +660,7 @@
             this.lblTrackEnd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTrackEnd.AutoSize = true;
             this.lblTrackEnd.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.lblTrackEnd.Location = new System.Drawing.Point(1154, 13);
+            this.lblTrackEnd.Location = new System.Drawing.Point(1730, 13);
             this.lblTrackEnd.Name = "lblTrackEnd";
             this.lblTrackEnd.Size = new System.Drawing.Size(71, 20);
             this.lblTrackEnd.TabIndex = 43;
@@ -696,15 +698,15 @@
             // 
             // pbrTrackProgress
             // 
-            this.pbrTrackProgress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.prbTrackProgress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.pbrTrackProgress.Location = new System.Drawing.Point(753, 10);
-            this.pbrTrackProgress.Name = "pbrTrackProgress";
-            this.pbrTrackProgress.Size = new System.Drawing.Size(395, 24);
-            this.pbrTrackProgress.Step = 1;
-            this.pbrTrackProgress.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
-            this.pbrTrackProgress.TabIndex = 45;
-            this.pbrTrackProgress.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pBar_MouseDown);
+            this.prbTrackProgress.Location = new System.Drawing.Point(753, 10);
+            this.prbTrackProgress.Name = "pbrTrackProgress";
+            this.prbTrackProgress.Size = new System.Drawing.Size(971, 24);
+            this.prbTrackProgress.Step = 1;
+            this.prbTrackProgress.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            this.prbTrackProgress.TabIndex = 45;
+            this.prbTrackProgress.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pBar_MouseDown);
             // 
             // chbMute
             // 
@@ -839,7 +841,7 @@
             this.pnlMarkerBackground.Controls.Add(this.pcbMarkerRed);
             this.pnlMarkerBackground.Location = new System.Drawing.Point(65, 438);
             this.pnlMarkerBackground.Name = "pnlMarkerBackground";
-            this.pnlMarkerBackground.Size = new System.Drawing.Size(20, 300);
+            this.pnlMarkerBackground.Size = new System.Drawing.Size(20, 573);
             this.pnlMarkerBackground.TabIndex = 11;
             // 
             // pcbMarkerGrey
@@ -866,15 +868,16 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1328, 768);
+            this.ClientSize = new System.Drawing.Size(1904, 1041);
             this.Controls.Add(this.pnlMarkerBackground);
             this.Controls.Add(this.pnlMediaPlayer);
             this.Controls.Add(this.pnlMainMenu);
             this.Controls.Add(this.strMenu);
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.strMenu;
-            this.MinimumSize = new System.Drawing.Size(1200, 768);
+            this.MinimumSize = new System.Drawing.Size(1280, 720);
             this.Name = "MainView";
+            this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "MitoPlayer 2024 v0.1.3";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
@@ -959,7 +962,7 @@
         private System.Windows.Forms.ToolStripMenuItem menuStripExportToTXT;
         private System.Windows.Forms.ToolStripMenuItem menuStripExportToM3U;
         private System.Windows.Forms.ToolStripMenuItem menuStripExportToDirectory;
-        private System.Windows.Forms.ProgressBar pbrTrackProgress;
+        private CustomProgressBar prbTrackProgress;
         private System.Windows.Forms.CheckBox chbShuffle;
         private System.Windows.Forms.CheckBox chbMute;
         private System.Windows.Forms.Timer tmrPlayer;
@@ -975,7 +978,7 @@
         private System.Windows.Forms.PictureBox pcbMarkerGrey;
         private System.Windows.Forms.Panel pnlMarkerBackground;
         private System.Windows.Forms.PictureBox pcbMarkerRed;
-        private System.Windows.Forms.ProgressBar prbVolume;
+        private CustomProgressBar prbVolume;
         private System.Windows.Forms.CheckBox chbPreview;
     }
 }

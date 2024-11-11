@@ -18,6 +18,17 @@ namespace MitoPlayer_2024.Views
         event EventHandler<ListEventArgs> SetPlayTrackAfterOpenFilesEvent;
         event EventHandler<ListEventArgs> SetPreviewPercentageEvent;
 
-        void SetImportSettings(bool automaticBpmImport, bool automaticKeyImport, String virtualDjDatabasePath, bool playTrackAfterOpenFiles, bool hasVirtualDj, int previewPercentage);
+        event EventHandler<ListEventArgs> SetShortTrackColouringEvent;
+        event EventHandler<ListEventArgs> SetShortTrackColouringThresholdEvent;
+
+        void SetImportSettings(
+            bool automaticBpmImport, 
+            bool automaticKeyImport,
+            String virtualDjDatabasePath, 
+            bool playTrackAfterOpenFiles,
+            bool hasVirtualDj, 
+            int previewPercentage,
+            bool isShortTrackColouringEnabled,
+            decimal shortTrackColouringThreshold);
     }
 }

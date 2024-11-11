@@ -200,7 +200,13 @@ namespace MitoPlayer_2024.Helpers
                 if (!this.TableIsExists(TableName.TrackTagValue.ToString()))
                     result = this.BuildTagTrackValueTable();
             }
-           
+
+            if (result.Success)
+            {
+                if (!this.TableIsExists(TableName.TrainingData.ToString()))
+                    result = this.BuildTrainingModelTable();
+            }
+
 
             return result;
         }
@@ -545,6 +551,55 @@ namespace MitoPlayer_2024.Helpers
                 catch (MySqlException ex)
                 {
                     result.AddError("TrackProperty table table is not created. \n" + ex.Message);
+                }
+                connection.Close();
+            }
+            return result;
+        } 
+        
+        private ResultOrError BuildTrainingModelTable()
+        {
+            ResultOrError result = new ResultOrError();
+            using (var connection = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand())
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"CREATE TABLE trainingdata ( 
+
+                                        Id int(11) NOT NULL, 
+                                        FilePath varchar(255) NOT NULL,
+                                        TagId int(11) NOT NULL,
+                                        Name varchar(50) NOT NULL,
+                                        CreateDate datetime NOT NULL, 
+                                        SampleCount int(11), 
+                                        Balance decimal(10,0), 
+                                        IsTemplate tinyint(4) NOT NULL,
+
+                                        ExtractChromaFeatures tinyint(4) NOT NULL,             
+                                        ExtractMFCCs tinyint(4) NOT NULL,
+                                        ExtractSpectralContrast tinyint(4) NOT NULL,
+                                        ExtractHPCP tinyint(4) NOT NULL,
+                                        ExtractSpectralCentroid tinyint(4) NOT NULL,
+                                        ExtractSpectralBandwidth tinyint(4) NOT NULL,
+                                        HarmonicPercussiveSeparation tinyint(4) NOT NULL,
+                                        ExtractTonnetzFeatures tinyint(4) NOT NULL,                                  
+                                        ExtractZeroCrossingRate tinyint(4) NOT NULL,
+                                        ExtractRmsEnergy tinyint(4) NOT NULL,
+                                        ExtractPitch tinyint(4) NOT NULL,
+                                        ProfileId int(11) NOT NULL, 
+
+                                        PRIMARY KEY (Id))
+
+                                        ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci";
+                try
+                {
+                    command.ExecuteNonQuery();
+                }
+                catch (MySqlException ex)
+                {
+                    result.AddError("TrainingData table table is not created. \n" + ex.Message);
                 }
                 connection.Close();
             }

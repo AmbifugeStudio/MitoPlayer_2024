@@ -40,11 +40,7 @@ namespace MitoPlayer_2024.Views
             this.renameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.setQuicklistGroupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.setGroup1ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.setGroup2ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.setGroup3ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.setGroup4ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.exportToM3UToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.exportToDirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -69,7 +65,6 @@ namespace MitoPlayer_2024.Views
             this.btnPlaylistListPanelToggle = new System.Windows.Forms.Button();
             this.btnDisplayTagComponentToggle = new System.Windows.Forms.Button();
             this.dgvPlaylistList = new System.Windows.Forms.DataGridView();
-            this.dgvTrackList = new CustomDataGridView();
             this.tagValueEditorPanel = new System.Windows.Forms.Panel();
             this.chbOnlyPlayingRowModeEnabled = new System.Windows.Forms.CheckBox();
             this.txtbFilter = new System.Windows.Forms.TextBox();
@@ -83,24 +78,20 @@ namespace MitoPlayer_2024.Views
             this.btnFilterModeToggle = new System.Windows.Forms.Button();
             this.grbCovers = new System.Windows.Forms.GroupBox();
             this.lblMessage = new System.Windows.Forms.Label();
-            this.btnCreateModel = new System.Windows.Forms.Button();
-            this.btnDetectKey = new System.Windows.Forms.Button();
-            this.btnAddTrackToModel = new System.Windows.Forms.Button();
-            this.lblTracksInTheModel = new System.Windows.Forms.Label();
-            this.lblLog = new System.Windows.Forms.Label();
-            this.btnTrainModel = new System.Windows.Forms.Button();
             this.btnColumnVisibilityWithTagEditor = new System.Windows.Forms.Button();
+            this.btnGenerateTrainingSet = new System.Windows.Forms.Button();
+            this.dgvTrackList = new MitoPlayer_2024.Helpers.CustomDataGridView();
             this.contextMenuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPlaylistList)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvTrackList)).BeginInit();
             this.pnlPlaylistList.SuspendLayout();
             this.pnlTagComponent.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvTrackList)).BeginInit();
             this.SuspendLayout();
             // 
             // exportToTxtToolStripMenuItem
             // 
             this.exportToTxtToolStripMenuItem.Name = "exportToTxtToolStripMenuItem";
-            this.exportToTxtToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.exportToTxtToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
             this.exportToTxtToolStripMenuItem.Text = "Export to txt";
             this.exportToTxtToolStripMenuItem.Click += new System.EventHandler(this.menuStripExportToTxtToolStripMenuItem_Click);
             // 
@@ -112,103 +103,71 @@ namespace MitoPlayer_2024.Views
             this.renameToolStripMenuItem,
             this.deleteToolStripMenuItem,
             this.toolStripSeparator3,
-            this.setQuicklistGroupToolStripMenuItem,
+            this.toolStripMenuItem1,
             this.toolStripSeparator4,
             this.exportToM3UToolStripMenuItem1,
             this.exportToTxtToolStripMenuItem,
             this.exportToDirToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.ShowImageMargin = false;
-            this.contextMenuStrip1.Size = new System.Drawing.Size(151, 192);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(148, 192);
             // 
             // createPlaylistToolStripMenuItem
             // 
             this.createPlaylistToolStripMenuItem.Name = "createPlaylistToolStripMenuItem";
-            this.createPlaylistToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.createPlaylistToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
             this.createPlaylistToolStripMenuItem.Text = "New";
             this.createPlaylistToolStripMenuItem.Click += new System.EventHandler(this.menuStripCreatePlaylist_Click);
             // 
             // loadToolStripMenuItem
             // 
             this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-            this.loadToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.loadToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
             this.loadToolStripMenuItem.Text = "Load";
             this.loadToolStripMenuItem.Click += new System.EventHandler(this.menuStripLoadPlaylist_Click);
             // 
             // renameToolStripMenuItem
             // 
             this.renameToolStripMenuItem.Name = "renameToolStripMenuItem";
-            this.renameToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.renameToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
             this.renameToolStripMenuItem.Text = "Edit";
             this.renameToolStripMenuItem.Click += new System.EventHandler(this.menuStripRenamePlaylist_Click);
             // 
             // deleteToolStripMenuItem
             // 
             this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
             this.deleteToolStripMenuItem.Text = "Remove";
             this.deleteToolStripMenuItem.Click += new System.EventHandler(this.menuStripDeletePlaylist_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(147, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(144, 6);
             // 
-            // setQuicklistGroupToolStripMenuItem
+            // toolStripMenuItem1
             // 
-            this.setQuicklistGroupToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.setGroup1ToolStripMenuItem1,
-            this.setGroup2ToolStripMenuItem1,
-            this.setGroup3ToolStripMenuItem1,
-            this.setGroup4ToolStripMenuItem1});
-            this.setQuicklistGroupToolStripMenuItem.Name = "setQuicklistGroupToolStripMenuItem";
-            this.setQuicklistGroupToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
-            this.setQuicklistGroupToolStripMenuItem.Text = "Set Quicklist Group";
-            // 
-            // setGroup1ToolStripMenuItem1
-            // 
-            this.setGroup1ToolStripMenuItem1.Name = "setGroup1ToolStripMenuItem1";
-            this.setGroup1ToolStripMenuItem1.Size = new System.Drawing.Size(135, 22);
-            this.setGroup1ToolStripMenuItem1.Text = "Set Group 1";
-            this.setGroup1ToolStripMenuItem1.Click += new System.EventHandler(this.menuStripSetQuickListGroup1_Click);
-            // 
-            // setGroup2ToolStripMenuItem1
-            // 
-            this.setGroup2ToolStripMenuItem1.Name = "setGroup2ToolStripMenuItem1";
-            this.setGroup2ToolStripMenuItem1.Size = new System.Drawing.Size(135, 22);
-            this.setGroup2ToolStripMenuItem1.Text = "Set Group 2";
-            this.setGroup2ToolStripMenuItem1.Click += new System.EventHandler(this.menuStripSetQuickListGroup2_Click);
-            // 
-            // setGroup3ToolStripMenuItem1
-            // 
-            this.setGroup3ToolStripMenuItem1.Name = "setGroup3ToolStripMenuItem1";
-            this.setGroup3ToolStripMenuItem1.Size = new System.Drawing.Size(135, 22);
-            this.setGroup3ToolStripMenuItem1.Text = "Set Group 3";
-            this.setGroup3ToolStripMenuItem1.Click += new System.EventHandler(this.menuStripSetQuickListGroup3_Click);
-            // 
-            // setGroup4ToolStripMenuItem1
-            // 
-            this.setGroup4ToolStripMenuItem1.Name = "setGroup4ToolStripMenuItem1";
-            this.setGroup4ToolStripMenuItem1.Size = new System.Drawing.Size(135, 22);
-            this.setGroup4ToolStripMenuItem1.Text = "Set Group 4";
-            this.setGroup4ToolStripMenuItem1.Click += new System.EventHandler(this.menuStripSetQuickListGroup4_Click);
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(147, 22);
+            this.toolStripMenuItem1.Text = "Train Model";
+            this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(147, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(144, 6);
             // 
             // exportToM3UToolStripMenuItem1
             // 
             this.exportToM3UToolStripMenuItem1.Name = "exportToM3UToolStripMenuItem1";
-            this.exportToM3UToolStripMenuItem1.Size = new System.Drawing.Size(150, 22);
+            this.exportToM3UToolStripMenuItem1.Size = new System.Drawing.Size(147, 22);
             this.exportToM3UToolStripMenuItem1.Text = "Export to m3u";
             this.exportToM3UToolStripMenuItem1.Click += new System.EventHandler(this.menuStripExportToM3uToolStripMenuItem_Click);
             // 
             // exportToDirToolStripMenuItem
             // 
             this.exportToDirToolStripMenuItem.Name = "exportToDirToolStripMenuItem";
-            this.exportToDirToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.exportToDirToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
             this.exportToDirToolStripMenuItem.Text = "Export to directory";
             this.exportToDirToolStripMenuItem.Click += new System.EventHandler(this.exportToDirectoryToolStripMenuItem_Click);
             // 
@@ -307,7 +266,7 @@ namespace MitoPlayer_2024.Views
             // 
             this.btnScanKeyAndBpm.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnScanKeyAndBpm.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnScanKeyAndBpm.Location = new System.Drawing.Point(1075, 14);
+            this.btnScanKeyAndBpm.Location = new System.Drawing.Point(1087, 14);
             this.btnScanKeyAndBpm.Name = "btnScanKeyAndBpm";
             this.btnScanKeyAndBpm.Size = new System.Drawing.Size(90, 23);
             this.btnScanKeyAndBpm.TabIndex = 31;
@@ -319,7 +278,7 @@ namespace MitoPlayer_2024.Views
             // 
             this.lblTrackCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblTrackCount.AutoSize = true;
-            this.lblTrackCount.Location = new System.Drawing.Point(12, 643);
+            this.lblTrackCount.Location = new System.Drawing.Point(12, 646);
             this.lblTrackCount.Name = "lblTrackCount";
             this.lblTrackCount.Size = new System.Drawing.Size(116, 13);
             this.lblTrackCount.TabIndex = 3;
@@ -330,7 +289,7 @@ namespace MitoPlayer_2024.Views
             // 
             this.lblTrackSumLength.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblTrackSumLength.AutoSize = true;
-            this.lblTrackSumLength.Location = new System.Drawing.Point(12, 656);
+            this.lblTrackSumLength.Location = new System.Drawing.Point(12, 659);
             this.lblTrackSumLength.Name = "lblTrackSumLength";
             this.lblTrackSumLength.Size = new System.Drawing.Size(88, 13);
             this.lblTrackSumLength.TabIndex = 3;
@@ -341,7 +300,7 @@ namespace MitoPlayer_2024.Views
             // 
             this.lblSelectedItemsCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblSelectedItemsCount.AutoSize = true;
-            this.lblSelectedItemsCount.Location = new System.Drawing.Point(206, 643);
+            this.lblSelectedItemsCount.Location = new System.Drawing.Point(206, 646);
             this.lblSelectedItemsCount.Name = "lblSelectedItemsCount";
             this.lblSelectedItemsCount.Size = new System.Drawing.Size(78, 13);
             this.lblSelectedItemsCount.TabIndex = 3;
@@ -351,7 +310,7 @@ namespace MitoPlayer_2024.Views
             // 
             this.lblSelectedItemsLength.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblSelectedItemsLength.AutoSize = true;
-            this.lblSelectedItemsLength.Location = new System.Drawing.Point(206, 656);
+            this.lblSelectedItemsLength.Location = new System.Drawing.Point(206, 659);
             this.lblSelectedItemsLength.Name = "lblSelectedItemsLength";
             this.lblSelectedItemsLength.Size = new System.Drawing.Size(88, 13);
             this.lblSelectedItemsLength.TabIndex = 3;
@@ -374,7 +333,7 @@ namespace MitoPlayer_2024.Views
             this.btnDisplayTagComponentToggle.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnDisplayTagComponentToggle.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnDisplayTagComponentToggle.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDisplayTagComponentToggle.Location = new System.Drawing.Point(1209, 14);
+            this.btnDisplayTagComponentToggle.Location = new System.Drawing.Point(1221, 14);
             this.btnDisplayTagComponentToggle.Name = "btnDisplayTagComponentToggle";
             this.btnDisplayTagComponentToggle.Size = new System.Drawing.Size(31, 23);
             this.btnDisplayTagComponentToggle.TabIndex = 23;
@@ -416,42 +375,6 @@ namespace MitoPlayer_2024.Views
             this.dgvPlaylistList.MouseMove += new System.Windows.Forms.MouseEventHandler(this.dgvPlaylistList_MouseMove);
             this.dgvPlaylistList.MouseUp += new System.Windows.Forms.MouseEventHandler(this.dgvPlaylistList_MouseUp);
             // 
-            // dgvTrackList
-            // 
-            this.dgvTrackList.AllowDrop = true;
-            this.dgvTrackList.AllowUserToAddRows = false;
-            this.dgvTrackList.AllowUserToDeleteRows = false;
-            this.dgvTrackList.AllowUserToResizeRows = false;
-            this.dgvTrackList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.dgvTrackList.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dgvTrackList.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
-            this.dgvTrackList.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
-            this.dgvTrackList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            this.dgvTrackList.Location = new System.Drawing.Point(199, 101);
-            this.dgvTrackList.Name = "dgvTrackList";
-            this.dgvTrackList.ReadOnly = true;
-            this.dgvTrackList.RowHeadersVisible = false;
-            this.dgvTrackList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvTrackList.Size = new System.Drawing.Size(761, 539);
-            this.dgvTrackList.TabIndex = 16;
-            this.dgvTrackList.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTrackList_CellClick);
-            this.dgvTrackList.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvTrackList_ColumnHeaderMouseClick);
-            this.dgvTrackList.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this.dgvTrackList_DataBindingComplete);
-            this.dgvTrackList.SelectionChanged += new System.EventHandler(this.dgvTrackList_SelectionChanged);
-            this.dgvTrackList.DragDrop += new System.Windows.Forms.DragEventHandler(this.dgvTrackList_DragDrop);
-            this.dgvTrackList.DragEnter += new System.Windows.Forms.DragEventHandler(this.dgvTrackList_DragEnter);
-            this.dgvTrackList.DragOver += new System.Windows.Forms.DragEventHandler(this.dgvTrackList_DragOver);
-            this.dgvTrackList.DragLeave += new System.EventHandler(this.dgvTrackList_DragLeave);
-            this.dgvTrackList.Paint += new System.Windows.Forms.PaintEventHandler(this.dgvTrackList_Paint);
-            this.dgvTrackList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvTrackList_KeyDown);
-            this.dgvTrackList.KeyUp += new System.Windows.Forms.KeyEventHandler(this.dgvTrackList_KeyUp);
-            this.dgvTrackList.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.dgvTrackList_MouseDoubleClick);
-            this.dgvTrackList.MouseDown += new System.Windows.Forms.MouseEventHandler(this.dgvTrackList_MouseDown);
-            this.dgvTrackList.MouseMove += new System.Windows.Forms.MouseEventHandler(this.dgvTrackList_MouseMove);
-            this.dgvTrackList.MouseUp += new System.Windows.Forms.MouseEventHandler(this.dgvTrackList_MouseUp);
-            // 
             // tagValueEditorPanel
             // 
             this.tagValueEditorPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -459,7 +382,7 @@ namespace MitoPlayer_2024.Views
             this.tagValueEditorPanel.AutoScroll = true;
             this.tagValueEditorPanel.Location = new System.Drawing.Point(0, 58);
             this.tagValueEditorPanel.Name = "tagValueEditorPanel";
-            this.tagValueEditorPanel.Size = new System.Drawing.Size(274, 505);
+            this.tagValueEditorPanel.Size = new System.Drawing.Size(274, 510);
             this.tagValueEditorPanel.TabIndex = 36;
             this.tagValueEditorPanel.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.tagValueEditorPanel_PreviewKeyDown);
             // 
@@ -498,7 +421,7 @@ namespace MitoPlayer_2024.Views
             // 
             this.btnClearTagValueFilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnClearTagValueFilter.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnClearTagValueFilter.Location = new System.Drawing.Point(196, 569);
+            this.btnClearTagValueFilter.Location = new System.Drawing.Point(196, 574);
             this.btnClearTagValueFilter.Name = "btnClearTagValueFilter";
             this.btnClearTagValueFilter.Size = new System.Drawing.Size(75, 23);
             this.btnClearTagValueFilter.TabIndex = 45;
@@ -524,7 +447,7 @@ namespace MitoPlayer_2024.Views
             this.pnlPlaylistList.Controls.Add(this.dgvPlaylistList);
             this.pnlPlaylistList.Location = new System.Drawing.Point(10, 42);
             this.pnlPlaylistList.Name = "pnlPlaylistList";
-            this.pnlPlaylistList.Size = new System.Drawing.Size(183, 598);
+            this.pnlPlaylistList.Size = new System.Drawing.Size(183, 601);
             this.pnlPlaylistList.TabIndex = 48;
             // 
             // pnlTagComponent
@@ -539,9 +462,9 @@ namespace MitoPlayer_2024.Views
             this.pnlTagComponent.Controls.Add(this.txtbFilter);
             this.pnlTagComponent.Controls.Add(this.lblFilter);
             this.pnlTagComponent.Controls.Add(this.chbOnlyPlayingRowModeEnabled);
-            this.pnlTagComponent.Location = new System.Drawing.Point(966, 43);
+            this.pnlTagComponent.Location = new System.Drawing.Point(978, 43);
             this.pnlTagComponent.Name = "pnlTagComponent";
-            this.pnlTagComponent.Size = new System.Drawing.Size(274, 597);
+            this.pnlTagComponent.Size = new System.Drawing.Size(274, 600);
             this.pnlTagComponent.TabIndex = 49;
             // 
             // btnFilter
@@ -583,105 +506,85 @@ namespace MitoPlayer_2024.Views
             | System.Windows.Forms.AnchorStyles.Right)));
             this.grbCovers.Location = new System.Drawing.Point(199, 7);
             this.grbCovers.Name = "grbCovers";
-            this.grbCovers.Size = new System.Drawing.Size(761, 87);
+            this.grbCovers.Size = new System.Drawing.Size(773, 87);
             this.grbCovers.TabIndex = 50;
             this.grbCovers.TabStop = false;
             // 
             // lblMessage
             // 
             this.lblMessage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblMessage.Location = new System.Drawing.Point(747, 643);
+            this.lblMessage.Location = new System.Drawing.Point(978, 646);
             this.lblMessage.Name = "lblMessage";
-            this.lblMessage.Size = new System.Drawing.Size(213, 26);
+            this.lblMessage.Size = new System.Drawing.Size(274, 26);
             this.lblMessage.TabIndex = 51;
-            this.lblMessage.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // btnCreateModel
-            // 
-            this.btnCreateModel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnCreateModel.Location = new System.Drawing.Point(498, 646);
-            this.btnCreateModel.Name = "btnCreateModel";
-            this.btnCreateModel.Size = new System.Drawing.Size(85, 23);
-            this.btnCreateModel.TabIndex = 52;
-            this.btnCreateModel.Text = "Create Model";
-            this.btnCreateModel.UseVisualStyleBackColor = true;
-            this.btnCreateModel.Click += new System.EventHandler(this.btnCreateModel_Click);
-            // 
-            // btnDetectKey
-            // 
-            this.btnDetectKey.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnDetectKey.Location = new System.Drawing.Point(679, 646);
-            this.btnDetectKey.Name = "btnDetectKey";
-            this.btnDetectKey.Size = new System.Drawing.Size(86, 23);
-            this.btnDetectKey.TabIndex = 52;
-            this.btnDetectKey.Text = "Detect Key";
-            this.btnDetectKey.UseVisualStyleBackColor = true;
-            this.btnDetectKey.Click += new System.EventHandler(this.btnDetectKey_Click);
-            // 
-            // btnAddTrackToModel
-            // 
-            this.btnAddTrackToModel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnAddTrackToModel.Location = new System.Drawing.Point(300, 646);
-            this.btnAddTrackToModel.Name = "btnAddTrackToModel";
-            this.btnAddTrackToModel.Size = new System.Drawing.Size(86, 23);
-            this.btnAddTrackToModel.TabIndex = 52;
-            this.btnAddTrackToModel.Text = "Add To Model";
-            this.btnAddTrackToModel.UseVisualStyleBackColor = true;
-            this.btnAddTrackToModel.Click += new System.EventHandler(this.btnAddTrackToModel_Click);
-            // 
-            // lblTracksInTheModel
-            // 
-            this.lblTracksInTheModel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.lblTracksInTheModel.AutoSize = true;
-            this.lblTracksInTheModel.Location = new System.Drawing.Point(392, 651);
-            this.lblTracksInTheModel.Name = "lblTracksInTheModel";
-            this.lblTracksInTheModel.Size = new System.Drawing.Size(100, 13);
-            this.lblTracksInTheModel.TabIndex = 53;
-            this.lblTracksInTheModel.Text = "0 track in the model";
-            // 
-            // lblLog
-            // 
-            this.lblLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblLog.Location = new System.Drawing.Point(966, 638);
-            this.lblLog.Name = "lblLog";
-            this.lblLog.Size = new System.Drawing.Size(274, 31);
-            this.lblLog.TabIndex = 53;
-            // 
-            // btnTrainModel
-            // 
-            this.btnTrainModel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnTrainModel.Location = new System.Drawing.Point(589, 646);
-            this.btnTrainModel.Name = "btnTrainModel";
-            this.btnTrainModel.Size = new System.Drawing.Size(84, 23);
-            this.btnTrainModel.TabIndex = 54;
-            this.btnTrainModel.Text = "Train Model";
-            this.btnTrainModel.UseVisualStyleBackColor = true;
-            this.btnTrainModel.Click += new System.EventHandler(this.btnTrainModel_Click);
             // 
             // btnColumnVisibilityWithTagEditor
             // 
             this.btnColumnVisibilityWithTagEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnColumnVisibilityWithTagEditor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnColumnVisibilityWithTagEditor.Image = ((System.Drawing.Image)(resources.GetObject("btnColumnVisibilityWithTagEditor.Image")));
-            this.btnColumnVisibilityWithTagEditor.Location = new System.Drawing.Point(1171, 14);
+            this.btnColumnVisibilityWithTagEditor.Location = new System.Drawing.Point(1183, 14);
             this.btnColumnVisibilityWithTagEditor.Name = "btnColumnVisibilityWithTagEditor";
             this.btnColumnVisibilityWithTagEditor.Size = new System.Drawing.Size(31, 23);
             this.btnColumnVisibilityWithTagEditor.TabIndex = 24;
             this.btnColumnVisibilityWithTagEditor.UseVisualStyleBackColor = true;
             this.btnColumnVisibilityWithTagEditor.Click += new System.EventHandler(this.btnColumnVisibility_Click);
             // 
+            // btnGenerateTrainingSet
+            // 
+            this.btnGenerateTrainingSet.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnGenerateTrainingSet.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnGenerateTrainingSet.Location = new System.Drawing.Point(300, 649);
+            this.btnGenerateTrainingSet.Name = "btnGenerateTrainingSet";
+            this.btnGenerateTrainingSet.Size = new System.Drawing.Size(124, 23);
+            this.btnGenerateTrainingSet.TabIndex = 52;
+            this.btnGenerateTrainingSet.Text = "Generate Training Set";
+            this.btnGenerateTrainingSet.UseVisualStyleBackColor = true;
+            this.btnGenerateTrainingSet.Click += new System.EventHandler(this.btnGenerateTrainingSet_Click);
+            // 
+            // dgvTrackList
+            // 
+            this.dgvTrackList.AllowDrop = true;
+            this.dgvTrackList.AllowUserToAddRows = false;
+            this.dgvTrackList.AllowUserToDeleteRows = false;
+            this.dgvTrackList.AllowUserToResizeRows = false;
+            this.dgvTrackList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgvTrackList.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvTrackList.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
+            this.dgvTrackList.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
+            this.dgvTrackList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            this.dgvTrackList.Location = new System.Drawing.Point(199, 101);
+            this.dgvTrackList.Name = "dgvTrackList";
+            this.dgvTrackList.ReadOnly = true;
+            this.dgvTrackList.RowHeadersVisible = false;
+            this.dgvTrackList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvTrackList.Size = new System.Drawing.Size(773, 542);
+            this.dgvTrackList.TabIndex = 16;
+            this.dgvTrackList.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTrackList_CellClick);
+            this.dgvTrackList.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvTrackList_ColumnHeaderMouseClick);
+            this.dgvTrackList.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this.dgvTrackList_DataBindingComplete);
+            this.dgvTrackList.SelectionChanged += new System.EventHandler(this.dgvTrackList_SelectionChanged);
+            this.dgvTrackList.DragDrop += new System.Windows.Forms.DragEventHandler(this.dgvTrackList_DragDrop);
+            this.dgvTrackList.DragEnter += new System.Windows.Forms.DragEventHandler(this.dgvTrackList_DragEnter);
+            this.dgvTrackList.DragOver += new System.Windows.Forms.DragEventHandler(this.dgvTrackList_DragOver);
+            this.dgvTrackList.DragLeave += new System.EventHandler(this.dgvTrackList_DragLeave);
+            this.dgvTrackList.Paint += new System.Windows.Forms.PaintEventHandler(this.dgvTrackList_Paint);
+            this.dgvTrackList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvTrackList_KeyDown);
+            this.dgvTrackList.KeyUp += new System.Windows.Forms.KeyEventHandler(this.dgvTrackList_KeyUp);
+            this.dgvTrackList.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.dgvTrackList_MouseDoubleClick);
+            this.dgvTrackList.MouseDown += new System.Windows.Forms.MouseEventHandler(this.dgvTrackList_MouseDown);
+            this.dgvTrackList.MouseMove += new System.Windows.Forms.MouseEventHandler(this.dgvTrackList_MouseMove);
+            this.dgvTrackList.MouseUp += new System.Windows.Forms.MouseEventHandler(this.dgvTrackList_MouseUp);
+            // 
             // PlaylistView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(1252, 678);
-            this.Controls.Add(this.btnTrainModel);
-            this.Controls.Add(this.lblLog);
-            this.Controls.Add(this.lblTracksInTheModel);
-            this.Controls.Add(this.btnDetectKey);
-            this.Controls.Add(this.btnAddTrackToModel);
-            this.Controls.Add(this.btnCreateModel);
+            this.ClientSize = new System.Drawing.Size(1264, 681);
+            this.Controls.Add(this.btnGenerateTrainingSet);
             this.Controls.Add(this.lblMessage);
             this.Controls.Add(this.grbCovers);
             this.Controls.Add(this.lblTrackSumLength);
@@ -697,15 +600,16 @@ namespace MitoPlayer_2024.Views
             this.Controls.Add(this.btnColumnVisibilityWithTagEditor);
             this.Controls.Add(this.dgvTrackList);
             this.Name = "PlaylistView";
+            this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Player";
             this.Shown += new System.EventHandler(this.PlaylistView_Shown);
             this.contextMenuStrip1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvPlaylistList)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvTrackList)).EndInit();
             this.pnlPlaylistList.ResumeLayout(false);
             this.pnlTagComponent.ResumeLayout(false);
             this.pnlTagComponent.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvTrackList)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -746,11 +650,6 @@ namespace MitoPlayer_2024.Views
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripMenuItem exportToM3UToolStripMenuItem1;
-        private System.Windows.Forms.ToolStripMenuItem setQuicklistGroupToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem setGroup1ToolStripMenuItem1;
-        private System.Windows.Forms.ToolStripMenuItem setGroup2ToolStripMenuItem1;
-        private System.Windows.Forms.ToolStripMenuItem setGroup3ToolStripMenuItem1;
-        private System.Windows.Forms.ToolStripMenuItem setGroup4ToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem exportToDirToolStripMenuItem;
         private System.Windows.Forms.Panel tagValueEditorPanel;
         private System.Windows.Forms.CheckBox chbOnlyPlayingRowModeEnabled;
@@ -765,11 +664,7 @@ namespace MitoPlayer_2024.Views
         private System.Windows.Forms.Button btnFilter;
         private System.Windows.Forms.GroupBox grbCovers;
         private System.Windows.Forms.Label lblMessage;
-        private System.Windows.Forms.Button btnCreateModel;
-        private System.Windows.Forms.Button btnDetectKey;
-        private System.Windows.Forms.Button btnAddTrackToModel;
-        private System.Windows.Forms.Label lblTracksInTheModel;
-        private System.Windows.Forms.Label lblLog;
-        private System.Windows.Forms.Button btnTrainModel;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+        private System.Windows.Forms.Button btnGenerateTrainingSet;
     }
 }

@@ -1387,6 +1387,195 @@ namespace MitoPlayer_2024.Dao
         }
         #endregion
 
+        public List<TrainingData> GetAllTrainingData()
+        {
+            List<TrainingData> trainingDataList = new List<TrainingData>();
+
+            using (var connection = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand())
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"SELECT * FROM TrainingData 
+                                        WHERE ProfileId = @ProfileId 
+                                        ORDER BY CreateDate DESC";
+
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var trainingData = new TrainingData();
+                        trainingData.Id = (int)reader[0];
+                        trainingData.FilePath = (string)reader[1];
+                        trainingData.TagId = (int)reader[2];
+                        trainingData.Name = (string)reader[3];
+                        trainingData.CreateDate = Convert.ToDateTime(reader[4]);
+                        trainingData.SampleCount = (int)reader[5];
+                        trainingData.Balance = (Decimal)reader[6];
+                        trainingData.IsTemplate = Convert.ToBoolean(reader[7]);
+                        trainingData.ExtractChromaFeatures = Convert.ToBoolean(reader[8]);
+                        trainingData.ExtractMFCCs = Convert.ToBoolean(reader[9]);
+                        trainingData.ExtractSpectralContrast = Convert.ToBoolean(reader[10]);
+                        trainingData.ExtractHPCP = Convert.ToBoolean(reader[11]);
+                        trainingData.ExtractSpectralCentroid = Convert.ToBoolean(reader[12]);
+                        trainingData.ExtractSpectralBandwidth = Convert.ToBoolean(reader[13]);
+                        trainingData.HarmonicPercussiveSeparation = Convert.ToBoolean(reader[14]);
+                        trainingData.ExtractTonnetzFeatures = Convert.ToBoolean(reader[15]);
+                        trainingData.ExtractZeroCrossingRate = Convert.ToBoolean(reader[16]);
+                        trainingData.ExtractRmsEnergy = Convert.ToBoolean(reader[17]);
+                        trainingData.ExtractPitch = Convert.ToBoolean(reader[18]);
+                        trainingData.ProfileId = (int)reader[19];
+                        trainingDataList.Add(trainingData);
+                    }
+                }
+                connection.Close();
+            }
+            return trainingDataList;
+        }
+        public TrainingData GetTrainingData(int id)
+        {
+            TrainingData trainingData = new TrainingData();
+
+            using (var connection = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand())
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"SELECT * FROM TrainingData 
+                                        WHERE ProfileId = @ProfileId 
+                                        AND Id = @Id  
+                                        ORDER BY CreateDate DESC";
+
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
+                command.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        trainingData.Id = (int)reader[0];
+                        trainingData.FilePath = (string)reader[1];
+                        trainingData.TagId = (int)reader[2];
+                        trainingData.Name = (string)reader[3];
+                        trainingData.CreateDate = Convert.ToDateTime(reader[4]);
+                        trainingData.SampleCount = (int)reader[5];
+                        trainingData.Balance = (Decimal)reader[6];
+                        trainingData.IsTemplate = Convert.ToBoolean(reader[7]);
+                        trainingData.ExtractChromaFeatures = Convert.ToBoolean(reader[8]);
+                        trainingData.ExtractMFCCs = Convert.ToBoolean(reader[9]);
+                        trainingData.ExtractSpectralContrast = Convert.ToBoolean(reader[10]);
+                        trainingData.ExtractHPCP = Convert.ToBoolean(reader[11]);
+                        trainingData.ExtractSpectralCentroid = Convert.ToBoolean(reader[12]);
+                        trainingData.ExtractSpectralBandwidth = Convert.ToBoolean(reader[13]);
+                        trainingData.HarmonicPercussiveSeparation = Convert.ToBoolean(reader[14]);
+                        trainingData.ExtractTonnetzFeatures = Convert.ToBoolean(reader[15]);
+                        trainingData.ExtractZeroCrossingRate = Convert.ToBoolean(reader[16]);
+                        trainingData.ExtractRmsEnergy = Convert.ToBoolean(reader[17]);
+                        trainingData.ExtractPitch = Convert.ToBoolean(reader[18]);
+                        trainingData.ProfileId = (int)reader[19];
+
+                        break;
+                    }
+                }
+                connection.Close();
+            }
+            return trainingData;
+        }
+        public ResultOrError CreateTrainingData(TrainingData trainingData)
+        {
+            ResultOrError result = new ResultOrError();
+            using (var connection = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand())
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"INSERT INTO trainingdata values ( 
+                                        @Id, 
+                                        @FilePath,
+                                        @TagId,
+                                        @Name, 
+                                        @CreateDate, 
+                                        @SampleCount, 
+                                        @Balance,
+                                        @IsTemplate,
+                                        @ExtractChromaFeatures,             
+                                        @ExtractMFCCs,
+                                        @ExtractSpectralContrast,
+                                        @ExtractHPCP,
+                                        @ExtractSpectralCentroid,
+                                        @ExtractSpectralBandwidth,
+                                        @HarmonicPercussiveSeparation,
+                                        @ExtractTonnetzFeatures,                                  
+                                        @ExtractZeroCrossingRate,
+                                        @ExtractRmsEnergy,
+                                        @ExtractPitch,
+                                        @ProfileId )";
+
+                command.Parameters.Add("@Id", MySqlDbType.Int32).Value = trainingData.Id;
+                command.Parameters.Add("@FilePath", MySqlDbType.VarChar).Value = trainingData.FilePath;
+                command.Parameters.Add("@TagId", MySqlDbType.Int32).Value = trainingData.TagId;
+                command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = trainingData.Name;
+                command.Parameters.Add("@CreateDate", MySqlDbType.DateTime).Value = trainingData.CreateDate;
+                command.Parameters.Add("@SampleCount", MySqlDbType.Int32).Value = trainingData.SampleCount;
+                command.Parameters.Add("@Balance", MySqlDbType.Decimal).Value = trainingData.Balance;
+                command.Parameters.Add("@IsTemplate", MySqlDbType.Bit).Value = trainingData.IsTemplate;
+                command.Parameters.Add("@ExtractChromaFeatures", MySqlDbType.Bit).Value = trainingData.ExtractChromaFeatures;
+                command.Parameters.Add("@ExtractMFCCs", MySqlDbType.Bit).Value = trainingData.ExtractMFCCs;
+                command.Parameters.Add("@ExtractSpectralContrast", MySqlDbType.Bit).Value = trainingData.ExtractSpectralContrast;
+                command.Parameters.Add("@ExtractHPCP", MySqlDbType.Bit).Value = trainingData.ExtractHPCP;
+                command.Parameters.Add("@ExtractSpectralCentroid", MySqlDbType.Bit).Value = trainingData.ExtractSpectralCentroid;
+                command.Parameters.Add("@ExtractSpectralBandwidth", MySqlDbType.Bit).Value = trainingData.ExtractSpectralBandwidth;
+                command.Parameters.Add("@HarmonicPercussiveSeparation", MySqlDbType.Bit).Value = trainingData.HarmonicPercussiveSeparation;
+                command.Parameters.Add("@ExtractTonnetzFeatures", MySqlDbType.Bit).Value = trainingData.ExtractTonnetzFeatures;
+                command.Parameters.Add("@ExtractZeroCrossingRate", MySqlDbType.Bit).Value = trainingData.ExtractZeroCrossingRate;
+                command.Parameters.Add("@ExtractRmsEnergy", MySqlDbType.Bit).Value = trainingData.ExtractRmsEnergy;
+                command.Parameters.Add("@ExtractPitch", MySqlDbType.Bit).Value = trainingData.ExtractPitch;
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
+
+                try
+                {
+                    command.ExecuteNonQuery();
+                }
+                catch (MySqlException ex)
+                {
+                    result.AddError("TrainingData [" + trainingData.Name + " " + trainingData.CreateDate.ToShortDateString() + " " + trainingData.CreateDate.ToShortTimeString() + "] is not inserted. \n" + ex.Message);
+                }
+                connection.Close();
+            }
+            return result;
+        }
+        public void DeleteTrainingData(int id)
+        {
+            using (var connection = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand())
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"DELETE FROM TrainingData 
+                                        WHERE Id = @Id 
+                                        AND ProfileId = @ProfileId";
+
+                command.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
+
+                try
+                {
+                    command.ExecuteNonQuery();
+                }
+                catch (MySqlException ex)
+                {
+                    MessageBox.Show("TrainingData is not deleted. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                connection.Close();
+            }
+        }
+
         /*
        public int GetNextLastSmallestTrackIdInPlaylist()
        {

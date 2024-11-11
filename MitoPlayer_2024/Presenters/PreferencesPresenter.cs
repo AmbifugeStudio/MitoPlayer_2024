@@ -27,6 +27,8 @@ namespace MitoPlayer_2024.Presenters
         private bool playTrackAfterOpenFiles;
         private bool hasVirtualDj;
         private int previewPercentage;
+        private bool isShortTrackColouringEnabled;
+        private decimal shortTrackColouringThreshold;
 
         public bool databaseCleared = false;
         public PreferencesPresenter(IPreferencesView view, ITrackDao trackDao,ITagDao tagDao, IProfileDao profileDao, ISettingDao settingDao)
@@ -42,6 +44,8 @@ namespace MitoPlayer_2024.Presenters
             this.virtualDjDatabasePath = this.settingDao.GetStringSetting(Settings.VirtualDjDatabasePath.ToString());
             this.playTrackAfterOpenFiles = this.settingDao.GetBooleanSetting(Settings.PlayTrackAfterOpenFiles.ToString()).Value;
             this.previewPercentage = this.settingDao.GetIntegerSetting(Settings.PreviewPercentage.ToString());
+            this.isShortTrackColouringEnabled = this.settingDao.GetBooleanSetting(Settings.IsShortTrackColouringEnabled.ToString()).Value;
+            this.shortTrackColouringThreshold = this.settingDao.GetDecimalSetting(Settings.ShortTrackColouringThreshold.ToString());
 
             this.hasVirtualDj = this.HasVirtualDj();
 
@@ -51,7 +55,9 @@ namespace MitoPlayer_2024.Presenters
                 this.virtualDjDatabasePath,
                 this.playTrackAfterOpenFiles,
                 this.hasVirtualDj,
-                this.previewPercentage);
+                this.previewPercentage,
+                this.isShortTrackColouringEnabled,
+                this.shortTrackColouringThreshold);
 
             this.view.CloseViewWithOkEvent += CloseViewWithOkEvent;
             this.view.CloseViewWithCancelEvent += CloseViewWithCancelEvent;
@@ -61,7 +67,12 @@ namespace MitoPlayer_2024.Presenters
             this.view.SetVirtualDjDatabasePathEvent += SetVirtualDjDatabasePathEvent;
             this.view.SetPlayTrackAfterOpenFilesEvent += SetPlayTrackAfterOpenFilesEvent;
             this.view.SetPreviewPercentageEvent += SetPreviewPercentageEvent;
+            this.view.SetShortTrackColouringEvent += SetShortTrackColouringEvent;
+            this.view.SetShortTrackColouringThresholdEvent += SetShortTrackColouringThresholdEvent;
+
         }
+
+        
 
         private bool HasVirtualDj()
         {
@@ -126,6 +137,16 @@ namespace MitoPlayer_2024.Presenters
         {
             this.previewPercentage = Convert.ToInt32(e.DecimalField1);
         }
+
+        private void SetShortTrackColouringThresholdEvent(object sender, ListEventArgs e)
+        {
+           this.isShortTrackColouringEnabled = e.BooleanField1;
+        }
+
+        private void SetShortTrackColouringEvent(object sender, ListEventArgs e)
+        {
+            this.shortTrackColouringThreshold = Convert.ToInt32(e.DecimalField1);
+        }
         private void CloseViewWithOkEvent(object sender, EventArgs e)
         {
            /* if (!File.Exists(this.virtualDjDatabasePath))
@@ -141,7 +162,9 @@ namespace MitoPlayer_2024.Presenters
             this.settingDao.SetBooleanSetting(Settings.AutomaticKeyImport.ToString(), this.automaticKeyImport);
             this.settingDao.SetStringSetting(Settings.VirtualDjDatabasePath.ToString(), this.virtualDjDatabasePath);
             this.settingDao.SetBooleanSetting(Settings.PlayTrackAfterOpenFiles.ToString(), this.playTrackAfterOpenFiles);
-            this.settingDao.SetIntegerSetting(Settings.PreviewPercentage.ToString(), this.previewPercentage);
+            this.settingDao.SetBooleanSetting(Settings.PlayTrackAfterOpenFiles.ToString(), this.playTrackAfterOpenFiles);
+            this.settingDao.SetBooleanSetting(Settings.IsShortTrackColouringEnabled.ToString(), this.isShortTrackColouringEnabled);
+            this.settingDao.SetDecimalSetting(Settings.ShortTrackColouringThreshold.ToString(), this.shortTrackColouringThreshold);
 
             ((PreferencesView)this.view).DialogResult = DialogResult.OK;
             ((PreferencesView)this.view).Close();

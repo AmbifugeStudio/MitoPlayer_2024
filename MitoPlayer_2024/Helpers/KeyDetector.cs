@@ -407,9 +407,9 @@ namespace MitoPlayer_2024.Helpers
         }
         public static class FeatureConstants
         {
-            public const int FeatureCount = 44;
+            public int FeatureCount = 44;
         }
-        public class AudioData
+        private class AudioData
         {
             [LoadColumn(0)]
             public string Path { get; set; }

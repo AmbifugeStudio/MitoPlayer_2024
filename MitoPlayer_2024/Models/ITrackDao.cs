@@ -62,5 +62,10 @@ namespace MitoPlayer_2024.Model
         void DeleteAllTrackTagValue();
         void ClearTrackTagValueTable();
         #endregion
+
+        List<TrainingData> GetAllTrainingData();
+        ResultOrError CreateTrainingData(TrainingData trainingData);
+        TrainingData GetTrainingData(int id);
+        void DeleteTrainingData(int id);
     }
 }

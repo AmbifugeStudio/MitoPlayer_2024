@@ -210,6 +210,14 @@ namespace MitoPlayer_2024.Dao
                 this.InitializeBooleanSetting(Settings.IsPreviewEnabled.ToString());
             if (result.Success)
                 this.InitializeIntegerSetting(Settings.PreviewPercentage.ToString());
+            if (result.Success)
+                this.InitializeBooleanSetting(Settings.IsShortTrackColouringEnabled.ToString());
+            if (result.Success)
+                this.InitializeDecimalSetting(Settings.ShortTrackColouringThreshold.ToString()); 
+            if (result.Success)
+                this.InitializeIntegerSetting(Settings.TrainingModelBatchCount.ToString());
+            if (result.Success)
+                this.InitializeBooleanSetting(Settings.IsTracklistDetailsDisplayed.ToString());
 
             return result;
         }

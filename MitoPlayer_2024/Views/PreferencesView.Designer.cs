@@ -30,6 +30,8 @@
         {
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabGeneral = new System.Windows.Forms.TabPage();
+            this.txtbShortTrackColouringThreshold = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.label2 = new System.Windows.Forms.Label();
             this.nmdPreviewPercentage = new System.Windows.Forms.NumericUpDown();
@@ -39,6 +41,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.chbAutomaticKeyImport = new System.Windows.Forms.CheckBox();
             this.chbAutomaticBpmImport = new System.Windows.Forms.CheckBox();
+            this.chbShortTrackColouring = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.btnClear = new System.Windows.Forms.Button();
             this.btnOk = new System.Windows.Forms.Button();
@@ -65,8 +68,11 @@
             // 
             // tabGeneral
             // 
+            this.tabGeneral.Controls.Add(this.txtbShortTrackColouringThreshold);
+            this.tabGeneral.Controls.Add(this.label3);
             this.tabGeneral.Controls.Add(this.groupBox3);
             this.tabGeneral.Controls.Add(this.groupBox2);
+            this.tabGeneral.Controls.Add(this.chbShortTrackColouring);
             this.tabGeneral.Controls.Add(this.groupBox1);
             this.tabGeneral.Location = new System.Drawing.Point(4, 22);
             this.tabGeneral.Name = "tabGeneral";
@@ -75,6 +81,23 @@
             this.tabGeneral.TabIndex = 0;
             this.tabGeneral.Text = "General";
             this.tabGeneral.UseVisualStyleBackColor = true;
+            // 
+            // txtbShortTrackColouringThreshold
+            // 
+            this.txtbShortTrackColouringThreshold.Location = new System.Drawing.Point(209, 213);
+            this.txtbShortTrackColouringThreshold.Name = "txtbShortTrackColouringThreshold";
+            this.txtbShortTrackColouringThreshold.Size = new System.Drawing.Size(54, 20);
+            this.txtbShortTrackColouringThreshold.TabIndex = 4;
+            this.txtbShortTrackColouringThreshold.TextChanged += new System.EventHandler(this.txtbShortTrackColouringThreshold_TextChanged);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(9, 216);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(194, 13);
+            this.label3.TabIndex = 5;
+            this.label3.Text = "Short track colouring threshold (minute):";
             // 
             // groupBox3
             // 
@@ -174,6 +197,17 @@
             this.chbAutomaticBpmImport.UseVisualStyleBackColor = true;
             this.chbAutomaticBpmImport.CheckedChanged += new System.EventHandler(this.chbAutomaticBpmImport_CheckedChanged);
             // 
+            // chbShortTrackColouring
+            // 
+            this.chbShortTrackColouring.AutoSize = true;
+            this.chbShortTrackColouring.Location = new System.Drawing.Point(12, 193);
+            this.chbShortTrackColouring.Name = "chbShortTrackColouring";
+            this.chbShortTrackColouring.Size = new System.Drawing.Size(124, 17);
+            this.chbShortTrackColouring.TabIndex = 3;
+            this.chbShortTrackColouring.Text = "Short track colouring";
+            this.chbShortTrackColouring.UseVisualStyleBackColor = true;
+            this.chbShortTrackColouring.CheckedChanged += new System.EventHandler(this.chbShortTrackColouring_CheckedChanged);
+            // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.btnClear);
@@ -230,6 +264,7 @@
             this.Text = "PreferencesView";
             this.tabControl1.ResumeLayout(false);
             this.tabGeneral.ResumeLayout(false);
+            this.tabGeneral.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nmdPreviewPercentage)).EndInit();
@@ -257,5 +292,8 @@
         private System.Windows.Forms.CheckBox chbPlayTrackAfterOpenFiles;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.NumericUpDown nmdPreviewPercentage;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox txtbShortTrackColouringThreshold;
+        private System.Windows.Forms.CheckBox chbShortTrackColouring;
     }
 }

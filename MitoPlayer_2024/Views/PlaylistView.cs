@@ -93,10 +93,13 @@ namespace MitoPlayer_2024.Views
         public event EventHandler SaveTrackListEvent;
 
         public event EventHandler TrainKeyDetectorEvent;
+        
         public event EventHandler<ListEventArgs> DetectKeyEvent;
         public event EventHandler<ListEventArgs> AddToKeyDetectorEvent;
         
         public event EventHandler CreateModelEvent;
+
+        public event EventHandler OpenModelTrainerEvent;
 
         private int trackListLeftOffset = 190;
         private int trackListRightOffset = 285;
@@ -212,7 +215,9 @@ namespace MitoPlayer_2024.Views
 
             this.lblMessage.ForeColor = this.ActiveButtonColor;
 
-            
+            this.btnGenerateTrainingSet.BackColor = this.ButtonColor;
+            this.btnGenerateTrainingSet.ForeColor = this.FontColor;
+            this.btnGenerateTrainingSet.FlatAppearance.BorderColor = this.ButtonBorderColor;
 
         }
 
@@ -329,13 +334,13 @@ namespace MitoPlayer_2024.Views
                 }
             }
                
-            if (model.ColumnDisplayIndexArray != null && model.ColumnDisplayIndexArray.Length > 0)
+          /*  if (model.ColumnDisplayIndexArray != null && model.ColumnDisplayIndexArray.Length > 0)
             {
                 for (int i = 0; i <= this.dgvTrackList.Columns.Count - 1; i++)
                 {
                     this.dgvTrackList.Columns[i].DisplayIndex = model.ColumnDisplayIndexArray[i];
                 }
-            }
+            }*/
 
             this.trackListBindingSource.ResetBindings(false);
 
@@ -2503,19 +2508,12 @@ namespace MitoPlayer_2024.Views
 
         public void UpdateTrackCountInModel(int count)
         {
-            if(count > 0)
-            {
-                this.lblTracksInTheModel.Text = "Tracks in model:" + count.ToString();
-            }
-            else
-            {
-                this.lblTracksInTheModel.Text = "";
-            }
-            
+
         }
         public void UpdateLog(String message)
         {
-            this.lblLog.Text = message;
+           
+            this.lblMessage.Text = message;
         }
 
         private void btnCreateModel_Click(object sender, EventArgs e)
@@ -2531,6 +2529,21 @@ namespace MitoPlayer_2024.Views
         private void PlaylistView_Shown(object sender, EventArgs e)
         {
             this.ToggleTracklistSelection(true);
+        }
+
+
+
+        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            if (this.dgvPlaylistList.SelectedRows.Count > 0)
+            {
+                
+            }
+        }
+
+        private void btnGenerateTrainingSet_Click(object sender, EventArgs e)
+        {
+            this.OpenModelTrainerEvent?.Invoke(this, new EventArgs());
         }
     }
 }

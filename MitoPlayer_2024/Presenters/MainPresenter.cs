@@ -321,6 +321,31 @@ namespace MitoPlayer_2024.Presenters
                 result = this.tagDao.CreateTagValue(tv);
             }
 
+            if (result.Success)
+            {
+                TrainingData trainingData = new TrainingData()
+                {
+                    Id = this.trackDao.GetNextId(TableName.TrainingData.ToString()),
+                    Name = "VocalTemplate",
+                    CreateDate = DateTime.Now,
+                    SampleCount = 0,
+                    Balance = 0,
+                    ExtractMFCCs = true,
+                    ExtractChromaFeatures = true,
+                    ExtractSpectralContrast = true,
+                    ExtractZeroCrossingRate = true,
+                    ExtractRmsEnergy = true,
+                    ExtractPitch = true,
+                    ExtractSpectralCentroid = true,
+                    ExtractSpectralBandwidth = true,
+                    IsTemplate = true,
+                    ProfileId = profileId
+
+                };
+
+                this.trackDao.CreateTrainingData(trainingData);
+            }
+
             return result;    
 
            /* List<TrackProperty> defaultTpList = new List<TrackProperty>();
@@ -438,19 +463,20 @@ namespace MitoPlayer_2024.Presenters
             bool automaticKeyImport = this.settingDao.GetBooleanSetting(Settings.AutomaticKeyImport.ToString()).Value;
             bool automaticBpmImport = this.settingDao.GetBooleanSetting(Settings.AutomaticBpmImport.ToString()).Value;
 
-            if (this.playlistView != null && this.actualView.GetType() == typeof(PlaylistView))
+            if (this.playlistView != null && this.actualView != null && this.actualView.GetType() == typeof(PlaylistView))
             {
                 if((automaticKeyImport == false && automaticBpmImport == false) ||(automaticKeyImport == true || automaticBpmImport == true))
                 {
                     ((PlaylistView)this.playlistView).SetKeyAndBpmAnalization(this.HasVirtualDj() && (automaticKeyImport || automaticBpmImport));
                 }
             }
-                
+
+            this.ReloadMainView();
 
             /*if (presenter.databaseCleared)
             {
                 presenter.databaseCleared = false;
-                this.ReloadMainView();
+               
             }*/
         }
         private void ShowAboutView(object sender, EventArgs e)
