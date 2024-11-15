@@ -7,6 +7,7 @@ using MitoPlayer_2024.Views;
 using MySql.Data.MySqlClient;
 using MySqlX.XDevAPI.Common;
 using NAudio.Wave;
+using Org.BouncyCastle.Asn1.X509;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -108,8 +109,12 @@ namespace MitoPlayer_2024.Presenters
             this.mainView.ExportToTXT += ExportToTXT;
             this.mainView.ExportToDirectory += ExportToDirectory;
             this.mainView.GetMediaPlayerProgressStatusEvent += GetMediaPlayerProgressStatusEvent;
+
+            this.mainView.OpenChartEvent += OpenChartEvent;
             //Other
             this.mainView.Exit += Exit;
+
+
 
             this.settingDao = settingDao;
             this.profileDao = new ProfileDao(connectionString);
@@ -119,6 +124,30 @@ namespace MitoPlayer_2024.Presenters
             this.InitializeProfileAndPlaylist();
             this.InitializeViewsAndPresenters();
         }
+
+        private ChartView chartView { get;set; }
+        private ChartPresenter chartPresenter { get;set; }
+        private void OpenChartEvent(object sender, EventArgs e)
+        {
+            if (this.mediaPlayerComponent != null && this.mediaPlayerComponent.CurrentTrackIdInPlaylist > -1)
+            {
+                if (this.chartView == null || this.chartView.IsDisposed)
+                {
+                    this.chartView = new ChartView();
+                    this.chartPresenter = new ChartPresenter(chartView, this.mediaPlayerComponent, this.tagDao, this.trackDao, this.settingDao);
+                    this.chartView.Show();
+                } 
+                else 
+                {
+                    bool isFormOpen = Application.OpenForms.OfType<ChartView>().Any();
+                    if (!isFormOpen)
+                    {
+                        this.chartView.BringToFront();
+                    }
+                }
+            }
+        }
+
         public void InitializeViewsAndPresenters()
         {
             this.playlistView = PlaylistView.GetInstance((MainView)this.mainView);
@@ -739,7 +768,7 @@ namespace MitoPlayer_2024.Presenters
             else if (this.actualView != null && this.actualView.GetType() == typeof(HarmonizerView))
                 ((HarmonizerView)this.actualView).CallRandomTrackEvent();
         }
-        private void ChangeProgress(object sender, ListEventArgs e)
+        private void ChangeProgress(object sender, Messenger e)
         {
             if (this.actualView != null && this.actualView.GetType() == typeof(PlaylistView))
                 this.playlistPresenter.CallChangeProgressEvent(e.IntegerField1, e.IntegerField2);
@@ -748,7 +777,7 @@ namespace MitoPlayer_2024.Presenters
             else if (this.actualView != null && this.actualView.GetType() == typeof(HarmonizerView))
                 this.harmonizerPresenter.CallChangeProgressEvent(e.IntegerField1, e.IntegerField2);
         }
-        private void ChangeVolume(object sender, ListEventArgs e)
+        private void ChangeVolume(object sender, Messenger e)
         {
             if (this.actualView != null && this.actualView.GetType() == typeof(PlaylistView))
                 this.playlistPresenter.CallChangeVolumeEvent(e.IntegerField1);
@@ -757,7 +786,7 @@ namespace MitoPlayer_2024.Presenters
             else if (this.actualView != null && this.actualView.GetType() == typeof(HarmonizerView))
                 this.harmonizerPresenter.CallChangeVolumeEvent(e.IntegerField1);
         }
-        private void ChangeMute(object sender, ListEventArgs e)
+        private void ChangeMute(object sender, Messenger e)
         {
 
 
@@ -769,7 +798,7 @@ namespace MitoPlayer_2024.Presenters
             else if (this.actualView != null && this.actualView.GetType() == typeof(HarmonizerView))
                 this.harmonizerPresenter.CallChangeMuteEvent(e.BooleanField1);
         }
-        private void ChangeShuffle(object sender, ListEventArgs e)
+        private void ChangeShuffle(object sender, Messenger e)
         {
             if (this.actualView != null && this.actualView.GetType() == typeof(PlaylistView))
                 this.playlistPresenter.CallChangeShuffleEvent(e.BooleanField1);
@@ -778,7 +807,7 @@ namespace MitoPlayer_2024.Presenters
             else if (this.actualView != null && this.actualView.GetType() == typeof(HarmonizerView))
                 this.harmonizerPresenter.CallChangeShuffleEvent(e.BooleanField1);
         }
-        private void ChangePreview(object sender, ListEventArgs e)
+        private void ChangePreview(object sender, Messenger e)
         {
             if (this.actualView != null && this.actualView.GetType() == typeof(PlaylistView))
                 this.playlistPresenter.CallChangePreviewEvent(e.BooleanField1);
@@ -1010,7 +1039,7 @@ namespace MitoPlayer_2024.Presenters
 
         private String[] scannedFiles;
         private List<Model.Track> trackList = new List<Model.Track>();
-        private void ScanFiles(object sender, ListEventArgs e)
+        private void ScanFiles(object sender, Messenger e)
         {
             string[] mediaFiles;
             string[] directories;
@@ -1049,11 +1078,29 @@ namespace MitoPlayer_2024.Presenters
                     this.mediaPlayerComponent.GetDurationString(),
                     this.mediaPlayerComponent.GetCurrentPosition(),
                     this.mediaPlayerComponent.GetCurrentPositionString());
-                
             }
             else
             {
                 this.mainView.ResetMediaPlayerProgressStatus();
+                
+            }
+
+            if (this.mediaPlayerComponent.MediaPlayer.playState == WMPLib.WMPPlayState.wmppsPlaying ||
+                this.mediaPlayerComponent.MediaPlayer.playState == WMPLib.WMPPlayState.wmppsPaused)
+            {
+                bool isFormOpen = Application.OpenForms.OfType<ChartView>().Any();
+                if (this.chartView != null && isFormOpen)
+                {
+                    this.chartPresenter.UpdateLinePosition(this.mediaPlayerComponent.MediaPlayer.Ctlcontrols.currentPosition);
+                }
+            }
+            else
+            {
+                bool isFormOpen = Application.OpenForms.OfType<ChartView>().Any();
+                if (this.chartView != null && isFormOpen)
+                {
+                    this.chartPresenter.UpdateLinePosition(0);
+                }
             }
         }
     }

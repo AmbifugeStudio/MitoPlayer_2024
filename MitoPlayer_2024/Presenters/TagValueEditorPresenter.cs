@@ -74,7 +74,7 @@ namespace MitoPlayer_2024.Presenters
             this.view.CloseWithCancel += CloseWithCancel;
         }
 
-        private void ChangeName(object sender, ListEventArgs e)
+        private void ChangeName(object sender, Messenger e)
         {
             this.tagValueName = e.StringField1;
         }
@@ -89,7 +89,7 @@ namespace MitoPlayer_2024.Presenters
                 ((TagValueEditorView)this.view).SetColor(this.tagValueColor);
             }
         } 
-        private void ChangeHotkey(object sender, ListEventArgs e)
+        private void ChangeHotkey(object sender, Messenger e)
         {
             this.tagValueHotkey = e.IntegerField1;
         }

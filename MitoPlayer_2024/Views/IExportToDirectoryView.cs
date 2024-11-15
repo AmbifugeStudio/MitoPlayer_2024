@@ -13,14 +13,14 @@ namespace MitoPlayer_2024.Views
         event EventHandler CloseViewWithOk;
         event EventHandler CloseViewWithCancel;
         event EventHandler BrowseEvent;
-        event EventHandler<ListEventArgs> SetRowNumberEvent;
-        event EventHandler<ListEventArgs> SetKeyCodeEvent;
-        event EventHandler<ListEventArgs> SetBpmNumberEvent;
-        event EventHandler<ListEventArgs> SetTrunkBpmEvent;
-        event EventHandler<ListEventArgs> SetTrunkedArtistEvent;
-        event EventHandler<ListEventArgs> SetTrunkedTitleEvent;
-         event EventHandler<ListEventArgs> SetArtistMinimumCharacterEvent;
-         event EventHandler<ListEventArgs> SetTitleMinimumCharacterEvent;
+        event EventHandler<Messenger> SetRowNumberEvent;
+        event EventHandler<Messenger> SetKeyCodeEvent;
+        event EventHandler<Messenger> SetBpmNumberEvent;
+        event EventHandler<Messenger> SetTrunkBpmEvent;
+        event EventHandler<Messenger> SetTrunkedArtistEvent;
+        event EventHandler<Messenger> SetTrunkedTitleEvent;
+         event EventHandler<Messenger> SetArtistMinimumCharacterEvent;
+         event EventHandler<Messenger> SetTitleMinimumCharacterEvent;
         void InitializeView(String path, bool isRowNumberChecked, bool isKeyCodeChecked, bool isBpmNumberChecked, bool isTrunkBpmChecked,
              bool isTrunkedArtistChecked, bool isTrunkedTitleChecked, decimal artistMinimumCharacter, decimal titleMinimumCharacter);
         void SetTrackListBindingSource(BindingSource trackList);

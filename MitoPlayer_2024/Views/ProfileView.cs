@@ -15,9 +15,9 @@ namespace MitoPlayer_2024.Views
     {
         private BindingSource profiletListBindingSource { get; set; }
         public event EventHandler CreateProfileEvent;
-        public event EventHandler<ListEventArgs> SetProfileAsActiveEvent;
-        public event EventHandler<ListEventArgs> RenameProfileEvent;
-        public event EventHandler<ListEventArgs> DeleteProfileEvent;
+        public event EventHandler<Messenger> SetProfileAsActiveEvent;
+        public event EventHandler<Messenger> RenameProfileEvent;
+        public event EventHandler<Messenger> DeleteProfileEvent;
         public event EventHandler CloseProfileViewEvent;
 
         public ProfileView()
@@ -87,7 +87,7 @@ namespace MitoPlayer_2024.Views
         {
             if(this.dgvProfileList.SelectedRows != null && this.dgvProfileList.SelectedRows.Count > 0)
             {
-                this.SetProfileAsActiveEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = Convert.ToInt32(this.dgvProfileList.SelectedRows[0].Cells["Id"].Value) });
+                this.SetProfileAsActiveEvent?.Invoke(this, new Messenger() { IntegerField1 = Convert.ToInt32(this.dgvProfileList.SelectedRows[0].Cells["Id"].Value) });
             }
         }
 
@@ -95,7 +95,7 @@ namespace MitoPlayer_2024.Views
         {
             if (this.dgvProfileList.SelectedRows != null && this.dgvProfileList.SelectedRows.Count > 0)
             {
-                this.RenameProfileEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = Convert.ToInt32(this.dgvProfileList.SelectedRows[0].Cells["Id"].Value) });
+                this.RenameProfileEvent?.Invoke(this, new Messenger() { IntegerField1 = Convert.ToInt32(this.dgvProfileList.SelectedRows[0].Cells["Id"].Value) });
             }
         }
 
@@ -103,7 +103,7 @@ namespace MitoPlayer_2024.Views
         {
             if (this.dgvProfileList.SelectedRows != null && this.dgvProfileList.SelectedRows.Count > 0)
             {
-                this.DeleteProfileEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = Convert.ToInt32(this.dgvProfileList.SelectedRows[0].Cells["Id"].Value) });
+                this.DeleteProfileEvent?.Invoke(this, new Messenger() { IntegerField1 = Convert.ToInt32(this.dgvProfileList.SelectedRows[0].Cells["Id"].Value) });
             }
         }
 

@@ -13,6 +13,9 @@ using System.Threading.Tasks;
 using NAudio.Wave;
 using MathNet.Numerics.IntegralTransforms;
 using MathNet.Numerics;
+using System.Threading;
+using MathNet.Numerics.Statistics;
+using NWaves.Transforms;
 
 namespace MitoPlayer_2024.Helpers
 {
@@ -37,6 +40,441 @@ namespace MitoPlayer_2024.Helpers
         {
             
         }
+
+
+
+            public float[] ExtractFeatures(string filePath, int segmentSize, int sampleRate, CancellationToken cancellationToken)
+            {
+            List<float[]> chromaFeatureList = new List<float[]>();
+            List<float> pitchFeatureList = new List<float>();
+            List<float> spectralCentroidFeatureList = new List<float>();
+            List<float> spectralBandwidthFeatureList = new List<float>();
+            List<float[]> mfccFeatureList = new List<float[]>();
+            List<float> zeroCrossingRateFeatureList = new List<float>();
+            List<float> rmsEnergyFeatureList = new List<float>();
+
+            using (var reader = new AudioFileReader(filePath))
+                {
+                    var sampleProvider = reader.ToSampleProvider();
+                    float[] buffer = new float[segmentSize];
+                    int samplesRead;
+
+                    while ((samplesRead = sampleProvider.Read(buffer, 0, segmentSize)) > 0)
+                    {
+                        if (cancellationToken.IsCancellationRequested)
+                        {
+                            break;
+                        }
+
+                    // Perform FFT
+                    Complex[] fftBuffer = new Complex[buffer.Length];
+                    for (int i = 0; i < buffer.Length; i++)
+                    {
+                        fftBuffer[i].X = buffer[i];
+                        fftBuffer[i].Y = 0;
+                    }
+                    FastFourierTransform.FFT(true, (int)Math.Log(buffer.Length, 2.0), fftBuffer);
+
+                    // Extract features
+                    chromaFeatureList.Add(CalculateChromaFeatures(fftBuffer, buffer, sampleRate));
+                    pitchFeatureList.Add(CalculatePitchFeatures(buffer, sampleRate));
+                    spectralCentroidFeatureList.Add(CalculateSpectralCentroidFeatures(fftBuffer));
+                    spectralBandwidthFeatureList.Add(CalculateSpectralBandwidthFeatures(buffer));
+                    mfccFeatureList.Add(CalculateMfccFeatures(buffer, sampleRate));
+                    zeroCrossingRateFeatureList.Add(CalculateZeroCrossingRateFeatures(buffer, sampleRate));
+                    rmsEnergyFeatureList.Add(CalculateRmsEnergyFeatures(buffer, sampleRate));
+                }
+                }
+            // Aggregate features
+            float[] trainingData = AggregateFeatures(chromaFeatureList, pitchFeatureList, spectralCentroidFeatureList, spectralBandwidthFeatureList, mfccFeatureList, zeroCrossingRateFeatureList, rmsEnergyFeatureList);
+            return trainingData;
+            }
+
+        private const int chromaFeaturesLength = 12;
+        private const int tonnetzFeaturesLength = 6;
+        private const int mFCCFeaturesLength = 13;
+        private const int hpcpFeaturesLength = 13;
+
+        private const int harmonicPercussiveSourceSeparationFeaturesLength = 12;
+        private const int harmonicFeaturesLength = 10;
+        private const int percussiveFeaturesLength = 10;
+
+        private const int spectralContrastFeaturesLength = 6;
+        private const int spectralCentroidFeaturesLength = 1;
+        private const int spectralBandwidthFeaturesLength = 1;
+
+        private const int zeroCrossingRateFeaturesLength = 1;
+        private const int rMSEnergyFeaturesLength = 1;
+        private const int pitchFeaturesLength = 1;
+
+        private float[] CalculateChromaFeatures(Complex[] fftBuffer, float[] buffer, int sampleRate)
+        {
+            float[] chromaFeatures = new float[chromaFeaturesLength];
+            int totalBins = fftBuffer.Length / 2;
+
+            for (int i = 0; i < totalBins; i++)
+            {
+                double magnitude = Math.Sqrt(fftBuffer[i].X * fftBuffer[i].X + fftBuffer[i].Y * fftBuffer[i].Y);
+                if (magnitude > 0)
+                {
+                    int pitchClass = (int)Math.Round(12 * Log2(i + 1)) % 12; // Use i + 1 to avoid log(0)
+                    if (pitchClass < 0)
+                    {
+                        pitchClass += 12; // Ensure pitchClass is non-negative
+                    }
+                    chromaFeatures[pitchClass] += (float)magnitude;
+                }
+
+            }
+
+            return chromaFeatures;
+        }
+
+        private float CalculatePitchFeatures(float[] buffer, int sampleRate)
+        {
+            int maxLag = sampleRate / 50; // Minimum frequency of 50 Hz
+            int minLag = sampleRate / 500; // Maximum frequency of 500 Hz
+            float[] autoCorrelation = new float[maxLag];
+
+            // Calculate auto-correlation
+            for (int lag = minLag; lag < maxLag; lag++)
+            {
+                for (int i = 0; i < buffer.Length - lag; i++)
+                {
+                    autoCorrelation[lag] += buffer[i] * buffer[i + lag];
+                }
+            }
+
+            // Find the lag with the maximum auto-correlation value
+            int bestLag = minLag;
+            for (int lag = minLag + 1; lag < maxLag; lag++)
+            {
+                if (autoCorrelation[lag] > autoCorrelation[bestLag])
+                {
+                    bestLag = lag;
+                }
+            }
+
+            // Calculate the pitch
+            float pitch = sampleRate / (float)bestLag;
+            return pitch;
+        }
+        private float CalculateSpectralCentroidFeatures(Complex[] fftBuffer)
+        {
+            double weightedSum = 0;
+            double totalMagnitude = 0;
+            int numBins = fftBuffer.Length / 2;
+
+  
+            for (int i = 0; i < numBins; i++)
+            {
+                double magnitude = Math.Sqrt(fftBuffer[i].X * fftBuffer[i].X + fftBuffer[i].Y * fftBuffer[i].Y);
+                weightedSum += i * magnitude;
+                totalMagnitude += magnitude;
+
+
+
+            }
+
+            float spectralCentroid = (float)(weightedSum / totalMagnitude);
+
+            return spectralCentroid;
+        }
+        private float CalculateSpectralBandwidthFeatures(float[] audioSamples)
+        {
+            // Perform Fourier Transform
+            int fftSize = (int)Math.Pow(2, Math.Ceiling(Math.Log(audioSamples.Length, 2)));
+            Complex[] fftBuffer = new Complex[fftSize];
+            for (int i = 0; i < audioSamples.Length; i++)
+            {
+                fftBuffer[i].X = audioSamples[i];
+                fftBuffer[i].Y = 0;
+            }
+
+            FastFourierTransform.FFT(true, (int)Math.Log(fftSize, 2.0), fftBuffer);
+
+            // Calculate Magnitudes
+            double[] magnitudes = fftBuffer.Select(c => Math.Sqrt(c.X * c.X + c.Y * c.Y)).ToArray();
+
+            // Calculate Spectral Bandwidth
+            double mean = magnitudes.Average();
+            double sum = magnitudes.Sum(m => Math.Pow(m - mean, 2));
+            double spectralBandwidth = Math.Sqrt(sum / magnitudes.Length);
+
+            return (float)spectralBandwidth;
+        }
+        private float[] CalculateMfccFeatures(float[] buffer, int sampleRate, int fftSize = 512, int numFilters = 26, int numCoefficients = mFCCFeaturesLength)
+        {
+            // Step 1: Pre-emphasis
+            float[] preEmphasized = new float[buffer.Length];
+            float preEmphasis = 0.97f;
+            for (int i = 1; i < buffer.Length; i++)
+            {
+                preEmphasized[i] = buffer[i] - preEmphasis * buffer[i - 1];
+            }
+
+            // Step 2: Framing
+            int frameSize = fftSize;
+            int frameStep = frameSize / 2;
+            int numFrames = (buffer.Length - frameSize) / frameStep + 1;
+            float[][] frames = new float[numFrames][];
+            for (int i = 0; i < numFrames; i++)
+            {
+                frames[i] = new float[frameSize];
+                Array.Copy(preEmphasized, i * frameStep, frames[i], 0, frameSize);
+            }
+
+
+            // Step 3: Windowing
+            for (int i = 0; i < numFrames; i++)
+            {
+                for (int j = 0; j < frameSize; j++)
+                {
+                    frames[i][j] *= (float)(0.54 - 0.46 * Math.Cos(2 * Math.PI * j / (frameSize - 1))); // Hamming window
+                }
+            }
+
+            // Step 4: FFT and Power Spectrum
+            float[][] powerSpectrum = new float[numFrames][];
+            for (int i = 0; i < numFrames; i++)
+            {
+                Complex[] fftBuffer = new Complex[fftSize];
+                for (int j = 0; j < frameSize; j++)
+                {
+                    fftBuffer[j] = new Complex { X = frames[i][j], Y = 0 };
+                }
+                FastFourierTransform.FFT(true, (int)Math.Log(fftSize, 2.0), fftBuffer);
+                powerSpectrum[i] = new float[fftSize / 2 + 1];
+                for (int j = 0; j < fftSize / 2 + 1; j++)
+                {
+                    powerSpectrum[i][j] = (float)(fftBuffer[j].X * fftBuffer[j].X + fftBuffer[j].Y * fftBuffer[j].Y) / fftSize;
+                }
+            }
+
+            // Step 5: Mel Filter Banks
+            float[][] melFilterBanks = new float[numFilters][];
+            for (int i = 0; i < numFilters; i++)
+            {
+                melFilterBanks[i] = new float[fftSize / 2 + 1];
+            }
+            float[] melPoints = new float[numFilters + 2];
+            for (int i = 0; i < melPoints.Length; i++)
+            {
+                melPoints[i] = MelScale(i * (sampleRate / 2) / (numFilters + 1));
+            }
+            for (int i = 1; i <= numFilters; i++)
+            {
+                for (int j = 0; j < fftSize / 2 + 1; j++)
+                {
+                    float freq = j * sampleRate / fftSize;
+                    if (freq >= melPoints[i - 1] && freq <= melPoints[i])
+                    {
+                        melFilterBanks[i - 1][j] = (freq - melPoints[i - 1]) / (melPoints[i] - melPoints[i - 1]);
+                    }
+                    else if (freq >= melPoints[i] && freq <= melPoints[i + 1])
+                    {
+                        melFilterBanks[i - 1][j] = (melPoints[i + 1] - freq) / (melPoints[i + 1] - melPoints[i]);
+                    }
+                }
+            }
+
+            // Step 6: Mel Spectrum
+            float[][] melSpectrum = new float[numFrames][];
+            for (int i = 0; i < numFrames; i++)
+            {
+                melSpectrum[i] = new float[numFilters];
+                for (int j = 0; j < numFilters; j++)
+                {
+                    for (int k = 0; k < fftSize / 2 + 1; k++)
+                    {
+                        melSpectrum[i][j] += powerSpectrum[i][k] * melFilterBanks[j][k];
+                    }
+                    melSpectrum[i][j] = (float)Math.Log(melSpectrum[i][j] + 1e-10); // Logarithm of Mel spectrum
+                }
+            }
+
+            // Step 7: Discrete Cosine Transform (DCT)
+            float[][] mfcc = new float[numFrames][];
+            for (int i = 0; i < numFrames; i++)
+            {
+                mfcc[i] = new float[numCoefficients];
+                for (int j = 0; j < numCoefficients; j++)
+                {
+                    for (int k = 0; k < numFilters; k++)
+                    {
+                        mfcc[i][j] += melSpectrum[i][k] * (float)Math.Cos(Math.PI * j * (k + 0.5) / numFilters);
+                    }
+                }
+            }
+
+            // Flatten the MFCCs into a single array
+            List<float> mfccFeatures = new List<float>();
+            foreach (var frame in mfcc)
+            {
+                mfccFeatures.AddRange(frame);
+            }
+
+            return mfccFeatures.ToArray();
+        }
+        private float MelScale(float freq)
+        {
+            return 2595 * (float)Math.Log10(1 + freq / 700);
+        }
+        private float CalculateZeroCrossingRateFeatures(float[] buffer, int sampleRate)
+        {
+            int zeroCrossings = 0;
+            for (int i = 1; i < buffer.Length; i++)
+            {
+                if ((buffer[i - 1] >= 0 && buffer[i] < 0) || (buffer[i - 1] < 0 && buffer[i] >= 0))
+                {
+                    zeroCrossings++;
+                }
+            }
+            return (float)zeroCrossings / buffer.Length;
+        }
+        private float CalculateRmsEnergyFeatures(float[] buffer, int sampleRate)
+        {
+            double sumOfSquares = buffer.Select(sample => sample * sample).Sum();
+            return (float)Math.Sqrt(sumOfSquares / buffer.Length);
+        }
+
+        private float[] AggregateFeatures(List<float[]> chromaFeaturesList, List<float> pitchFeatureList, List<float> spectralCentroidFeatureList, List<float> spectralBandwidthFeatureList, List<float[]> mfccFeatureList, List<float> zeroCrossingRateFeatureList, List<float> rmsEnergyFeatureList)
+        {
+            List<float> trainingData = new List<float>();
+
+            // Aggregate chroma features
+           /* if (chromaFeaturesList.Count > 0)
+            {
+                int numFeatures = chromaFeaturesList[0].Length;
+
+                for (int i = 0; i < numFeatures; i++)
+                {
+                    var featureValues = chromaFeaturesList.Select(f => f[i]).ToArray();
+                    trainingData.Add(Statistics.Mean(featureValues));
+                    trainingData.Add(Statistics.Variance(featureValues));
+                    trainingData.Add(Statistics.StandardDeviation(featureValues));
+                    trainingData.Add(Statistics.Min(featureValues));
+                    trainingData.Add(Statistics.Max(featureValues));
+                    trainingData.Add(Statistics.Median(featureValues));
+                    trainingData.Add(Statistics.Entropy(featureValues));
+                    trainingData.Add(Statistics.Mode(featureValues));
+                }
+            }
+
+            // Aggregate pitch features
+            if (pitchFeatureList.Count > 0)
+            {
+                trainingData.Add(Statistics.Mean(pitchFeatureList));
+                trainingData.Add(Statistics.Variance(pitchFeatureList));
+                trainingData.Add(Statistics.StandardDeviation(pitchFeatureList));
+                trainingData.Add(Statistics.Min(pitchFeatureList));
+                trainingData.Add(Statistics.Max(pitchFeatureList));
+                trainingData.Add(Statistics.Median(pitchFeatureList));
+                trainingData.Add(Statistics.Entropy(pitchFeatureList));
+                trainingData.Add(Statistics.Mode(pitchFeatureList));
+            }
+            // Aggregate spectral centroid features
+            if (spectralCentroidFeatureList.Count > 0)
+            {
+                trainingData.Add(Statistics.Mean(spectralCentroidFeatureList));
+                trainingData.Add(Statistics.Variance(spectralCentroidFeatureList));
+                trainingData.Add(Statistics.StandardDeviation(spectralCentroidFeatureList));
+                trainingData.Add(Statistics.Min(spectralCentroidFeatureList));
+                trainingData.Add(Statistics.Max(spectralCentroidFeatureList));
+                trainingData.Add(Statistics.Median(spectralCentroidFeatureList));
+                trainingData.Add(Statistics.Entropy(spectralCentroidFeatureList));
+                trainingData.Add(Statistics.Mode(spectralCentroidFeatureList));
+            }
+
+            // Aggregate spectral bandwidth features
+            if (spectralBandwidthFeatureList.Count > 0)
+            {
+                trainingData.Add(Statistics.Mean(spectralBandwidthFeatureList));
+                trainingData.Add(Statistics.Variance(spectralBandwidthFeatureList));
+                trainingData.Add(Statistics.StandardDeviation(spectralBandwidthFeatureList));
+                trainingData.Add(Statistics.Minimum(spectralBandwidthFeatureList));
+                trainingData.Add(Statistics.Maximum(spectralBandwidthFeatureList));
+                trainingData.Add(Statistics.Median(spectralBandwidthFeatureList));
+                trainingData.Add(Statistics.Entropy(spectralBandwidthFeatureList));
+                trainingData.Add(Statistics.Mode(spectralBandwidthFeatureList));
+            }
+
+            // Aggregate MFCC features
+            if (mfccFeatureList.Count > 0)
+            {
+                int numFeatures = mfccFeatureList[0].Length;
+
+                for (int i = 0; i < numFeatures; i++)
+                {
+                    var featureValues = mfccFeatureList.Select(f => f[i]).ToArray();
+                    trainingData.Add(Statistics.Mean(featureValues));
+                    trainingData.Add(Statistics.Variance(featureValues));
+                    trainingData.Add(Statistics.StandardDeviation(featureValues));
+                    trainingData.Add(Statistics.Minimum(featureValues));
+                    trainingData.Add(Statistics.Maximum(featureValues));
+                    trainingData.Add(Statistics.Median(featureValues));
+                    trainingData.Add(Statistics.Entropy(featureValues));
+                    trainingData.Add(Statistics.Mode(featureValues));
+                }
+            }
+
+            // Aggregate zero crossing rate features
+            if (zeroCrossingRateFeatureList.Count > 0)
+            {
+                trainingData.Add(Statistics.Mean(zeroCrossingRateFeatureList));
+                trainingData.Add(Statistics.Variance(zeroCrossingRateFeatureList));
+                trainingData.Add(Statistics.StandardDeviation(zeroCrossingRateFeatureList));
+                trainingData.Add(Statistics.Minimum(zeroCrossingRateFeatureList));
+                trainingData.Add(Statistics.Maximum(zeroCrossingRateFeatureList));
+                trainingData.Add(Statistics.Median(zeroCrossingRateFeatureList));
+                trainingData.Add(Statistics.Entropy(zeroCrossingRateFeatureList));
+                trainingData.Add(Statistics.Mode(zeroCrossingRateFeatureList));
+            }
+
+            // Aggregate RMS energy features
+            if (rmsEnergyFeatureList.Count > 0)
+            {
+                trainingData.Add(Statistics.Mean(rmsEnergyFeatureList));
+                trainingData.Add(Statistics.Variance(rmsEnergyFeatureList));
+                trainingData.Add(Statistics.StandardDeviation(rmsEnergyFeatureList));
+                trainingData.Add(Statistics.Minimum(rmsEnergyFeatureList));
+                trainingData.Add(Statistics.Maximum(rmsEnergyFeatureList));
+                trainingData.Add(Statistics.Median(rmsEnergyFeatureList));
+                trainingData.Add(Statistics.Entropy(rmsEnergyFeatureList));
+                trainingData.Add(Statistics.Mode(rmsEnergyFeatureList));
+            }
+            */
+            return trainingData.ToArray();
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         public void TrainKeyDetector(String keyTrainingDataFileName)
         {
@@ -407,7 +845,7 @@ namespace MitoPlayer_2024.Helpers
         }
         public static class FeatureConstants
         {
-            public int FeatureCount = 44;
+            //public int FeatureCount = 44;
         }
         private class AudioData
         {
@@ -417,8 +855,8 @@ namespace MitoPlayer_2024.Helpers
             [LoadColumn(1)]
             public string Label { get; set; }
 
-            [LoadColumn(2, 2 + FeatureConstants.FeatureCount - 1)]
-            [VectorType(FeatureConstants.FeatureCount)]
+            [LoadColumn(2, 2 + 44- 1)]
+            [VectorType(44)]
             public float[] Features { get; set; }
         }
 

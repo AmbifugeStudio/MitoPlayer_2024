@@ -21,7 +21,7 @@ namespace MitoPlayer_2024.Presenters
             this.setupView.CloseWithOk += SetupView_CloseWithOk;
         }
 
-        private void SetupView_CloseWithOk(object sender, Helpers.ListEventArgs e)
+        private void SetupView_CloseWithOk(object sender, Helpers.Messenger e)
         {
             String host = e.StringField1;
             String port = e.StringField2;

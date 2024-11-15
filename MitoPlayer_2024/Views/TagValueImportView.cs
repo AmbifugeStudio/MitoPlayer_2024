@@ -47,12 +47,12 @@ namespace MitoPlayer_2024.Views
         }
 
 
-        public event EventHandler<ListEventArgs> CloseView;
+        public event EventHandler<Messenger> CloseView;
 
 
         private void btnImport_Click(object sender, EventArgs e)
         {
-            CloseView?.Invoke(this, new ListEventArgs() { StringField1 = this.rtxtbScript.Text });
+            CloseView?.Invoke(this, new Messenger() { StringField1 = this.rtxtbScript.Text });
         }
 
        

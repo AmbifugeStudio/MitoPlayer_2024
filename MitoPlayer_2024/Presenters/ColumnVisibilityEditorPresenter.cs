@@ -62,7 +62,7 @@ namespace MitoPlayer_2024.Presenters
             this.view.SetColumnListBindingSource(this.trackPropertyListBindingSource);
         }
 
-        private void ChangeVisibility(object sender, Helpers.ListEventArgs e)
+        private void ChangeVisibility(object sender, Helpers.Messenger e)
         {
             int selectedIndex = 0;
 
@@ -81,7 +81,7 @@ namespace MitoPlayer_2024.Presenters
             this.view.SetColumnListBindingSource(this.trackPropertyListBindingSource, selectedIndex);
         }
 
-        private void MoveUp(object sender, Helpers.ListEventArgs e)
+        private void MoveUp(object sender, Helpers.Messenger e)
         {
             int selectedIndex = 0;
             trackPropertyTable.Rows.Clear();
@@ -107,7 +107,7 @@ namespace MitoPlayer_2024.Presenters
             this.trackPropertyListBindingSource.DataSource = trackPropertyTable;
             this.view.SetColumnListBindingSource(this.trackPropertyListBindingSource, selectedIndex);
         } 
-        private void MoveDown(object sender, Helpers.ListEventArgs e)
+        private void MoveDown(object sender, Helpers.Messenger e)
         {
             int selectedIndex = 0;
             trackPropertyTable.Rows.Clear();

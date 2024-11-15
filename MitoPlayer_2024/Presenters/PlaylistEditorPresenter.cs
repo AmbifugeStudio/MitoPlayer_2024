@@ -66,7 +66,7 @@ namespace MitoPlayer_2024.Presenters
             this.view.CloseWithOk += CloseWithOk;
             this.view.CloseWithCancel += CloseWithCancel;
         }
-        private void ChangeName(object sender, ListEventArgs e)
+        private void ChangeName(object sender, Messenger e)
         {
             if(playlistName.Equals("Default Playlist"))
             {
@@ -77,11 +77,11 @@ namespace MitoPlayer_2024.Presenters
                 this.playlistName = e.StringField1;
             }
         }
-        private void ChangeHotkey(object sender, ListEventArgs e)
+        private void ChangeHotkey(object sender, Messenger e)
         {
             this.playlistHotkey = e.IntegerField1;
         }
-        private void ChangeIsModelTrainer(object sender, ListEventArgs e)
+        private void ChangeIsModelTrainer(object sender, Messenger e)
         {
             this.isModelTrainer = e.BooleanField1;
         }

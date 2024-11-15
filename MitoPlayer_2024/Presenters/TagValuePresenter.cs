@@ -143,7 +143,7 @@ namespace MitoPlayer_2024.Presenters
             return ColorTranslator.ToHtml(color);
         }
 
-        private void SetCurrentTagId(object sender, ListEventArgs e)
+        private void SetCurrentTagId(object sender, Messenger e)
         {
             this.SetCurrentTagId(e.IntegerField1);
         }
@@ -157,7 +157,7 @@ namespace MitoPlayer_2024.Presenters
                 this.InitializeTagValueList();
             }
         }
-        private void SetCurrentTagValueId(object sender, ListEventArgs e)
+        private void SetCurrentTagValueId(object sender, Messenger e)
         {
             if (this.currentTag != null)
             {
@@ -205,7 +205,7 @@ namespace MitoPlayer_2024.Presenters
             }
 
         }
-        private void EditTag(object sender, ListEventArgs e)
+        private void EditTag(object sender, Messenger e)
         {
             DataRow tagRow = this.tagListTable.Select("Id = " + Convert.ToInt32(this.tagListTable.Rows[e.IntegerField1]["Id"])).First();
             if (tagRow != null)
@@ -240,7 +240,7 @@ namespace MitoPlayer_2024.Presenters
                 }
             }
         }
-        private void DeleteTag(object sender, ListEventArgs e)
+        private void DeleteTag(object sender, Messenger e)
         {
             String tagName = this.tagListTable.Rows[e.IntegerField1]["Name"].ToString();
             if(tagName == "Key" || tagName =="Bpm")
@@ -310,7 +310,7 @@ namespace MitoPlayer_2024.Presenters
                 this.tagValueListTable.Rows.Add(presenter.newTagValue.Id, presenter.newTagValue.Name, this.ColorToHex(presenter.newTagValue.Color), presenter.newTagValue.Hotkey);
             }
         }
-        private void EditTagValue(object sender, ListEventArgs e)
+        private void EditTagValue(object sender, Messenger e)
         {
             DataRow tagValueRow = this.tagValueListTable.Select("Id = " + Convert.ToInt32(this.tagValueListTable.Rows[e.IntegerField1]["Id"])).First();
             if (tagValueRow != null)
@@ -339,7 +339,7 @@ namespace MitoPlayer_2024.Presenters
             }
         }
 
-        private void DeleteTagValue(object sender, ListEventArgs e)
+        private void DeleteTagValue(object sender, Messenger e)
         {
             if(this.tagValueListTable.Rows.Count == 1)
             {

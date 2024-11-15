@@ -9,6 +9,6 @@ namespace MitoPlayer_2024.Views
 {
     public interface ISetupView
     {
-        event EventHandler<ListEventArgs> CloseWithOk;
+        event EventHandler<Messenger> CloseWithOk;
     }
 }

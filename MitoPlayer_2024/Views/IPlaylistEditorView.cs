@@ -11,9 +11,9 @@ namespace MitoPlayer_2024.Views
     public interface IPlaylistEditorView
     {
 
-        event EventHandler<ListEventArgs> ChangeName;
-        event EventHandler<ListEventArgs> ChangeHotkey;
-        event EventHandler<ListEventArgs> ChangeIsModelTrainer;
+        event EventHandler<Messenger> ChangeName;
+        event EventHandler<Messenger> ChangeHotkey;
+        event EventHandler<Messenger> ChangeIsModelTrainer;
         event EventHandler CloseWithOk;
         event EventHandler CloseWithCancel;
 

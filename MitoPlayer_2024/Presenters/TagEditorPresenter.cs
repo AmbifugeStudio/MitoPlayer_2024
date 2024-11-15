@@ -57,16 +57,16 @@ namespace MitoPlayer_2024.Presenters
             this.tagEditorView.ChangeTextColoring += ChangeTextColoring;
         }
 
-        private void ChangeHasMultipleValues(object sender, ListEventArgs e)
+        private void ChangeHasMultipleValues(object sender, Messenger e)
         {
             this.hasMultipleValues = e.BooleanField1;
         } 
-        private void ChangeTextColoring(object sender, ListEventArgs e)
+        private void ChangeTextColoring(object sender, Messenger e)
         {
             this.textColoring = e.BooleanField1;
         }
 
-        private void CreateOrEditTag(object sender, Helpers.ListEventArgs e)
+        private void CreateOrEditTag(object sender, Helpers.Messenger e)
         {
             ((TagEditorView)this.tagEditorView).DialogResult = DialogResult.None;
 

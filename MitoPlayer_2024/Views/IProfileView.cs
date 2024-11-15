@@ -12,9 +12,9 @@ namespace MitoPlayer_2024.Views
     {
 
         event EventHandler CreateProfileEvent;
-        event EventHandler<ListEventArgs> SetProfileAsActiveEvent;
-        event EventHandler<ListEventArgs> RenameProfileEvent;
-        event EventHandler<ListEventArgs> DeleteProfileEvent;
+        event EventHandler<Messenger> SetProfileAsActiveEvent;
+        event EventHandler<Messenger> RenameProfileEvent;
+        event EventHandler<Messenger> DeleteProfileEvent;
         event EventHandler CloseProfileViewEvent;
         void Show();
         void SetProfileListBindingSource(BindingSource profileList);

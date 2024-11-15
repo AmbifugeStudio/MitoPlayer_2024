@@ -3,8 +3,11 @@
 
 
 
+- ha filterezek többször, ki/be kapcsolódik afilter, ahelyett, hoyg szűrné a következő réssztringet
 
+a lepauzált zene pauzra teljesen újraindul
 
+- nem áll le a lejátszás az utolsó utolsó zenénél
 
 - BUG: modeltrainer - samples 125/124 100% display does not disappear error
 - FEATURE: modeltrainer - owerwrite mhd5 does not work
@@ -54,7 +57,10 @@ a filtered lista elemeit írja ki a playlist tack coujnt - ki kéne írni, hogy 
 - FEATURE: tag editor - display according to tag/tagvalue order
 - FEATURE: load tracklist or navigate away: check save status and show dialog window is there are unsaved progress
 
-
+======================
+v0.15.1.0
+======================
+- FEATURE: Chart view prepare
 ======================
 v0.15.0.9
 ======================

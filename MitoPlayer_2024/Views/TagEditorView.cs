@@ -21,10 +21,10 @@ namespace MitoPlayer_2024.Views
             this.CenterToScreen();
         }
 
-        public event EventHandler<ListEventArgs> CreateOrEditTag;
+        public event EventHandler<Messenger> CreateOrEditTag;
         public event EventHandler CloseEditor;
-        public event EventHandler<ListEventArgs> ChangeTextColoring;
-        public event EventHandler<ListEventArgs> ChangeHasMultipleValues;
+        public event EventHandler<Messenger> ChangeTextColoring;
+        public event EventHandler<Messenger> ChangeHasMultipleValues;
 
         Color BackgroundColor = System.Drawing.ColorTranslator.FromHtml("#363639");
         Color FontColor = System.Drawing.ColorTranslator.FromHtml("#c6c6c6");
@@ -61,7 +61,7 @@ namespace MitoPlayer_2024.Views
         private void btnOk_Click(object sender, EventArgs e)
         {
             bool textColoring = rdbtnText.Checked;
-            this.CreateOrEditTag?.Invoke(this, new ListEventArgs() { StringField1 = txtTagName.Text, BooleanField1 = textColoring });
+            this.CreateOrEditTag?.Invoke(this, new Messenger() { StringField1 = txtTagName.Text, BooleanField1 = textColoring });
         }
 
         private void txtTagName_KeyDown(object sender, KeyEventArgs e)
@@ -69,7 +69,7 @@ namespace MitoPlayer_2024.Views
             if (e.KeyCode == Keys.Enter)
             {
                 bool textColoring = rdbtnText.Checked;
-                this.CreateOrEditTag?.Invoke(this, new ListEventArgs() { StringField1 = txtTagName.Text, BooleanField1 = textColoring });
+                this.CreateOrEditTag?.Invoke(this, new Messenger() { StringField1 = txtTagName.Text, BooleanField1 = textColoring });
             }
             else if (e.KeyCode == Keys.Escape)
             {
@@ -102,7 +102,7 @@ namespace MitoPlayer_2024.Views
             if (this.rdbtnText.Checked)
             {
                 this.rdbtnField.Checked = false;
-                this.ChangeTextColoring?.Invoke(this, new ListEventArgs()
+                this.ChangeTextColoring?.Invoke(this, new Messenger()
                 {
                     BooleanField1 = true
                 });
@@ -114,7 +114,7 @@ namespace MitoPlayer_2024.Views
             if (this.rdbtnField.Checked)
             {
                 this.rdbtnText.Checked = false;
-                this.ChangeTextColoring?.Invoke(this, new ListEventArgs()
+                this.ChangeTextColoring?.Invoke(this, new Messenger()
                 {
                     BooleanField1 = false
                 });
@@ -122,7 +122,7 @@ namespace MitoPlayer_2024.Views
         }
         private void chbHasMultipleValues_CheckedChanged(object sender, EventArgs e)
         {
-            this.ChangeHasMultipleValues?.Invoke(this, new ListEventArgs()
+            this.ChangeHasMultipleValues?.Invoke(this, new Messenger()
             {
                 BooleanField1 = this.chbHasMultipleValues.Checked
             });

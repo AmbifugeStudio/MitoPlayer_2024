@@ -116,34 +116,34 @@ namespace MitoPlayer_2024.Presenters
             }
                 
         }
-        private void SetAutomaticBpmImportEvent(object sender, ListEventArgs e)
+        private void SetAutomaticBpmImportEvent(object sender, Messenger e)
         {
             this.automaticBpmImport = e.BooleanField1;            
         }
-        private void SetAutomaticKeyImportEvent(object sender, ListEventArgs e)
+        private void SetAutomaticKeyImportEvent(object sender, Messenger e)
         {
             this.automaticKeyImport = e.BooleanField1;
         }
-        private void SetVirtualDjDatabasePathEvent(object sender, ListEventArgs e)
+        private void SetVirtualDjDatabasePathEvent(object sender, Messenger e)
         {
             this.virtualDjDatabasePath = e.StringField1;
         }
-        private void SetPlayTrackAfterOpenFilesEvent(object sender, ListEventArgs e)
+        private void SetPlayTrackAfterOpenFilesEvent(object sender, Messenger e)
         {
             this.playTrackAfterOpenFiles = e.BooleanField1;
         }
 
-        private void SetPreviewPercentageEvent(object sender, ListEventArgs e)
+        private void SetPreviewPercentageEvent(object sender, Messenger e)
         {
             this.previewPercentage = Convert.ToInt32(e.DecimalField1);
         }
 
-        private void SetShortTrackColouringThresholdEvent(object sender, ListEventArgs e)
+        private void SetShortTrackColouringThresholdEvent(object sender, Messenger e)
         {
            this.isShortTrackColouringEnabled = e.BooleanField1;
         }
 
-        private void SetShortTrackColouringEvent(object sender, ListEventArgs e)
+        private void SetShortTrackColouringEvent(object sender, Messenger e)
         {
             this.shortTrackColouringThreshold = Convert.ToInt32(e.DecimalField1);
         }

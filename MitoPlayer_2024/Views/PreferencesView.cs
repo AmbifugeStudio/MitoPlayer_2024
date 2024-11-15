@@ -16,13 +16,13 @@ namespace MitoPlayer_2024.Views
         public event EventHandler CloseViewWithOkEvent;
         public event EventHandler CloseViewWithCancelEvent;
         public event EventHandler ClearDatabaseEvent;
-        public event EventHandler<ListEventArgs> SetAutomaticBpmImportEvent;
-        public event EventHandler<ListEventArgs> SetAutomaticKeyImportEvent;
-        public event EventHandler<ListEventArgs> SetVirtualDjDatabasePathEvent;
-        public event EventHandler<ListEventArgs> SetPlayTrackAfterOpenFilesEvent;
-        public event EventHandler<ListEventArgs> SetPreviewPercentageEvent;
-        public event EventHandler<ListEventArgs> SetShortTrackColouringEvent;
-        public event EventHandler<ListEventArgs> SetShortTrackColouringThresholdEvent;
+        public event EventHandler<Messenger> SetAutomaticBpmImportEvent;
+        public event EventHandler<Messenger> SetAutomaticKeyImportEvent;
+        public event EventHandler<Messenger> SetVirtualDjDatabasePathEvent;
+        public event EventHandler<Messenger> SetPlayTrackAfterOpenFilesEvent;
+        public event EventHandler<Messenger> SetPreviewPercentageEvent;
+        public event EventHandler<Messenger> SetShortTrackColouringEvent;
+        public event EventHandler<Messenger> SetShortTrackColouringThresholdEvent;
 
 
 
@@ -71,12 +71,12 @@ namespace MitoPlayer_2024.Views
 
         private void chbAutomaticBpmImport_CheckedChanged(object sender, EventArgs e)
         {
-            this.SetAutomaticBpmImportEvent?.Invoke(this,new ListEventArgs { BooleanField1 = this.chbAutomaticBpmImport.Checked });
+            this.SetAutomaticBpmImportEvent?.Invoke(this,new Messenger { BooleanField1 = this.chbAutomaticBpmImport.Checked });
         }
 
         private void chbAutomaticKeyImport_CheckedChanged(object sender, EventArgs e)
         {
-            this.SetAutomaticKeyImportEvent?.Invoke(this, new ListEventArgs { BooleanField1 = this.chbAutomaticKeyImport.Checked });
+            this.SetAutomaticKeyImportEvent?.Invoke(this, new Messenger { BooleanField1 = this.chbAutomaticKeyImport.Checked });
         }
         public void SetImportSettings(
             bool automaticBpmImport, 
@@ -107,24 +107,24 @@ namespace MitoPlayer_2024.Views
 
         private void txtBoxVirtualDjDatabasePath_TextChanged(object sender, EventArgs e)
         {
-            this.SetVirtualDjDatabasePathEvent?.Invoke(this, new ListEventArgs { StringField1 = this.txtBoxVirtualDjDatabasePath.Text });
+            this.SetVirtualDjDatabasePathEvent?.Invoke(this, new Messenger { StringField1 = this.txtBoxVirtualDjDatabasePath.Text });
         }
 
         private void chbPlayTrackAfterOpenFiles_CheckedChanged(object sender, EventArgs e)
         {
-            this.SetPlayTrackAfterOpenFilesEvent?.Invoke(this, new ListEventArgs { BooleanField1 = this.chbPlayTrackAfterOpenFiles.Checked });
+            this.SetPlayTrackAfterOpenFilesEvent?.Invoke(this, new Messenger { BooleanField1 = this.chbPlayTrackAfterOpenFiles.Checked });
         }
 
 
 
         private void nmdPreviewPercentage_ValueChanged(object sender, EventArgs e)
         {
-            this.SetPreviewPercentageEvent?.Invoke(this, new ListEventArgs { DecimalField1 = this.nmdPreviewPercentage.Value });
+            this.SetPreviewPercentageEvent?.Invoke(this, new Messenger { DecimalField1 = this.nmdPreviewPercentage.Value });
         }
 
         private void chbShortTrackColouring_CheckedChanged(object sender, EventArgs e)
         {
-            this.SetShortTrackColouringEvent?.Invoke(this, new ListEventArgs { BooleanField1 = this.chbShortTrackColouring.Checked });
+            this.SetShortTrackColouringEvent?.Invoke(this, new Messenger { BooleanField1 = this.chbShortTrackColouring.Checked });
         }
 
         private void txtbShortTrackColouringThreshold_TextChanged(object sender, EventArgs e)
@@ -134,7 +134,7 @@ namespace MitoPlayer_2024.Views
                 decimal threshold = Decimal.Parse(this.txtbShortTrackColouringThreshold.Text);
                 if(threshold > 0)
                 {
-                    this.SetShortTrackColouringThresholdEvent?.Invoke(this, new ListEventArgs { DecimalField1 = threshold });
+                    this.SetShortTrackColouringThresholdEvent?.Invoke(this, new Messenger { DecimalField1 = threshold });
                 }
                 else
                 {

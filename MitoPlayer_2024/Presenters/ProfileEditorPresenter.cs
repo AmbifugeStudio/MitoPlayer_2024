@@ -56,7 +56,7 @@ namespace MitoPlayer_2024.Presenters
             this.view.CloseProfileEditor += CloseProfileEditor;
         }
         
-        private void CreateOrEditProfile(object sender, Helpers.ListEventArgs e)
+        private void CreateOrEditProfile(object sender, Helpers.Messenger e)
         {
             ((ProfileEditorView)this.view).DialogResult = DialogResult.None;
 

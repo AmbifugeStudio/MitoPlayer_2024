@@ -21,9 +21,9 @@ namespace MitoPlayer_2024.Views
             this.CenterToScreen();
         }
 
-        public event EventHandler<ListEventArgs> ChangeName;
+        public event EventHandler<Messenger> ChangeName;
         public event EventHandler ChangeColor;
-        public event EventHandler<ListEventArgs> ChangeHotkey;
+        public event EventHandler<Messenger> ChangeHotkey;
         public event EventHandler CloseWithOk;
         public event EventHandler CloseWithCancel;
 
@@ -97,7 +97,7 @@ namespace MitoPlayer_2024.Views
 
         private void txtTagValueName_TextChanged(object sender, EventArgs e)
         {
-            this.ChangeName?.Invoke(this, new ListEventArgs() { StringField1 = txtTagValueName.Text });
+            this.ChangeName?.Invoke(this, new Messenger() { StringField1 = txtTagValueName.Text });
         }
         private void btnColorChange_Click(object sender, EventArgs e)
         {
@@ -109,27 +109,27 @@ namespace MitoPlayer_2024.Views
         }
         private void rdb0_CheckedChanged(object sender, EventArgs e)
         {
-            this.ChangeHotkey?.Invoke(this, new ListEventArgs() { IntegerField1 = 0 });
+            this.ChangeHotkey?.Invoke(this, new Messenger() { IntegerField1 = 0 });
         }
 
         private void rdb1_CheckedChanged(object sender, EventArgs e)
         {
-            this.ChangeHotkey?.Invoke(this, new ListEventArgs() { IntegerField1 = 1 });
+            this.ChangeHotkey?.Invoke(this, new Messenger() { IntegerField1 = 1 });
         }
 
         private void rdb2_CheckedChanged(object sender, EventArgs e)
         {
-            this.ChangeHotkey?.Invoke(this, new ListEventArgs() { IntegerField1 = 2 });
+            this.ChangeHotkey?.Invoke(this, new Messenger() { IntegerField1 = 2 });
         }
 
         private void rdb3_CheckedChanged(object sender, EventArgs e)
         {
-            this.ChangeHotkey?.Invoke(this, new ListEventArgs() { IntegerField1 = 3 });
+            this.ChangeHotkey?.Invoke(this, new Messenger() { IntegerField1 = 3 });
         }
 
         private void rdb4_CheckedChanged(object sender, EventArgs e)
         {
-            this.ChangeHotkey?.Invoke(this, new ListEventArgs() { IntegerField1 = 4 });
+            this.ChangeHotkey?.Invoke(this, new Messenger() { IntegerField1 = 4 });
         }
         private void btnOk_Click(object sender, EventArgs e)
         {

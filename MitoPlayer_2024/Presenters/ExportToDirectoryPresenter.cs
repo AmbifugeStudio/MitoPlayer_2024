@@ -315,42 +315,42 @@ namespace MitoPlayer_2024.Presenters
             }
 
         }
-        private void SetRowNumberEvent(object sender, ListEventArgs e)
+        private void SetRowNumberEvent(object sender, Messenger e)
         {
             this.isRowNumberChecked = e.BooleanField1;
             this.InitializeDataTable();
         }
-        private void SetKeyCodeEvent(object sender, ListEventArgs e)
+        private void SetKeyCodeEvent(object sender, Messenger e)
         {
             this.isKeyCodeChecked = e.BooleanField1;
             this.InitializeDataTable();
         }
-        private void SetBpmNumberEvent(object sender, ListEventArgs e)
+        private void SetBpmNumberEvent(object sender, Messenger e)
         {
             this.isBpmNumberChecked = e.BooleanField1;
             this.InitializeDataTable();
         }
-        private void SetTrunkBpmEvent(object sender, ListEventArgs e)
+        private void SetTrunkBpmEvent(object sender, Messenger e)
         {
             this.isTrunkBpmChecked = e.BooleanField1;
             this.InitializeDataTable();
         }
-        private void SetTrunkedArtistEvent(object sender, ListEventArgs e)
+        private void SetTrunkedArtistEvent(object sender, Messenger e)
         {
             this.isTrunkedArtistChecked = e.BooleanField1;
             this.InitializeDataTable();
         }
-        private void SetTrunkedTitleEvent(object sender, ListEventArgs e)
+        private void SetTrunkedTitleEvent(object sender, Messenger e)
         {
             this.isTrunkedTitleChecked = e.BooleanField1;
             this.InitializeDataTable();
         }
-        private void SetArtistMinimumCharacterEvent(object sender, ListEventArgs e)
+        private void SetArtistMinimumCharacterEvent(object sender, Messenger e)
         {
             this.artistMinimumCharacter = e.DecimalField1;
             this.InitializeDataTable();
         }
-        private void SetTitleMinimumCharacterEvent(object sender, ListEventArgs e)
+        private void SetTitleMinimumCharacterEvent(object sender, Messenger e)
         {
             this.titleMinimumCharacter = e.DecimalField1;
             this.InitializeDataTable();

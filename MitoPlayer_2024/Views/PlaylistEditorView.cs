@@ -8,9 +8,9 @@ namespace MitoPlayer_2024.Views
     public partial class PlaylistEditorView : Form, IPlaylistEditorView
     {
 
-        public event EventHandler<ListEventArgs> ChangeName;
-        public event EventHandler<ListEventArgs> ChangeHotkey;
-        public event EventHandler<ListEventArgs> ChangeIsModelTrainer;
+        public event EventHandler<Messenger> ChangeName;
+        public event EventHandler<Messenger> ChangeHotkey;
+        public event EventHandler<Messenger> ChangeIsModelTrainer;
         public event EventHandler CloseWithOk;
         public event EventHandler CloseWithCancel;
 
@@ -96,31 +96,31 @@ namespace MitoPlayer_2024.Views
 
         private void txtPlaylistName_TextChanged(object sender, EventArgs e)
         {
-            this.ChangeName?.Invoke(this, new ListEventArgs() { StringField1 = this.txtPlaylistName.Text });
+            this.ChangeName?.Invoke(this, new Messenger() { StringField1 = this.txtPlaylistName.Text });
         }
         private void rdb0_CheckedChanged(object sender, EventArgs e)
         {
-            this.ChangeHotkey?.Invoke(this, new ListEventArgs() { IntegerField1 = 0 });
+            this.ChangeHotkey?.Invoke(this, new Messenger() { IntegerField1 = 0 });
         }
 
         private void rdb1_CheckedChanged(object sender, EventArgs e)
         {
-            this.ChangeHotkey?.Invoke(this, new ListEventArgs() { IntegerField1 = 1 });
+            this.ChangeHotkey?.Invoke(this, new Messenger() { IntegerField1 = 1 });
         }
 
         private void rdb2_CheckedChanged(object sender, EventArgs e)
         {
-            this.ChangeHotkey?.Invoke(this, new ListEventArgs() { IntegerField1 = 2 });
+            this.ChangeHotkey?.Invoke(this, new Messenger() { IntegerField1 = 2 });
         }
 
         private void rdb3_CheckedChanged(object sender, EventArgs e)
         {
-            this.ChangeHotkey?.Invoke(this, new ListEventArgs() { IntegerField1 = 3 });
+            this.ChangeHotkey?.Invoke(this, new Messenger() { IntegerField1 = 3 });
         }
 
         private void rdb4_CheckedChanged(object sender, EventArgs e)
         {
-            this.ChangeHotkey?.Invoke(this, new ListEventArgs() { IntegerField1 = 4 });
+            this.ChangeHotkey?.Invoke(this, new Messenger() { IntegerField1 = 4 });
         }
 
         private void btnOk_Click(object sender, EventArgs e)
@@ -147,7 +147,7 @@ namespace MitoPlayer_2024.Views
 
         private void chbIsModelTrainer_CheckedChanged(object sender, EventArgs e)
         {
-            this.ChangeIsModelTrainer?.Invoke(this, new ListEventArgs() { BooleanField1 = this.chbIsModelTrainer.Checked });
+            this.ChangeIsModelTrainer?.Invoke(this, new Messenger() { BooleanField1 = this.chbIsModelTrainer.Checked });
         }
     }
 }

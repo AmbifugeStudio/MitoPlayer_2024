@@ -19,61 +19,61 @@ namespace MitoPlayer_2024.Views
     {
 
         //PLAYER
-        event EventHandler<ListEventArgs> SetCurrentTrackEvent;
-        event EventHandler<ListEventArgs> PlayTrackEvent;
+        event EventHandler<Messenger> SetCurrentTrackEvent;
+        event EventHandler<Messenger> PlayTrackEvent;
         event EventHandler PauseTrackEvent;
         event EventHandler StopTrackEvent;
-        event EventHandler<ListEventArgs> PrevTrackEvent;
-        event EventHandler<ListEventArgs> NextTrackEvent;
+        event EventHandler<Messenger> PrevTrackEvent;
+        event EventHandler<Messenger> NextTrackEvent;
         event EventHandler RandomTrackEvent;
-        event EventHandler<ListEventArgs> ChangeVolumeEvent;
+        event EventHandler<Messenger> ChangeVolumeEvent;
      //   event EventHandler GetMediaPlayerProgressStatusEvent;
 
         //TRACKLIST
-        event EventHandler<ListEventArgs> OrderByColumnEvent;
-        event EventHandler<ListEventArgs> DeleteTracksEvent;
-        event EventHandler<ListEventArgs> InternalDragAndDropIntoTracklistEvent;
-        event EventHandler<ListEventArgs> InternalDragAndDropIntoPlaylistEvent;
-        event EventHandler<ListEventArgs> ExternalDragAndDropIntoTracklistEvent;
-        event EventHandler<ListEventArgs> ExternalDragAndDropIntoPlaylistEvent;
+        event EventHandler<Messenger> OrderByColumnEvent;
+        event EventHandler<Messenger> DeleteTracksEvent;
+        event EventHandler<Messenger> InternalDragAndDropIntoTracklistEvent;
+        event EventHandler<Messenger> InternalDragAndDropIntoPlaylistEvent;
+        event EventHandler<Messenger> ExternalDragAndDropIntoTracklistEvent;
+        event EventHandler<Messenger> ExternalDragAndDropIntoPlaylistEvent;
        // event EventHandler<ListEventArgs> ChangeTracklistColorEvent;
         event EventHandler ShowColumnVisibilityEditorEvent;
         event EventHandler ScanKeyAndBpmEvent;
 
-        event EventHandler<ListEventArgs> MoveTracklistRowsEvent;
+        event EventHandler<Messenger> MoveTracklistRowsEvent;
 
         //PLAYLIST
-        event EventHandler<ListEventArgs> CreatePlaylist;
-        event EventHandler<ListEventArgs> EditPlaylist;
-        event EventHandler<ListEventArgs> LoadPlaylistEvent;
-        event EventHandler<ListEventArgs> MovePlaylistEvent;
-        event EventHandler<ListEventArgs> DeletePlaylistEvent;
-        event EventHandler<ListEventArgs> SetQuickListEvent;
-        event EventHandler<ListEventArgs> ExportToM3UEvent;
-        event EventHandler<ListEventArgs> ExportToTXTEvent;
-        event EventHandler<ListEventArgs> ExportToDirectoryEvent;
-        event EventHandler<ListEventArgs> MovePlaylistRowEvent;
+        event EventHandler<Messenger> CreatePlaylist;
+        event EventHandler<Messenger> EditPlaylist;
+        event EventHandler<Messenger> LoadPlaylistEvent;
+        event EventHandler<Messenger> MovePlaylistEvent;
+        event EventHandler<Messenger> DeletePlaylistEvent;
+        event EventHandler<Messenger> SetQuickListEvent;
+        event EventHandler<Messenger> ExportToM3UEvent;
+        event EventHandler<Messenger> ExportToTXTEvent;
+        event EventHandler<Messenger> ExportToDirectoryEvent;
+        event EventHandler<Messenger> MovePlaylistRowEvent;
         event EventHandler DisplayPlaylistListEvent;
 
         //TAG EDITOR
         event EventHandler DisplayTagEditorEvent;
-        event EventHandler<ListEventArgs> SelectTagEvent;
-        event EventHandler<ListEventArgs> SetTagValueEvent;
-        event EventHandler<ListEventArgs> ClearTagValueEvent;
+        event EventHandler<Messenger> SelectTagEvent;
+        event EventHandler<Messenger> SetTagValueEvent;
+        event EventHandler<Messenger> ClearTagValueEvent;
 
-        event EventHandler<ListEventArgs> ChangeFilterModeEnabled;
+        event EventHandler<Messenger> ChangeFilterModeEnabled;
         event EventHandler EnableFilterModeEvent;
         event EventHandler EnableSetterModeEvent;
-        event EventHandler<ListEventArgs> LoadCoversEvent;
-        event EventHandler<ListEventArgs> ChangeOnlyPlayingRowModeEnabled;
-        event EventHandler<ListEventArgs> ChangeFilterParametersEvent;
+        event EventHandler<Messenger> LoadCoversEvent;
+        event EventHandler<Messenger> ChangeOnlyPlayingRowModeEnabled;
+        event EventHandler<Messenger> ChangeFilterParametersEvent;
         event EventHandler RemoveTagValueFilter;
 
         event EventHandler SaveTrackListEvent;
 
         event EventHandler TrainKeyDetectorEvent;
-        event EventHandler<ListEventArgs> DetectKeyEvent;
-        event EventHandler<ListEventArgs> AddToKeyDetectorEvent;
+        event EventHandler<Messenger> DetectKeyEvent;
+        event EventHandler<Messenger> AddToKeyDetectorEvent;
         event EventHandler CreateModelEvent;
 
         event EventHandler OpenModelTrainerEvent;

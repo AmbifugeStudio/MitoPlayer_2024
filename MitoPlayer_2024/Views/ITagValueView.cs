@@ -16,15 +16,15 @@ namespace MitoPlayer_2024.Views
         void ReloadTagListBindingSource(Tag tag);
         void ReloadTagValueListBindingSource();
         event EventHandler CreateTag;
-        event EventHandler<ListEventArgs> EditTag;
-        event EventHandler<ListEventArgs> DeleteTag;
-        event EventHandler<ListEventArgs> CreateTagValue;
-        event EventHandler<ListEventArgs> EditTagValue;
-        event EventHandler<ListEventArgs> DeleteTagValue;
+        event EventHandler<Messenger> EditTag;
+        event EventHandler<Messenger> DeleteTag;
+        event EventHandler<Messenger> CreateTagValue;
+        event EventHandler<Messenger> EditTagValue;
+        event EventHandler<Messenger> DeleteTagValue;
         event EventHandler CloseWithOk;
         event EventHandler CloseWithCancel;
-        event EventHandler<ListEventArgs> SetCurrentTagId;
-        event EventHandler<ListEventArgs> SetCurrentTagValueId;
+        event EventHandler<Messenger> SetCurrentTagId;
+        event EventHandler<Messenger> SetCurrentTagValueId;
         event EventHandler OpenTagValueImportViewEvent;
         void Show();
     }

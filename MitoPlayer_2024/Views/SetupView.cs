@@ -13,7 +13,7 @@ namespace MitoPlayer_2024.Views
 {
     public partial class SetupView : Form, ISetupView
     {
-        public event EventHandler<ListEventArgs> CloseWithOk;
+        public event EventHandler<Messenger> CloseWithOk;
         public SetupView()
         {
             this.InitializeComponent();
@@ -35,7 +35,7 @@ namespace MitoPlayer_2024.Views
         }
         private void btnOk_Click(object sender, EventArgs e)
         {
-            this.CloseWithOk?.Invoke(this, new ListEventArgs() { 
+            this.CloseWithOk?.Invoke(this, new Messenger() { 
                 StringField1 = this.txtBoxHost.Text,
                 StringField2 = this.txtBoxPort.Text,
                 StringField3 = this.txtBoxUserName.Text,

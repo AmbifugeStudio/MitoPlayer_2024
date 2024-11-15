@@ -77,7 +77,7 @@ namespace MitoPlayer_2024.Presenters
             }
         }
 
-        private void SetProfileAsActiveEvent(object sender, ListEventArgs e)
+        private void SetProfileAsActiveEvent(object sender, Messenger e)
         {
             if(MessageBox.Show("Do you really want to change the profile? All playlist, track and metadata will be change!", "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK)
             {
@@ -108,7 +108,7 @@ namespace MitoPlayer_2024.Presenters
                 }
             }
         }
-        private void RenameProfileEvent(object sender, ListEventArgs e)
+        private void RenameProfileEvent(object sender, Messenger e)
         {
 
             if (e.IntegerField1 == this.activeProfile.Id)
@@ -142,7 +142,7 @@ namespace MitoPlayer_2024.Presenters
             }
         }
 
-        private void DeleteProfileEvent(object sender, ListEventArgs e)
+        private void DeleteProfileEvent(object sender, Messenger e)
         {
             if (e.IntegerField1 == this.activeProfile.Id)
             {

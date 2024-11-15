@@ -49,17 +49,19 @@ namespace MitoPlayer_2024.Views
         event EventHandler PrevTrack;
         event EventHandler NextTrack;
         event EventHandler RandomTrack;
-        event EventHandler<ListEventArgs> ChangeProgress;
-        event EventHandler<ListEventArgs> ChangeVolume;
-        event EventHandler<ListEventArgs> ChangeShuffle;
-        event EventHandler<ListEventArgs> ChangeMute;
-        event EventHandler<ListEventArgs> ChangePreview;
+        event EventHandler<Messenger> ChangeProgress;
+        event EventHandler<Messenger> ChangeVolume;
+        event EventHandler<Messenger> ChangeShuffle;
+        event EventHandler<Messenger> ChangeMute;
+        event EventHandler<Messenger> ChangePreview;
 
         event EventHandler GetMediaPlayerProgressStatusEvent;
         //HELP
         event EventHandler About;
 
-        event EventHandler<ListEventArgs> ScanFiles;
+        event EventHandler<Messenger> ScanFiles;
+
+        event EventHandler OpenChartEvent;
 
         void UpdateAfterPlayTrack(String artist);
         void UpdateAfterPlayTrackAfterPause();

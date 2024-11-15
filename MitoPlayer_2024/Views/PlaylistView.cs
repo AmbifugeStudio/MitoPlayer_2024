@@ -39,63 +39,63 @@ namespace MitoPlayer_2024.Views
         private BindingSource trackListBindingSource { get; set; }
 
         //PLAYER
-        public event EventHandler<ListEventArgs> SetCurrentTrackEvent;
-        public event EventHandler<ListEventArgs> PlayTrackEvent;
+        public event EventHandler<Messenger> SetCurrentTrackEvent;
+        public event EventHandler<Messenger> PlayTrackEvent;
         public event EventHandler PauseTrackEvent;
         public event EventHandler StopTrackEvent;
-        public event EventHandler<ListEventArgs> PrevTrackEvent;
-        public event EventHandler<ListEventArgs> NextTrackEvent;
+        public event EventHandler<Messenger> PrevTrackEvent;
+        public event EventHandler<Messenger> NextTrackEvent;
         public event EventHandler RandomTrackEvent;
-        public event EventHandler<ListEventArgs> ChangeVolumeEvent;
-        public event EventHandler<ListEventArgs> ChangeProgressEvent;
+        public event EventHandler<Messenger> ChangeVolumeEvent;
+        public event EventHandler<Messenger> ChangeProgressEvent;
        // public event EventHandler GetMediaPlayerProgressStatusEvent;
 
         //TRACKLIST
-        public event EventHandler<ListEventArgs> OrderByColumnEvent;
-        public event EventHandler<ListEventArgs> DeleteTracksEvent;
-        public event EventHandler<ListEventArgs> InternalDragAndDropIntoTracklistEvent;
-        public event EventHandler<ListEventArgs> InternalDragAndDropIntoPlaylistEvent;
-        public event EventHandler<ListEventArgs> ExternalDragAndDropIntoTracklistEvent;
-        public event EventHandler<ListEventArgs> ExternalDragAndDropIntoPlaylistEvent;
+        public event EventHandler<Messenger> OrderByColumnEvent;
+        public event EventHandler<Messenger> DeleteTracksEvent;
+        public event EventHandler<Messenger> InternalDragAndDropIntoTracklistEvent;
+        public event EventHandler<Messenger> InternalDragAndDropIntoPlaylistEvent;
+        public event EventHandler<Messenger> ExternalDragAndDropIntoTracklistEvent;
+        public event EventHandler<Messenger> ExternalDragAndDropIntoPlaylistEvent;
         //public event EventHandler<ListEventArgs> ChangeTracklistColorEvent;
         public event EventHandler ShowColumnVisibilityEditorEvent;
         public event EventHandler ScanKeyAndBpmEvent;
 
-        public event EventHandler<ListEventArgs> MoveTracklistRowsEvent;
+        public event EventHandler<Messenger> MoveTracklistRowsEvent;
 
         //PLAYLIST
-        public event EventHandler<ListEventArgs> CreatePlaylist;
-        public event EventHandler<ListEventArgs> EditPlaylist;
-        public event EventHandler<ListEventArgs> LoadPlaylistEvent;
-        public event EventHandler<ListEventArgs> MovePlaylistEvent;
-        public event EventHandler<ListEventArgs> DeletePlaylistEvent;
-        public event EventHandler<ListEventArgs> SetQuickListEvent;
-        public event EventHandler<ListEventArgs> ExportToM3UEvent;
-        public event EventHandler<ListEventArgs> ExportToTXTEvent;
-        public event EventHandler<ListEventArgs> ExportToDirectoryEvent;
-        public event EventHandler<ListEventArgs> MovePlaylistRowEvent;
+        public event EventHandler<Messenger> CreatePlaylist;
+        public event EventHandler<Messenger> EditPlaylist;
+        public event EventHandler<Messenger> LoadPlaylistEvent;
+        public event EventHandler<Messenger> MovePlaylistEvent;
+        public event EventHandler<Messenger> DeletePlaylistEvent;
+        public event EventHandler<Messenger> SetQuickListEvent;
+        public event EventHandler<Messenger> ExportToM3UEvent;
+        public event EventHandler<Messenger> ExportToTXTEvent;
+        public event EventHandler<Messenger> ExportToDirectoryEvent;
+        public event EventHandler<Messenger> MovePlaylistRowEvent;
         public event EventHandler DisplayPlaylistListEvent;
 
         //TAG EDITOR
         public event EventHandler DisplayTagEditorEvent;
-        public event EventHandler<ListEventArgs> SelectTagEvent;
-        public event EventHandler<ListEventArgs> SetTagValueEvent;
-        public event EventHandler<ListEventArgs> ClearTagValueEvent;
+        public event EventHandler<Messenger> SelectTagEvent;
+        public event EventHandler<Messenger> SetTagValueEvent;
+        public event EventHandler<Messenger> ClearTagValueEvent;
 
-        public event EventHandler<ListEventArgs> ChangeFilterModeEnabled;
+        public event EventHandler<Messenger> ChangeFilterModeEnabled;
         public event EventHandler EnableFilterModeEvent;
         public event EventHandler EnableSetterModeEvent;
-        public event EventHandler<ListEventArgs> LoadCoversEvent;
-        public event EventHandler<ListEventArgs> ChangeOnlyPlayingRowModeEnabled;
-        public event EventHandler<ListEventArgs> ChangeFilterParametersEvent;
+        public event EventHandler<Messenger> LoadCoversEvent;
+        public event EventHandler<Messenger> ChangeOnlyPlayingRowModeEnabled;
+        public event EventHandler<Messenger> ChangeFilterParametersEvent;
         public event EventHandler RemoveTagValueFilter;
 
         public event EventHandler SaveTrackListEvent;
 
         public event EventHandler TrainKeyDetectorEvent;
         
-        public event EventHandler<ListEventArgs> DetectKeyEvent;
-        public event EventHandler<ListEventArgs> AddToKeyDetectorEvent;
+        public event EventHandler<Messenger> DetectKeyEvent;
+        public event EventHandler<Messenger> AddToKeyDetectorEvent;
         
         public event EventHandler CreateModelEvent;
 
@@ -434,7 +434,7 @@ namespace MitoPlayer_2024.Views
         #region TRACKLIST - ORDER BY COLUMN HEADER
         private void dgvTrackList_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            this.OrderByColumnEvent?.Invoke(this, new ListEventArgs() { StringField1 = dgvTrackList.Columns[e.ColumnIndex].Name });
+            this.OrderByColumnEvent?.Invoke(this, new Messenger() { StringField1 = dgvTrackList.Columns[e.ColumnIndex].Name });
         }
         #endregion
 
@@ -444,7 +444,7 @@ namespace MitoPlayer_2024.Views
             //DELETE - Delete Track(s)
             if (this.dgvTrackList.Rows.Count > 0 && e.KeyCode == Keys.Delete)
             {
-                this.DeleteTracksEvent?.Invoke(this, new ListEventArgs() { Rows = this.dgvTrackList.Rows });
+                this.DeleteTracksEvent?.Invoke(this, new Messenger() { Rows = this.dgvTrackList.Rows });
             }
 
             if (this.dgvTrackList.Rows.Count > 0 && (e.KeyCode == Keys.ControlKey || e.KeyCode == Keys.ShiftKey))
@@ -532,11 +532,11 @@ namespace MitoPlayer_2024.Views
         //EVENT CALLINGS
         public void CallSetCurrentTrackEvent(int rowIndex = -1)
         {
-            this.SetCurrentTrackEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = rowIndex });
+            this.SetCurrentTrackEvent?.Invoke(this, new Messenger() { IntegerField1 = rowIndex });
         }
         public void CallPlayTrackEvent()
         {
-            this.PlayTrackEvent?.Invoke(this, new ListEventArgs() { });
+            this.PlayTrackEvent?.Invoke(this, new Messenger() { });
         }
         public void CallPauseTrackEvent()
         {
@@ -548,11 +548,11 @@ namespace MitoPlayer_2024.Views
         }
         public void CallPrevTrackEvent()
         {
-            this.PrevTrackEvent?.Invoke(this, new ListEventArgs() { });
+            this.PrevTrackEvent?.Invoke(this, new Messenger() { });
         }
         public void CallNextTrackEvent()
         {
-            this.NextTrackEvent?.Invoke(this, new ListEventArgs() {  });
+            this.NextTrackEvent?.Invoke(this, new Messenger() {  });
         }
         public void CallRandomTrackEvent()
         {
@@ -868,12 +868,12 @@ namespace MitoPlayer_2024.Views
         //EVENT CALLINGS
         public void CallCreatePlaylistEvent()
         {
-            this.CreatePlaylist?.Invoke(this, new ListEventArgs() { IntegerField1 = -1 });
+            this.CreatePlaylist?.Invoke(this, new Messenger() { IntegerField1 = -1 });
         }
         public void CallRenamePlaylistEvent()
         {
             if (this.dgvPlaylistList.SelectedRows.Count > 0)
-                this.EditPlaylist?.Invoke(this, new ListEventArgs() { IntegerField1 = dgvPlaylistList.SelectedRows[0].Index });
+                this.EditPlaylist?.Invoke(this, new Messenger() { IntegerField1 = dgvPlaylistList.SelectedRows[0].Index });
         }
         public void CallLoadPlaylistEvent()
         {
@@ -881,7 +881,7 @@ namespace MitoPlayer_2024.Views
             {
                 if (this.dgvPlaylistList.SelectedRows.Count > 0)
                 {
-                    this.LoadPlaylistEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = this.dgvPlaylistList.SelectedRows[0].Index });
+                    this.LoadPlaylistEvent?.Invoke(this, new Messenger() { IntegerField1 = this.dgvPlaylistList.SelectedRows[0].Index });
                 }
             }
             else
@@ -890,7 +890,7 @@ namespace MitoPlayer_2024.Views
 
                 if (this.dgvPlaylistList.SelectedRows.Count > 0)
                 {
-                    this.LoadPlaylistEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = this.dgvPlaylistList.SelectedRows[0].Index });
+                    this.LoadPlaylistEvent?.Invoke(this, new Messenger() { IntegerField1 = this.dgvPlaylistList.SelectedRows[0].Index });
                 }
             }
 
@@ -899,38 +899,38 @@ namespace MitoPlayer_2024.Views
             {
                 rowIndex = this.dgvTrackList.SelectedCells[0].RowIndex;
             }
-            this.LoadCoversEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = rowIndex });
+            this.LoadCoversEvent?.Invoke(this, new Messenger() { IntegerField1 = rowIndex });
 
         }
         public void CallDeletePlaylistEvent()
         {
             if (this.dgvPlaylistList.SelectedRows.Count > 0)
-                this.DeletePlaylistEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = dgvPlaylistList.SelectedRows[0].Index });
+                this.DeletePlaylistEvent?.Invoke(this, new Messenger() { IntegerField1 = dgvPlaylistList.SelectedRows[0].Index });
         }
         public void CallSetQuickListEvent(int group)
         {
             if (this.dgvPlaylistList.SelectedRows.Count > 0)
-                this.SetQuickListEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = dgvPlaylistList.Rows.IndexOf(dgvPlaylistList.SelectedRows[0]), IntegerField2 = group });
+                this.SetQuickListEvent?.Invoke(this, new Messenger() { IntegerField1 = dgvPlaylistList.Rows.IndexOf(dgvPlaylistList.SelectedRows[0]), IntegerField2 = group });
         }
         public void CallExportToM3UEvent()
         {
             if (this.dgvPlaylistList.SelectedRows.Count > 0)
             {
-                this.ExportToM3UEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = this.dgvPlaylistList.SelectedRows[0].Index });
+                this.ExportToM3UEvent?.Invoke(this, new Messenger() { IntegerField1 = this.dgvPlaylistList.SelectedRows[0].Index });
             }
         }
         public void CallExportToTXTEvent()
         {
             if (this.dgvPlaylistList.SelectedRows.Count > 0)
             {
-                this.ExportToTXTEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = this.dgvPlaylistList.SelectedRows[0].Index });
+                this.ExportToTXTEvent?.Invoke(this, new Messenger() { IntegerField1 = this.dgvPlaylistList.SelectedRows[0].Index });
             }
         }
         public void CallExportToDirectoryEvent()
         {
             if (this.dgvPlaylistList.SelectedRows.Count > 0)
             {
-                this.ExportToDirectoryEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = this.dgvPlaylistList.SelectedRows[0].Index });
+                this.ExportToDirectoryEvent?.Invoke(this, new Messenger() { IntegerField1 = this.dgvPlaylistList.SelectedRows[0].Index });
             }
         }
         #endregion
@@ -1267,7 +1267,7 @@ namespace MitoPlayer_2024.Views
                 rowIndex = this.dgvTrackList.SelectedCells[0].RowIndex;
             }
 
-            this.LoadCoversEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = rowIndex });
+            this.LoadCoversEvent?.Invoke(this, new Messenger() { IntegerField1 = rowIndex });
         }
         private void btnSetterModeToggle_Click(object sender, EventArgs e)
         {
@@ -1337,7 +1337,7 @@ namespace MitoPlayer_2024.Views
             }
 
 
-            this.LoadCoversEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = rowIndex });
+            this.LoadCoversEvent?.Invoke(this, new Messenger() { IntegerField1 = rowIndex });
         }
         private void btnDisplayTagEditor_Click(object sender, EventArgs e)
         {
@@ -1377,7 +1377,7 @@ namespace MitoPlayer_2024.Views
                 txtbFilter.Text = String.Empty;
             }
 
-            this.ChangeFilterParametersEvent?.Invoke(this, new ListEventArgs() { StringField1 = this.txtbFilter.Text });
+            this.ChangeFilterParametersEvent?.Invoke(this, new Messenger() { StringField1 = this.txtbFilter.Text });
 
 
         }
@@ -1432,7 +1432,7 @@ namespace MitoPlayer_2024.Views
                     button.FlatAppearance.BorderColor = this.ButtonBorderColor;
                 }
 
-                this.SetTagValueEvent?.Invoke(this, new ListEventArgs()
+                this.SetTagValueEvent?.Invoke(this, new Messenger()
                 {
                     StringField1 = tagName,
                     StringField2 = tagValueName,
@@ -1473,13 +1473,13 @@ namespace MitoPlayer_2024.Views
 
             if (this.chbOnlyPlayingRowModeEnabled.Checked)
             {
-                this.ClearTagValueEvent?.Invoke(this, new ListEventArgs() { StringField1 = button.TagName, Rows = this.dgvTrackList.Rows });
+                this.ClearTagValueEvent?.Invoke(this, new Messenger() { StringField1 = button.TagName, Rows = this.dgvTrackList.Rows });
             }
             else
             {
                 if (this.dgvTrackList.SelectedRows.Count > 0)
                 {
-                    this.ClearTagValueEvent?.Invoke(this, new ListEventArgs() { StringField1 = button.TagName, Rows = this.dgvTrackList.Rows });
+                    this.ClearTagValueEvent?.Invoke(this, new Messenger() { StringField1 = button.TagName, Rows = this.dgvTrackList.Rows });
                 }
             }
 
@@ -1488,7 +1488,7 @@ namespace MitoPlayer_2024.Views
         private void chbOnlyPlayingRowModeEnabled_CheckedChanged(object sender, EventArgs e)
         {
             this.dgvTrackList.Focus();
-            this.ChangeOnlyPlayingRowModeEnabled?.Invoke(this, new ListEventArgs() { BooleanField1 = this.chbOnlyPlayingRowModeEnabled.Checked });
+            this.ChangeOnlyPlayingRowModeEnabled?.Invoke(this, new Messenger() { BooleanField1 = this.chbOnlyPlayingRowModeEnabled.Checked });
         }
         public void SetTagValueFilter(List<TagValueFilter> tagValueFilterList)
         {
@@ -1522,14 +1522,14 @@ namespace MitoPlayer_2024.Views
                     }
                 }
             }
-            this.ChangeFilterParametersEvent?.Invoke(this, new ListEventArgs() { StringField1 = this.txtbFilter.Text });
+            this.ChangeFilterParametersEvent?.Invoke(this, new Messenger() { StringField1 = this.txtbFilter.Text });
 
             int rowIndex = 0;
             if (this.dgvTrackList != null && this.dgvTrackList.SelectedCells.Count > 0)
             {
                 rowIndex = this.dgvTrackList.SelectedCells[0].RowIndex;
             }
-            this.LoadCoversEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = rowIndex });
+            this.LoadCoversEvent?.Invoke(this, new Messenger() { IntegerField1 = rowIndex });
         }
 
 
@@ -1561,7 +1561,7 @@ namespace MitoPlayer_2024.Views
             {
                 rowIndex = this.dgvTrackList.SelectedCells[0].RowIndex;
             }
-            this.LoadCoversEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = rowIndex });
+            this.LoadCoversEvent?.Invoke(this, new Messenger() { IntegerField1 = rowIndex });
         }
 
 
@@ -1695,7 +1695,7 @@ namespace MitoPlayer_2024.Views
                 var hitTestInfo = dgvTrackList.HitTest(e.X, e.Y);
                 if (hitTestInfo.RowIndex >= 0)
                 {
-                    this.PlayTrackEvent?.Invoke(this, new ListEventArgs() { });
+                    this.PlayTrackEvent?.Invoke(this, new Messenger() { });
                 }
             }
         }
@@ -1796,7 +1796,7 @@ namespace MitoPlayer_2024.Views
                 var hitTestInfo = dgvTrackList.HitTest(dragStartPoint.X, dragStartPoint.Y);
                 if (hitTestInfo.RowIndex >= 0)
                 {
-                    this.PlayTrackEvent?.Invoke(this, new ListEventArgs() { });
+                    this.PlayTrackEvent?.Invoke(this, new Messenger() { });
                 }
             }
         }
@@ -1917,7 +1917,7 @@ namespace MitoPlayer_2024.Views
                 string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
 
                 // Call your function to process the files
-                this.ExternalDragAndDropIntoTracklistEvent?.Invoke(this, new ListEventArgs() { DragAndDropFilePathArray = files, IntegerField1 = targetIndex });
+                this.ExternalDragAndDropIntoTracklistEvent?.Invoke(this, new Messenger() { DragAndDropFilePathArray = files, IntegerField1 = targetIndex });
 
                 // Clear the insertion line
                 insertionLineIndex = -1;
@@ -1928,7 +1928,7 @@ namespace MitoPlayer_2024.Views
                 // Handle reordering of existing rows
                 List<int> selectedIndices = dgvTrackList.SelectedRows.Cast<DataGridViewRow>().OrderBy(r => r.Index).Select(r => r.Index).ToList();
 
-                this.MoveTracklistRowsEvent?.Invoke(this, new ListEventArgs() { SelectedIndices = selectedIndices, IntegerField1 = targetIndex });
+                this.MoveTracklistRowsEvent?.Invoke(this, new Messenger() { SelectedIndices = selectedIndices, IntegerField1 = targetIndex });
 
                 // Re-select the moved rows using BeginInvoke to ensure it runs after the DataGridView has rendered
                 dgvTrackList.BeginInvoke(new Action(() =>
@@ -1961,7 +1961,7 @@ namespace MitoPlayer_2024.Views
             if (isCoverBrowserUpdateEnabled)
             {
                 // Call the method to update the cover browser
-                this.SetCurrentTrackEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = index });
+                this.SetCurrentTrackEvent?.Invoke(this, new Messenger() { IntegerField1 = index });
             }
         }
 
@@ -2269,7 +2269,7 @@ namespace MitoPlayer_2024.Views
                 string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
 
                 // Call your function to process the files
-                this.ExternalDragAndDropIntoPlaylistEvent?.Invoke(this, new ListEventArgs() { DragAndDropFilePathArray = files, IntegerField1 = rowIndex });
+                this.ExternalDragAndDropIntoPlaylistEvent?.Invoke(this, new Messenger() { DragAndDropFilePathArray = files, IntegerField1 = rowIndex });
 
                 // Clear the highlighted row
                 highlightedPlaylistRowIndex = -1;
@@ -2280,7 +2280,7 @@ namespace MitoPlayer_2024.Views
                 // Handle drop from track list
                 if (rowIndex > 0) // Prevent dropping on the first row
                 {
-                    this.InternalDragAndDropIntoPlaylistEvent?.Invoke(this, new ListEventArgs() { SelectedRows = this.dgvTrackList.SelectedRows, IntegerField1 = rowIndex });
+                    this.InternalDragAndDropIntoPlaylistEvent?.Invoke(this, new Messenger() { SelectedRows = this.dgvTrackList.SelectedRows, IntegerField1 = rowIndex });
                 }
                 playlistInsertionLineIndex = -1; // Clear the insertion line
             }
@@ -2289,7 +2289,7 @@ namespace MitoPlayer_2024.Views
                 // Handle drop within playlist list
                 if (rowIndex > 0) // Prevent dropping on the first row
                 {
-                    this.MovePlaylistRowEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = firstSelectedPlaylistRowIndex, IntegerField2 = rowIndex });
+                    this.MovePlaylistRowEvent?.Invoke(this, new Messenger() { IntegerField1 = firstSelectedPlaylistRowIndex, IntegerField2 = rowIndex });
                 }
                 highlightedPlaylistRowIndex = -1; // Clear the border
             }
@@ -2494,7 +2494,7 @@ namespace MitoPlayer_2024.Views
         {
             if (this.dgvTrackList.SelectedRows.Count > 0)
             {
-                this.DetectKeyEvent?.Invoke(this, new ListEventArgs() { Rows = this.dgvTrackList.Rows });
+                this.DetectKeyEvent?.Invoke(this, new Messenger() { Rows = this.dgvTrackList.Rows });
             }
         }
 
@@ -2502,7 +2502,7 @@ namespace MitoPlayer_2024.Views
         {
             if (this.dgvTrackList.SelectedRows.Count > 0)
             {
-                this.AddToKeyDetectorEvent?.Invoke(this, new ListEventArgs() { Rows = this.dgvTrackList.Rows });
+                this.AddToKeyDetectorEvent?.Invoke(this, new Messenger() { Rows = this.dgvTrackList.Rows });
             }
         }
 
@@ -2544,6 +2544,14 @@ namespace MitoPlayer_2024.Views
         private void btnGenerateTrainingSet_Click(object sender, EventArgs e)
         {
             this.OpenModelTrainerEvent?.Invoke(this, new EventArgs());
+        }
+
+        private void btnDetectKey_Click_1(object sender, EventArgs e)
+        {
+            if (this.dgvTrackList.SelectedRows.Count > 0)
+            {
+                this.DetectKeyEvent?.Invoke(this, new Messenger() { Rows = this.dgvTrackList.Rows });
+            }
         }
     }
 }

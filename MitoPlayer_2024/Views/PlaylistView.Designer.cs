@@ -81,6 +81,7 @@ namespace MitoPlayer_2024.Views
             this.btnColumnVisibilityWithTagEditor = new System.Windows.Forms.Button();
             this.btnGenerateTrainingSet = new System.Windows.Forms.Button();
             this.dgvTrackList = new MitoPlayer_2024.Helpers.CustomDataGridView();
+            this.btnDetectKey = new System.Windows.Forms.Button();
             this.contextMenuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPlaylistList)).BeginInit();
             this.pnlPlaylistList.SuspendLayout();
@@ -578,6 +579,18 @@ namespace MitoPlayer_2024.Views
             this.dgvTrackList.MouseMove += new System.Windows.Forms.MouseEventHandler(this.dgvTrackList_MouseMove);
             this.dgvTrackList.MouseUp += new System.Windows.Forms.MouseEventHandler(this.dgvTrackList_MouseUp);
             // 
+            // btnDetectKey
+            // 
+            this.btnDetectKey.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnDetectKey.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDetectKey.Location = new System.Drawing.Point(978, 14);
+            this.btnDetectKey.Name = "btnDetectKey";
+            this.btnDetectKey.Size = new System.Drawing.Size(90, 23);
+            this.btnDetectKey.TabIndex = 31;
+            this.btnDetectKey.Text = "Detect Key";
+            this.btnDetectKey.UseVisualStyleBackColor = true;
+            this.btnDetectKey.Click += new System.EventHandler(this.btnDetectKey_Click_1);
+            // 
             // PlaylistView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -594,6 +607,7 @@ namespace MitoPlayer_2024.Views
             this.Controls.Add(this.pnlTagComponent);
             this.Controls.Add(this.pnlPlaylistList);
             this.Controls.Add(this.btnSave);
+            this.Controls.Add(this.btnDetectKey);
             this.Controls.Add(this.btnScanKeyAndBpm);
             this.Controls.Add(this.btnPlaylistListPanelToggle);
             this.Controls.Add(this.btnDisplayTagComponentToggle);
@@ -666,5 +680,6 @@ namespace MitoPlayer_2024.Views
         private System.Windows.Forms.Label lblMessage;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private System.Windows.Forms.Button btnGenerateTrainingSet;
+        private System.Windows.Forms.Button btnDetectKey;
     }
 }

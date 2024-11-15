@@ -32,7 +32,7 @@ namespace MitoPlayer_2024.Presenters
             ((TagValueImportView)this.view).DialogResult = DialogResult.Cancel;
         }
 
-        private void TagValueImportView_CloseView(object sender, ListEventArgs e)
+        private void TagValueImportView_CloseView(object sender, Messenger e)
         {
             ResultOrError result = new ResultOrError();
             String script = e.StringField1;

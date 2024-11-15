@@ -13,7 +13,7 @@ namespace MitoPlayer_2024.Views
 {
     public partial class ProfileEditorView : Form, IProfileEditorView
     {
-        public event EventHandler<ListEventArgs> CreateOrEditProfile;
+        public event EventHandler<Messenger> CreateOrEditProfile;
         public event EventHandler CloseProfileEditor;
         public ProfileEditorView()
         {
@@ -49,7 +49,7 @@ namespace MitoPlayer_2024.Views
         }
         private void btnOk_Click(object sender, EventArgs e)
         {
-            ListEventArgs args = new ListEventArgs();
+            Messenger args = new Messenger();
             args.StringField1 = txtProfileName.Text;
             this.CreateOrEditProfile?.Invoke(this, args);
         }
@@ -57,7 +57,7 @@ namespace MitoPlayer_2024.Views
         {
             if (e.KeyCode == Keys.Enter)
             {
-                ListEventArgs args = new ListEventArgs();
+                Messenger args = new Messenger();
                 args.StringField1 = txtProfileName.Text;
                 this.CreateOrEditProfile?.Invoke(this, args);
             }

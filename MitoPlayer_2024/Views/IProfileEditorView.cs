@@ -9,7 +9,7 @@ namespace MitoPlayer_2024.Views
 {
     public interface IProfileEditorView
     {
-        event EventHandler<ListEventArgs> CreateOrEditProfile;
+        event EventHandler<Messenger> CreateOrEditProfile;
         event EventHandler CloseProfileEditor;
 
         void Show();

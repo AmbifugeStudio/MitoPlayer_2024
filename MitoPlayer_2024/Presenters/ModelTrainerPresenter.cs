@@ -1,6 +1,11 @@
-﻿using Accord.Math;
+﻿using Accord;
+using Accord.Audio;
+using Accord.Math;
+using Accord.Math.Distances;
 using HDF.PInvoke;
+using MathNet.Numerics;
 using MathNet.Numerics.IntegralTransforms;
+using MathNet.Numerics.LinearAlgebra;
 using Microsoft.ML;
 using Microsoft.ML.Data;
 using Microsoft.ML.Trainers;
@@ -10,17 +15,37 @@ using MitoPlayer_2024.Models;
 using MitoPlayer_2024.Views;
 using NAudio.Dsp;
 using NAudio.Wave;
+using Org.BouncyCastle.Asn1.X509;
+using Org.BouncyCastle.Bcpg.Sig;
+using Org.BouncyCastle.Pqc.Crypto.Lms;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static Google.Protobuf.Compiler.CodeGeneratorResponse.Types;
+using Accord.Math.Optimization.Losses;
+using MitoPlayer_2024.Trainer;
+using System.Runtime.InteropServices.ComTypes;
+using OxyPlot;
+using OxyPlot.Series;
+using OxyPlot.Axes;
+using OxyPlot.WindowsForms;
+using FlacLibSharp;
+using NAudio.Mixer;
+using NWaves.FeatureExtractors;
+using Mysqlx.Session;
+using NWaves.Transforms;
+using TagLib.Ogg.Codecs;
+
 
 namespace MitoPlayer_2024.Presenters
 {
@@ -46,17 +71,8 @@ namespace MitoPlayer_2024.Presenters
         private Playlist CurrentPlaylist { get; set; }
         private TrainingData CurrentTemplate { get; set; }
         private TrainingData CurrentTrainingData { get; set; }
-        private bool IsChromaFeaturesEnabled { get; set; }
-        private bool IsMFCCsEnabled { get; set; }
-        private bool IsSpectralContrastEnabled { get; set; }
-        private bool IsHPCPEnabled { get; set; }
-        private bool IsHPSEnabled { get; set; }
-        private bool IsSpectralCentroidEnabled { get; set; }
-        private bool IsTonnetzFeaturesEnabled { get; set; }
-        private bool IsSpectralBandwidthEnabled { get; set; }
-        private bool IsZeroCrossingRateEnabled { get; set; }
-        private bool IsRmsEnergyEnabled { get; set; }
-        private bool IsPitchEnabled { get; set; }
+        private Track currentTrack { get; set; }
+       
         private bool IsTracklistDetailsDisplayed { get; set; }
         private int BatchSize { get; set; }
 
@@ -93,6 +109,9 @@ namespace MitoPlayer_2024.Presenters
             this.view.SetIsTracklistDetailsDisplayedEvent += SetIsTracklistDetailsDisplayedEvent;
             this.view.CalculateDataSetQualityEvent += CalculateDataSetQualityEvent;
 
+            this.view.AnalyseTrackEvent += AnalyseTrackEvent;
+            this.view.SetCurrentFeatureTypeEvent += SetCurrentFeatureTypeEvent;
+
 
             this.view.GenerateTrainingData += GenerateTrainingDataEvent;
 
@@ -112,9 +131,901 @@ namespace MitoPlayer_2024.Presenters
             this.ConcBag = new ObservableConcurrentBag<MessageTest>();
             this.ConcBag.ItemAdded += ConcBag_ItemAdded;
 
+            this.currentFeatureType = FeatureType.Empty;
         }
 
         
+
+       
+        private FeatureType currentFeatureType { get; set; }
+        private void SetCurrentFeatureTypeEvent(object sender, Messenger e)
+        {
+            switch (e.StringField1)
+            {
+                case "Chroma": currentFeatureType = FeatureType.Chroma; break;
+                case "MFCCs": currentFeatureType = FeatureType.MFCCs; break;
+                case "HPCP": currentFeatureType = FeatureType.HPCP; break;
+                case "HPSS": currentFeatureType = FeatureType.HPSS; break;
+                case "SpectralContrast": currentFeatureType = FeatureType.SpectralContrast; break;
+                case "SpectralCentroid": currentFeatureType = FeatureType.SpectralCentroid; break;
+                case "SpectralBandwidth": currentFeatureType = FeatureType.SpectralBandwidth; break;
+                case "Tonnetz": currentFeatureType = FeatureType.Tonnetz; break;
+                case "ZCR": currentFeatureType = FeatureType.ZCR; break;
+                case "RMS": currentFeatureType = FeatureType.RMS; break;
+                case "Pitch": currentFeatureType = FeatureType.Pitch; break;
+            }
+        }
+        private void AnalyseTrackEvent(object sender, Messenger e)
+        {
+            this.currentTrack = this.trackDao.GetTrackWithTags(e.IntegerField1, this.tagList);
+            if (this.currentTrack != null)
+            {
+                if (this.currentFeatureType != FeatureType.Empty)
+                {
+                    this.AnalyseTrack(this.currentTrack);
+                }
+            }
+           
+        }
+
+        private void AnalyseTrack(Track track)
+        {
+            double songLengthInSeconds = track.Length;
+
+            using (var reader = new AudioFileReader(track.Path))
+            {
+                if (currentFeatureType == FeatureType.Chroma)
+                {
+                    List<float[]> chromaFeatures = ExtractChromaFeaturesForAnalysing(track.Path);
+                    PlotChromaFeatures(chromaFeatures, songLengthInSeconds);
+                }
+            }
+        }
+
+        public List<float[]> ExtractChromaFeaturesForAnalysingOld(string filePath)
+        {
+            using (var reader = new AudioFileReader(filePath))
+            {
+                var sampleProvider = reader.ToSampleProvider();
+                int sampleRate = reader.WaveFormat.SampleRate;
+                // int bufferSize = 8192; // Increased FFT size for better resolution
+                int bufferSize = 2048; // Increased FFT size for better resolution
+                float[] buffer = new float[bufferSize];
+                List<float[]> chromaFeaturesList = new List<float[]>();
+
+                int bytesRead;
+                float[] pitchHistogram = new float[12]; // New line to initialize pitch histogram
+
+                while ((bytesRead = sampleProvider.Read(buffer, 0, bufferSize)) > 0)
+                {
+                    // Apply windowing function
+                    for (int i = 0; i < bufferSize; i++)
+                    {
+                        buffer[i] *= (float)(0.5 * (1 - Math.Cos(2 * Math.PI * i / (bufferSize - 1))));
+                    }
+
+                    // Apply FFT
+                    Complex[] complexBuffer = new Complex[bufferSize];
+                    for (int i = 0; i < bufferSize; i++)
+                    {
+                        complexBuffer[i].X = buffer[i];
+                        complexBuffer[i].Y = 0;
+                    }
+                    FastFourierTransform.FFT(true, (int)Math.Log(bufferSize, 2.0), complexBuffer);
+
+                    // LogFrequenciesAndKeys(complexBuffer, sampleRate, bufferSize);
+
+                    // Calculate chroma features
+                    float[] chroma = new float[12];
+                    for (int i = 0; i < complexBuffer.Length / 2; i++)
+                    {
+                        double frequency = i * sampleRate / bufferSize;
+                        if (frequency > 0) // Avoid log of zero or negative
+                        {
+                            int note = (int)Math.Round(12 * Log2(frequency / 440.0)) % 12;
+
+                            if (note < 0) note += 12;
+                            chroma[note] += (float)Math.Sqrt(complexBuffer[i].X * complexBuffer[i].X + complexBuffer[i].Y * complexBuffer[i].Y);
+                            pitchHistogram[note] += chroma[note]; // New line to aggregate pitch histogram
+                        }
+                    }
+
+                    chromaFeaturesList.Add(chroma);
+                }
+
+                // Normalize pitch histogram
+                float maxPitchValue = pitchHistogram.Max();
+                if (maxPitchValue > 0)
+                {
+                    for (int i = 0; i < pitchHistogram.Length; i++)
+                    {
+                        pitchHistogram[i] /= maxPitchValue;
+                    }
+                }
+
+                // Weight chroma features by pitch histogram
+                for (int i = 0; i < chromaFeaturesList.Count; i++)
+                {
+                    for (int j = 0; j < chromaFeaturesList[i].Length; j++)
+                    {
+                        chromaFeaturesList[i][j] *= pitchHistogram[j];
+                    }
+                }
+
+                return chromaFeaturesList;
+            }
+        }
+
+
+        public void DetectSongKey(string filePath)
+        {
+            List<float[]> chromaFeatures = this.ExtractChromaFeaturesForAnalysing(filePath);
+            float[] aggregatedChroma = AggregateChromaFeatures(chromaFeatures);
+
+            // Log aggregated chroma features for debugging
+            Console.WriteLine("Aggregated Chroma Features:");
+            for (int i = 0; i < aggregatedChroma.Length; i++)
+            {
+                Console.Write($"{aggregatedChroma[i]:F2} ");
+            }
+            Console.WriteLine();
+
+            string key = DetectKey(aggregatedChroma);
+            Console.WriteLine($"Song: {filePath} - Detected Key: {key}");
+        }
+        public List<float[]> ExtractChromaFeaturesForAnalysing(string filePath)
+        {
+            using (var reader = new AudioFileReader(filePath))
+            {
+                var sampleProvider = reader.ToSampleProvider();
+                int sampleRate = reader.WaveFormat.SampleRate;
+                int bufferSize = 2048; // Moderate buffer size for better time resolution
+                int overlap = bufferSize / 2; // 50% overlap
+                float[] buffer = new float[bufferSize];
+                List<float[]> chromaFeaturesList = new List<float[]>();
+
+                int bytesRead;
+                float[] pitchHistogram = new float[12]; // Initialize pitch histogram
+
+                long totalBytes = reader.Length;
+                long processedBytes = 0;
+
+                Console.WriteLine("Starting extraction process...");
+
+                try
+                {
+                    while ((bytesRead = sampleProvider.Read(buffer, 0, bufferSize)) > 0)
+                    {
+                        Console.WriteLine($"Bytes read: {bytesRead}");
+
+                        // Apply windowing function
+                        Console.WriteLine("Applying windowing function...");
+                        for (int i = 0; i < bufferSize; i++)
+                        {
+                            buffer[i] *= (float)(0.5 * (1 - Math.Cos(2 * Math.PI * i / (bufferSize - 1))));
+                        }
+
+                        // Apply FFT
+                        Console.WriteLine("Applying FFT...");
+                        Complex[] complexBuffer = new Complex[bufferSize];
+                        for (int i = 0; i < bufferSize; i++)
+                        {
+                            complexBuffer[i].X = buffer[i];
+                            complexBuffer[i].Y = 0;
+                        }
+                        FastFourierTransform.FFT(true, (int)Math.Log(bufferSize, 2.0), complexBuffer);
+
+                        // Calculate chroma features
+                        Console.WriteLine("Calculating chroma features...");
+                        float[] chroma = new float[12];
+                        for (int i = 0; i < complexBuffer.Length / 2; i++)
+                        {
+                            double frequency = i * sampleRate / bufferSize;
+                            if (frequency > 0) // Avoid log of zero or negative
+                            {
+                                int note = (int)Math.Round(12 * Log2(frequency / 440.0)) % 12;
+                                if (note < 0) note += 12;
+                                chroma[note] += (float)Math.Sqrt(complexBuffer[i].X * complexBuffer[i].X + complexBuffer[i].Y * complexBuffer[i].Y);
+                                pitchHistogram[note] += chroma[note]; // Aggregate pitch histogram
+                                Console.WriteLine($"Frequency: {frequency}, Note: {note}, Chroma[{note}]: {chroma[note]}");
+                            }
+                        }
+
+                        chromaFeaturesList.Add(chroma);
+
+                        // Move back by the overlap amount to process the next window
+                        long newPosition = reader.Position - overlap * sizeof(float);
+                        Console.WriteLine($"Setting new position: {newPosition}");
+                        if (newPosition < 0 || newPosition >= reader.Length)
+                        {
+                            Console.WriteLine("New position out of bounds, breaking loop.");
+                            break; // Exit the loop if the new position is out of bounds
+                        }
+                        reader.Position = newPosition;
+                        Console.WriteLine($"New reader position set: {reader.Position}");
+
+                        // Update processed bytes and calculate progress
+                        processedBytes = reader.Position;
+                        double progress = (double)processedBytes / totalBytes * 100;
+                        Console.WriteLine($"Processing: {progress:F2}%");
+
+                        // Adjust or remove the sleep duration as needed
+                        // System.Threading.Thread.Sleep(10); // Uncomment if necessary to prevent CPU overload
+                    }
+
+                    // Ensure the last segment is processed
+                    if (processedBytes < totalBytes)
+                    {
+                        Console.WriteLine("Processing last segment...");
+                        bytesRead = sampleProvider.Read(buffer, 0, bufferSize);
+                        if (bytesRead > 0)
+                        {
+                            // Apply windowing function
+                            for (int i = 0; i < bufferSize; i++)
+                            {
+                                buffer[i] *= (float)(0.5 * (1 - Math.Cos(2 * Math.PI * i / (bufferSize - 1))));
+                            }
+
+                            // Apply FFT
+                            Complex[] complexBuffer = new Complex[bufferSize];
+                            for (int i = 0; i < bufferSize; i++)
+                            {
+                                complexBuffer[i].X = buffer[i];
+                                complexBuffer[i].Y = 0;
+                            }
+                            FastFourierTransform.FFT(true, (int)Math.Log(bufferSize, 2.0), complexBuffer);
+
+                            // Calculate chroma features
+                            float[] chroma = new float[12];
+                            for (int i = 0; i < complexBuffer.Length / 2; i++)
+                            {
+                                double frequency = i * sampleRate / bufferSize;
+                                if (frequency > 0) // Avoid log of zero or negative
+                                {
+                                    int note = (int)Math.Round(12 * Log2(frequency / 440.0)) % 12;
+                                    if (note < 0) note += 12;
+                                    chroma[note] += (float)Math.Sqrt(complexBuffer[i].X * complexBuffer[i].X + complexBuffer[i].Y * complexBuffer[i].Y);
+                                    pitchHistogram[note] += chroma[note]; // Aggregate pitch histogram
+                                    Console.WriteLine($"Frequency: {frequency}, Note: {note}, Chroma[{note}]: {chroma[note]}");
+                                }
+                            }
+
+                            chromaFeaturesList.Add(chroma);
+                        }
+                    }
+
+                    // Normalize pitch histogram
+                    Console.WriteLine("Normalizing pitch histogram...");
+                    float maxPitchValue = pitchHistogram.Max();
+                    if (maxPitchValue > 0)
+                    {
+                        for (int i = 0; i < pitchHistogram.Length; i++)
+                        {
+                            pitchHistogram[i] /= maxPitchValue;
+                        }
+                    }
+
+                    // Weight chroma features by pitch histogram
+                    Console.WriteLine("Weighting chroma features by pitch histogram...");
+                    for (int i = 0; i < chromaFeaturesList.Count; i++)
+                    {
+                        for (int j = 0; j < chromaFeaturesList[i].Length; j++)
+                        {
+                            chromaFeaturesList[i][j] *= pitchHistogram[j];
+                        }
+                    }
+
+                    Console.WriteLine("Extraction process completed.");
+                    return chromaFeaturesList;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"An error occurred: {ex.Message}");
+                    return null;
+                }
+            }
+        }
+        public float[] AggregateChromaFeatures(List<float[]> chromaFeatures)
+        {
+            int numFrames = chromaFeatures.Count;
+            int numPitchClasses = chromaFeatures[0].Length;
+            float[] aggregatedChroma = new float[numPitchClasses];
+
+            foreach (var frame in chromaFeatures)
+            {
+                for (int i = 0; i < numPitchClasses; i++)
+                {
+                    aggregatedChroma[i] += frame[i];
+                }
+            }
+
+            // Normalize aggregated chroma features using dynamic thresholding
+            float meanChromaValue = aggregatedChroma.Average();
+            for (int i = 0; i < aggregatedChroma.Length; i++)
+            {
+                aggregatedChroma[i] /= meanChromaValue;
+            }
+
+            // Apply temporal smoothing
+            aggregatedChroma = ApplyTemporalSmoothing(aggregatedChroma);
+
+            return aggregatedChroma;
+        }
+        private float[] ApplyTemporalSmoothing(float[] chroma)
+        {
+            int windowSize = 5; // Adjust window size as needed
+            float[] smoothedChroma = new float[chroma.Length];
+            for (int i = 0; i < chroma.Length; i++)
+            {
+                float sum = 0;
+                int count = 0;
+                for (int j = Math.Max(0, i - windowSize / 2); j < Math.Min(chroma.Length, i + windowSize / 2 + 1); j++)
+                {
+                    sum += chroma[j];
+                    count++;
+                }
+                smoothedChroma[i] = sum / count;
+            }
+            return smoothedChroma;
+        }
+        private float CalculateCosineSimilarity(float[] chroma, float[] profile)
+        {
+            float dotProduct = 0;
+            float chromaMagnitude = 0;
+            float profileMagnitude = 0;
+
+            for (int i = 0; i < chroma.Length; i++)
+            {
+                dotProduct += chroma[i] * profile[i];
+                chromaMagnitude += chroma[i] * chroma[i];
+                profileMagnitude += profile[i] * profile[i];
+            }
+
+            return dotProduct / (float)(Math.Sqrt(chromaMagnitude) * Math.Sqrt(profileMagnitude));
+        }
+        public string DetectKey(float[] aggregatedChroma)
+        {
+            float maxSimilarity = float.MinValue;
+            string detectedKey = "";
+
+            for (int i = 0; i < 12; i++)
+            {
+                float similarity = CalculateCosineSimilarity(aggregatedChroma, majorProfiles[i]);
+                if (similarity > maxSimilarity)
+                {
+                    maxSimilarity = similarity;
+                    detectedKey = $"{i + 1}B"; // Camelot code for major keys
+                }
+            }
+
+            for (int i = 0; i < 12; i++)
+            {
+                float similarity = CalculateCosineSimilarity(aggregatedChroma, minorProfiles[i]);
+                if (similarity > maxSimilarity)
+                {
+                    maxSimilarity = similarity;
+                    detectedKey = $"{i + 1}A"; // Camelot code for minor keys
+                }
+            }
+
+            return detectedKey;
+        }
+        float[][] majorProfiles = new float[12][]
+           {
+            new float[] {6.35f, 2.23f, 3.48f, 2.33f, 4.38f, 4.09f, 2.52f, 5.19f, 2.39f, 3.66f, 2.29f, 2.88f}, // C major
+            new float[] {2.88f, 6.35f, 2.23f, 3.48f, 2.33f, 4.38f, 4.09f, 2.52f, 5.19f, 2.39f, 3.66f, 2.29f}, // C# major
+            new float[] {2.29f, 2.88f, 6.35f, 2.23f, 3.48f, 2.33f, 4.38f, 4.09f, 2.52f, 5.19f, 2.39f, 3.66f}, // D major
+            new float[] {3.66f, 2.29f, 2.88f, 6.35f, 2.23f, 3.48f, 2.33f, 4.38f, 4.09f, 2.52f, 5.19f, 2.39f}, // D# major
+            new float[] {2.39f, 3.66f, 2.29f, 2.88f, 6.35f, 2.23f, 3.48f, 2.33f, 4.38f, 4.09f, 2.52f, 5.19f}, // E major
+            new float[] {5.19f, 2.39f, 3.66f, 2.29f, 2.88f, 6.35f, 2.23f, 3.48f, 2.33f, 4.38f, 4.09f, 2.52f}, // F major
+            new float[] {2.52f, 5.19f, 2.39f, 3.66f, 2.29f, 2.88f, 6.35f, 2.23f, 3.48f, 2.33f, 4.38f, 4.09f}, // F# major
+            new float[] {4.09f, 2.52f, 5.19f, 2.39f, 3.66f, 2.29f, 2.88f, 6.35f, 2.23f, 3.48f, 2.33f, 4.38f}, // G major
+            new float[] {4.38f, 4.09f, 2.52f, 5.19f, 2.39f, 3.66f, 2.29f, 2.88f, 6.35f, 2.23f, 3.48f, 2.33f}, // G# major
+            new float[] {2.33f, 4.38f, 4.09f, 2.52f, 5.19f, 2.39f, 3.66f, 2.29f, 2.88f, 6.35f, 2.23f, 3.48f}, // A major
+            new float[] {3.48f, 2.33f, 4.38f, 4.09f, 2.52f, 5.19f, 2.39f, 3.66f, 2.29f, 2.88f, 6.35f, 2.23f}, // A# major
+            new float[] {2.23f, 3.48f, 2.33f, 4.38f, 4.09f, 2.52f, 5.19f, 2.39f, 3.66f, 2.29f, 2.88f, 6.35f}  // B major
+           };
+        float[][] minorProfiles = new float[12][]
+        {
+            new float[] {6.33f, 2.68f, 3.52f, 5.38f, 2.60f, 3.53f, 2.54f, 4.75f, 3.98f, 2.69f, 3.34f, 3.17f}, // A minor
+            new float[] {3.17f, 6.33f, 2.68f, 3.52f, 5.38f, 2.60f, 3.53f, 2.54f, 4.75f, 3.98f, 2.69f, 3.34f}, // A# minor
+            new float[] {3.34f, 3.17f, 6.33f, 2.68f, 3.52f, 5.38f, 2.60f, 3.53f, 2.54f, 4.75f, 3.98f, 2.69f}, // B minor
+            new float[] {2.69f, 3.34f, 3.17f, 6.33f, 2.68f, 3.52f, 5.38f, 2.60f, 3.53f, 2.54f, 4.75f, 3.98f}, // C minor
+            new float[] {3.98f, 2.69f, 3.34f, 3.17f, 6.33f, 2.68f, 3.52f, 5.38f, 2.60f, 3.53f, 2.54f, 4.75f}, // C# minor
+            new float[] {4.75f, 3.98f, 2.69f, 3.34f, 3.17f, 6.33f, 2.68f, 3.52f, 5.38f, 2.60f, 3.53f, 2.54f}, // D minor
+            new float[] {2.54f, 4.75f, 3.98f, 2.69f, 3.34f, 3.17f, 6.33f, 2.68f, 3.52f, 5.38f, 2.60f, 3.53f}, // D# minor
+            new float[] {3.53f, 2.54f, 4.75f, 3.98f, 2.69f, 3.34f, 3.17f, 6.33f, 2.68f, 3.52f, 5.38f, 2.60f}, // E minor
+            new float[] {2.60f, 3.53f, 2.54f, 4.75f, 3.98f, 2.69f, 3.34f, 3.17f, 6.33f, 2.68f, 3.52f, 5.38f}, // F minor
+            new float[] {5.38f, 2.60f, 3.53f, 2.54f, 4.75f, 3.98f, 2.69f, 3.34f, 3.17f, 6.33f, 2.68f, 3.52f}, // F# minor
+            new float[] {3.52f, 5.38f, 2.60f, 3.53f, 2.54f, 4.75f, 3.98f, 2.69f, 3.34f, 3.17f, 6.33f, 2.68f}, // G minor
+            new float[] {2.68f, 3.52f, 5.38f, 2.60f, 3.53f, 2.54f, 4.75f, 3.98f, 2.69f, 3.34f, 3.17f, 6.33f}  // G# minor
+        };
+
+        private void LogFrequenciesAndKeys(Complex[] complexBuffer, int sampleRate, int bufferSize)
+        {
+            // Calculate magnitudes and print prominent frequencies
+            for (int i = 0; i < complexBuffer.Length / 2; i++)
+            {
+                double frequency = i * sampleRate / bufferSize;
+                double magnitude = Math.Sqrt(complexBuffer[i].X * complexBuffer[i].X + complexBuffer[i].Y * complexBuffer[i].Y);
+
+                // Print frequencies with significant magnitudes
+                if (magnitude > 0.01) // Adjust threshold as needed
+                {
+                    string note = FrequencyToNoteName(frequency);
+                    Console.WriteLine($"Frequency: {frequency} Hz, Magnitude: {magnitude}, Note: {note}");
+                }
+            }
+        }
+
+        public string FrequencyToNoteName(double frequency)
+        {
+            string[] noteNames = { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
+            int noteIndex = (int)Math.Round(12 * Log2(frequency / 440.0)) % 12;
+            if (noteIndex < 0) noteIndex += 12;
+            return noteNames[noteIndex];
+        }
+
+        public List<float[]> ExtractChromaFeaturesForAnalysing0(string filePath)
+        {
+            using (var reader = new AudioFileReader(filePath))
+            {
+                var sampleProvider = reader.ToSampleProvider();
+                int sampleRate = reader.WaveFormat.SampleRate;
+                int bufferSize = 4096; // Process in chunks of 4096 samples
+                float[] buffer = new float[bufferSize];
+                List<float[]> chromaFeaturesList = new List<float[]>();
+
+                int bytesRead;
+                while ((bytesRead = sampleProvider.Read(buffer, 0, bufferSize)) > 0)
+                {
+                    // Apply windowing function
+                    for (int i = 0; i < bufferSize; i++)
+                    {
+                        buffer[i] *= (float)(0.5 * (1 - Math.Cos(2 * Math.PI * i / (bufferSize - 1))));
+                    }
+
+                    // Apply FFT
+                    Complex[] complexBuffer = new Complex[bufferSize];
+                    for (int i = 0; i < bufferSize; i++)
+                    {
+                        complexBuffer[i].X = buffer[i];
+                        complexBuffer[i].Y = 0;
+                    }
+                    FastFourierTransform.FFT(true, (int)Math.Log(bufferSize, 2.0), complexBuffer);
+
+                    // Calculate chroma features
+                    float[] chroma = new float[12];
+                    for (int i = 0; i < complexBuffer.Length / 2; i++)
+                    {
+                        double frequency = i * sampleRate / bufferSize;
+                        if (frequency > 0) // Avoid log of zero or negative
+                        {
+                            int note = (int)Math.Round(12 * Math.Log(frequency / 440.0, 2)) % 12;
+                            if (note < 0) note += 12;
+                            chroma[note] += (float)Math.Sqrt(complexBuffer[i].X * complexBuffer[i].X + complexBuffer[i].Y * complexBuffer[i].Y);
+                        }
+                    }
+
+                    // Normalize chroma features
+                    float maxChromaValue = chroma.Max();
+                    if (maxChromaValue > 0)
+                    {
+                        for (int i = 0; i < chroma.Length; i++)
+                        {
+                            chroma[i] /= maxChromaValue;
+                        }
+                    }
+
+
+                    chromaFeaturesList.Add(chroma);
+                }
+                return chromaFeaturesList;
+            }
+        }
+        public float[] AggregateChromaFeaturesOld(List<float[]> chromaFeatures)
+        {
+            int numFrames = chromaFeatures.Count;
+            int numPitchClasses = chromaFeatures[0].Length;
+            float[] aggregatedChroma = new float[numPitchClasses];
+
+            foreach (var frame in chromaFeatures)
+            {
+                for (int i = 0; i < numPitchClasses; i++)
+                {
+                    aggregatedChroma[i] += frame[i];
+                }
+            }
+
+            for (int i = 0; i < numPitchClasses; i++)
+            {
+                aggregatedChroma[i] /= numFrames;
+            }
+
+            return aggregatedChroma;
+        }
+        private float CalculateCorrelation(float[] chroma, float[] profile)
+        {
+            float sum = 0;
+            for (int i = 0; i < chroma.Length; i++)
+            {
+                sum += chroma[i] * profile[i];
+            }
+            return sum;
+        }
+        public string DetectKeyOld(float[] aggregatedChroma)
+        {
+            float maxCorrelation = float.MinValue;
+            string detectedKey = "";
+
+            for (int i = 0; i < 12; i++)
+            {
+                float correlation = CalculateCorrelation(aggregatedChroma, majorProfiles[i]);
+                if (correlation > maxCorrelation)
+                {
+                    maxCorrelation = correlation;
+                    detectedKey = $"{i + 1}B"; // Camelot code for major keys
+                }
+            }
+
+            for (int i = 0; i < 12; i++)
+            {
+                float correlation = CalculateCorrelation(aggregatedChroma, minorProfiles[i]);
+                if (correlation > maxCorrelation)
+                {
+                    maxCorrelation = correlation;
+                    detectedKey = $"{i + 1}A"; // Camelot code for minor keys
+                }
+            }
+
+            return detectedKey;
+        }
+        /*
+         public float[] AggregateAndSmoothChromaFeatures(List<float[]> chromaFeatures, int smoothingWindowSize = 5)
+        {
+            int numFrames = chromaFeatures.Count;
+            int numPitchClasses = chromaFeatures[0].Length;
+            float[] aggregatedChroma = new float[numPitchClasses];
+
+            // Aggregate chroma features
+            foreach (var frame in chromaFeatures)
+            {
+                for (int i = 0; i < numPitchClasses; i++)
+                {
+                    aggregatedChroma[i] += frame[i];
+                }
+            }
+
+            for (int i = 0; i < numPitchClasses; i++)
+            {
+                aggregatedChroma[i] /= numFrames;
+            }
+
+            // Apply smoothing
+            float[] smoothedChroma = new float[numPitchClasses];
+            for (int i = 0; i < numPitchClasses; i++)
+            {
+                float sum = 0;
+                int count = 0;
+                for (int j = -smoothingWindowSize; j <= smoothingWindowSize; j++)
+                {
+                    int index = (i + j + numPitchClasses) % numPitchClasses;
+                    sum += aggregatedChroma[index];
+                    count++;
+                }
+                smoothedChroma[i] = sum / count;
+            }
+
+            return smoothedChroma;
+        }
+
+        private float CalculateWeightedCorrelation(float[] chroma, float[] profile, float[] weights)
+        {
+            float sum = 0;
+            for (int i = 0; i < chroma.Length; i++)
+            {
+                sum += chroma[i] * profile[i] * weights[i];
+            }
+            return sum;
+        }
+
+          public string DetectKey(float[] aggregatedChroma)
+           {
+               float[] weights = new float[] { 1.0f, 0.9f, 0.8f, 0.7f, 0.6f, 0.5f, 0.4f, 0.3f, 0.2f, 0.1f, 0.05f, 0.01f }; // Example weights
+               float maxCorrelation = float.MinValue;
+               string detectedKey = "";
+
+               // Compare with major profiles
+               for (int i = 0; i < 12; i++)
+               {
+                   float correlation = CalculateWeightedCorrelation(aggregatedChroma, majorProfiles[i], weights);
+                   if (correlation > maxCorrelation)
+                   {
+                       maxCorrelation = correlation;
+                       detectedKey = $"{i + 1}B"; // Camelot code for major keys
+                   }
+               }
+
+               // Compare with minor profiles
+               for (int i = 0; i < 12; i++)
+               {
+                   float correlation = CalculateWeightedCorrelation(aggregatedChroma, minorProfiles[i], weights);
+                   if (correlation > maxCorrelation)
+                   {
+                       maxCorrelation = correlation;
+                       detectedKey = $"{i + 1}A"; // Camelot code for minor keys
+                   }
+               }
+
+               return detectedKey;
+           }*/
+
+
+
+
+        private double FindReasonableMaxValue(List<float[]> chromaFeatures, double percentile = 0.99)
+        {
+            List<float> allValues = new List<float>();
+            foreach (var chroma in chromaFeatures)
+            {
+                allValues.AddRange(chroma);
+            }
+            allValues.Sort();
+            int index = (int)(allValues.Count * percentile);
+            return allValues[index];
+        }
+        private void PlotChromaFeatures(List<float[]> chromaFeatures, double songLengthInSeconds)
+        {
+            var plotView = new PlotView
+            {
+                Dock = DockStyle.Fill
+            };
+
+            var plotModel = new PlotModel { Title = "Chroma Features Over Time" };
+
+            // Find a reasonable maximum value in the chroma features
+            double maxValue = FindReasonableMaxValue(chromaFeatures);
+
+            // Add a color axis
+            var colorAxis = new LinearColorAxis
+            {
+                Position = AxisPosition.Right,
+                Palette = OxyPalettes.Jet(500),
+                HighColor = OxyColors.Gray,
+                LowColor = OxyColors.Black,
+                Minimum = 0,
+                Maximum = maxValue // Set the maximum based on a reasonable value
+            };
+            plotModel.Axes.Add(colorAxis);
+
+            // Add X axis (Time)
+            var xAxis = new LinearAxis
+            {
+                Position = AxisPosition.Bottom,
+                Title = "Time (seconds)",
+                Minimum = 0,
+                Maximum = songLengthInSeconds, // Set the maximum to the length of the song in seconds
+                MajorStep = 15, // Major ticks every 15 seconds
+                MinorStep = 5, // Minor ticks every 5 seconds
+                LabelFormatter = value => TimeSpan.FromSeconds(value).ToString(@"mm\:ss") // Correct format for minutes:seconds
+            };
+            plotModel.Axes.Add(xAxis);
+
+            // Add Y axis (Chroma Features)
+            var yAxis = new CategoryAxis
+            {
+                Position = AxisPosition.Left,
+                Title = "Chroma Features",
+                Key = "ChromaAxis",
+                ItemsSource = new[]
+            {
+"C (A01)", "C# (A02)", "D (A03)", "D# (A04)", "E (A05)", "F (A06)", "F# (A07)", "G (A08)", "G# (A09)", "A (A10)", "A# (A11)", "B (A12)"
+}
+            };
+            plotModel.Axes.Add(yAxis);
+
+            var heatMapSeries = new HeatMapSeries
+            {
+                X0 = 0,
+                X1 = chromaFeatures.Count, // Set X1 to the number of chroma feature frames
+                Y0 = 0,
+                Y1 = 12,
+                Interpolate = false,
+                RenderMethod = HeatMapRenderMethod.Rectangles
+            };
+
+            double[,] data = new double[chromaFeatures.Count, 12];
+            for (int x = 0; x < chromaFeatures.Count; x++)
+            {
+                for (int y = 0; y < 12; y++)
+                {
+                    data[x, y] = chromaFeatures[x][y];
+                }
+            }
+            heatMapSeries.Data = data;
+            plotModel.Series.Add(heatMapSeries);
+            plotView.Model = plotModel;
+
+            Form plotForm = new Form();
+            plotForm.Controls.Add(plotView);
+            plotForm.Text = "Chroma Features Visualization";
+            plotForm.Width = 1200; // Adjust the width to make the plot less flat
+            plotForm.Height = 600;
+            plotForm.StartPosition = FormStartPosition.CenterScreen;
+            plotForm.ShowDialog();
+        }
+
+
+        /*
+        private void AnalyseTrack(Track track)
+        {
+            double songLengthInSeconds = track.Length;
+
+            using (var reader = new AudioFileReader(track.Path))
+            {
+                if (currentFeatureType == FeatureType.Chroma)
+                {
+                    List<float[]> chromaFeatures = ExtractChromaFeaturesForAnalysing(track.Path);
+                    PlotChromaFeatures(chromaFeatures, songLengthInSeconds);
+                }                
+            }
+        }
+        public List<float[]> ExtractChromaFeaturesForAnalysing(string filePath)
+        {
+            using (var reader = new AudioFileReader(filePath))
+            {
+                var sampleProvider = reader.ToSampleProvider();
+                int sampleRate = reader.WaveFormat.SampleRate;
+                int bufferSize = 4096; // Process in chunks of 4096 samples
+                float[] buffer = new float[bufferSize];
+                List<float[]> chromaFeaturesList = new List<float[]>();
+
+                int bytesRead;
+                while ((bytesRead = sampleProvider.Read(buffer, 0, bufferSize)) > 0)
+                {
+                    // Apply windowing function
+                    for (int i = 0; i < bufferSize; i++)
+                    {
+                        buffer[i] *= (float)(0.5 * (1 - Math.Cos(2 * Math.PI * i / (bufferSize - 1))));
+                    }
+
+                    // Apply FFT
+                    Complex[] complexBuffer = new Complex[bufferSize];
+                    for (int i = 0; i < bufferSize; i++)
+                    {
+                        complexBuffer[i].X = buffer[i];
+                        complexBuffer[i].Y = 0;
+                    }
+                    FastFourierTransform.FFT(true, (int)Math.Log(bufferSize, 2.0), complexBuffer);
+
+                    // Calculate chroma features
+                    float[] chroma = new float[12];
+                    for (int i = 0; i < complexBuffer.Length / 2; i++)
+                    {
+                        double frequency = i * sampleRate / bufferSize;
+                        if (frequency > 0) // Avoid log of zero or negative
+                        {
+                            int note = (int)Math.Round(12 * Math.Log(frequency / 440.0, 2)) % 12;
+                            if (note < 0) note += 12;
+                            chroma[note] += (float)Math.Sqrt(complexBuffer[i].X * complexBuffer[i].X + complexBuffer[i].Y * complexBuffer[i].Y);
+                        }
+                    }
+
+                    // Normalize chroma features
+                    float maxChromaValue = 0;
+                    foreach (var value in chroma)
+                    {
+                        if (value > maxChromaValue)
+                        {
+                            maxChromaValue = value;
+                        }
+                    }
+                    if (maxChromaValue > 0)
+                    {
+                        for (int i = 0; i < chroma.Length; i++)
+                        {
+                            chroma[i] /= maxChromaValue;
+                        }
+                    }
+
+                    chromaFeaturesList.Add(chroma);
+                }
+                return chromaFeaturesList;
+            }
+        }
+        private double FindReasonableMaxValue(List<float[]> chromaFeatures, double percentile = 0.99)
+        {
+            List<float> allValues = new List<float>();
+            foreach (var chroma in chromaFeatures)
+            {
+                allValues.AddRange(chroma);
+            }
+            allValues.Sort();
+            int index = (int)(allValues.Count * percentile);
+            return allValues[index];
+        }
+        private void PlotChromaFeatures(List<float[]> chromaFeatures, double songLengthInSeconds)
+        {
+            var plotView = new PlotView
+            {
+                Dock = DockStyle.Fill
+            };
+
+            var plotModel = new PlotModel { Title = "Chroma Features Over Time" };
+
+            // Find a reasonable maximum value in the chroma features
+            double maxValue = FindReasonableMaxValue(chromaFeatures);
+
+            // Add a color axis
+            var colorAxis = new LinearColorAxis
+            {
+                Position = AxisPosition.Right,
+                Palette = OxyPalettes.Jet(500),
+                HighColor = OxyColors.Gray,
+                LowColor = OxyColors.Black,
+                Minimum = 0,
+                Maximum = maxValue // Set the maximum based on a reasonable value
+            };
+            plotModel.Axes.Add(colorAxis);
+
+            // Add X axis (Time)
+            var xAxis = new LinearAxis
+            {
+                Position = AxisPosition.Bottom,
+                Title = "Time (seconds)",
+                Minimum = 0,
+                Maximum = songLengthInSeconds, // Set the maximum to the length of the song in seconds
+                MajorStep = 60, // Major ticks every minute
+                MinorStep = 10, // Minor ticks every 10 seconds
+                StringFormat = "mm:ss" // Correct format for minutes:seconds
+            };
+            plotModel.Axes.Add(xAxis);
+
+            // Add Y axis (Chroma Features)
+            var yAxis = new CategoryAxis
+            {
+                Position = AxisPosition.Left,
+                Title = "Chroma Features",
+                Key = "ChromaAxis",
+                ItemsSource = new[]
+            {
+"C (A01)", "C# (A02)", "D (A03)", "D# (A04)", "E (A05)", "F (A06)", "F# (A07)", "G (A08)", "G# (A09)", "A (A10)", "A# (A11)", "B (A12)"
+}
+            };
+            plotModel.Axes.Add(yAxis);
+
+            var heatMapSeries = new HeatMapSeries
+            {
+                X0 = 0,
+                X1 = chromaFeatures.Count, // Set X1 to the number of chroma feature frames
+                Y0 = 0,
+                Y1 = 12,
+                Interpolate = false,
+                RenderMethod = HeatMapRenderMethod.Rectangles
+            };
+
+            double[,] data = new double[12, chromaFeatures.Count];
+            for (int x = 0; x < chromaFeatures.Count; x++)
+            {
+                for (int y = 0; y < 12; y++)
+                {
+                    data[y, x] = chromaFeatures[x][y];
+                }
+            }
+            heatMapSeries.Data = data;
+            plotModel.Series.Add(heatMapSeries);
+            plotView.Model = plotModel;
+
+            Form plotForm = new Form();
+            plotForm.Controls.Add(plotView);
+            plotForm.Text = "Chroma Features Visualization";
+            plotForm.Width = 800;
+            plotForm.Height = 600;
+            plotForm.ShowDialog();
+        }
+
+        */
+
 
         private Dictionary<String, Dictionary<String, Color>> tagValueDictionary { get; set; }
         private List<Tag> tagList { get;set; }
@@ -146,7 +1057,7 @@ namespace MitoPlayer_2024.Presenters
             }
             this.view.InitializeTagsAndTagValues(this.tagList, this.tagValueDictionary);
         }
-        private void SetIsTracklistDetailsDisplayedEvent(object sender, ListEventArgs e)
+        private void SetIsTracklistDetailsDisplayedEvent(object sender, Messenger e)
         {
             this.IsTracklistDetailsDisplayed = e.BooleanField1;
             this.settingDao.SetBooleanSetting(Settings.IsTracklistDetailsDisplayed.ToString(), this.IsTracklistDetailsDisplayed);
@@ -156,11 +1067,11 @@ namespace MitoPlayer_2024.Presenters
                 this.CalculateDataSetQuality();
             }
         }
-        private void LoadTrainingDataEvent(object sender, ListEventArgs e)
+        private void LoadTrainingDataEvent(object sender, Messenger e)
         {
             this.CurrentTrainingData = this.trackDao.GetTrainingData(e.IntegerField1);
         }
-        private void SelectTag(object sender, ListEventArgs e)
+        private void SelectTag(object sender, Messenger e)
         {
             this.CurrentTag = this.tagDao.GetTagByName(e.StringField1);
             this.CurrentTrackProperty = this.settingDao.GetTrackPropertyByNameAndGroup(this.CurrentTag.Name, ColumnGroup.TracklistColumns.ToString());
@@ -176,7 +1087,7 @@ namespace MitoPlayer_2024.Presenters
                     this.CalculateDataSetQuality();
             }
         }
-        private void SelectPlaylist(object sender, ListEventArgs e)
+        private void SelectPlaylist(object sender, Messenger e)
         {
             this.CurrentPlaylist =this.trackDao.GetPlaylistByName(e.StringField1);
 
@@ -196,7 +1107,7 @@ namespace MitoPlayer_2024.Presenters
                     this.CalculateDataSetQuality();
             }
         }
-        private void SelectTemplate(object sender, ListEventArgs e)
+        private void SelectTemplate(object sender, Messenger e)
         {
             this.CurrentTemplate =this.trackDao.GetTrainingData(e.IntegerField1);
 
@@ -431,51 +1342,51 @@ namespace MitoPlayer_2024.Presenters
             this.view.SetTraningDataListBindingSource(this.traningDataListBindingSource);
 
         }
-        private void IsChromaFeaturesEnabledEvent(object sender, ListEventArgs e)
+        private void IsChromaFeaturesEnabledEvent(object sender, Messenger e)
         {
-            IsChromaFeaturesEnabled = e.BooleanField1;
+            isChromaEnabled = e.BooleanField1;
         }
-        private void IsMFCCsEnabledEvent(object sender, ListEventArgs e)
+        private void IsMFCCsEnabledEvent(object sender, Messenger e)
         {
-            IsMFCCsEnabled = e.BooleanField1;
+            isMFCCsEnabled = e.BooleanField1;
         }
-        private void IsSpectralContrastEnabledEvent(object sender, ListEventArgs e)
+        private void IsSpectralContrastEnabledEvent(object sender, Messenger e)
         {
-            IsSpectralContrastEnabled = e.BooleanField1;
+            isSpectralContrastEnabled = e.BooleanField1;
         }
-        private void IsHPCPEnabledEvent(object sender, ListEventArgs e)
+        private void IsHPCPEnabledEvent(object sender, Messenger e)
         {
-            IsHPCPEnabled = e.BooleanField1;
+            isHPCPEnabled = e.BooleanField1;
         }
-        private void IsHPSEnabledEvent(object sender, ListEventArgs e)
+        private void IsHPSEnabledEvent(object sender, Messenger e)
         {
-            IsHPSEnabled = e.BooleanField1;
+            isHarmonicPercussiveSourceSeparationFeaturesEnabled = e.BooleanField1;
         }
-        private void IsSpectralCentroidEnabledEvent(object sender, ListEventArgs e)
+        private void IsSpectralCentroidEnabledEvent(object sender, Messenger e)
         {
-            IsSpectralCentroidEnabled = e.BooleanField1;
+            isSpectralCentroidEnabled = e.BooleanField1;
         }
-        private void IsTonnetzFeaturesEnabledEvent(object sender, ListEventArgs e)
+        private void IsTonnetzFeaturesEnabledEvent(object sender, Messenger e)
         {
-            IsTonnetzFeaturesEnabled = e.BooleanField1;
+            isTonnetzFeaturesEnabled = e.BooleanField1;
         }
-        private void IsPitchEnabledEvent(object sender, ListEventArgs e)
+        private void IsPitchEnabledEvent(object sender, Messenger e)
         {
-            IsPitchEnabled = e.BooleanField1;
+            isPitchEnabled = e.BooleanField1;
         }
-        private void IsRMSEnabledEvent(object sender, ListEventArgs e)
+        private void IsRMSEnabledEvent(object sender, Messenger e)
         {
-            IsRmsEnergyEnabled = e.BooleanField1;
+            isRmsEnergyEnabled = e.BooleanField1;
         }
-        private void IsZCREnabledEvent(object sender, ListEventArgs e)
+        private void IsZCREnabledEvent(object sender, Messenger e)
         {
-            IsZeroCrossingRateEnabled = e.BooleanField1;
+            isZeroCrossingRateEnabled = e.BooleanField1;
         }
-        private void IsSpectralBandwidthEnabledEvent(object sender, ListEventArgs e)
+        private void IsSpectralBandwidthEnabledEvent(object sender, Messenger e)
         {
-            IsSpectralBandwidthEnabled = e.BooleanField1;
+            isSpectralBandwidthEnabled = e.BooleanField1;
         }
-        private void BatchProcessChangedEvent(object sender, ListEventArgs e)
+        private void BatchProcessChangedEvent(object sender, Messenger e)
         {
             this.BatchSize = e.IntegerField1;
         }
@@ -499,17 +1410,17 @@ namespace MitoPlayer_2024.Presenters
                     MessageBox.Show("The model training tracklist is empty!", "Training Model Validation", MessageBoxButtons.OK);
                 }
                 else if (
-                    !IsChromaFeaturesEnabled &&
-                    !IsHPCPEnabled &&
-                    !IsHPSEnabled &&
-                    !IsMFCCsEnabled &&
-                    !IsTonnetzFeaturesEnabled &&
-                    !IsPitchEnabled &&
-                    !IsRmsEnergyEnabled &&
-                    !IsSpectralBandwidthEnabled &&
-                    !IsSpectralCentroidEnabled &&
-                    !IsSpectralContrastEnabled &&
-                    !IsZeroCrossingRateEnabled)
+                    !isChromaEnabled &&
+                    !isHarmonicPercussiveSourceSeparationFeaturesEnabled &&
+                    !isHPCPEnabled &&
+                    !isMFCCsEnabled &&
+                    !isTonnetzFeaturesEnabled &&
+                    !isPitchEnabled &&
+                    !isRmsEnergyEnabled &&
+                    !isSpectralBandwidthEnabled &&
+                    !isSpectralCentroidEnabled &&
+                    !isSpectralContrastEnabled &&
+                    !isZeroCrossingRateEnabled)
                 {
                     MessageBox.Show("At least one feature must be set!", "Training Model Validation", MessageBoxButtons.OK);
                 }
@@ -557,6 +1468,16 @@ namespace MitoPlayer_2024.Presenters
         }
         private async Task GenerateTrainingDataAsync(CancellationToken cancellationToken)
         {
+            var trainingDataCreator = new TrainingDataCreator(sampleRate: 44100, intervalSeconds: 1, windowSize: 250, stepSize: 125);
+            var cancellationTokenSource = new CancellationTokenSource();
+
+            // Example usage
+            //trainingDataCreator.AddTrack("path/to/song1.wav", "genreA", cancellationTokenSource.Token);
+            //trainingDataCreator.AddTrack("path/to/song2.wav", "genreB", cancellationTokenSource.Token);
+
+            // Create the training dataset
+            
+
             await Task.Run(() =>
             {
                 try
@@ -577,13 +1498,15 @@ namespace MitoPlayer_2024.Presenters
                             Total = totalTracks,
                         });
 
+                        var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount };
+
                         for (int i = 0; i < totalTracks; i += batchSize)
                         {
                             var batch = this.trackList.Skip(i).Take(batchSize).ToList();
 
                             ConcurrentBag<Track> concurrentTracks = new ConcurrentBag<Track>(batch);
 
-                            Parallel.ForEach(concurrentTracks, track =>
+                            Parallel.ForEach(concurrentTracks, parallelOptions, track =>
                             {
                                 if (cancellationToken.IsCancellationRequested)
                                 {
@@ -619,7 +1542,7 @@ namespace MitoPlayer_2024.Presenters
                                             RemainingTime = remaining
                                         });
                                     }
-                               }
+                                }
                             });
 
                             if (cancellationToken.IsCancellationRequested)
@@ -629,7 +1552,7 @@ namespace MitoPlayer_2024.Presenters
 
                             try
                             {
-                                this.WriteToHDF5(hdf5FilePath);
+                               // this.WriteToHDF5(hdf5FilePath);
                             }
                             catch (Exception ex)
                             {
@@ -641,18 +1564,20 @@ namespace MitoPlayer_2024.Presenters
                         }
                     }
 
-                    TrainingData trainingData = new TrainingData()
-                    {
-                        Id = this.trackDao.GetNextId(TableName.TrainingData.ToString()),
-                        FilePath = this.hdf5FilePath,
-                        TagId = this.CurrentTag.Id,
-                        Name = this.CurrentPlaylist?.Name,
-                        CreateDate = DateTime.Now,
-                        SampleCount = this.trackList.Count,
-                        Balance = this.balance
-                    };
+                    /*  TrainingData trainingData = new TrainingData()
+                      {
+                          Id = this.trackDao.GetNextId(TableName.TrainingData.ToString()),
+                          FilePath = this.hdf5FilePath,
+                          TagId = this.CurrentTag.Id,
+                          Name = this.CurrentPlaylist?.Name,
+                          CreateDate = DateTime.Now,
+                          SampleCount = this.trackList.Count,
+                          Balance = this.balance
+                      };
 
-                    this.trackDao.CreateTrainingData(trainingData);
+                      this.trackDao.CreateTrainingData(trainingData);*/
+
+                    //trainingDataCreator.CreateTrainingDataset(sampleRate: 44100, intervalSeconds: 1, windowSize: 250, stepSize: 125);
 
 
                     this.ConcBag.Add(new MessageTest()
@@ -705,7 +1630,7 @@ namespace MitoPlayer_2024.Presenters
         }
         private void ConcBag_ItemAdded(object sender, ItemAddedEventArgs<MessageTest> e)
         {
-            Console.WriteLine($"Item added: {e.Item}");
+            //Console.WriteLine($"Item added: {e.Item}");
             this.view.UpdateProgressOnView(e.Item);
 
             if (this.ConcBag.Count > 100)
@@ -728,7 +1653,7 @@ namespace MitoPlayer_2024.Presenters
                     Total = 0,
                     EstimatedSize = 0,
                     Log = "GENERATING CANCELED!\n"
-                }); ;
+                }); 
 
                 cancellationTokenSourceForGenerating.Cancel();
                 isGenerating = false;
@@ -750,29 +1675,89 @@ namespace MitoPlayer_2024.Presenters
         }
         public void AddTrack(string filePath, string tagValue, CancellationToken cancellationToken)
         {
-            var features = ExtractFeatures(filePath, cancellationToken);
-            tracks.Add(new TrackForTraining { Path = filePath, Key = tagValue, Features = features });
+            //TODO VISSZARAKNI? EZ MOST CSAK TESZT
+            // var features = ExtractFeatures(filePath, cancellationToken);
+            // tracks.Add(new TrackForTraining { Path = filePath, Key = tagValue, Features = features });
+
+            this.DetectSongKey(filePath);
         }
 
 
-      /*  private float[] ExtractFeatures(string filePath, CancellationToken cancellationToken)
+        private const int intervalSeconds = 2;
+        /* private float[] ExtractFeatures(string filePath, CancellationToken cancellationToken)
+         {
+             using (var reader = new AudioFileReader(filePath))
+             {
+                 var sampleProvider = reader.ToSampleProvider();
+                 float[] buffer = new float[reader.WaveFormat.SampleRate * intervalSeconds];
+                 int samplesRead;
+                 List<float[]> featuresList = new List<float[]>();
+                 int totalSamples = (int)Math.Ceiling((double)reader.Length / (buffer.Length * 2 * reader.WaveFormat.Channels)); // Adjust for bytes per sample and channels
+                 int currentSample = 0;
+
+                 if (enableExtractFeaturesLog)
+                     Console.WriteLine($"Total samples: {totalSamples}");
+
+                 while ((samplesRead = sampleProvider.Read(buffer, 0, buffer.Length)) > 0)
+                 {
+                     if (cancellationToken.IsCancellationRequested)
+                     {
+                         break;
+                     }
+
+                     // Perform FFT
+                     Complex[] fftBuffer = new Complex[buffer.Length];
+                     for (int i = 0; i < buffer.Length; i++)
+                     {
+                         fftBuffer[i].X = buffer[i];
+                         fftBuffer[i].Y = 0;
+                     }
+                     FastFourierTransform.FFT(true, (int)Math.Log(buffer.Length, 2.0), fftBuffer);
+
+                     // Extract features
+                     ExtractAndAggregateFeatures(featuresList, fftBuffer, buffer, reader.WaveFormat.SampleRate);
+
+                     currentSample++;
+                     int progressValue = currentSample * 100 / totalSamples;
+
+                     if (enableExtractFeaturesLog)
+                         Console.WriteLine($"{progressValue}% complete (Sample {currentSample} of {totalSamples}) - File: {filePath}");
+
+                     this.ConcBag.Add(new MessageTest()
+                     {
+                         LogState = LogState.Extraction,
+                         ExtractionProgressValue = progressValue,
+                         CurrentSample = currentSample,
+                         TotalSamples = totalSamples,
+                         FilePath = filePath
+                     });
+                 }
+
+                 var allFeatures = featuresList.SelectMany(f => f).ToArray();
+                 int originalFeatureCount = featuresList[0].Length; // Assuming all feature arrays have the same length
+                 var reducedFeatures = ApplyPCA(featuresList, 100); // Adjust targetDimension as needed
+
+                 return reducedFeatures;
+
+
+             }
+         }*/
+
+
+
+        private List<float[]> ExtractFeatures(string filePath, int sampleRate, int intervalSeconds)
         {
-            const int aggregationWindowSize = 44100; // Assuming 44.1kHz sample rate for 1-second windows
+            List<float[]> featureList = new List<float[]>();
+
             using (var reader = new AudioFileReader(filePath))
             {
                 var sampleProvider = reader.ToSampleProvider();
-                float[] buffer = new float[aggregationWindowSize];
+                float[] buffer = new float[sampleRate * intervalSeconds];
                 int samplesRead;
-                List<float> aggregatedFeatures = new List<float>();
 
                 while ((samplesRead = sampleProvider.Read(buffer, 0, buffer.Length)) > 0)
                 {
-                    if (cancellationToken.IsCancellationRequested)
-                    {
-                        break;
-                    }
-
-                    // Perform FFT and extract features as before
+                    // Perform FFT
                     Complex[] fftBuffer = new Complex[buffer.Length];
                     for (int i = 0; i < buffer.Length; i++)
                     {
@@ -781,79 +1766,236 @@ namespace MitoPlayer_2024.Presenters
                     }
                     FastFourierTransform.FFT(true, (int)Math.Log(buffer.Length, 2.0), fftBuffer);
 
-                    // Extract features (e.g., MFCCs, chroma features)
-                    float[] mfccFeatures = ExtractMFCCs(buffer, reader.WaveFormat.SampleRate);
-                    aggregatedFeatures.AddRange(mfccFeatures);
-
-                    // Aggregate features over the window
-                    float mean = mfccFeatures.Average();
-                    float variance = mfccFeatures.Select(f => (f - mean) * (f - mean)).Average();
-                    aggregatedFeatures.Add(mean);
-                    aggregatedFeatures.Add(variance);
-
-                    // Add other feature extraction and aggregation methods as needed
+                    // Extract features
+                    float[] features = ExtractFeaturesFromBuffer(fftBuffer, buffer, sampleRate);
+                    featureList.Add(features);
                 }
-
-                // Ensure the feature vector has a fixed length
-                const int fixedFeatureLength = 500; // Set your desired fixed feature length
-                if (aggregatedFeatures.Count < fixedFeatureLength)
-                {
-                    aggregatedFeatures.AddRange(new float[fixedFeatureLength - aggregatedFeatures.Count]);
-                }
-                else if (aggregatedFeatures.Count > fixedFeatureLength)
-                {
-                    aggregatedFeatures = aggregatedFeatures.Take(fixedFeatureLength).ToList();
-                }
-
-                return aggregatedFeatures.ToArray();
             }
-        }*/
-        /*
-        private List<float> ExtractFeatures(ISampleProvider sampleProvider, int sampleRate)
+
+            return featureList;
+        }
+        private float[] ExtractFeaturesFromBuffer(Complex[] fftBuffer, float[] buffer, int sampleRate)
         {
-            float[] buffer = new float[sampleRate * 2]; // Buffer for 1 second of audio
-            int samplesRead;
             List<float> features = new List<float>();
 
-            while ((samplesRead = sampleProvider.Read(buffer, 0, buffer.Length)) > 0)
+            // Extract Chroma features
+            if (isChromaEnabled)
             {
-                // Perform FFT
-                Complex[] fftBuffer = new Complex[buffer.Length];
-                for (int i = 0; i < buffer.Length; i++)
-                {
-                    fftBuffer[i] = new Complex(buffer[i], 0);
-                }
-                Fourier.Forward(fftBuffer, FourierOptions.Matlab);
-
-                // Extract features
-                float[] chromaFeatures = ExtractChromaFeatures(fftBuffer);
+                var chromaFeatures = ExtractChromaFeatures(fftBuffer);
                 features.AddRange(chromaFeatures);
-
-                float pitch = ExtractPitch(buffer, sampleRate);
-                features.Add(pitch);
-
-                // Add other feature extraction methods as needed
+            }
+            // Extract MFCCs
+            if (isMFCCsEnabled)
+            {
+                var mfccFeatures = ExtractMFCCsFeatures(buffer, sampleRate);
+                features.AddRange(mfccFeatures);
             }
 
-            return features;
+            // Extract Spectral Contrast
+            if (isSpectralContrastEnabled)
+            {
+                var spectralContrastFeatures = ExtractSpectralContrastFeatures(fftBuffer);
+                features.AddRange(spectralContrastFeatures);
+            }
+
+            // Extract Spectral Centroid
+            if (isSpectralCentroidEnabled)
+            {
+                var spectralCentroid = ExtractSpectralCentroidFeatures(fftBuffer);
+                features.Add(spectralCentroid);
+            }
+
+            // Extract Spectral Bandwidth
+            if (isSpectralBandwidthEnabled)
+            {
+                var spectralBandwidth = ExtractSpectralBandwidthFeatures(buffer);
+                features.Add(spectralBandwidth);
+            }
+
+            // Extract Zero Crossing Rate
+            if (isZeroCrossingRateEnabled)
+            {
+                var zcr = ExtractZeroCrossingRateFeatures(buffer);
+                features.Add(zcr);
+            }
+
+            // Extract RMS Energy
+            if (isRmsEnergyEnabled)
+            {
+                var rmsEnergy = ExtractRmsEnergyFeatures(buffer);
+                features.Add(rmsEnergy);
+            }
+
+            // Extract Pitch
+            if (isPitchEnabled)
+            {
+                var pitch = ExtractPitchFeatures(buffer, sampleRate);
+                features.Add(pitch);
+            }
+
+            return features.ToArray();
+        }
+
+        private List<float[]> AggregateFeaturesWithSlidingWindow(List<float[]> featureList, int windowSize, int stepSize)
+        {
+            List<float[]> aggregatedFeatures = new List<float[]>();
+
+            for (int i = 0; i <= featureList.Count - windowSize; i += stepSize)
+            {
+                List<float> windowFeatures = new List<float>();
+
+                for (int j = 0; j < windowSize; j++)
+                {
+                    windowFeatures.AddRange(featureList[i + j]);
+                }
+
+                float[] aggregatedWindowFeatures = AggregateWindowFeatures(windowFeatures.ToArray());
+                aggregatedFeatures.Add(aggregatedWindowFeatures);
+            }
+
+            return aggregatedFeatures;
+        }
+        private float[] AggregateWindowFeatures(float[] windowFeatures)
+        {
+            float[] aggregatedFeatures = new float[8];
+            aggregatedFeatures[0] = Statistics.Mean(windowFeatures);
+            aggregatedFeatures[1] = Statistics.Variance(windowFeatures);
+            aggregatedFeatures[2] = Statistics.StandardDeviation(windowFeatures);
+            aggregatedFeatures[3] = Statistics.Min(windowFeatures);
+            aggregatedFeatures[4] = Statistics.Max(windowFeatures);
+            aggregatedFeatures[5] = Statistics.Median(windowFeatures);
+            aggregatedFeatures[6] = Statistics.Entropy(windowFeatures);
+            aggregatedFeatures[7] = Statistics.Mode(windowFeatures);
+
+            return aggregatedFeatures;
         }
 
 
 
+
+      /*  private float[] SelectRelevantFeatures(float[] features)
+        {
+            // Example using Lasso for feature selection
+            var lasso = new Lasso();
+            lasso.Fit(features, target);
+            var selectedFeatures = lasso.SelectFeatures(features);
+
+            return selectedFeatures;
+        }
+        private float[] ReduceDimensionality(float[] features)
+        {
+            var pca = new PrincipalComponentAnalysis();
+            var reducedFeatures = pca.Transform(features);
+
+            return reducedFeatures;
+        }
+        private void CreateTrainingDataset(string[] filePaths, int sampleRate, int intervalSeconds, int windowSize, int stepSize)
+        {
+            List<float[]> trainingData = new List<float[]>();
+
+            foreach (var filePath in filePaths)
+            {
+                var featureList = ExtractFeatures(filePath, sampleRate, intervalSeconds);
+                var aggregatedFeatures = AggregateFeaturesWithSlidingWindow(featureList, windowSize, stepSize);
+
+                foreach (var features in aggregatedFeatures)
+                {
+                    var selectedFeatures = SelectRelevantFeatures(features);
+                    var reducedFeatures = ReduceDimensionality(selectedFeatures);
+                    trainingData.Add(reducedFeatures);
+                }
+            }
+
+            // Save or use the trainingData for model training
+        }
         */
+
+
+
+
+
+
+
+
+        private const int chromaFeaturesLength = 12;
+        private const int tonnetzFeaturesLength = 6;
+        private const int mFCCFeaturesLength = 13;
+        private const int hpcpFeaturesLength = 13;
+
+        private const int harmonicPercussiveSourceSeparationFeaturesLength = 12;
+        private const int harmonicFeaturesLength = 10;
+        private const int percussiveFeaturesLength = 10;
+
+        private const int spectralContrastFeaturesLength = 6;
+        private const int spectralCentroidFeaturesLength = 1;
+        private const int spectralBandwidthFeaturesLength = 1;
+
+        private const int zeroCrossingRateFeaturesLength = 1;
+        private const int rMSEnergyFeaturesLength = 1;
+        private const int pitchFeaturesLength = 1;
+
+        private bool isChromaEnabled { get; set; }
+        private bool isTonnetzFeaturesEnabled { get; set; }
+        private bool isMFCCsEnabled { get; set; }
+        private bool isHPCPEnabled { get; set; }
+
+        private bool isHarmonicPercussiveSourceSeparationFeaturesEnabled { get; set; }
+
+        private bool isSpectralContrastEnabled { get; set; }
+        private bool isSpectralCentroidEnabled { get; set; }
+        private bool isSpectralBandwidthEnabled { get; set; }
+
+        private bool isZeroCrossingRateEnabled { get; set; }
+        private bool isRmsEnergyEnabled { get; set; }
+        private bool isPitchEnabled { get; set; }
+
+        private List<float[]> chromaFeatureList { get; set; }
+        private List<float[]> tonnetzFeatureList { get; set; }
+        private List<float[]> mfccFeatureList { get; set; }
+        private List<float[]> hpcpFeatureList { get; set; }
+
+        private List<float[]> harmonicPercussiveSourceSeparationFeatureList { get; set; }
+        private List<float[]> harmonicFeatureList { get; set; }
+        private List<float[]> percussiveFeatureList { get; set; }
+
+        private List<float[]> spectralContrastFeatureList { get; set; }
+        private List<float[]> spectralCentroidFeatureList { get; set; }
+        private List<float[]> spectralBandwidthFeatureList { get; set; }
+
+        private List<float[]> zeroCrossingRateFeatureList { get; set; }
+        private List<float[]> rMSEnergyFeatureList { get; set; }
+        private List<float[]> pitchFeatureList { get; set; }
+       
         private float[] ExtractFeatures(string filePath, CancellationToken cancellationToken)
         {
+            float[] trainingData = new float[282];
+
             using (var reader = new AudioFileReader(filePath))
             {
                 var sampleProvider = reader.ToSampleProvider();
-                float[] buffer = new float[reader.WaveFormat.SampleRate * 2];
+                float[] buffer = new float[reader.WaveFormat.SampleRate * intervalSeconds];
                 int samplesRead;
-                List<float> features = new List<float>();
-                int totalSamples = (int)Math.Ceiling((double)reader.Length / (buffer.Length * 2 * 2)); // Adjust for bytes per sample and channels
+
+                List<float[]> featuresList = new List<float[]>();
+                int totalSamples = (int)Math.Ceiling((double)reader.Length / (buffer.Length * 2 * reader.WaveFormat.Channels)); // Adjust for bytes per sample and channels
                 int currentSample = 0;
 
                 if (enableExtractFeaturesLog)
                     Console.WriteLine($"Total samples: {totalSamples}");
+
+                this.chromaFeatureList = new List<float[]>();
+                this.tonnetzFeatureList = new List<float[]>();
+                this.mfccFeatureList = new List<float[]>();
+                this.hpcpFeatureList = new List<float[]>();
+                this.harmonicPercussiveSourceSeparationFeatureList = new List<float[]>();
+                this.harmonicFeatureList = new List<float[]>();
+                this.percussiveFeatureList = new  List<float[]>();
+                this.spectralContrastFeatureList = new List<float[]>();
+                this.spectralCentroidFeatureList = new List<float[]>();
+                this.spectralBandwidthFeatureList = new List<float[]>();
+                this.zeroCrossingRateFeatureList = new List<float[]>();
+                this.rMSEnergyFeatureList = new List<float[]>();
+                this.pitchFeatureList = new List<float[]>();
 
                 while ((samplesRead = sampleProvider.Read(buffer, 0, buffer.Length)) > 0)
                 {
@@ -871,84 +2013,10 @@ namespace MitoPlayer_2024.Presenters
                     }
                     FastFourierTransform.FFT(true, (int)Math.Log(buffer.Length, 2.0), fftBuffer);
 
-                    if (IsChromaFeaturesEnabled)
-                    {
-                        // Extract chroma features from FFT result
-                        float[] chromaFeatures = ExtractChromaFeatures(fftBuffer);
-                        features.AddRange(chromaFeatures);
+                    // Extract and aggregate features
+                    this.ExtractFeatures(fftBuffer, buffer, reader.WaveFormat.SampleRate);
 
-                        if (IsTonnetzFeaturesEnabled)
-                        {
-                            // Extract Tonnetz features
-                            float[] tonnetzFeatures = ExtractTonnetzFeatures(chromaFeatures);
-                            features.AddRange(tonnetzFeatures);
-                        }
-                    }
-
-                    if (IsMFCCsEnabled)
-                    {
-                        // Extract MFCCs
-                        float[] mfccFeatures = ExtractMFCCs(buffer, reader.WaveFormat.SampleRate);
-                        features.AddRange(mfccFeatures);
-                    }
-
-                    if (IsSpectralContrastEnabled)
-                    {
-                        // Extract spectral contrast
-                        float[] spectralContrastFeatures = ExtractSpectralContrast(fftBuffer, SpectralContrastFeatureLength);
-                        features.AddRange(spectralContrastFeatures);
-                    }
-
-                    if (IsHPCPEnabled)
-                    {
-                        // Extract HPCP
-                        float[] hpcpFeatures = ExtractHPCP(fftBuffer, reader.WaveFormat.SampleRate);
-                        features.AddRange(hpcpFeatures);
-                    }
-
-                    if (IsHPSEnabled)
-                    {
-                        // Harmonic/Percussive Source Separation
-                        var (harmonic, percussive) = ExtractHPSFeatures(buffer, reader.WaveFormat.SampleRate);
-                        features.AddRange(harmonic);
-                        features.AddRange(percussive);
-                    }
-
-                    if (IsSpectralCentroidEnabled)
-                    {
-                        // Extract spectral centroid
-                        float spectralCentroid = ExtractSpectralCentroid(fftBuffer);
-                        features.Add(spectralCentroid);
-                    }
-
-                    if (IsSpectralBandwidthEnabled)
-                    {
-                        // Extract spectral bandwidth
-                        float spectralBandwidth = ExtractSpectralBandwidth(buffer);
-                        features.Add(spectralBandwidth);
-                    }
-
-                    if (IsZeroCrossingRateEnabled)
-                    {
-                        // Extract zero-crossing rate
-                        float zcr = ExtractZeroCrossingRate(buffer);
-                        features.Add(zcr);
-                    }
-
-                    if (IsRmsEnergyEnabled)
-                    {
-                        // Extract RMS energy
-                        float rms = ExtractRmsEnergy(buffer);
-                        features.Add(rms);
-                    }
-
-                    if (IsPitchEnabled)
-                    {
-                        // Extract pitch
-                        float pitch = ExtractPitch(buffer, reader.WaveFormat.SampleRate);
-                        features.Add(pitch);
-                    }
-
+                    //Log the progress
                     currentSample++;
                     int progressValue = currentSample * 100 / totalSamples;
 
@@ -963,28 +2031,429 @@ namespace MitoPlayer_2024.Presenters
                         TotalSamples = totalSamples,
                         FilePath = filePath
                     });
-
                 }
 
-                return features.ToArray();
+                trainingData = this.AggregateFeatures();
+
+                return trainingData;
             }
         }
+        private void ExtractFeatures(Complex[] fftBuffer, float[] buffer, int sampleRate)
+        {
+            // Extract Chroma features
+            if (isChromaEnabled)
+            {
+                var chromaFeatures = new float[chromaFeaturesLength];
+                chromaFeatures = ExtractChromaFeatures(fftBuffer);
+                chromaFeatureList.Add(chromaFeatures);
 
-        public const int ChromaFeatureLength = 12;
-        public const int MFCCFeatureLength = 13;
-        public const int SpectralContrastFeatureLength = 6;
-        public const int HPCPFeatureLength = 12;
-        public const int SpectralCentroidFeatureLength = 1;
-        public const int SpectralBandwidthFeatureLength = 1;
-        public const int ZeroCrossingRateFeatureLength = 1;
-        public const int RMSEnergyFeatureLength = 1;
-        public const int PitchFeatureLength = 1;
-        public const int TonnetzFeatureLength = 6;
-        //public const int HarmonicFeatureCount = 10; 
-        //public const int PercussiveFeatureCount = 10; 
+                if (isTonnetzFeaturesEnabled)
+                {
+                    // Extract Tonnetz features
+                    var tonnetzFeatures = new float[tonnetzFeaturesLength];
+                    tonnetzFeatures = ExtractTonnetzFeatures(chromaFeatures);
+                    tonnetzFeatureList.Add(chromaFeatures);
+                }
+            }
+            if (isMFCCsEnabled)
+            {
+                // Extract MFCCs features
+                var mfccFeatures= new float[mFCCFeaturesLength];
+                mfccFeatures = ExtractMFCCsFeatures(buffer, sampleRate);
+                mfccFeatureList.Add(mfccFeatures);
+            }
+            if (isHPCPEnabled)
+            {
+                // Extract Harmonic Percussive Source Separation features
+                var hPCPFeatures = new float[hpcpFeaturesLength];
+                hPCPFeatures = this.ExtractHPCPFeatures(fftBuffer, sampleRate);
+                hpcpFeatureList.Add(hPCPFeatures);
+            }
+            if (isHarmonicPercussiveSourceSeparationFeaturesEnabled)
+            {
+                // Harmonic/Percussive Source Separation features
+                var (harmonic, percussive) = ExtractHarmonicPercussionSourceSeparationFeatures(buffer, sampleRate);
+                harmonicFeatureList.Add(harmonic);
+                percussiveFeatureList.Add(percussive);
+            }
+
+            if (isSpectralContrastEnabled)
+            {
+                // Extract Spectral Contrast features
+                var spectralContrastFeatures = new float[spectralContrastFeaturesLength];
+                spectralContrastFeatures = ExtractSpectralContrastFeatures(fftBuffer);
+                spectralContrastFeatureList.Add(spectralContrastFeatures);
+            }
+            if (isSpectralCentroidEnabled)
+            {
+                // Extract Spectral Centroid features
+                var spectralCentroidFeatures = new float[spectralCentroidFeaturesLength];
+                spectralCentroidFeatures[0] = ExtractSpectralCentroidFeatures(fftBuffer);
+                this.spectralCentroidFeatureList.Add(spectralCentroidFeatures);
+            }
+            if (isSpectralBandwidthEnabled)
+            {
+                // Extract Spectral Bandwidth features
+                var spectralBandwidthFeatures = new float[spectralBandwidthFeaturesLength];
+                spectralBandwidthFeatures[0] = ExtractSpectralBandwidthFeatures(buffer);
+                this.spectralBandwidthFeatureList.Add(spectralBandwidthFeatures);
+            }
+
+            if (isZeroCrossingRateEnabled)
+            {
+                // Extract Zero-Crossing Rate features
+                var zeroCrossingRateFeatures = new float[zeroCrossingRateFeaturesLength];
+                zeroCrossingRateFeatures[0] = ExtractZeroCrossingRateFeatures(buffer);
+                this.zeroCrossingRateFeatureList.Add(zeroCrossingRateFeatures);
+            }
+            if (isRmsEnergyEnabled)
+            {
+                // Extract RMS Energy features
+                var rmsEnergyFeatures = new float[rMSEnergyFeaturesLength];
+                rmsEnergyFeatures[0] = ExtractRmsEnergyFeatures(buffer);
+                this.rMSEnergyFeatureList.Add(rmsEnergyFeatures);
+            }
+            if (isPitchEnabled)
+            {
+                // Extract Pitch features
+                var pitchFeatures = new float[pitchFeaturesLength];
+                pitchFeatures[0] = ExtractPitchFeatures(buffer, sampleRate);
+                this.pitchFeatureList.Add(pitchFeatures);
+            }
+        }
+        private float[] AggregateFeatures()
+        {
+            List<float> trainingData = new List<float>();
+
+            //Chroma
+            if (isChromaEnabled && chromaFeatureList != null && chromaFeatureList.Count > 0)
+            {
+                for (int i = 0; i < chromaFeatureList.Count; i++)
+                {
+                    float[] chromaValues = chromaFeatureList.Select(cf => cf[i]).ToArray();
+                    trainingData.Add(Statistics.Mean(chromaValues));
+                    trainingData.Add(Statistics.Variance(chromaValues));
+                    trainingData.Add(Statistics.StandardDeviation(chromaValues));
+                    trainingData.Add(Statistics.Min(chromaValues));
+                    trainingData.Add(Statistics.Max(chromaValues));
+                    trainingData.Add(Statistics.Median(chromaValues));
+                    trainingData.Add(Statistics.Entropy(chromaValues));
+                    trainingData.Add(Statistics.Mode(chromaValues));
+                }
+            }
+
+            //MFCCs
+            if (isMFCCsEnabled && mfccFeatureList != null && mfccFeatureList.Count > 0)
+            {
+                for (int i = 0; i < mfccFeatureList.Count; i++)
+                {
+                    float[] mfccsValues = mfccFeatureList.Select(cf => cf[i]).ToArray();
+                    trainingData.Add(Statistics.Mean(mfccsValues));
+                    trainingData.Add(Statistics.Variance(mfccsValues));
+                    trainingData.Add(Statistics.StandardDeviation(mfccsValues));
+                    trainingData.Add(Statistics.Min(mfccsValues));
+                    trainingData.Add(Statistics.Max(mfccsValues));
+                    trainingData.Add(Statistics.Median(mfccsValues));
+                    trainingData.Add(Statistics.Skewness(mfccsValues));
+                    trainingData.Add(Statistics.Kurtosis(mfccsValues));
+                }
+            }
+
+            //Spectral Contrast
+            if (isSpectralContrastEnabled && spectralContrastFeatureList != null && spectralContrastFeatureList.Count > 0)
+            {
+                for (int i = 0; i < spectralContrastFeatureList.Count; i++)
+                {
+                    float[] spectralContrastValues = spectralContrastFeatureList.Select(sc => sc[i]).ToArray();
+                    trainingData.Add(Statistics.Mean(spectralContrastValues));
+                    trainingData.Add(Statistics.Variance(spectralContrastValues));
+                    trainingData.Add(Statistics.StandardDeviation(spectralContrastValues));
+                    trainingData.Add(Statistics.Min(spectralContrastValues));
+                    trainingData.Add(Statistics.Max(spectralContrastValues));
+                    trainingData.Add(Statistics.Median(spectralContrastValues));
+                    trainingData.Add(Statistics.Range(spectralContrastValues));
+                    trainingData.Add(Statistics.InterquartileRange(spectralContrastValues));
+                }
+            }
+
+            //Spectral Centroid
+            if (isSpectralCentroidEnabled && spectralCentroidFeatureList != null && spectralCentroidFeatureList.Count > 0)
+            {
+                for (int i = 0; i < spectralCentroidFeatureList.Count; i++)
+                {
+                    float[] spectralCentroidValues = spectralCentroidFeatureList.Select(sc => sc[i]).ToArray();
+                    trainingData.Add(Statistics.Mean(spectralCentroidValues));
+                    trainingData.Add(Statistics.Variance(spectralCentroidValues));
+                    trainingData.Add(Statistics.StandardDeviation(spectralCentroidValues));
+                    trainingData.Add(Statistics.Min(spectralCentroidValues));
+                    trainingData.Add(Statistics.Max(spectralCentroidValues));
+                    trainingData.Add(Statistics.Median(spectralCentroidValues));
+                    trainingData.Add(Statistics.Skewness(spectralCentroidValues));
+                }
+            }
+
+            //Spectral Bandwidth
+            if (isSpectralBandwidthEnabled && spectralBandwidthFeatureList != null && spectralBandwidthFeatureList.Count > 0)
+            {
+                for (int i = 0; i < spectralBandwidthFeatureList.Count; i++)
+                {
+                    float[] spectralBandwidthValues = spectralBandwidthFeatureList.Select(sc => sc[i]).ToArray();
+                    trainingData.Add(Statistics.Mean(spectralBandwidthValues));
+                    trainingData.Add(Statistics.Variance(spectralBandwidthValues));
+                    trainingData.Add(Statistics.StandardDeviation(spectralBandwidthValues));
+                    trainingData.Add(Statistics.Min(spectralBandwidthValues));
+                    trainingData.Add(Statistics.Max(spectralBandwidthValues));
+                    trainingData.Add(Statistics.Median(spectralBandwidthValues));
+                    trainingData.Add(Statistics.Skewness(spectralBandwidthValues));
+                }
+            }
+
+            //Zero-Crossing Rate
+            if (isZeroCrossingRateEnabled && zeroCrossingRateFeatureList != null && zeroCrossingRateFeatureList.Count > 0)
+            {
+                for (int i = 0; i < zeroCrossingRateFeatureList.Count; i++)
+                {
+                    float[] zcrValues = zeroCrossingRateFeatureList.Select(sc => sc[i]).ToArray();
+                    trainingData.Add(Statistics.Mean(zcrValues));
+                    trainingData.Add(Statistics.Variance(zcrValues));
+                    trainingData.Add(Statistics.StandardDeviation(zcrValues));
+                    trainingData.Add(Statistics.Min(zcrValues));
+                    trainingData.Add(Statistics.Max(zcrValues));
+                    trainingData.Add(Statistics.Mode(zcrValues));
+                }
+            }
+
+            //Rms
+            if (isRmsEnergyEnabled && rMSEnergyFeatureList != null && rMSEnergyFeatureList.Count > 0)
+            {
+                for (int i = 0; i < rMSEnergyFeatureList.Count; i++)
+                {
+                    float[] rmsEnergyValues = rMSEnergyFeatureList.Select(sc => sc[i]).ToArray();
+                    trainingData.Add(Statistics.Mean(rmsEnergyValues));
+                    trainingData.Add(Statistics.Variance(rmsEnergyValues));
+                    trainingData.Add(Statistics.StandardDeviation(rmsEnergyValues));
+                    trainingData.Add(Statistics.Min(rmsEnergyValues));
+                    trainingData.Add(Statistics.Max(rmsEnergyValues));
+                    trainingData.Add(Statistics.Sum(rmsEnergyValues));
+                    trainingData.Add(Statistics.PeakToPeakAmplitude(rmsEnergyValues));
+                }
+            }
+
+            //Pitch
+            if (isPitchEnabled && pitchFeatureList != null && pitchFeatureList.Count > 0)
+            {
+                for (int i = 0; i < pitchFeatureList.Count; i++)
+                {
+                    float[] pitchValues = pitchFeatureList.Select(sc => sc[i]).ToArray();
+                    trainingData.Add(Statistics.Mean(pitchValues));
+                    trainingData.Add(Statistics.Variance(pitchValues));
+                    trainingData.Add(Statistics.StandardDeviation(pitchValues));
+                    trainingData.Add(Statistics.Min(pitchValues));
+                    trainingData.Add(Statistics.Max(pitchValues));
+                    trainingData.Add(Statistics.Median(pitchValues));
+                    trainingData.Add(Statistics.Mode(pitchValues));
+                }
+            }
+
+            return trainingData.ToArray();
+        }
+
+
+
+       
+
+
+
+        /* private List<float[]> ExtractChromaFeatures(float[] audioSamples, int segmentSize)
+         {
+             List<float[]> chromaFeaturesList = new List<float[]>();
+             int numSegments = audioSamples.Length / segmentSize;
+
+             for (int i = 0; i < numSegments; i++)
+             {
+                 float[] segment = audioSamples.Skip(i * segmentSize).Take(segmentSize).ToArray();
+                 float[] chromaFeatures = CalculateChromaFeatures(segment);
+                 chromaFeaturesList.Add(chromaFeatures);
+             }
+         }*/
+
+
+
+
+
+
+        /*
+            private void AggregateAndFillFeatureVector(List<float> featureVector, float[][] features, int targetSize)
+            {
+                int originalSize = features.Length;
+                int segmentSize = originalSize / targetSize;
+
+                for (int i = 0; i < targetSize; i++)
+                {
+                    int start = i * segmentSize;
+                    int end = Math.Min(start + segmentSize, originalSize);
+                    var segment = features.Skip(start).Take(end - start).SelectMany(f => f).ToArray();
+
+                    featureVector.Add(segment.Average()); // Mean
+                    featureVector.Add(Variance(segment)); // Variance
+                    featureVector.Add(StandardDeviation(segment)); // Standard Deviation
+                    featureVector.Add(segment.Min()); // Min
+                    featureVector.Add(segment.Max()); // Max
+                    featureVector.Add(Percentile(segment, 25)); // 25th Percentile
+                    featureVector.Add(Percentile(segment, 75)); // 75th Percentile
+                }
+            }*/
+
+
+
+
+        /*
+        private void ExtractAndAggregateFeatures(List<float[]> featureList, Complex[] fftBuffer, float[] buffer, int sampleRate)
+        {
+            List<float> aggregatedFeatures = new List<float>();
+            if (IsChromaFeaturesEnabled)
+            {
+                // Extract chroma features from FFT result
+                float[] chromaFeatures = ExtractChromaFeatures(fftBuffer);
+                float meanChroma = chromaFeatures.Average();
+                float varianceChroma = chromaFeatures.Select(f => (f - meanChroma) * (f - meanChroma)).Average();
+                float minChroma = chromaFeatures.Min();
+                float maxChroma = chromaFeatures.Max();
+                aggregatedFeatures.AddRange(new float[] { meanChroma, varianceChroma, minChroma, maxChroma });
+
+                if (IsTonnetzFeaturesEnabled)
+                {
+                    // Extract Tonnetz features
+                    float[] tonnetzFeatures = ExtractTonnetzFeatures(chromaFeatures);
+                    aggregatedFeatures.AddRange(tonnetzFeatures);
+                }
+                
+            }
+
+            if (IsMFCCsEnabled)
+            {
+                // Extract MFCCs
+                float[] mfccFeatures = ExtractMFCCs(buffer, sampleRate);
+                float meanMFCC = mfccFeatures.Average();
+                float varianceMFCC = mfccFeatures.Select(f => (f - meanMFCC) * (f - meanMFCC)).Average();
+                float minMFCC = mfccFeatures.Min();
+                float maxMFCC = mfccFeatures.Max();
+                aggregatedFeatures.AddRange(new float[] { meanMFCC, varianceMFCC, minMFCC, maxMFCC });
+            }
+
+            if (IsSpectralContrastEnabled)
+            {
+                // Extract spectral contrast
+                float[] spectralContrastFeatures = ExtractSpectralContrast(fftBuffer, 6); // Adjust length as needed
+                float meanSpectralContrast = spectralContrastFeatures.Average();
+                float varianceSpectralContrast = spectralContrastFeatures.Select(f => (f - meanSpectralContrast) * (f - meanSpectralContrast)).Average();
+                float minSpectralContrast = spectralContrastFeatures.Min();
+                float maxSpectralContrast = spectralContrastFeatures.Max();
+                aggregatedFeatures.AddRange(new float[] { meanSpectralContrast, varianceSpectralContrast, minSpectralContrast, maxSpectralContrast });
+            }
+
+            if (IsHPCPEnabled)
+            {
+                // Extract HPCP
+                float[] hpcpFeatures = ExtractHPCP(fftBuffer, sampleRate);
+                float meanHPCP = hpcpFeatures.Average();
+                float varianceHPCP = hpcpFeatures.Select(f => (f - meanHPCP) * (f - meanHPCP)).Average();
+                float minHPCP = hpcpFeatures.Min();
+                float maxHPCP = hpcpFeatures.Max();
+                aggregatedFeatures.AddRange(new float[] { meanHPCP, varianceHPCP, minHPCP, maxHPCP });
+            }
+
+            if (IsHPSEnabled)
+            {
+                // Harmonic/Percussive Source Separation
+                var (harmonic, percussive) = ExtractHPSFeatures(buffer, sampleRate);
+                float meanHarmonic = harmonic.Average();
+                float varianceHarmonic = harmonic.Select(f => (f - meanHarmonic) * (f - meanHarmonic)).Average();
+                float minHarmonic = harmonic.Min();
+                float maxHarmonic = harmonic.Max();
+                aggregatedFeatures.AddRange(new float[] { meanHarmonic, varianceHarmonic, minHarmonic, maxHarmonic });
+
+                float meanPercussive = percussive.Average();
+                float variancePercussive = percussive.Select(f => (f - meanPercussive) * (f - meanPercussive)).Average();
+                float minPercussive = percussive.Min();
+                float maxPercussive = percussive.Max();
+                aggregatedFeatures.AddRange(new float[] { meanPercussive, variancePercussive, minPercussive, maxPercussive });
+            }
+
+            if (IsSpectralCentroidEnabled)
+            {
+                // Extract spectral centroid
+                float spectralCentroid = ExtractSpectralCentroid(fftBuffer);
+                aggregatedFeatures.Add(spectralCentroid);
+            }
+
+            if (IsSpectralBandwidthEnabled)
+            {
+                // Extract spectral bandwidth
+                float spectralBandwidth = ExtractSpectralBandwidth(buffer);
+                aggregatedFeatures.Add(spectralBandwidth);
+            }
+
+            if (IsZeroCrossingRateEnabled)
+            {
+                // Extract zero-crossing rate
+                float zcr = ExtractZeroCrossingRate(buffer);
+                aggregatedFeatures.Add(zcr);
+            }
+
+            if (IsRmsEnergyEnabled)
+            {
+                // Extract RMS energy
+                float rms = ExtractRmsEnergy(buffer);
+                aggregatedFeatures.Add(rms);
+            }
+
+            if (IsPitchEnabled)
+            {
+                // Extract pitch
+                float pitch = ExtractPitch(buffer, sampleRate);
+                aggregatedFeatures.Add(pitch);
+            }
+
+            featureList.Add(aggregatedFeatures.ToArray());
+        }
+        */
+        private float[] ApplyPCA(List<float[]> featureList, int targetDimension)
+        {
+            
+                // Convert the list of padded feature arrays to a MathNet matrix
+                var matrix = Matrix<double>.Build.DenseOfRowArrays(featureList.Select(f => f.Select(v => (double)v).ToArray()).ToArray());
+
+                // Calculate the mean of each column
+                var mean = matrix.ColumnSums() / matrix.RowCount;
+
+                // Center the matrix by subtracting the mean from each column
+                var centered = matrix - Matrix<double>.Build.Dense(matrix.RowCount, matrix.ColumnCount, (r, c) => mean[c]);
+
+                // Compute the covariance matrix
+                var covariance = centered.TransposeThisAndMultiply(centered) / (matrix.RowCount - 1);
+
+                // Perform eigen decomposition
+                var evd = covariance.Evd();
+                var eigenVectors = evd.EigenVectors;
+
+                // Ensure targetDimension does not exceed the number of original features
+                targetDimension = Math.Min(targetDimension, eigenVectors.ColumnCount);
+
+                // Select the top 'targetDimension' eigenvectors
+                var selectedEigenVectors = eigenVectors.SubMatrix(0, eigenVectors.RowCount, 0, targetDimension);
+
+                // Project the centered data onto the selected eigenvectors
+                var reducedData = centered * selectedEigenVectors;
+
+                // Flatten the reduced data matrix to a 1D array
+                return reducedData.ToRowMajorArray().Select(d => (float)d).ToArray();
+            }
+        
+
         private float[] ExtractChromaFeatures(Complex[] fftBuffer)
         {
-            float[] chromaFeatures = new float[ChromaFeatureLength];
+            float[] chromaFeatures = new float[chromaFeaturesLength];
             int totalBins = fftBuffer.Length / 2;
 
             for (int i = 0; i < totalBins; i++)
@@ -1015,7 +2484,54 @@ namespace MitoPlayer_2024.Presenters
 
             return chromaFeatures;
         }
-        private float[] ExtractMFCCs(float[] buffer, int sampleRate, int numCoefficients = MFCCFeatureLength, int numFilters = 26, int fftSize = 512)
+        private float[] ExtractTonnetzFeatures(float[] chromaFeatures)
+        {
+            // Ensure the chroma features are in the correct format
+            if (chromaFeatures.Length % chromaFeaturesLength != 0)
+            {
+                throw new ArgumentException("Chroma features length must be a multiple of 12.");
+            }
+
+            int numFrames = chromaFeatures.Length / chromaFeaturesLength;
+            float[] tonnetzFeatures = new float[numFrames * tonnetzFeaturesLength];
+
+
+            // Tonnetz transformation matrix
+            float[,] tonnetzMatrix = new float[,]
+            {
+                { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 }
+            };
+
+            for (int frame = 0; frame < numFrames; frame++)
+            {
+                float[] chromaFrame = new float[chromaFeaturesLength];
+                Array.Copy(chromaFeatures, frame * chromaFeaturesLength, chromaFrame, 0, chromaFeaturesLength);
+
+                for (int i = 0; i < tonnetzFeaturesLength; i++)
+                {
+                    float tonnetzValue = 0;
+                    for (int j = 0; j < chromaFeaturesLength; j++)
+                    {
+                        tonnetzValue += tonnetzMatrix[i, j] * chromaFrame[j];
+                    }
+                    tonnetzFeatures[frame * tonnetzFeaturesLength + i] = tonnetzValue;
+                }
+            }
+
+            return tonnetzFeatures;
+        }
+        private float[] ExtractMFCCsFeatures(float[] buffer, int sampleRate, int numCoefficients = mFCCFeaturesLength, int numFilters = 26, int fftSize = 512)
         {
             // Step 1: Pre-emphasis
             float[] preEmphasized = new float[buffer.Length];
@@ -1149,7 +2665,41 @@ namespace MitoPlayer_2024.Presenters
         {
             return 2595 * (float)Math.Log10(1 + freq / 700);
         }
-        private float[] ExtractSpectralContrast(Complex[] fftBuffer, int numBands = SpectralContrastFeatureLength)
+        private float[] ExtractHPCPFeatures(Complex[] fftBuffer, int sampleRate)
+        {
+            float[] hpcp = new float[hpcpFeaturesLength];
+            int numBins = fftBuffer.Length / 2;
+            double tuningFrequency = 440.0; // A4 tuning frequency
+
+            for (int i = 0; i < numBins; i++)
+            {
+                double magnitude = Math.Sqrt(fftBuffer[i].X * fftBuffer[i].X + fftBuffer[i].Y * fftBuffer[i].Y);
+                if (magnitude > 0)
+                {
+                    double frequency = i * sampleRate / (double)fftBuffer.Length;
+                    double pitchClass = 12 * Log2(frequency / tuningFrequency);
+                    int pitchClassIndex = (int)Math.Round(pitchClass) % 12;
+                    if (pitchClassIndex < 0)
+                    {
+                        pitchClassIndex += 12; // Ensure pitchClassIndex is non-negative
+                    }
+                    hpcp[pitchClassIndex] += (float)magnitude;
+                }
+                if (enableExtractHPCPLog)
+                {
+                    // Log progress every 10% of the bins processed
+                    if (i % (numBins / 10) == 0)
+                    {
+                        int progress = (i * 100) / numBins;
+                        Console.WriteLine($"HPCP extraction progress: {progress}% complete");
+                    }
+                }
+            }
+
+            return hpcp;
+        }
+
+        private float[] ExtractSpectralContrastFeatures(Complex[] fftBuffer, int numBands = spectralContrastFeaturesLength)
         {
             if (fftBuffer == null || fftBuffer.Length == 0)
             {
@@ -1200,40 +2750,7 @@ namespace MitoPlayer_2024.Presenters
 
             return spectralContrast;
         }
-        private float[] ExtractHPCP(Complex[] fftBuffer, int sampleRate)
-        {
-            float[] hpcp = new float[HPCPFeatureLength];
-            int numBins = fftBuffer.Length / 2;
-            double tuningFrequency = 440.0; // A4 tuning frequency
-
-            for (int i = 0; i < numBins; i++)
-            {
-                double magnitude = Math.Sqrt(fftBuffer[i].X * fftBuffer[i].X + fftBuffer[i].Y * fftBuffer[i].Y);
-                if (magnitude > 0)
-                {
-                    double frequency = i * sampleRate / (double)fftBuffer.Length;
-                    double pitchClass = 12 * Log2(frequency / tuningFrequency);
-                    int pitchClassIndex = (int)Math.Round(pitchClass) % 12;
-                    if (pitchClassIndex < 0)
-                    {
-                        pitchClassIndex += 12; // Ensure pitchClassIndex is non-negative
-                    }
-                    hpcp[pitchClassIndex] += (float)magnitude;
-                }
-                if (enableExtractHPCPLog)
-                {
-                    // Log progress every 10% of the bins processed
-                    if (i % (numBins / 10) == 0)
-                    {
-                        int progress = (i * 100) / numBins;
-                        Console.WriteLine($"HPCP extraction progress: {progress}% complete");
-                    }
-                }
-            }
-
-            return hpcp;
-        }
-        private float ExtractSpectralCentroid(Complex[] fftBuffer)
+        private float ExtractSpectralCentroidFeatures(Complex[] fftBuffer)
         {
             double weightedSum = 0;
             double totalMagnitude = 0;
@@ -1266,7 +2783,7 @@ namespace MitoPlayer_2024.Presenters
 
             return spectralCentroid;
         }
-        private float ExtractSpectralBandwidth(float[] audioSamples)
+        private float ExtractSpectralBandwidthFeatures(float[] audioSamples)
         {
             // Perform Fourier Transform
             int fftSize = (int)Math.Pow(2, Math.Ceiling(Math.Log(audioSamples.Length, 2)));
@@ -1290,7 +2807,8 @@ namespace MitoPlayer_2024.Presenters
             return (float)spectralBandwidth;
 
         }
-        private (float[] harmonic, float[] percussive) ExtractHPSFeatures(float[] buffer, int sampleRate)
+
+        private (float[] harmonic, float[] percussive) ExtractHarmonicPercussionSourceSeparationFeatures(float[] buffer, int sampleRate)
         {
             // Convert buffer to spectrogram
             var spectrogram = ComputeSpectrogram(buffer, sampleRate);
@@ -1446,54 +2964,8 @@ namespace MitoPlayer_2024.Presenters
 
             return reconstructedSignal;
         }
-        private float[] ExtractTonnetzFeatures(float[] chromaFeatures)
-        {
-            // Ensure the chroma features are in the correct format
-            if (chromaFeatures.Length % ChromaFeatureLength != 0)
-            {
-                throw new ArgumentException("Chroma features length must be a multiple of 12.");
-            }
-
-            int numFrames = chromaFeatures.Length / ChromaFeatureLength;
-            float[] tonnetzFeatures = new float[numFrames * TonnetzFeatureLength];
-
-
-            // Tonnetz transformation matrix
-            float[,] tonnetzMatrix = new float[,]
-            {
-                { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                { 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                { 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                { 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0 },
-                { 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0 },
-                { 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 },
-                { 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0 },
-                { 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0 },
-                { 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0 },
-                { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0 },
-                { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0 },
-                { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 }
-            };
-
-            for (int frame = 0; frame < numFrames; frame++)
-            {
-                float[] chromaFrame = new float[ChromaFeatureLength];
-                Array.Copy(chromaFeatures, frame * ChromaFeatureLength, chromaFrame, 0, ChromaFeatureLength);
-
-                for (int i = 0; i < TonnetzFeatureLength; i++)
-                {
-                    float tonnetzValue = 0;
-                    for (int j = 0; j < ChromaFeatureLength; j++)
-                    {
-                        tonnetzValue += tonnetzMatrix[i, j] * chromaFrame[j];
-                    }
-                    tonnetzFeatures[frame * TonnetzFeatureLength + i] = tonnetzValue;
-                }
-            }
-
-            return tonnetzFeatures;
-        }
-        private float ExtractZeroCrossingRate(float[] buffer)
+        
+        private float ExtractZeroCrossingRateFeatures(float[] buffer)
         {
             int zeroCrossings = 0;
             for (int i = 1; i < buffer.Length; i++)
@@ -1505,12 +2977,12 @@ namespace MitoPlayer_2024.Presenters
             }
             return (float)zeroCrossings / buffer.Length;
         }
-        private float ExtractRmsEnergy(float[] buffer)
+        private float ExtractRmsEnergyFeatures(float[] buffer)
         {
             double sumOfSquares = buffer.Select(sample => sample * sample).Sum();
             return (float)Math.Sqrt(sumOfSquares / buffer.Length);
         }
-        private float ExtractPitch(float[] buffer, int sampleRate)
+        private float ExtractPitchFeatures(float[] buffer, int sampleRate)
         {
             int maxLag = sampleRate / 50; // Minimum frequency of 50 Hz
             int minLag = sampleRate / 500; // Maximum frequency of 500 Hz
@@ -1543,6 +3015,8 @@ namespace MitoPlayer_2024.Presenters
         {
             return Math.Log(x) / Math.Log(2);
         }
+
+
         public void WriteToHDF5(string fullPath)
         {
             using (LoadingDialog loadingDialog = new LoadingDialog())
@@ -1634,7 +3108,7 @@ namespace MitoPlayer_2024.Presenters
                 H5F.close(fileId);
             }
         }
-        private void DeleteTrainingDataEvent(object sender, ListEventArgs e)
+        private void DeleteTrainingDataEvent(object sender, Messenger e)
         {
             DialogResult messageBoxResult = MessageBox.Show("Do you really want to delete this training data?", "Delete Confirmation", MessageBoxButtons.YesNo);
             if (messageBoxResult == DialogResult.Yes)
@@ -1651,11 +3125,73 @@ namespace MitoPlayer_2024.Presenters
                 }
             }
         }
+        /*  public void SaveFeaturesToCsv(string filePath, List<TrackForTraining> tracks)
+          {
+              using (var writer = new StreamWriter(filePath))
+              using (var csv = new CsvWriter(writer, new CsvConfiguration(CultureInfo.InvariantCulture)))
+              {
+                  csv.WriteRecords(tracks.Select(t => new
+                  {
+                      t.Path,
+                      t.Key,
+                      Features = string.Join(",", t.Features)
+                  }));
+              }
+          }*/
 
 
+       /* public class ChromaExtractor : FeatureExtractor
+        {
+            private readonly int _fftSize;
+            private readonly Fft _fft;
+            private readonly float[] _window;
+            private readonly float[][] _filterbank;
 
+            public ChromaExtractor(int sampleRate, int fftSize = 2048) : base(sampleRate, 12)
+            {
+                _fftSize = fftSize;
+                _fft = new Fft(fftSize);
+                _window = Window.OfType(WindowTypes.Hann, fftSize);
+                _filterbank = FilterBanks.Chroma(sampleRate, fftSize);
+            }
 
+            public override float[][] ComputeFrom(float[] signal)
+            {
+                int hopSize = _fftSize / 2;
+                int numFrames = (signal.Length - _fftSize) / hopSize + 1;
+                float[][] chromaFeatures = new float[numFrames][];
 
+                for (int i = 0; i < numFrames; i++)
+                {
+                    float[] frame = signal.Skip(i * hopSize).Take(_fftSize).ToArray();
+                    frame.ApplyWindow(_window);
+
+                    var spectrum = new Complex[_fftSize];
+                    _fft.RealFft(frame, spectrum);
+
+                    var magnitudes = spectrum.Select(c => c.Magnitude).ToArray();
+                    chromaFeatures[i] = new float[FeatureCount];
+
+                    for (int j = 0; j < FeatureCount; j++)
+                    {
+                        chromaFeatures[i][j] = _filterbank[j].Zip(magnitudes, (f, m) => f * m).Sum();
+                    }
+
+                    // Normalize chroma features
+                    var sum = chromaFeatures[i].Sum();
+                    if (sum > 0)
+                    {
+                        for (int j = 0; j < FeatureCount; j++)
+                        {
+                            chromaFeatures[i][j] /= sum;
+                        }
+                    }
+                }
+
+                return chromaFeatures;
+            }
+        }
+        */
 
 
 
@@ -2173,50 +3709,9 @@ namespace MitoPlayer_2024.Presenters
             return keyMap.ContainsKey(keycode) ? keyMap[keycode] : "Unknown";
         }
 
+        
+
         /*
-        private List<float[]> ExtractFeaturesAtIntervals(string filePath, int intervalSeconds, CancellationToken cancellationToken)
-        {
-            using (var reader = new AudioFileReader(filePath))
-            {
-                var sampleProvider = reader.ToSampleProvider();
-                int sampleRate = reader.WaveFormat.SampleRate;
-                int bufferSize = sampleRate * intervalSeconds; // Buffer size for the interval
-                float[] buffer = new float[bufferSize];
-                int samplesRead;
-                List<float[]> featuresList = new List<float[]>();
-
-                while ((samplesRead = sampleProvider.Read(buffer, 0, buffer.Length)) > 0)
-                {
-                    if (cancellationToken.IsCancellationRequested)
-                    {
-                        break;
-                    }
-
-                    // Perform FFT and extract features
-                    Complex[] fftBuffer = new Complex[buffer.Length];
-                    for (int i = 0; i < buffer.Length; i++)
-                    {
-                        fftBuffer[i] = new Complex(buffer[i], 0);
-                    }
-                    Fourier.Forward(fftBuffer, FourierOptions.Matlab);
-
-                    // Extract chroma features
-                    float[] chromaFeatures = ExtractChromaFeatures(fftBuffer);
-                    float pitch = ExtractPitch(buffer, sampleRate);
-
-                    // Aggregate features
-                    float meanChroma = chromaFeatures.Average();
-                    float varianceChroma = chromaFeatures.Select(f => (f - meanChroma) * (f - meanChroma)).Average();
-
-                    // Combine features
-                    List<float> aggregatedFeatures = new List<float> { meanChroma, varianceChroma, pitch };
-                    featuresList.Add(aggregatedFeatures.ToArray());
-                }
-
-                return featuresList;
-            }
-        }
-
 
         private List<float[]> ExtractFeaturesAtIntervals(string filePath, int intervalSeconds, CancellationToken cancellationToken)
         {

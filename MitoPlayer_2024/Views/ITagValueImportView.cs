@@ -9,6 +9,6 @@ namespace MitoPlayer_2024.Views
 {
     public interface ITagValueImportView
     {
-        event EventHandler<ListEventArgs> CloseView;
+        event EventHandler<Messenger> CloseView;
     }
 }

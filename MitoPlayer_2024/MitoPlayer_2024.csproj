@@ -202,6 +202,15 @@
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="NWaves, Version=0.9.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NWaves.0.9.6\lib\netstandard2.0\NWaves.dll</HintPath>
+    </Reference>
+    <Reference Include="OxyPlot, Version=2.2.0.0, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
+      <HintPath>..\packages\OxyPlot.Core.2.2.0\lib\net462\OxyPlot.dll</HintPath>
+    </Reference>
+    <Reference Include="OxyPlot.WindowsForms, Version=2.2.0.0, Culture=neutral, PublicKeyToken=245eacd6b5d2d338, processorArchitecture=MSIL">
+      <HintPath>..\packages\OxyPlot.WindowsForms.2.2.0\lib\net462\OxyPlot.WindowsForms.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
@@ -276,6 +285,7 @@
     <Compile Include="Dao\SettingDao.cs" />
     <Compile Include="Dao\TagDao.cs" />
     <Compile Include="Dao\DataBaseBuilderDao.cs" />
+    <Compile Include="Helpers\AsyncProgressMessage.cs" />
     <Compile Include="Helpers\ButtonExtension.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -290,21 +300,29 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Helpers\DataTableModel.cs" />
+    <Compile Include="Helpers\DimensionalityReducer.cs" />
     <Compile Include="Helpers\DynamicFeatureLoader.cs" />
     <Compile Include="Helpers\Enums.cs" />
     <Compile Include="Helpers\CustomVScrollBar.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Helpers\FeatureType.cs" />
+    <Compile Include="Models\ViewModel.cs" />
+    <Compile Include="Presenters\ChartPresenter.cs" />
+    <Compile Include="Trainer\DimensionalityReducer.cs" />
+    <Compile Include="Trainer\FeatureSelector.cs" />
     <Compile Include="Helpers\ImageExtension.cs" />
+    <Compile Include="Helpers\KeyDetector.cs" />
     <Compile Include="Helpers\KeyPrediction.cs" />
     <Compile Include="Helpers\KeyToStringMapping.cs" />
     <Compile Include="Helpers\LabelTimer.cs" />
-    <Compile Include="Helpers\ListEventArgs.cs" />
+    <Compile Include="Helpers\Messenger.cs" />
     <Compile Include="Helpers\ObservableConcurrentBag.cs" />
     <Compile Include="Helpers\PictureBoxExtension.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Helpers\ResultOrError.cs" />
+    <Compile Include="Helpers\Statistics.cs" />
     <Compile Include="Helpers\TagValueFilter.cs" />
     <Compile Include="Helpers\VirtualDJReader.cs" />
     <Compile Include="Models\IDataBaseBuilderDao.cs" />
@@ -339,11 +357,20 @@
     <Compile Include="Presenters\TagValuePresenter.cs" />
     <Compile Include="Presenters\TemplateEditorPresenter.cs" />
     <Compile Include="Presenters\TrackEditorPresenter.cs" />
+    <Compile Include="Trainer\FeatureAggregator.cs" />
+    <Compile Include="Trainer\FeatureExtractor.cs" />
+    <Compile Include="Trainer\TrainingDataCreator.cs" />
     <Compile Include="Views\AboutView.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Views\AboutView.Designer.cs">
       <DependentUpon>AboutView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ChartView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\ChartView.Designer.cs">
+      <DependentUpon>ChartView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\ColumnVisibilityEditorView.cs">
       <SubType>Form</SubType>
@@ -364,6 +391,7 @@
       <DependentUpon>HarmonizerView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\IAboutView.cs" />
+    <Compile Include="Views\IChartView.cs" />
     <Compile Include="Views\IModelTrainerView.cs" />
     <Compile Include="Views\ISetupView.cs" />
     <Compile Include="Views\IExportToDirectoryView.cs" />
@@ -493,6 +521,9 @@
     </Compile>
     <EmbeddedResource Include="Views\AboutView.resx">
       <DependentUpon>AboutView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\ChartView.resx">
+      <DependentUpon>ChartView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\ColumnVisibilityEditorView.resx">
       <DependentUpon>ColumnVisibilityEditorView.cs</DependentUpon>
@@ -651,9 +682,11 @@
     <Error Condition="!Exists('..\packages\Microsoft.ML.FastTree.3.0.1\build\netstandard2.0\Microsoft.ML.FastTree.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ML.FastTree.3.0.1\build\netstandard2.0\Microsoft.ML.FastTree.props'))" />
     <Error Condition="!Exists('..\packages\HDF.PInvoke.1.10.1.10.612\build\net461\HDF.PInvoke.1.10.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\HDF.PInvoke.1.10.1.10.612\build\net461\HDF.PInvoke.1.10.targets'))" />
     <Error Condition="!Exists('..\packages\Accord.3.8.0\build\Accord.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Accord.3.8.0\build\Accord.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.NETFramework.ReferenceAssemblies.net472.1.0.2\build\Microsoft.NETFramework.ReferenceAssemblies.net472.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.NETFramework.ReferenceAssemblies.net472.1.0.2\build\Microsoft.NETFramework.ReferenceAssemblies.net472.targets'))" />
   </Target>
   <Import Project="..\packages\Microsoft.ML.3.0.1\build\netstandard2.0\Microsoft.ML.targets" Condition="Exists('..\packages\Microsoft.ML.3.0.1\build\netstandard2.0\Microsoft.ML.targets')" />
   <Import Project="..\packages\LightGBM.3.3.5\build\LightGBM.targets" Condition="Exists('..\packages\LightGBM.3.3.5\build\LightGBM.targets')" />
   <Import Project="..\packages\HDF.PInvoke.1.10.1.10.612\build\net461\HDF.PInvoke.1.10.targets" Condition="Exists('..\packages\HDF.PInvoke.1.10.1.10.612\build\net461\HDF.PInvoke.1.10.targets')" />
   <Import Project="..\packages\Accord.3.8.0\build\Accord.targets" Condition="Exists('..\packages\Accord.3.8.0\build\Accord.targets')" />
+  <Import Project="..\packages\Microsoft.NETFramework.ReferenceAssemblies.net472.1.0.2\build\Microsoft.NETFramework.ReferenceAssemblies.net472.targets" Condition="Exists('..\packages\Microsoft.NETFramework.ReferenceAssemblies.net472.1.0.2\build\Microsoft.NETFramework.ReferenceAssemblies.net472.targets')" />
 </Project>

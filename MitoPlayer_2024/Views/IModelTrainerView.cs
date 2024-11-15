@@ -13,25 +13,29 @@ namespace MitoPlayer_2024.Views
 {
     public interface IModelTrainerView
     {
-        event EventHandler<ListEventArgs> SelectTag;
-        event EventHandler<ListEventArgs> SelectPlaylist;
-        event EventHandler<ListEventArgs> SelectTemplate;
+        event EventHandler<Messenger> SelectTag;
+        event EventHandler<Messenger> SelectPlaylist;
+        event EventHandler<Messenger> SelectTemplate;
         event EventHandler CloseViewWithOk;
-        event EventHandler<ListEventArgs> IsChromaFeaturesEnabled;
-        event EventHandler<ListEventArgs> IsMFCCsEnabled;
-        event EventHandler<ListEventArgs> IsSpectralContrastEnabled;
-        event EventHandler<ListEventArgs> IsHPCPEnabled;
-        event EventHandler<ListEventArgs> IsHPSEnabled;
-        event EventHandler<ListEventArgs> IsSpectralCentroidEnabled;
-        event EventHandler<ListEventArgs> IsTonnetzFeaturesEnabled;
-         event EventHandler<ListEventArgs> IsSpectralBandwidthEnabled;
-         event EventHandler<ListEventArgs> IsZCREnabled;
-         event EventHandler<ListEventArgs> IsRMSEnabled;
-         event EventHandler<ListEventArgs> IsPitchEnabled;
-         event EventHandler<ListEventArgs> BatchProcessChanged;
-         event EventHandler<ListEventArgs> LoadTrainingDataEvent;
-         event EventHandler<ListEventArgs> DeleteTrainingDataEvent;
-         event EventHandler<ListEventArgs> SetIsTracklistDetailsDisplayedEvent;
+        event EventHandler<Messenger> IsChromaFeaturesEnabled;
+        event EventHandler<Messenger> IsMFCCsEnabled;
+        event EventHandler<Messenger> IsSpectralContrastEnabled;
+        event EventHandler<Messenger> IsHPCPEnabled;
+        event EventHandler<Messenger> IsHPSEnabled;
+        event EventHandler<Messenger> IsSpectralCentroidEnabled;
+        event EventHandler<Messenger> IsTonnetzFeaturesEnabled;
+         event EventHandler<Messenger> IsSpectralBandwidthEnabled;
+         event EventHandler<Messenger> IsZCREnabled;
+         event EventHandler<Messenger> IsRMSEnabled;
+         event EventHandler<Messenger> IsPitchEnabled;
+         event EventHandler<Messenger> BatchProcessChanged;
+         event EventHandler<Messenger> LoadTrainingDataEvent;
+         event EventHandler<Messenger> DeleteTrainingDataEvent;
+         event EventHandler<Messenger> SetIsTracklistDetailsDisplayedEvent;
+
+         event EventHandler<Messenger> AnalyseTrackEvent;
+         event EventHandler<Messenger> SetCurrentFeatureTypeEvent;
+
         event EventHandler GenerateTrainingData;
         event EventHandler CancelGenerationEvent;
         event EventHandler TrainModelEvent;

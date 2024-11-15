@@ -12,14 +12,14 @@ namespace MitoPlayer_2024.Views
         event EventHandler CloseViewWithOkEvent;
         event EventHandler CloseViewWithCancelEvent;
         event EventHandler ClearDatabaseEvent;
-        event EventHandler<ListEventArgs> SetAutomaticBpmImportEvent;
-        event EventHandler<ListEventArgs> SetAutomaticKeyImportEvent;
-        event EventHandler<ListEventArgs> SetVirtualDjDatabasePathEvent;
-        event EventHandler<ListEventArgs> SetPlayTrackAfterOpenFilesEvent;
-        event EventHandler<ListEventArgs> SetPreviewPercentageEvent;
+        event EventHandler<Messenger> SetAutomaticBpmImportEvent;
+        event EventHandler<Messenger> SetAutomaticKeyImportEvent;
+        event EventHandler<Messenger> SetVirtualDjDatabasePathEvent;
+        event EventHandler<Messenger> SetPlayTrackAfterOpenFilesEvent;
+        event EventHandler<Messenger> SetPreviewPercentageEvent;
 
-        event EventHandler<ListEventArgs> SetShortTrackColouringEvent;
-        event EventHandler<ListEventArgs> SetShortTrackColouringThresholdEvent;
+        event EventHandler<Messenger> SetShortTrackColouringEvent;
+        event EventHandler<Messenger> SetShortTrackColouringThresholdEvent;
 
         void SetImportSettings(
             bool automaticBpmImport, 

@@ -16,14 +16,14 @@ namespace MitoPlayer_2024.Views
         public event EventHandler CloseViewWithOk;
         public event EventHandler CloseViewWithCancel;
         public event EventHandler BrowseEvent;
-        public event EventHandler<ListEventArgs> SetRowNumberEvent;
-        public event EventHandler<ListEventArgs> SetKeyCodeEvent;
-        public event EventHandler<ListEventArgs> SetBpmNumberEvent;
-        public event EventHandler<ListEventArgs> SetTrunkBpmEvent;
-        public event EventHandler<ListEventArgs> SetTrunkedArtistEvent;
-        public event EventHandler<ListEventArgs> SetTrunkedTitleEvent;
-        public event EventHandler<ListEventArgs> SetArtistMinimumCharacterEvent;
-        public event EventHandler<ListEventArgs> SetTitleMinimumCharacterEvent;
+        public event EventHandler<Messenger> SetRowNumberEvent;
+        public event EventHandler<Messenger> SetKeyCodeEvent;
+        public event EventHandler<Messenger> SetBpmNumberEvent;
+        public event EventHandler<Messenger> SetTrunkBpmEvent;
+        public event EventHandler<Messenger> SetTrunkedArtistEvent;
+        public event EventHandler<Messenger> SetTrunkedTitleEvent;
+        public event EventHandler<Messenger> SetArtistMinimumCharacterEvent;
+        public event EventHandler<Messenger> SetTitleMinimumCharacterEvent;
         private BindingSource trackListBindingSource { get; set; }
         public ExportToDirectoryView()
         {
@@ -137,41 +137,41 @@ namespace MitoPlayer_2024.Views
 
         private void chbRowNumber_CheckedChanged(object sender, EventArgs e)
         {
-            this.SetRowNumberEvent?.Invoke(this, new ListEventArgs() { BooleanField1 = this.chbRowNumber.Checked });
+            this.SetRowNumberEvent?.Invoke(this, new Messenger() { BooleanField1 = this.chbRowNumber.Checked });
         }
 
         private void chbKeyCode_CheckedChanged(object sender, EventArgs e)
         {
-            this.SetKeyCodeEvent?.Invoke(this, new ListEventArgs() { BooleanField1 = this.chbKeyCode.Checked });
+            this.SetKeyCodeEvent?.Invoke(this, new Messenger() { BooleanField1 = this.chbKeyCode.Checked });
         }
 
         private void chbBpmNumber_CheckedChanged(object sender, EventArgs e)
         {
-            this.SetBpmNumberEvent?.Invoke(this, new ListEventArgs() { BooleanField1 = this.chbBpmNumber.Checked });
+            this.SetBpmNumberEvent?.Invoke(this, new Messenger() { BooleanField1 = this.chbBpmNumber.Checked });
         }
 
         private void chbTrunkBpm_CheckedChanged(object sender, EventArgs e)
         {
-            this.SetTrunkBpmEvent?.Invoke(this, new ListEventArgs() { BooleanField1 = this.chbTrunkBpm.Checked });
+            this.SetTrunkBpmEvent?.Invoke(this, new Messenger() { BooleanField1 = this.chbTrunkBpm.Checked });
         }
         private void chbTrunkArtist_CheckedChanged(object sender, EventArgs e)
         {
-            this.SetTrunkedArtistEvent?.Invoke(this, new ListEventArgs() { BooleanField1 = this.chbTrunkArtist.Checked });
+            this.SetTrunkedArtistEvent?.Invoke(this, new Messenger() { BooleanField1 = this.chbTrunkArtist.Checked });
         }
 
         private void chbTrunkTitle_CheckedChanged(object sender, EventArgs e)
         {
-            this.SetTrunkedTitleEvent?.Invoke(this, new ListEventArgs() { BooleanField1 = this.chbTrunkTitle.Checked });
+            this.SetTrunkedTitleEvent?.Invoke(this, new Messenger() { BooleanField1 = this.chbTrunkTitle.Checked });
         }
 
         private void numArtist_ValueChanged(object sender, EventArgs e)
         {
-            this.SetArtistMinimumCharacterEvent?.Invoke(this, new ListEventArgs() { DecimalField1 = this.numArtist.Value });
+            this.SetArtistMinimumCharacterEvent?.Invoke(this, new Messenger() { DecimalField1 = this.numArtist.Value });
         }
 
         private void numTitle_ValueChanged(object sender, EventArgs e)
         {
-            this.SetTitleMinimumCharacterEvent?.Invoke(this, new ListEventArgs() { DecimalField1 = this.numTitle.Value });
+            this.SetTitleMinimumCharacterEvent?.Invoke(this, new Messenger() { DecimalField1 = this.numTitle.Value });
         }
 
        

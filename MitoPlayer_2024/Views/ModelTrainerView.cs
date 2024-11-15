@@ -1,4 +1,5 @@
-﻿using MitoPlayer_2024.Helpers;
+﻿using MathNet.Numerics;
+using MitoPlayer_2024.Helpers;
 using MitoPlayer_2024.Models;
 using System;
 using System.Collections;
@@ -17,26 +18,30 @@ namespace MitoPlayer_2024.Views
     public partial class ModelTrainerView : Form, IModelTrainerView
     {
         public event EventHandler CloseViewWithOk;
-        public event EventHandler<ListEventArgs> SelectTag;
-        public event EventHandler<ListEventArgs> SelectPlaylist;
-        public event EventHandler<ListEventArgs> SelectTemplate;
-        public event EventHandler<ListEventArgs> IsChromaFeaturesEnabled;
-        public event EventHandler<ListEventArgs> IsMFCCsEnabled;
-        public event EventHandler<ListEventArgs> IsSpectralContrastEnabled;
-        public event EventHandler<ListEventArgs> IsHPCPEnabled;
-        public event EventHandler<ListEventArgs> IsHPSEnabled;
-        public event EventHandler<ListEventArgs> IsSpectralCentroidEnabled;
-        public event EventHandler<ListEventArgs> IsTonnetzFeaturesEnabled;
-        public event EventHandler<ListEventArgs> IsSpectralBandwidthEnabled;
-        public event EventHandler<ListEventArgs> IsZCREnabled;
-        public event EventHandler<ListEventArgs> IsRMSEnabled;
-        public event EventHandler<ListEventArgs> IsPitchEnabled;
-        public event EventHandler<ListEventArgs> BatchProcessChanged;
+        public event EventHandler<Messenger> SelectTag;
+        public event EventHandler<Messenger> SelectPlaylist;
+        public event EventHandler<Messenger> SelectTemplate;
+        public event EventHandler<Messenger> IsChromaFeaturesEnabled;
+        public event EventHandler<Messenger> IsMFCCsEnabled;
+        public event EventHandler<Messenger> IsSpectralContrastEnabled;
+        public event EventHandler<Messenger> IsHPCPEnabled;
+        public event EventHandler<Messenger> IsHPSEnabled;
+        public event EventHandler<Messenger> IsSpectralCentroidEnabled;
+        public event EventHandler<Messenger> IsTonnetzFeaturesEnabled;
+        public event EventHandler<Messenger> IsSpectralBandwidthEnabled;
+        public event EventHandler<Messenger> IsZCREnabled;
+        public event EventHandler<Messenger> IsRMSEnabled;
+        public event EventHandler<Messenger> IsPitchEnabled;
+        public event EventHandler<Messenger> BatchProcessChanged;
         public event EventHandler GenerateTrainingData;
         public event EventHandler CancelGenerationEvent;
-        public event EventHandler<ListEventArgs> LoadTrainingDataEvent;
-        public event EventHandler<ListEventArgs> DeleteTrainingDataEvent;
-        public event EventHandler<ListEventArgs> SetIsTracklistDetailsDisplayedEvent;
+        public event EventHandler<Messenger> LoadTrainingDataEvent;
+        public event EventHandler<Messenger> DeleteTrainingDataEvent;
+        public event EventHandler<Messenger> SetIsTracklistDetailsDisplayedEvent;
+
+        public event EventHandler<Messenger> AnalyseTrackEvent;
+        public event EventHandler<Messenger> SetCurrentFeatureTypeEvent;
+
         public event EventHandler TrainModelEvent;
         public event EventHandler AddTrainingDataEvent;
         public event EventHandler CalculateDataSetQualityEvent;
@@ -49,7 +54,6 @@ namespace MitoPlayer_2024.Views
             this.SetControlColors();
             this.CenterToScreen();
             this.FormClosing += new FormClosingEventHandler(MainForm_FormClosing);
-
         }
 
         
@@ -304,11 +308,11 @@ namespace MitoPlayer_2024.Views
         private void cmbTags_SelectedIndexChanged(object sender, EventArgs e)
         {
 
-                this.SelectTag?.Invoke(this, new ListEventArgs() { StringField1 = this.cmbTags.SelectedItem.ToString() });
+                this.SelectTag?.Invoke(this, new Messenger() { StringField1 = this.cmbTags.SelectedItem.ToString() });
         }
         private void cmbPlaylists_SelectedIndexChanged(object sender, EventArgs e)
         {
-            this.SelectPlaylist?.Invoke(this, new ListEventArgs() { StringField1 = this.cmbPlaylists.SelectedItem.ToString() });
+            this.SelectPlaylist?.Invoke(this, new Messenger() { StringField1 = this.cmbPlaylists.SelectedItem.ToString() });
         }
 
         private void btnOk_Click(object sender, EventArgs e)
@@ -318,37 +322,37 @@ namespace MitoPlayer_2024.Views
 
         private void chbChroma_CheckedChanged(object sender, EventArgs e)
         {
-            this.IsChromaFeaturesEnabled?.Invoke(this, new ListEventArgs() { BooleanField1 = this.chbChroma.Checked });
+            this.IsChromaFeaturesEnabled?.Invoke(this, new Messenger() { BooleanField1 = this.chbChroma.Checked });
         }
 
         private void chbMfccs_CheckedChanged(object sender, EventArgs e)
         {
-            this.IsMFCCsEnabled?.Invoke(this, new ListEventArgs() { BooleanField1 = this.chbMfccs.Checked });
+            this.IsMFCCsEnabled?.Invoke(this, new Messenger() { BooleanField1 = this.chbMfccs.Checked });
         }
 
         private void chbSpectralContrast_CheckedChanged(object sender, EventArgs e)
         {
-            this.IsSpectralContrastEnabled?.Invoke(this, new ListEventArgs() { BooleanField1 = this.chbSpectralContrast.Checked });
+            this.IsSpectralContrastEnabled?.Invoke(this, new Messenger() { BooleanField1 = this.chbSpectralContrast.Checked });
         }
 
         private void chbHpcp_CheckedChanged(object sender, EventArgs e)
         {
-            this.IsHPCPEnabled?.Invoke(this, new ListEventArgs() { BooleanField1 = this.chbHpcp.Checked });
+            this.IsHPCPEnabled?.Invoke(this, new Messenger() { BooleanField1 = this.chbHpcp.Checked });
         }
 
         private void chbHps_CheckedChanged(object sender, EventArgs e)
         {
-            this.IsHPSEnabled?.Invoke(this, new ListEventArgs() { BooleanField1 = this.chbHps.Checked });
+            this.IsHPSEnabled?.Invoke(this, new Messenger() { BooleanField1 = this.chbHps.Checked });
         }
 
         private void chbSpectralCentroid_CheckedChanged(object sender, EventArgs e)
         {
-            this.IsSpectralCentroidEnabled?.Invoke(this, new ListEventArgs() { BooleanField1 = this.chbSpectralCentroid.Checked });
+            this.IsSpectralCentroidEnabled?.Invoke(this, new Messenger() { BooleanField1 = this.chbSpectralCentroid.Checked });
         }
 
         private void chbTonnetz_CheckedChanged(object sender, EventArgs e)
         {
-            this.IsTonnetzFeaturesEnabled?.Invoke(this, new ListEventArgs() { BooleanField1 = this.chbTonnetz.Checked });
+            this.IsTonnetzFeaturesEnabled?.Invoke(this, new Messenger() { BooleanField1 = this.chbTonnetz.Checked });
         }
 
         private void btnGenerate_Click(object sender, EventArgs e)
@@ -359,32 +363,32 @@ namespace MitoPlayer_2024.Views
 
         private void cmbTemplates_SelectedIndexChanged(object sender, EventArgs e)
         {
-            this.SelectTemplate?.Invoke(this, new ListEventArgs() { StringField1 = this.cmbTemplates.SelectedItem.ToString() });
+            this.SelectTemplate?.Invoke(this, new Messenger() { StringField1 = this.cmbTemplates.SelectedItem.ToString() });
         }
 
         private void chbSpectralBandwidth_CheckedChanged(object sender, EventArgs e)
         {
-            this.IsSpectralBandwidthEnabled?.Invoke(this, new ListEventArgs() { BooleanField1 = this.chbSpectralBandwidth.Checked });
+            this.IsSpectralBandwidthEnabled?.Invoke(this, new Messenger() { BooleanField1 = this.chbSpectralBandwidth.Checked });
         }
 
         private void chbZcr_CheckedChanged(object sender, EventArgs e)
         {
-            this.IsZCREnabled?.Invoke(this, new ListEventArgs() { BooleanField1 = this.chbZcr.Checked });
+            this.IsZCREnabled?.Invoke(this, new Messenger() { BooleanField1 = this.chbZcr.Checked });
         }
 
         private void chbRms_CheckedChanged(object sender, EventArgs e)
         {
-            this.IsRMSEnabled?.Invoke(this, new ListEventArgs() { BooleanField1 = this.chbZcr.Checked });
+            this.IsRMSEnabled?.Invoke(this, new Messenger() { BooleanField1 = this.chbZcr.Checked });
         }
 
         private void chbPitch_CheckedChanged(object sender, EventArgs e)
         {
-            this.IsPitchEnabled?.Invoke(this, new ListEventArgs() { BooleanField1 = this.chbZcr.Checked });
+            this.IsPitchEnabled?.Invoke(this, new Messenger() { BooleanField1 = this.chbZcr.Checked });
         }
 
         private void nmpBatchedProcess_ValueChanged(object sender, EventArgs e)
         {
-            this.BatchProcessChanged?.Invoke(this, new ListEventArgs() { IntegerField1 = (int)this.nmpBatchedProcess.Value });
+            this.BatchProcessChanged?.Invoke(this, new Messenger() { IntegerField1 = (int)this.nmpBatchedProcess.Value });
         }
 
         private bool isGenerating { get; set; }
@@ -618,7 +622,7 @@ namespace MitoPlayer_2024.Views
         {
             if (dgvTrainingDataList.SelectedRows.Count > 0)
             {
-                this.DeleteTrainingDataEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = (int)dgvTrainingDataList.SelectedRows[0].Cells["Id"].Value });
+                this.DeleteTrainingDataEvent?.Invoke(this, new Messenger() { IntegerField1 = (int)dgvTrainingDataList.SelectedRows[0].Cells["Id"].Value });
             }
         }
 
@@ -631,7 +635,7 @@ namespace MitoPlayer_2024.Views
         {
             if (dgvTrainingDataList.SelectedRows.Count > 0)
             {
-                this.LoadTrainingDataEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = (int)dgvTrainingDataList.SelectedRows[0].Cells["Id"].Value });
+                this.LoadTrainingDataEvent?.Invoke(this, new Messenger() { IntegerField1 = (int)dgvTrainingDataList.SelectedRows[0].Cells["Id"].Value });
             }
         }
 
@@ -640,7 +644,7 @@ namespace MitoPlayer_2024.Views
             if (e.RowIndex >= 0)
             {
                 DataGridViewRow selectedRow = this.dgvTrainingDataList.Rows[e.RowIndex];
-                this.LoadTrainingDataEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = (int)selectedRow.Cells["Id"].Value });
+                this.LoadTrainingDataEvent?.Invoke(this, new Messenger() { IntegerField1 = (int)selectedRow.Cells["Id"].Value });
             }
         }
 
@@ -656,12 +660,27 @@ namespace MitoPlayer_2024.Views
 
         private void chbIsTracklistDetailsDisplayed_CheckedChanged(object sender, EventArgs e)
         {
-            this.SetIsTracklistDetailsDisplayedEvent?.Invoke(this, new ListEventArgs() { BooleanField1 = this.chbIsTracklistDetailsDisplayed.Checked });
+            this.SetIsTracklistDetailsDisplayedEvent?.Invoke(this, new Messenger() { BooleanField1 = this.chbIsTracklistDetailsDisplayed.Checked });
         }
 
         private void btnResult_Click(object sender, EventArgs e)
         {
             this.CalculateDataSetQualityEvent?.Invoke(this, new EventArgs());
         }
+
+        private void btnAnalyse_Click(object sender, EventArgs e)
+        {
+            if (dgvInputTrackList.SelectedRows.Count > 0)
+            {
+                this.AnalyseTrackEvent?.Invoke(this, new Messenger() { IntegerField1 = (int)dgvInputTrackList.SelectedRows[0].Index });
+            }
+        }
+
+        
+
+        
+
+       
+
     }
 }

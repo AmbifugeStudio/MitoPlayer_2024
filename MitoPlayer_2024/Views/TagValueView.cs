@@ -21,15 +21,15 @@ namespace MitoPlayer_2024.Views
         private BindingSource tagValueListBindingSource { get; set; }
 
         public event EventHandler CreateTag;
-        public event EventHandler<ListEventArgs> EditTag;
-        public event EventHandler<ListEventArgs> DeleteTag;
-        public event EventHandler<ListEventArgs> CreateTagValue;
-        public event EventHandler<ListEventArgs> EditTagValue;
-        public event EventHandler<ListEventArgs> DeleteTagValue;
+        public event EventHandler<Messenger> EditTag;
+        public event EventHandler<Messenger> DeleteTag;
+        public event EventHandler<Messenger> CreateTagValue;
+        public event EventHandler<Messenger> EditTagValue;
+        public event EventHandler<Messenger> DeleteTagValue;
         public event EventHandler CloseWithOk;
         public event EventHandler CloseWithCancel;
-        public event EventHandler<ListEventArgs> SetCurrentTagId;
-        public event EventHandler<ListEventArgs> SetCurrentTagValueId;
+        public event EventHandler<Messenger> SetCurrentTagId;
+        public event EventHandler<Messenger> SetCurrentTagValueId;
         public event EventHandler OpenTagValueImportViewEvent;
 
         public TagValueView()
@@ -291,7 +291,7 @@ namespace MitoPlayer_2024.Views
         {
             if(this.dgvTagList.SelectedRows.Count > 0)
             {
-                this.EditTag?.Invoke(this, new ListEventArgs() { IntegerField1 = Convert.ToInt32(this.dgvTagList.SelectedRows[0].Index) });
+                this.EditTag?.Invoke(this, new Messenger() { IntegerField1 = Convert.ToInt32(this.dgvTagList.SelectedRows[0].Index) });
             }
         }
 
@@ -299,7 +299,7 @@ namespace MitoPlayer_2024.Views
         {
             if (this.dgvTagList.SelectedRows.Count > 0)
             {
-                this.DeleteTag?.Invoke(this, new ListEventArgs() { IntegerField1 = Convert.ToInt32(this.dgvTagList.SelectedRows[0].Index) });
+                this.DeleteTag?.Invoke(this, new Messenger() { IntegerField1 = Convert.ToInt32(this.dgvTagList.SelectedRows[0].Index) });
             }
         }
 
@@ -311,14 +311,14 @@ namespace MitoPlayer_2024.Views
         private void btnAddTagValue_Click(object sender, EventArgs e)
         {
             if (this.dgvTagList.SelectedRows.Count > 0)
-                this.CreateTagValue?.Invoke(this, new ListEventArgs() { IntegerField1 = Convert.ToInt32(this.dgvTagList.SelectedRows[0].Index) });
+                this.CreateTagValue?.Invoke(this, new Messenger() { IntegerField1 = Convert.ToInt32(this.dgvTagList.SelectedRows[0].Index) });
         }
 
         private void btnEditTagValue_Click(object sender, EventArgs e)
         {
             if (this.dgvTagValueList.SelectedRows.Count > 0)
             {
-                this.EditTagValue?.Invoke(this, new ListEventArgs() { IntegerField1 = Convert.ToInt32(this.dgvTagValueList.SelectedRows[0].Index) });
+                this.EditTagValue?.Invoke(this, new Messenger() { IntegerField1 = Convert.ToInt32(this.dgvTagValueList.SelectedRows[0].Index) });
             }
         }
 
@@ -326,7 +326,7 @@ namespace MitoPlayer_2024.Views
         {
             if (this.dgvTagValueList.SelectedRows.Count > 0)
             {
-                this.DeleteTagValue?.Invoke(this, new ListEventArgs() { IntegerField1 = Convert.ToInt32(this.dgvTagValueList.SelectedRows[0].Index) });
+                this.DeleteTagValue?.Invoke(this, new Messenger() { IntegerField1 = Convert.ToInt32(this.dgvTagValueList.SelectedRows[0].Index) });
             }
         }
 
@@ -345,14 +345,14 @@ namespace MitoPlayer_2024.Views
         {
             if (this.dgvTagList.SelectedRows.Count > 0)
             {
-                this.SetCurrentTagId?.Invoke(this, new ListEventArgs() { IntegerField1 = Convert.ToInt32(this.dgvTagList.SelectedRows[0].Index) });
+                this.SetCurrentTagId?.Invoke(this, new Messenger() { IntegerField1 = Convert.ToInt32(this.dgvTagList.SelectedRows[0].Index) });
             }
         }
         private void dgvTagValueList_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             if (this.dgvTagValueList.SelectedRows.Count > 0)
             {
-                this.SetCurrentTagValueId?.Invoke(this, new ListEventArgs() { IntegerField1 = Convert.ToInt32(this.dgvTagValueList.SelectedRows[0].Index) });
+                this.SetCurrentTagValueId?.Invoke(this, new Messenger() { IntegerField1 = Convert.ToInt32(this.dgvTagValueList.SelectedRows[0].Index) });
             }
         }
 
@@ -362,14 +362,14 @@ namespace MitoPlayer_2024.Views
             {
                 if (this.dgvTagList.SelectedRows.Count > 0)
                 {
-                    this.DeleteTag?.Invoke(this, new ListEventArgs() { IntegerField1 = Convert.ToInt32(this.dgvTagList.SelectedRows[0].Index) });
+                    this.DeleteTag?.Invoke(this, new Messenger() { IntegerField1 = Convert.ToInt32(this.dgvTagList.SelectedRows[0].Index) });
                 }
             }
             if(e.KeyCode == Keys.Enter)
             {
                 if (this.dgvTagList.SelectedRows.Count > 0)
                 {
-                    this.EditTag?.Invoke(this, new ListEventArgs() { IntegerField1 = Convert.ToInt32(this.dgvTagList.SelectedRows[0].Index) });
+                    this.EditTag?.Invoke(this, new Messenger() { IntegerField1 = Convert.ToInt32(this.dgvTagList.SelectedRows[0].Index) });
                 }
             }
         }
@@ -380,7 +380,7 @@ namespace MitoPlayer_2024.Views
             {
                 if (this.dgvTagValueList.SelectedRows.Count > 0)
                 {
-                    this.DeleteTagValue?.Invoke(this, new ListEventArgs() { IntegerField1 = Convert.ToInt32(this.dgvTagValueList.SelectedRows[0].Index) });
+                    this.DeleteTagValue?.Invoke(this, new Messenger() { IntegerField1 = Convert.ToInt32(this.dgvTagValueList.SelectedRows[0].Index) });
                 }
 
             }
@@ -388,7 +388,7 @@ namespace MitoPlayer_2024.Views
             {
                 if (this.dgvTagValueList.SelectedRows.Count > 0)
                 {
-                    this.EditTagValue?.Invoke(this, new ListEventArgs() { IntegerField1 = Convert.ToInt32(this.dgvTagValueList.SelectedRows[0].Index) });
+                    this.EditTagValue?.Invoke(this, new Messenger() { IntegerField1 = Convert.ToInt32(this.dgvTagValueList.SelectedRows[0].Index) });
                 }
             }
         }
@@ -397,7 +397,7 @@ namespace MitoPlayer_2024.Views
         {
             if (this.dgvTagList.SelectedRows.Count > 0)
             {
-                this.EditTag?.Invoke(this, new ListEventArgs() { IntegerField1 = Convert.ToInt32(this.dgvTagList.SelectedRows[0].Index) });
+                this.EditTag?.Invoke(this, new Messenger() { IntegerField1 = Convert.ToInt32(this.dgvTagList.SelectedRows[0].Index) });
             }
         }
 
@@ -405,7 +405,7 @@ namespace MitoPlayer_2024.Views
         {
             if (this.dgvTagValueList.SelectedRows.Count > 0)
             {
-                this.EditTagValue?.Invoke(this, new ListEventArgs() { IntegerField1 = Convert.ToInt32(this.dgvTagValueList.SelectedRows[0].Index) });
+                this.EditTagValue?.Invoke(this, new Messenger() { IntegerField1 = Convert.ToInt32(this.dgvTagValueList.SelectedRows[0].Index) });
             }
         }
 

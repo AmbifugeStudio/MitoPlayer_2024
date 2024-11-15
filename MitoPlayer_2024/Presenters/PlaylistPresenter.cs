@@ -941,7 +941,7 @@ namespace MitoPlayer_2024.Presenters
                 this.TrackListChanged();
             }
         }
-        public void OrderByColumnEvent(object sender, ListEventArgs e)
+        public void OrderByColumnEvent(object sender, Messenger e)
         {
             this.OrderByColumn(e.StringField1);
         }
@@ -1011,7 +1011,7 @@ namespace MitoPlayer_2024.Presenters
 
         #region TRACKLIST/PLAYLIST - DRAG AND DROP
 
-        private void MoveTracklistRowsEvent(object sender, ListEventArgs e)
+        private void MoveTracklistRowsEvent(object sender, Messenger e)
         {
 
             List<int> sourceIndices = e.SelectedIndices;
@@ -1046,7 +1046,7 @@ namespace MitoPlayer_2024.Presenters
             this.TrackListChanged();
         }
        
-        private void InternalDragAndDropIntoTracklistEvent(object sender, ListEventArgs e)
+        private void InternalDragAndDropIntoTracklistEvent(object sender, Messenger e)
         {
             List<Model.Track> sourceTrackList = new List<Model.Track>();
             if (e.SelectedRows != null && e.SelectedRows.Count > 0)
@@ -1064,7 +1064,7 @@ namespace MitoPlayer_2024.Presenters
                 }
             }
         }
-        private void InternalDragAndDropIntoPlaylistEvent(object sender, ListEventArgs e)
+        private void InternalDragAndDropIntoPlaylistEvent(object sender, Messenger e)
         {
             List<Model.Track> sourceTrackList = new List<Model.Track>();
             DataRow playlistRow = null;
@@ -1272,7 +1272,7 @@ namespace MitoPlayer_2024.Presenters
                 this.ScanDirectory(dir);
             }
         }
-        private void ExternalDragAndDropIntoTracklistEvent(object sender, ListEventArgs e)
+        private void ExternalDragAndDropIntoTracklistEvent(object sender, Messenger e)
         {
             List<Model.Track> trackList = new List<Model.Track>();
             string[] mediaFiles;
@@ -1301,7 +1301,7 @@ namespace MitoPlayer_2024.Presenters
                 this.AddTracksToPlaylist(this.currentPlaylistId, trackList, dragIndex);
             }
         }
-        private void ExternalDragAndDropIntoPlaylistEvent(object sender, ListEventArgs e)
+        private void ExternalDragAndDropIntoPlaylistEvent(object sender, Messenger e)
         {
             List<Model.Track> trackList = new List<Model.Track>();
             string[] mediaFiles;
@@ -1388,7 +1388,7 @@ namespace MitoPlayer_2024.Presenters
             }
             
         }
-        private void MovePlaylistRowEvent(object sender, ListEventArgs e)
+        private void MovePlaylistRowEvent(object sender, Messenger e)
         {
 
             int sourceIndex = e.IntegerField1;
@@ -1424,7 +1424,7 @@ namespace MitoPlayer_2024.Presenters
             this.SavePlaylistList();
             this.ReloadPlaylist();
         }
-        private void MovePlaylistEvent(object sender, ListEventArgs e)
+        private void MovePlaylistEvent(object sender, Messenger e)
         {
             int oldId = Convert.ToInt32(this.playlistListTable.Rows[e.IntegerField1]["Id"]);
 
@@ -1580,7 +1580,7 @@ namespace MitoPlayer_2024.Presenters
         #region TRACKLIST - REMOVE TRACKS
 
         //In the case of tracklist remove, selection change evetn must be turn off and on again to NOT load the UpdateCoverBrowser unnecessary
-        private void DeleteTracksEvent(object sender, ListEventArgs e)
+        private void DeleteTracksEvent(object sender, Messenger e)
         {
             // Check if filter mode is disabled and saving is not in progress
             if (!this.isFilterModeEnabled && !isSaving)
@@ -1769,14 +1769,14 @@ namespace MitoPlayer_2024.Presenters
         ///FONTOS: van egy timer által hívott függvény itt, ami visszafrissíti a felületen az eltelt/hátralő időt és progress bar-t
         ///FONTOS: a felületen a számcím frissítése után egyes esetekben leut a lista színezése függvény
         ///FONTOS: ha a progress bar betelik, akkor a media player STÁTUSZA alapján ugrik a következő számra, frissíti a felületet a fentiekkel
-        public void SetCurrentTrackEvent(object sender, ListEventArgs e)
+        public void SetCurrentTrackEvent(object sender, Messenger e)
         {
             this.mediaPlayerComponent.SetCurrentTrackIndex(e.IntegerField1);
 
             if(e.IntegerField1 > -1)
                 this.UpdateCoverBrowser(e.IntegerField1);
         }
-        public void PlayTrackEvent(object sender, ListEventArgs e)
+        public void PlayTrackEvent(object sender, Messenger e)
         {
             this.PlayTrack();
         }
@@ -1820,7 +1820,7 @@ namespace MitoPlayer_2024.Presenters
             this.playlistView.UpdateAfterStopTrack();
         }
 
-        public void PrevTrackEvent(object sender, ListEventArgs e)
+        public void PrevTrackEvent(object sender, Messenger e)
         {
             if (this.trackListTable != null && this.trackListTable.Rows != null && this.trackListTable.Rows.Count > 0)
             {
@@ -1837,7 +1837,7 @@ namespace MitoPlayer_2024.Presenters
             }
 
         }
-        public void NextTrackEvent(object sender, ListEventArgs e)
+        public void NextTrackEvent(object sender, Messenger e)
         {
             if (this.mediaPlayerComponent.IsShuffleEnabled)
             {
@@ -1987,7 +1987,7 @@ namespace MitoPlayer_2024.Presenters
 
         private int displayedCoverNumber = 11;
         private ConcurrentQueue<ImageExtension> coverList;
-        private void LoadCoversEvent(object sender, ListEventArgs e)
+        private void LoadCoversEvent(object sender, Messenger e)
         {
             this.UpdateCoverBrowser(e.IntegerField1);
         }
@@ -2090,7 +2090,7 @@ namespace MitoPlayer_2024.Presenters
                 this.ReloadPlaylist();
             }
         }
-        private void EditPlaylist(object sender, ListEventArgs e)
+        private void EditPlaylist(object sender, Messenger e)
         {
             DataRow playlistRow = this.playlistListTable.Select("Id = " + Convert.ToInt32(this.playlistListTable.Rows[e.IntegerField1]["Id"])).First();
             if (playlistRow != null)
@@ -2114,7 +2114,7 @@ namespace MitoPlayer_2024.Presenters
             }
         }
 
-        private void LoadPlaylistEvent(object sender, ListEventArgs e)
+        private void LoadPlaylistEvent(object sender, Messenger e)
         {
                 if (this.isTrackListChanged)
                 {
@@ -2195,7 +2195,7 @@ namespace MitoPlayer_2024.Presenters
             }
             
         }*/
-        private void DeletePlaylistEvent(object sender, ListEventArgs e)
+        private void DeletePlaylistEvent(object sender, Messenger e)
         {
             if (e.IntegerField1 > -1)
             {
@@ -2295,7 +2295,7 @@ namespace MitoPlayer_2024.Presenters
             this.SavePlaylistList(this.playlistListTable);
             this.ReloadPlaylistDatagGridView(this.playlistListTable);
         }*/
-        private void ExportToM3UEvent(object sender, ListEventArgs e)
+        private void ExportToM3UEvent(object sender, Messenger e)
         {
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Filter = "Playlist files (*.m3u)|*.m3u";
@@ -2332,7 +2332,7 @@ namespace MitoPlayer_2024.Presenters
                 }
             }
         }
-        private void ExportToTXTEvent(object sender, ListEventArgs e)
+        private void ExportToTXTEvent(object sender, Messenger e)
         {
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Filter = "Text files (*.txt)|*.txt";
@@ -2372,7 +2372,7 @@ namespace MitoPlayer_2024.Presenters
                 }
             }
         }
-        private void ExportToDirectoryEvent(object sender, ListEventArgs e)
+        private void ExportToDirectoryEvent(object sender, Messenger e)
         {
             ExportToDirectoryView exportToDirectoryView = new ExportToDirectoryView();
 
@@ -2554,7 +2554,7 @@ namespace MitoPlayer_2024.Presenters
             this.isFilterModeEnabled = false;
             this.mediaPlayerComponent.SetWorkingTable(this.trackListTable);
         }
-        private void ChangeOnlyPlayingRowModeEnabled(object sender, ListEventArgs e)
+        private void ChangeOnlyPlayingRowModeEnabled(object sender, Messenger e)
         {
             this.isOnlyPlayingRowModeEnabled = e.BooleanField1;
             this.settingDao.SetBooleanSetting(Settings.IsOnlyPlayingRowModeEnabled.ToString(), this.isOnlyPlayingRowModeEnabled);
@@ -2794,7 +2794,7 @@ namespace MitoPlayer_2024.Presenters
 
         
 
-        private void SetTagValueEvent(object sender, ListEventArgs e)
+        private void SetTagValueEvent(object sender, Messenger e)
         {
             if (!isSaving) { 
                 if (!this.isFilterModeEnabled)
@@ -2808,7 +2808,7 @@ namespace MitoPlayer_2024.Presenters
             }
         }
 
-        private void ClearTagValueEvent(object sender, ListEventArgs e)
+        private void ClearTagValueEvent(object sender, Messenger e)
         {
             if (!isSaving)
             {
@@ -2912,7 +2912,7 @@ namespace MitoPlayer_2024.Presenters
             ((PlaylistView)this.playlistView).SetTagValueFilter(this.tagValueFilterList);
         }
 
-        private void ChangeFilterParameters(object sender, ListEventArgs e)
+        private void ChangeFilterParameters(object sender, Messenger e)
         {
             DataView dv = this.trackListTable.DefaultView;
             String filterText = e.StringField1;
@@ -3082,7 +3082,7 @@ namespace MitoPlayer_2024.Presenters
             }
         }*/
 
-        private void AddToKeyDetectorEvent(object sender, ListEventArgs e)
+        private void AddToKeyDetectorEvent(object sender, Messenger e)
         {
             //this.keyModelTrainer = KeyTrainingDataGenerator.GetInstance();
 
@@ -3153,8 +3153,11 @@ namespace MitoPlayer_2024.Presenters
            // KeyDetector.GetInstance().TrainKeyDetector("keyTrainingData.csv");
            // ((PlaylistView)this.playlistView).UpdateLog("MODEL READY");
         }
-        private void DetectKeyEvent(object sender, ListEventArgs e)
+        private void DetectKeyEvent(object sender, Messenger e)
         {
+
+
+
            /* List<Track> tracks = new List<Track>();
 
             Tag currentTag = this.tagList.Find(x => x.Name == "Key");

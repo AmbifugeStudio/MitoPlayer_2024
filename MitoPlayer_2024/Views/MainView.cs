@@ -51,17 +51,19 @@ namespace MitoPlayer_2024
         public event EventHandler PrevTrack;
         public event EventHandler NextTrack;
         public event EventHandler RandomTrack;
-        public event EventHandler<ListEventArgs> ChangeProgress;
-        public event EventHandler<ListEventArgs> ChangeVolume;
-        public event EventHandler<ListEventArgs> ChangeShuffle;
-        public event EventHandler<ListEventArgs> ChangeMute;
-        public event EventHandler<ListEventArgs> ChangePreview;
+        public event EventHandler<Messenger> ChangeProgress;
+        public event EventHandler<Messenger> ChangeVolume;
+        public event EventHandler<Messenger> ChangeShuffle;
+        public event EventHandler<Messenger> ChangeMute;
+        public event EventHandler<Messenger> ChangePreview;
 
         public event EventHandler About;
 
-        public event EventHandler<ListEventArgs> ScanFiles;
+        public event EventHandler<Messenger> ScanFiles;
 
         public event EventHandler GetMediaPlayerProgressStatusEvent;
+
+        public event EventHandler OpenChartEvent;
 
         private MMDevice mmDevice;
 
@@ -148,7 +150,11 @@ namespace MitoPlayer_2024
 
             this.pnlMarkerBackground.BackColor = this.BackgroundColor;
 
-            
+            this.btnPlot.BackColor = this.ButtonColor;
+            this.btnPlot.ForeColor = this.FontColor;
+            this.btnPlot.FlatAppearance.BorderColor = this.ButtonBorderColor;
+
+
 
         }
 
@@ -219,16 +225,16 @@ namespace MitoPlayer_2024
         }
         private void menuStripExportToTXT_Click(object sender, EventArgs e)
         {
-            this.ExportToM3U?.Invoke(this, ListEventArgs.Empty);
+            this.ExportToM3U?.Invoke(this, Messenger.Empty);
         }
 
         private void menuStripExportToM3U_Click(object sender, EventArgs e)
         {
-            this.ExportToTXT?.Invoke(this, ListEventArgs.Empty);
+            this.ExportToTXT?.Invoke(this, Messenger.Empty);
         }
         private void menuStripExportToDirectory_Click(object sender, EventArgs e)
         {
-            this.ExportToDirectory?.Invoke(this, ListEventArgs.Empty);
+            this.ExportToDirectory?.Invoke(this, Messenger.Empty);
         }
         private void menuStripPreferences_Click(object sender, EventArgs e)
         {
@@ -417,17 +423,17 @@ namespace MitoPlayer_2024
         }
         private void pBar_MouseDown(object sender, MouseEventArgs e)
         {
-            this.ChangeProgress?.Invoke(this, new ListEventArgs() { IntegerField1 = e.X, IntegerField2 = prbTrackProgress.Width });
+            this.ChangeProgress?.Invoke(this, new Messenger() { IntegerField1 = e.X, IntegerField2 = prbTrackProgress.Width });
         }
 
         private void chbMute_CheckedChanged(object sender, EventArgs e)
         {
-            this.ChangeMute?.Invoke(this, new ListEventArgs() { BooleanField1 = this.chbMute.Checked }); 
+            this.ChangeMute?.Invoke(this, new Messenger() { BooleanField1 = this.chbMute.Checked }); 
         }
 
         private void chbShuffle_CheckedChanged(object sender, EventArgs e)
         {
-            this.ChangeShuffle?.Invoke(this, new ListEventArgs() { BooleanField1 = this.chbShuffle.Checked });
+            this.ChangeShuffle?.Invoke(this, new Messenger() { BooleanField1 = this.chbShuffle.Checked });
         }
        
         private void btnOpen_Click(object sender, EventArgs e)
@@ -593,7 +599,7 @@ namespace MitoPlayer_2024
                 this.prbVolume.Value = e.X;
             }
 
-            this.ChangeVolume?.Invoke(this, new ListEventArgs() { IntegerField1 = e.X });
+            this.ChangeVolume?.Invoke(this, new Messenger() { IntegerField1 = e.X });
         }
 
         private int leftReferenceHeight;
@@ -677,7 +683,12 @@ namespace MitoPlayer_2024
 
         private void chbPreview_CheckedChanged(object sender, EventArgs e)
         {
-            this.ChangePreview?.Invoke(this, new ListEventArgs() { BooleanField1 = this.chbPreview.Checked });
+            this.ChangePreview?.Invoke(this, new Messenger() { BooleanField1 = this.chbPreview.Checked });
+        }
+
+        private void btnPlot_Click(object sender, EventArgs e)
+        {
+            this.OpenChartEvent?.Invoke(this, new EventArgs());
         }
     }
 

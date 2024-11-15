@@ -71,11 +71,25 @@ namespace MitoPlayer_2024.Views
             this.chbIsTracklistDetailsDisplayed = new System.Windows.Forms.CheckBox();
             this.btnResult = new System.Windows.Forms.Button();
             this.prbProcessedTracks = new MitoPlayer_2024.Helpers.CustomProgressBar();
+            this.grbPreview = new System.Windows.Forms.GroupBox();
+            this.btnAnalyse = new System.Windows.Forms.Button();
+            this.rdbChroma = new System.Windows.Forms.RadioButton();
+            this.rdbMFCCs = new System.Windows.Forms.RadioButton();
+            this.rdbHPCP = new System.Windows.Forms.RadioButton();
+            this.rdbHPSS = new System.Windows.Forms.RadioButton();
+            this.rdbSpectralContrast = new System.Windows.Forms.RadioButton();
+            this.rdbSpectralCentroid = new System.Windows.Forms.RadioButton();
+            this.rdbSpectralBandwidth = new System.Windows.Forms.RadioButton();
+            this.rdbTonnetz = new System.Windows.Forms.RadioButton();
+            this.rdbZCR = new System.Windows.Forms.RadioButton();
+            this.rdbRMS = new System.Windows.Forms.RadioButton();
+            this.rdbPitch = new System.Windows.Forms.RadioButton();
             ((System.ComponentModel.ISupportInitialize)(this.dgvInputTrackList)).BeginInit();
             this.gpbFeatures.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nmpBatchedProcess)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTrainingDataList)).BeginInit();
             this.grbResult.SuspendLayout();
+            this.grbPreview.SuspendLayout();
             this.SuspendLayout();
             // 
             // cmbPlaylists
@@ -90,7 +104,7 @@ namespace MitoPlayer_2024.Views
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(9, 9);
+            this.label1.Location = new System.Drawing.Point(12, 9);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(42, 13);
             this.label1.TabIndex = 1;
@@ -147,7 +161,7 @@ namespace MitoPlayer_2024.Views
             this.dgvInputTrackList.ReadOnly = true;
             this.dgvInputTrackList.RowHeadersVisible = false;
             this.dgvInputTrackList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvInputTrackList.Size = new System.Drawing.Size(475, 236);
+            this.dgvInputTrackList.Size = new System.Drawing.Size(400, 180);
             this.dgvInputTrackList.TabIndex = 2;
             this.dgvInputTrackList.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this.dgvInputTrackList_DataBindingComplete);
             // 
@@ -180,9 +194,9 @@ namespace MitoPlayer_2024.Views
             this.gpbFeatures.Controls.Add(this.chbChroma);
             this.gpbFeatures.Controls.Add(this.label3);
             this.gpbFeatures.Controls.Add(this.cmbTemplates);
-            this.gpbFeatures.Location = new System.Drawing.Point(12, 322);
+            this.gpbFeatures.Location = new System.Drawing.Point(627, 64);
             this.gpbFeatures.Name = "gpbFeatures";
-            this.gpbFeatures.Size = new System.Drawing.Size(475, 241);
+            this.gpbFeatures.Size = new System.Drawing.Size(475, 249);
             this.gpbFeatures.TabIndex = 3;
             this.gpbFeatures.TabStop = false;
             this.gpbFeatures.Text = "Features";
@@ -338,9 +352,9 @@ namespace MitoPlayer_2024.Views
             this.chbTonnetz.AutoSize = true;
             this.chbTonnetz.Location = new System.Drawing.Point(122, 118);
             this.chbTonnetz.Name = "chbTonnetz";
-            this.chbTonnetz.Size = new System.Drawing.Size(109, 17);
+            this.chbTonnetz.Size = new System.Drawing.Size(65, 17);
             this.chbTonnetz.TabIndex = 3;
-            this.chbTonnetz.Text = "Tonnetz Features";
+            this.chbTonnetz.Text = "Tonnetz";
             this.chbTonnetz.UseVisualStyleBackColor = true;
             this.chbTonnetz.CheckedChanged += new System.EventHandler(this.chbTonnetz_CheckedChanged);
             // 
@@ -371,9 +385,9 @@ namespace MitoPlayer_2024.Views
             this.chbHps.AutoSize = true;
             this.chbHps.Location = new System.Drawing.Point(10, 118);
             this.chbHps.Name = "chbHps";
-            this.chbHps.Size = new System.Drawing.Size(48, 17);
+            this.chbHps.Size = new System.Drawing.Size(55, 17);
             this.chbHps.TabIndex = 3;
-            this.chbHps.Text = "HPS";
+            this.chbHps.Text = "HPSS";
             this.chbHps.UseVisualStyleBackColor = true;
             this.chbHps.CheckedChanged += new System.EventHandler(this.chbHps_CheckedChanged);
             // 
@@ -424,7 +438,7 @@ namespace MitoPlayer_2024.Views
             // lblLog
             // 
             this.lblLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblLog.Location = new System.Drawing.Point(6, 16);
+            this.lblLog.Location = new System.Drawing.Point(52, -87);
             this.lblLog.Name = "lblLog";
             this.lblLog.Size = new System.Drawing.Size(463, 215);
             this.lblLog.TabIndex = 5;
@@ -433,7 +447,7 @@ namespace MitoPlayer_2024.Views
             // 
             this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOk.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnOk.Location = new System.Drawing.Point(896, 569);
+            this.btnOk.Location = new System.Drawing.Point(1256, 698);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(75, 23);
             this.btnOk.TabIndex = 4;
@@ -452,13 +466,13 @@ namespace MitoPlayer_2024.Views
             this.dgvTrainingDataList.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
             this.dgvTrainingDataList.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
             this.dgvTrainingDataList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvTrainingDataList.Location = new System.Drawing.Point(496, 80);
+            this.dgvTrainingDataList.Location = new System.Drawing.Point(933, 440);
             this.dgvTrainingDataList.MultiSelect = false;
             this.dgvTrainingDataList.Name = "dgvTrainingDataList";
             this.dgvTrainingDataList.ReadOnly = true;
             this.dgvTrainingDataList.RowHeadersVisible = false;
             this.dgvTrainingDataList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvTrainingDataList.Size = new System.Drawing.Size(475, 236);
+            this.dgvTrainingDataList.Size = new System.Drawing.Size(392, 115);
             this.dgvTrainingDataList.TabIndex = 2;
             this.dgvTrainingDataList.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTrainingDataList_CellDoubleClick);
             this.dgvTrainingDataList.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this.dgvTrainingDataList_DataBindingComplete);
@@ -467,7 +481,7 @@ namespace MitoPlayer_2024.Views
             // 
             this.btnDeleteTrainingData.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnDeleteTrainingData.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnDeleteTrainingData.Location = new System.Drawing.Point(896, 51);
+            this.btnDeleteTrainingData.Location = new System.Drawing.Point(1256, 51);
             this.btnDeleteTrainingData.Name = "btnDeleteTrainingData";
             this.btnDeleteTrainingData.Size = new System.Drawing.Size(75, 23);
             this.btnDeleteTrainingData.TabIndex = 5;
@@ -481,9 +495,9 @@ namespace MitoPlayer_2024.Views
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.grbResult.Controls.Add(this.lblLog);
-            this.grbResult.Location = new System.Drawing.Point(496, 323);
+            this.grbResult.Location = new System.Drawing.Point(810, 555);
             this.grbResult.Name = "grbResult";
-            this.grbResult.Size = new System.Drawing.Size(475, 240);
+            this.grbResult.Size = new System.Drawing.Size(521, 137);
             this.grbResult.TabIndex = 6;
             this.grbResult.TabStop = false;
             this.grbResult.Text = "Result";
@@ -493,7 +507,7 @@ namespace MitoPlayer_2024.Views
             this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(493, 61);
+            this.label7.Location = new System.Drawing.Point(947, 418);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(93, 13);
             this.label7.TabIndex = 1;
@@ -511,7 +525,7 @@ namespace MitoPlayer_2024.Views
             // chbIsTracklistDetailsDisplayed
             // 
             this.chbIsTracklistDetailsDisplayed.AutoSize = true;
-            this.chbIsTracklistDetailsDisplayed.Location = new System.Drawing.Point(326, 8);
+            this.chbIsTracklistDetailsDisplayed.Location = new System.Drawing.Point(257, 10);
             this.chbIsTracklistDetailsDisplayed.Name = "chbIsTracklistDetailsDisplayed";
             this.chbIsTracklistDetailsDisplayed.Size = new System.Drawing.Size(155, 17);
             this.chbIsTracklistDetailsDisplayed.TabIndex = 7;
@@ -522,7 +536,7 @@ namespace MitoPlayer_2024.Views
             // btnResult
             // 
             this.btnResult.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnResult.Location = new System.Drawing.Point(412, 51);
+            this.btnResult.Location = new System.Drawing.Point(337, 51);
             this.btnResult.Name = "btnResult";
             this.btnResult.Size = new System.Drawing.Size(75, 23);
             this.btnResult.TabIndex = 4;
@@ -539,11 +553,165 @@ namespace MitoPlayer_2024.Views
             this.prbProcessedTracks.Size = new System.Drawing.Size(463, 23);
             this.prbProcessedTracks.TabIndex = 6;
             // 
+            // grbPreview
+            // 
+            this.grbPreview.Controls.Add(this.rdbPitch);
+            this.grbPreview.Controls.Add(this.btnAnalyse);
+            this.grbPreview.Controls.Add(this.rdbRMS);
+            this.grbPreview.Controls.Add(this.rdbZCR);
+            this.grbPreview.Controls.Add(this.rdbTonnetz);
+            this.grbPreview.Controls.Add(this.rdbSpectralBandwidth);
+            this.grbPreview.Controls.Add(this.rdbSpectralCentroid);
+            this.grbPreview.Controls.Add(this.rdbSpectralContrast);
+            this.grbPreview.Controls.Add(this.rdbHPSS);
+            this.grbPreview.Controls.Add(this.rdbHPCP);
+            this.grbPreview.Controls.Add(this.rdbMFCCs);
+            this.grbPreview.Controls.Add(this.rdbChroma);
+            this.grbPreview.Location = new System.Drawing.Point(12, 270);
+            this.grbPreview.Name = "grbPreview";
+            this.grbPreview.Size = new System.Drawing.Size(400, 116);
+            this.grbPreview.TabIndex = 8;
+            this.grbPreview.TabStop = false;
+            this.grbPreview.Text = "Preview";
+            // 
+            // btnAnalyse
+            // 
+            this.btnAnalyse.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAnalyse.Location = new System.Drawing.Point(319, 85);
+            this.btnAnalyse.Name = "btnAnalyse";
+            this.btnAnalyse.Size = new System.Drawing.Size(75, 23);
+            this.btnAnalyse.TabIndex = 4;
+            this.btnAnalyse.Text = "Display";
+            this.btnAnalyse.UseVisualStyleBackColor = true;
+            this.btnAnalyse.Click += new System.EventHandler(this.btnAnalyse_Click);
+            // 
+            // rdbChroma
+            // 
+            this.rdbChroma.AutoSize = true;
+            this.rdbChroma.Location = new System.Drawing.Point(6, 19);
+            this.rdbChroma.Name = "rdbChroma";
+            this.rdbChroma.Size = new System.Drawing.Size(61, 17);
+            this.rdbChroma.TabIndex = 0;
+            this.rdbChroma.TabStop = true;
+            this.rdbChroma.Text = "Chroma";
+            this.rdbChroma.UseVisualStyleBackColor = true;
+            // 
+            // rdbMFCCs
+            // 
+            this.rdbMFCCs.AutoSize = true;
+            this.rdbMFCCs.Location = new System.Drawing.Point(6, 42);
+            this.rdbMFCCs.Name = "rdbMFCCs";
+            this.rdbMFCCs.Size = new System.Drawing.Size(59, 17);
+            this.rdbMFCCs.TabIndex = 0;
+            this.rdbMFCCs.TabStop = true;
+            this.rdbMFCCs.Text = "MFCCs";
+            this.rdbMFCCs.UseVisualStyleBackColor = true;
+            // 
+            // rdbHPCP
+            // 
+            this.rdbHPCP.AutoSize = true;
+            this.rdbHPCP.Location = new System.Drawing.Point(6, 65);
+            this.rdbHPCP.Name = "rdbHPCP";
+            this.rdbHPCP.Size = new System.Drawing.Size(54, 17);
+            this.rdbHPCP.TabIndex = 0;
+            this.rdbHPCP.TabStop = true;
+            this.rdbHPCP.Text = "HPCP";
+            this.rdbHPCP.UseVisualStyleBackColor = true;
+            // 
+            // rdbHPSS
+            // 
+            this.rdbHPSS.AutoSize = true;
+            this.rdbHPSS.Location = new System.Drawing.Point(6, 88);
+            this.rdbHPSS.Name = "rdbHPSS";
+            this.rdbHPSS.Size = new System.Drawing.Size(54, 17);
+            this.rdbHPSS.TabIndex = 0;
+            this.rdbHPSS.TabStop = true;
+            this.rdbHPSS.Text = "HPSS";
+            this.rdbHPSS.UseVisualStyleBackColor = true;
+            // 
+            // rdbSpectralContrast
+            // 
+            this.rdbSpectralContrast.AutoSize = true;
+            this.rdbSpectralContrast.Location = new System.Drawing.Point(73, 19);
+            this.rdbSpectralContrast.Name = "rdbSpectralContrast";
+            this.rdbSpectralContrast.Size = new System.Drawing.Size(106, 17);
+            this.rdbSpectralContrast.TabIndex = 0;
+            this.rdbSpectralContrast.TabStop = true;
+            this.rdbSpectralContrast.Text = "Spectral Contrast";
+            this.rdbSpectralContrast.UseVisualStyleBackColor = true;
+            // 
+            // rdbSpectralCentroid
+            // 
+            this.rdbSpectralCentroid.AutoSize = true;
+            this.rdbSpectralCentroid.Location = new System.Drawing.Point(73, 42);
+            this.rdbSpectralCentroid.Name = "rdbSpectralCentroid";
+            this.rdbSpectralCentroid.Size = new System.Drawing.Size(106, 17);
+            this.rdbSpectralCentroid.TabIndex = 0;
+            this.rdbSpectralCentroid.TabStop = true;
+            this.rdbSpectralCentroid.Text = "Spectral Centroid";
+            this.rdbSpectralCentroid.UseVisualStyleBackColor = true;
+            // 
+            // rdbSpectralBandwidth
+            // 
+            this.rdbSpectralBandwidth.AutoSize = true;
+            this.rdbSpectralBandwidth.Location = new System.Drawing.Point(73, 65);
+            this.rdbSpectralBandwidth.Name = "rdbSpectralBandwidth";
+            this.rdbSpectralBandwidth.Size = new System.Drawing.Size(117, 17);
+            this.rdbSpectralBandwidth.TabIndex = 0;
+            this.rdbSpectralBandwidth.TabStop = true;
+            this.rdbSpectralBandwidth.Text = "Spectral Bandwidth";
+            this.rdbSpectralBandwidth.UseVisualStyleBackColor = true;
+            // 
+            // rdbTonnetz
+            // 
+            this.rdbTonnetz.AutoSize = true;
+            this.rdbTonnetz.Location = new System.Drawing.Point(73, 88);
+            this.rdbTonnetz.Name = "rdbTonnetz";
+            this.rdbTonnetz.Size = new System.Drawing.Size(64, 17);
+            this.rdbTonnetz.TabIndex = 0;
+            this.rdbTonnetz.TabStop = true;
+            this.rdbTonnetz.Text = "Tonnetz";
+            this.rdbTonnetz.UseVisualStyleBackColor = true;
+            // 
+            // rdbZCR
+            // 
+            this.rdbZCR.AutoSize = true;
+            this.rdbZCR.Location = new System.Drawing.Point(196, 19);
+            this.rdbZCR.Name = "rdbZCR";
+            this.rdbZCR.Size = new System.Drawing.Size(47, 17);
+            this.rdbZCR.TabIndex = 0;
+            this.rdbZCR.TabStop = true;
+            this.rdbZCR.Text = "ZCR";
+            this.rdbZCR.UseVisualStyleBackColor = true;
+            // 
+            // rdbRMS
+            // 
+            this.rdbRMS.AutoSize = true;
+            this.rdbRMS.Location = new System.Drawing.Point(196, 42);
+            this.rdbRMS.Name = "rdbRMS";
+            this.rdbRMS.Size = new System.Drawing.Size(49, 17);
+            this.rdbRMS.TabIndex = 0;
+            this.rdbRMS.TabStop = true;
+            this.rdbRMS.Text = "RMS";
+            this.rdbRMS.UseVisualStyleBackColor = true;
+            // 
+            // rdbPitch
+            // 
+            this.rdbPitch.AutoSize = true;
+            this.rdbPitch.Location = new System.Drawing.Point(196, 65);
+            this.rdbPitch.Name = "rdbPitch";
+            this.rdbPitch.Size = new System.Drawing.Size(49, 17);
+            this.rdbPitch.TabIndex = 0;
+            this.rdbPitch.TabStop = true;
+            this.rdbPitch.Text = "Pitch";
+            this.rdbPitch.UseVisualStyleBackColor = true;
+            // 
             // ModelTrainerView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(982, 603);
+            this.ClientSize = new System.Drawing.Size(1342, 732);
+            this.Controls.Add(this.grbPreview);
             this.Controls.Add(this.btnResult);
             this.Controls.Add(this.chbIsTracklistDetailsDisplayed);
             this.Controls.Add(this.grbResult);
@@ -569,6 +737,8 @@ namespace MitoPlayer_2024.Views
             ((System.ComponentModel.ISupportInitialize)(this.nmpBatchedProcess)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTrainingDataList)).EndInit();
             this.grbResult.ResumeLayout(false);
+            this.grbPreview.ResumeLayout(false);
+            this.grbPreview.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -617,5 +787,18 @@ namespace MitoPlayer_2024.Views
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.CheckBox chbIsTracklistDetailsDisplayed;
         private System.Windows.Forms.Button btnResult;
+        private System.Windows.Forms.GroupBox grbPreview;
+        private System.Windows.Forms.Button btnAnalyse;
+        private System.Windows.Forms.RadioButton rdbHPCP;
+        private System.Windows.Forms.RadioButton rdbMFCCs;
+        private System.Windows.Forms.RadioButton rdbChroma;
+        private System.Windows.Forms.RadioButton rdbPitch;
+        private System.Windows.Forms.RadioButton rdbRMS;
+        private System.Windows.Forms.RadioButton rdbZCR;
+        private System.Windows.Forms.RadioButton rdbTonnetz;
+        private System.Windows.Forms.RadioButton rdbSpectralBandwidth;
+        private System.Windows.Forms.RadioButton rdbSpectralCentroid;
+        private System.Windows.Forms.RadioButton rdbSpectralContrast;
+        private System.Windows.Forms.RadioButton rdbHPSS;
     }
 }

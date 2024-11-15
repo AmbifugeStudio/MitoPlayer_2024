@@ -13,9 +13,9 @@ namespace MitoPlayer_2024.Views
 {
     public partial class ColumnVisibilityEditorView : Form, IColumnVisibilityEditorView
     {
-        public event EventHandler<ListEventArgs> ChangeVisibility;
-        public event EventHandler<ListEventArgs> MoveUp;
-        public event EventHandler<ListEventArgs> MoveDown;
+        public event EventHandler<Messenger> ChangeVisibility;
+        public event EventHandler<Messenger> MoveUp;
+        public event EventHandler<Messenger> MoveDown;
         public event EventHandler CloseViewWithOk;
         public event EventHandler CloseViewWithCancel;
         private BindingSource columnListBindingSource { get; set; }
@@ -41,25 +41,25 @@ namespace MitoPlayer_2024.Views
         private void dgvColumnList_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             if (this.dgvColumnList.SelectedRows != null && this.dgvColumnList.SelectedRows.Count > 0)
-                this.ChangeVisibility?.Invoke(this, new ListEventArgs() { IntegerField1 = Convert.ToInt32(this.dgvColumnList.SelectedRows[0].Cells["Id"].Value) });
+                this.ChangeVisibility?.Invoke(this, new Messenger() { IntegerField1 = Convert.ToInt32(this.dgvColumnList.SelectedRows[0].Cells["Id"].Value) });
         }
         private void btnChangeVisibility_Click(object sender, EventArgs e)
         {
             if (this.dgvColumnList.SelectedRows != null && this.dgvColumnList.SelectedRows.Count > 0)
-                this.ChangeVisibility?.Invoke(this, new ListEventArgs() { IntegerField1 = Convert.ToInt32(this.dgvColumnList.SelectedRows[0].Cells["Id"].Value) });
+                this.ChangeVisibility?.Invoke(this, new Messenger() { IntegerField1 = Convert.ToInt32(this.dgvColumnList.SelectedRows[0].Cells["Id"].Value) });
         }
        
 
         private void btnMoveUp_Click(object sender, EventArgs e)
         {
             if (this.dgvColumnList.SelectedRows != null && this.dgvColumnList.SelectedRows.Count > 0)
-                this.MoveUp?.Invoke(this, new ListEventArgs() { IntegerField1 = Convert.ToInt32(this.dgvColumnList.SelectedRows[0].Cells["Id"].Value) });
+                this.MoveUp?.Invoke(this, new Messenger() { IntegerField1 = Convert.ToInt32(this.dgvColumnList.SelectedRows[0].Cells["Id"].Value) });
         }
 
         private void btnMoveDown_Click(object sender, EventArgs e)
         {
             if (this.dgvColumnList.SelectedRows != null && this.dgvColumnList.SelectedRows.Count > 0)
-                this.MoveDown?.Invoke(this, new ListEventArgs() { IntegerField1 = Convert.ToInt32(this.dgvColumnList.SelectedRows[0].Cells["Id"].Value) });
+                this.MoveDown?.Invoke(this, new Messenger() { IntegerField1 = Convert.ToInt32(this.dgvColumnList.SelectedRows[0].Cells["Id"].Value) });
         }
 
         private void btnOk_Click(object sender, EventArgs e)
