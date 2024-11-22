@@ -11,19 +11,6 @@ namespace MitoPlayer_2024.Views
 {
     public partial class ChartView : Form, IChartView
     {
-        private BindingSource tracklistBindingSource { get; set; }
-        public ChartView()
-        {
-            this.InitializeComponent();
-            this.SetControlColors();
-            this.CenterToScreen();
-
-            this.tracklistBindingSource = new BindingSource();
-            this.lblInProgress.Hide();
-            this.btnCancel.Enabled = false;
-            this.FormClosing += new FormClosingEventHandler(MainForm_FormClosing);
-        }
-
         Color BackgroundColor = System.Drawing.ColorTranslator.FromHtml("#363639");
         Color FontColor = System.Drawing.ColorTranslator.FromHtml("#c6c6c6");
         Color ButtonColor = System.Drawing.ColorTranslator.FromHtml("#292a2d");
@@ -33,7 +20,30 @@ namespace MitoPlayer_2024.Views
         Color GridPlayingColor = System.Drawing.ColorTranslator.FromHtml("#4d4d4d");
         Color GridSelectionColor = System.Drawing.ColorTranslator.FromHtml("#626262");
         Color ActiveButtonColor = System.Drawing.ColorTranslator.FromHtml("#FFBF80");
-        
+
+        private List<Tag> tagList { get; set; }
+        private Dictionary<String, Dictionary<String, Color>> tagValueDictionary { get; set; }
+        private BindingSource tracklistBindingSource { get; set; }
+        private bool isAnalysationInProgress { get; set; }
+
+        public event EventHandler<EventArgs> AnalyseTrackEvent;
+        public event EventHandler<EventArgs> CancelAnalysationEvent;
+        public event EventHandler<Messenger> SetCurrentFeatureTypeEvent;
+
+        public ChartView()
+        {
+            this.InitializeComponent();
+            this.SetControlColors();
+            this.CenterToScreen();
+
+            this.tracklistBindingSource = new BindingSource();
+
+            this.lblInProgress.Hide();
+            this.btnCancel.Enabled = false;
+
+            this.FormClosing += new FormClosingEventHandler(MainForm_FormClosing);
+        }
+
         private void SetControlColors()
         {
             this.BackColor = this.BackgroundColor;
@@ -63,18 +73,6 @@ namespace MitoPlayer_2024.Views
 
             this.lblInProgress.ForeColor = this.ActiveButtonColor;
         }
-
-        public event EventHandler<EventArgs> AnalyseTrackEvent;
-        public event EventHandler<EventArgs> CancelAnalysationEvent;
-        public event EventHandler<Messenger> SetCurrentFeatureTypeEvent;
-
-        public void InitializeView(ViewModel model)
-        {
-
-        }
-        
-        private List<Tag> tagList { get; set; }
-        private Dictionary<String, Dictionary<String, Color>> tagValueDictionary { get; set; }
         public void InitializeTagsAndTagValues(List<Tag> tagList, Dictionary<String, Dictionary<String, Color>> tagValueDictionary)
         {
             this.tagList = tagList;
@@ -154,13 +152,15 @@ namespace MitoPlayer_2024.Views
                 }
             }
         }
-
-
-
         public void UpdatePlot(PlotView plot)
         {
             this.pnlPlot.Controls.Clear();
             this.pnlPlot.Controls.Add(plot);
+        }
+        public void UpdateSoundWavePlot(PlotView plot)
+        {
+            this.pnlFrequency.Controls.Clear();
+            this.pnlFrequency.Controls.Add(plot);
         }
 
         private void rdbChroma_CheckedChanged(object sender, EventArgs e)
@@ -221,13 +221,11 @@ namespace MitoPlayer_2024.Views
                 this.SetCurrentFeatureTypeEvent?.Invoke(this, new Messenger() { StringField1 = ((RadioButton)currentRadioButton).Text });
             }
         }
-
         private void btnAnalyse_Click(object sender, EventArgs e)
         {
             this.AnalyseTrackEvent?.Invoke(this, new EventArgs());
         }
 
-        private bool isAnalysationInProgress;
         public void StartAnalysation()
         {
             this.btnAnalyse.Enabled = false;
@@ -247,15 +245,21 @@ namespace MitoPlayer_2024.Views
             {
                 UpdateProgress(e);
             }
-            
         }
         public void UpdateProgress(Messenger e)
         {
-           
             this.prbAnalyseProgress.Value = e.IntegerField1;
         }
-
         public void FinishAnalysation()
+        {
+            this.btnAnalyse.Enabled = true;
+            this.btnCancel.Enabled = false;
+            this.lblInProgress.Enabled = false;
+            this.prbAnalyseProgress.Value = 0;
+            this.isAnalysationInProgress = false;
+            this.lblInProgress.Hide();
+        }
+        public void UpdateViewAfterCancel()
         {
             this.btnAnalyse.Enabled = true;
             this.btnCancel.Enabled = false;
@@ -309,16 +313,6 @@ namespace MitoPlayer_2024.Views
                 }
             }
         }
-        public void UpdateViewAfterCancel()
-        {
-            this.btnAnalyse.Enabled = true;
-            this.btnCancel.Enabled = false;
-            this.lblInProgress.Enabled = false;
-            this.prbAnalyseProgress.Value = 0;
-            this.isAnalysationInProgress = false;
-            this.lblInProgress.Hide();
-        }
 
-        
     }
 }

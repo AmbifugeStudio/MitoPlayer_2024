@@ -19,8 +19,8 @@ namespace MitoPlayer_2024.Views
 
         void InitializeTagsAndTagValues(List<Tag> tagList, Dictionary<string, Dictionary<string, Color>> tagValueDictionary);
         void InitializeTrackList(DataTableModel model);
-        void InitializeView(ViewModel model);
         void UpdatePlot(PlotView plot);
+        void UpdateSoundWavePlot(PlotView plot);
         void UpdateViewAfterCancel();
         void StartAnalysation();
         void UpdateProgressOnView(Messenger item);

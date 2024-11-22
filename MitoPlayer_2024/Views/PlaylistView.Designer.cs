@@ -78,10 +78,12 @@ namespace MitoPlayer_2024.Views
             this.btnFilterModeToggle = new System.Windows.Forms.Button();
             this.grbCovers = new System.Windows.Forms.GroupBox();
             this.lblMessage = new System.Windows.Forms.Label();
-            this.btnColumnVisibilityWithTagEditor = new System.Windows.Forms.Button();
             this.btnGenerateTrainingSet = new System.Windows.Forms.Button();
-            this.dgvTrackList = new MitoPlayer_2024.Helpers.CustomDataGridView();
             this.btnDetectKey = new System.Windows.Forms.Button();
+            this.btnLiveStreamAnimation = new System.Windows.Forms.Button();
+            this.btnLiveStreamAnimationSetting = new System.Windows.Forms.Button();
+            this.btnColumnVisibilityWithTagEditor = new System.Windows.Forms.Button();
+            this.dgvTrackList = new MitoPlayer_2024.Helpers.CustomDataGridView();
             this.contextMenuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPlaylistList)).BeginInit();
             this.pnlPlaylistList.SuspendLayout();
@@ -519,21 +521,10 @@ namespace MitoPlayer_2024.Views
             this.lblMessage.Size = new System.Drawing.Size(274, 26);
             this.lblMessage.TabIndex = 51;
             // 
-            // btnColumnVisibilityWithTagEditor
-            // 
-            this.btnColumnVisibilityWithTagEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnColumnVisibilityWithTagEditor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnColumnVisibilityWithTagEditor.Image = ((System.Drawing.Image)(resources.GetObject("btnColumnVisibilityWithTagEditor.Image")));
-            this.btnColumnVisibilityWithTagEditor.Location = new System.Drawing.Point(1183, 14);
-            this.btnColumnVisibilityWithTagEditor.Name = "btnColumnVisibilityWithTagEditor";
-            this.btnColumnVisibilityWithTagEditor.Size = new System.Drawing.Size(31, 23);
-            this.btnColumnVisibilityWithTagEditor.TabIndex = 24;
-            this.btnColumnVisibilityWithTagEditor.UseVisualStyleBackColor = true;
-            this.btnColumnVisibilityWithTagEditor.Click += new System.EventHandler(this.btnColumnVisibility_Click);
-            // 
             // btnGenerateTrainingSet
             // 
             this.btnGenerateTrainingSet.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnGenerateTrainingSet.Enabled = false;
             this.btnGenerateTrainingSet.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnGenerateTrainingSet.Location = new System.Drawing.Point(300, 649);
             this.btnGenerateTrainingSet.Name = "btnGenerateTrainingSet";
@@ -542,6 +533,56 @@ namespace MitoPlayer_2024.Views
             this.btnGenerateTrainingSet.Text = "Generate Training Set";
             this.btnGenerateTrainingSet.UseVisualStyleBackColor = true;
             this.btnGenerateTrainingSet.Click += new System.EventHandler(this.btnGenerateTrainingSet_Click);
+            // 
+            // btnDetectKey
+            // 
+            this.btnDetectKey.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnDetectKey.Enabled = false;
+            this.btnDetectKey.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDetectKey.Location = new System.Drawing.Point(978, 14);
+            this.btnDetectKey.Name = "btnDetectKey";
+            this.btnDetectKey.Size = new System.Drawing.Size(90, 23);
+            this.btnDetectKey.TabIndex = 31;
+            this.btnDetectKey.Text = "Detect Key";
+            this.btnDetectKey.UseVisualStyleBackColor = true;
+            this.btnDetectKey.Click += new System.EventHandler(this.btnDetectKey_Click_1);
+            // 
+            // btnLiveStreamAnimation
+            // 
+            this.btnLiveStreamAnimation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnLiveStreamAnimation.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnLiveStreamAnimation.Location = new System.Drawing.Point(430, 649);
+            this.btnLiveStreamAnimation.Name = "btnLiveStreamAnimation";
+            this.btnLiveStreamAnimation.Size = new System.Drawing.Size(133, 23);
+            this.btnLiveStreamAnimation.TabIndex = 53;
+            this.btnLiveStreamAnimation.Text = "Live Stream Animation";
+            this.btnLiveStreamAnimation.UseVisualStyleBackColor = true;
+            this.btnLiveStreamAnimation.Click += new System.EventHandler(this.btnLiveStreamAnimation_Click);
+            // 
+            // btnLiveStreamAnimationSetting
+            // 
+            this.btnLiveStreamAnimationSetting.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnLiveStreamAnimationSetting.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnLiveStreamAnimationSetting.Image = ((System.Drawing.Image)(resources.GetObject("btnLiveStreamAnimationSetting.Image")));
+            this.btnLiveStreamAnimationSetting.Location = new System.Drawing.Point(569, 649);
+            this.btnLiveStreamAnimationSetting.Name = "btnLiveStreamAnimationSetting";
+            this.btnLiveStreamAnimationSetting.Size = new System.Drawing.Size(23, 23);
+            this.btnLiveStreamAnimationSetting.TabIndex = 54;
+            this.btnLiveStreamAnimationSetting.UseVisualStyleBackColor = true;
+            this.btnLiveStreamAnimationSetting.Click += new System.EventHandler(this.btnLiveStreamAnimationSetting_Click);
+            // 
+            // btnColumnVisibilityWithTagEditor
+            // 
+            this.btnColumnVisibilityWithTagEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnColumnVisibilityWithTagEditor.Enabled = false;
+            this.btnColumnVisibilityWithTagEditor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnColumnVisibilityWithTagEditor.Image = ((System.Drawing.Image)(resources.GetObject("btnColumnVisibilityWithTagEditor.Image")));
+            this.btnColumnVisibilityWithTagEditor.Location = new System.Drawing.Point(1183, 14);
+            this.btnColumnVisibilityWithTagEditor.Name = "btnColumnVisibilityWithTagEditor";
+            this.btnColumnVisibilityWithTagEditor.Size = new System.Drawing.Size(31, 23);
+            this.btnColumnVisibilityWithTagEditor.TabIndex = 24;
+            this.btnColumnVisibilityWithTagEditor.UseVisualStyleBackColor = true;
+            this.btnColumnVisibilityWithTagEditor.Click += new System.EventHandler(this.btnColumnVisibility_Click);
             // 
             // dgvTrackList
             // 
@@ -579,24 +620,14 @@ namespace MitoPlayer_2024.Views
             this.dgvTrackList.MouseMove += new System.Windows.Forms.MouseEventHandler(this.dgvTrackList_MouseMove);
             this.dgvTrackList.MouseUp += new System.Windows.Forms.MouseEventHandler(this.dgvTrackList_MouseUp);
             // 
-            // btnDetectKey
-            // 
-            this.btnDetectKey.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDetectKey.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnDetectKey.Location = new System.Drawing.Point(978, 14);
-            this.btnDetectKey.Name = "btnDetectKey";
-            this.btnDetectKey.Size = new System.Drawing.Size(90, 23);
-            this.btnDetectKey.TabIndex = 31;
-            this.btnDetectKey.Text = "Detect Key";
-            this.btnDetectKey.UseVisualStyleBackColor = true;
-            this.btnDetectKey.Click += new System.EventHandler(this.btnDetectKey_Click_1);
-            // 
             // PlaylistView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(1264, 681);
+            this.Controls.Add(this.btnLiveStreamAnimationSetting);
+            this.Controls.Add(this.btnLiveStreamAnimation);
             this.Controls.Add(this.btnGenerateTrainingSet);
             this.Controls.Add(this.lblMessage);
             this.Controls.Add(this.grbCovers);
@@ -681,5 +712,7 @@ namespace MitoPlayer_2024.Views
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private System.Windows.Forms.Button btnGenerateTrainingSet;
         private System.Windows.Forms.Button btnDetectKey;
+        private System.Windows.Forms.Button btnLiveStreamAnimation;
+        private System.Windows.Forms.Button btnLiveStreamAnimationSetting;
     }
 }

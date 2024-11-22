@@ -100,14 +100,23 @@
     <Reference Include="Accord.Audio, Version=3.8.0.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
       <HintPath>..\packages\Accord.Audio.3.8.0\lib\net462\Accord.Audio.dll</HintPath>
     </Reference>
+    <Reference Include="Accord.MachineLearning, Version=3.8.0.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Accord.MachineLearning.3.8.0\lib\net462\Accord.MachineLearning.dll</HintPath>
+    </Reference>
     <Reference Include="Accord.Math, Version=3.8.0.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
       <HintPath>..\packages\Accord.Math.3.8.0\lib\net462\Accord.Math.dll</HintPath>
     </Reference>
     <Reference Include="Accord.Math.Core, Version=3.8.0.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
       <HintPath>..\packages\Accord.Math.3.8.0\lib\net462\Accord.Math.Core.dll</HintPath>
     </Reference>
+    <Reference Include="Accord.Statistics, Version=3.8.0.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Accord.Statistics.3.8.0\lib\net462\Accord.Statistics.dll</HintPath>
+    </Reference>
     <Reference Include="BouncyCastle.Cryptography, Version=2.0.0.0, Culture=neutral, PublicKeyToken=072edcf4a5328938, processorArchitecture=MSIL">
       <HintPath>..\packages\BouncyCastle.Cryptography.2.2.1\lib\net461\BouncyCastle.Cryptography.dll</HintPath>
+    </Reference>
+    <Reference Include="cs-hidden-markov-models, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\cs-hidden-markov-models.1.0.1\lib\net452\Release\cs-hidden-markov-models.dll</HintPath>
     </Reference>
     <Reference Include="FlacLibSharp, Version=3.2.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\FlacLibSharp.3.2.1\lib\net20\FlacLibSharp.dll</HintPath>
@@ -285,45 +294,53 @@
     <Compile Include="Dao\SettingDao.cs" />
     <Compile Include="Dao\TagDao.cs" />
     <Compile Include="Dao\DataBaseBuilderDao.cs" />
-    <Compile Include="Helpers\AsyncProgressMessage.cs" />
-    <Compile Include="Helpers\ButtonExtension.cs">
+    <Compile Include="IViews\ILiveStreamAnimationViewSetting.cs" />
+    <Compile Include="IViews\ILiveStreamAnimationView.cs" />
+    <Compile Include="Presenters\LiveStreamAnimationPresenter.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Tmp\AsyncProgressMessage.cs" />
+    <Compile Include="Helpers\FormElements\ButtonExtension.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Helpers\Class1.cs" />
-    <Compile Include="Helpers\CustomDataGridView.cs">
+    <Compile Include="Tmp\Class1.cs" />
+    <Compile Include="Tmp\CustomDataGridView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Helpers\CustomHScrollBar.cs">
+    <Compile Include="Tmp\CustomHScrollBar.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Helpers\CustomProgressBar.cs">
+    <Compile Include="Helpers\FormElements\CustomProgressBar.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Helpers\DataTableModel.cs" />
-    <Compile Include="Helpers\DimensionalityReducer.cs" />
-    <Compile Include="Helpers\DynamicFeatureLoader.cs" />
+    <Compile Include="Helpers\Messengers\DataTableModel.cs" />
+    <Compile Include="Tmp\DimensionalityReducer.cs" />
+    <Compile Include="Tmp\DynamicFeatureLoader.cs" />
     <Compile Include="Helpers\Enums.cs" />
-    <Compile Include="Helpers\CustomVScrollBar.cs">
+    <Compile Include="Tmp\CustomVScrollBar.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Helpers\FeatureType.cs" />
+    <Compile Include="Tmp\FeatureType.cs" />
     <Compile Include="Models\ViewModel.cs" />
     <Compile Include="Presenters\ChartPresenter.cs" />
-    <Compile Include="Trainer\DimensionalityReducer.cs" />
-    <Compile Include="Trainer\FeatureSelector.cs" />
-    <Compile Include="Helpers\ImageExtension.cs" />
-    <Compile Include="Helpers\KeyDetector.cs" />
-    <Compile Include="Helpers\KeyPrediction.cs" />
-    <Compile Include="Helpers\KeyToStringMapping.cs" />
+    <Compile Include="Tmp\Trainer\DimensionalityReducer.cs" />
+    <Compile Include="Tmp\Trainer\FeatureSelector.cs" />
+    <Compile Include="Helpers\FormElements\ImageExtension.cs" />
+    <Compile Include="Tmp\KeyDetector.cs" />
+    <Compile Include="Tmp\KeyPrediction.cs" />
+    <Compile Include="Tmp\KeyToStringMapping.cs" />
     <Compile Include="Helpers\LabelTimer.cs" />
-    <Compile Include="Helpers\Messenger.cs" />
+    <Compile Include="Helpers\Messengers\Messenger.cs" />
     <Compile Include="Helpers\ObservableConcurrentBag.cs" />
-    <Compile Include="Helpers\PictureBoxExtension.cs">
+    <Compile Include="Helpers\FormElements\PictureBoxExtension.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Helpers\ResultOrError.cs" />
+    <Compile Include="Helpers\Messengers\ResultOrError.cs" />
     <Compile Include="Helpers\Statistics.cs" />
-    <Compile Include="Helpers\TagValueFilter.cs" />
+    <Compile Include="Helpers\Messengers\TagValueFilter.cs" />
     <Compile Include="Helpers\VirtualDJReader.cs" />
     <Compile Include="Models\IDataBaseBuilderDao.cs" />
     <Compile Include="Models\IProfileDao.cs" />
@@ -357,9 +374,9 @@
     <Compile Include="Presenters\TagValuePresenter.cs" />
     <Compile Include="Presenters\TemplateEditorPresenter.cs" />
     <Compile Include="Presenters\TrackEditorPresenter.cs" />
-    <Compile Include="Trainer\FeatureAggregator.cs" />
-    <Compile Include="Trainer\FeatureExtractor.cs" />
-    <Compile Include="Trainer\TrainingDataCreator.cs" />
+    <Compile Include="Tmp\Trainer\FeatureAggregator.cs" />
+    <Compile Include="Tmp\Trainer\FeatureExtractor.cs" />
+    <Compile Include="Tmp\Trainer\TrainingDataCreator.cs" />
     <Compile Include="Views\AboutView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -390,26 +407,32 @@
     <Compile Include="Views\HarmonizerView.Designer.cs">
       <DependentUpon>HarmonizerView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\IAboutView.cs" />
-    <Compile Include="Views\IChartView.cs" />
-    <Compile Include="Views\IModelTrainerView.cs" />
-    <Compile Include="Views\ISetupView.cs" />
-    <Compile Include="Views\IExportToDirectoryView.cs" />
-    <Compile Include="Views\IHarmonizerView.cs" />
-    <Compile Include="Views\IPlaylistEditorView.cs" />
-    <Compile Include="Views\IPlaylistView.cs" />
-    <Compile Include="Views\IPreferencesView.cs" />
-    <Compile Include="Views\IColumnVisibilityEditorView.cs" />
-    <Compile Include="Views\IProfileEditorView.cs" />
-    <Compile Include="Views\IProfileView.cs" />
-    <Compile Include="Views\IRuleEditorView.cs" />
-    <Compile Include="Views\ITagValueEditorView.cs" />
-    <Compile Include="Views\ITagEditorView.cs" />
-    <Compile Include="Views\ITagValueImportView.cs" />
-    <Compile Include="Views\ITagValueView.cs" />
-    <Compile Include="Views\ITemplateEditorView.cs" />
-    <Compile Include="Views\ITrackEditorView.cs" />
-    <Compile Include="Views\ITrainingDataGenerator.cs" />
+    <Compile Include="IViews\IAboutView.cs" />
+    <Compile Include="IViews\IChartView.cs" />
+    <Compile Include="IViews\IModelTrainerView.cs" />
+    <Compile Include="IViews\ISetupView.cs" />
+    <Compile Include="IViews\IExportToDirectoryView.cs" />
+    <Compile Include="IViews\IHarmonizerView.cs" />
+    <Compile Include="IViews\IPlaylistEditorView.cs" />
+    <Compile Include="IViews\IPlaylistView.cs" />
+    <Compile Include="IViews\IPreferencesView.cs" />
+    <Compile Include="IViews\IColumnVisibilityEditorView.cs" />
+    <Compile Include="IViews\IProfileEditorView.cs" />
+    <Compile Include="IViews\IProfileView.cs" />
+    <Compile Include="IViews\IRuleEditorView.cs" />
+    <Compile Include="IViews\ITagValueEditorView.cs" />
+    <Compile Include="IViews\ITagEditorView.cs" />
+    <Compile Include="IViews\ITagValueImportView.cs" />
+    <Compile Include="IViews\ITagValueView.cs" />
+    <Compile Include="IViews\ITemplateEditorView.cs" />
+    <Compile Include="IViews\ITrackEditorView.cs" />
+    <Compile Include="IViews\ITrainingDataGenerator.cs" />
+    <Compile Include="Views\LiveStreamAnimationView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\LiveStreamAnimationView.Designer.cs">
+      <DependentUpon>LiveStreamAnimationView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\LoadingDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -426,7 +449,7 @@
     <Compile Include="Presenters\MainPresenter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Views\IMainView.cs" />
+    <Compile Include="IViews\IMainView.cs" />
     <Compile Include="Views\ModelTrainerView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -534,6 +557,9 @@
     <EmbeddedResource Include="Views\HarmonizerView.resx">
       <DependentUpon>HarmonizerView.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Views\LiveStreamAnimationView.resx">
+      <DependentUpon>LiveStreamAnimationView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\LoadingDialog.resx">
       <DependentUpon>LoadingDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -542,14 +568,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <EmbeddedResource Include="Views\ModelTrainerView.resx">
       <DependentUpon>ModelTrainerView.cs</DependentUpon>
     </EmbeddedResource>
@@ -665,6 +686,7 @@
     <None Include="Resources\MasterPeakMeter.png" />
     <None Include="Resources\MarkerGrey.png" />
     <None Include="Resources\MissingCover.png" />
+    <None Include="Resources\Settings_20_20.png" />
     <Content Include="Technical Documents\Releases.txt" />
     <Content Include="Technical Documents\DevProcess.txt" />
     <Content Include="Technical Documents\TestCases.txt" />

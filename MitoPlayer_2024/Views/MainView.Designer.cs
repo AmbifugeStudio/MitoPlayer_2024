@@ -642,6 +642,7 @@ namespace MitoPlayer_2024
             // btnPlot
             // 
             this.btnPlot.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnPlot.Enabled = false;
             this.btnPlot.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnPlot.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.btnPlot.Location = new System.Drawing.Point(1753, 4);

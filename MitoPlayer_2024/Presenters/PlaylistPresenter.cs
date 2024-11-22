@@ -99,10 +99,46 @@ namespace MitoPlayer_2024.Presenters
 
             this.playlistView.OpenModelTrainerEvent += OpenModelTrainerEvent;
 
+            this.playlistView.LiveStreamAnimationEvent += LiveStreamAnimationEvent;
+            this.playlistView.LiveStreamAnimationSettingEvent += LiveStreamAnimationSettingEvent;
+
 
 
             //COVER BROWSER
             this.playlistView.LoadCoversEvent += LoadCoversEvent;
+        }
+
+        
+
+        private LiveStreamAnimationView liveStreamAnimationView { get; set; }
+        private LiveStreamAnimationPresenter liveStreamAnimationPresenter { get; set; }
+        private void LiveStreamAnimationEvent(object sender, EventArgs e)
+        {
+            if (this.liveStreamAnimationView == null || this.liveStreamAnimationView.IsDisposed)
+            {
+                this.liveStreamAnimationView = new LiveStreamAnimationView();
+                this.liveStreamAnimationPresenter = new LiveStreamAnimationPresenter(liveStreamAnimationView, this.mediaPlayerComponent, this.tagDao, this.trackDao, this.settingDao);
+                this.liveStreamAnimationView.Show();
+            }
+            else
+            {
+                bool isFormOpen = Application.OpenForms.OfType<LiveStreamAnimationView>().Any();
+                if (!isFormOpen)
+                {
+                    this.liveStreamAnimationView.BringToFront();
+                }
+            }
+        }
+
+        private void LiveStreamAnimationSettingEvent(object sender, EventArgs e)
+        {
+           /* LiveStreamAnimationSettingView liveStreamAnimationView = new LiveStreamAnimationSettingView();
+            LiveStreamAnimationSettingPresenter liveStreamAnimationPresenter = new LiveStreamAnimationSettingPresenter(liveStreamAnimationView, this.mediaPlayerComponent, this.tagDao, this.trackDao, this.settingDao);
+
+            if (liveStreamAnimationView.ShowDialog((LiveStreamAnimationSettingView)this.liveStreamAnimationView) == DialogResult.OK)
+            {
+
+            }*/
         }
 
         private void OpenModelTrainerEvent(object sender, EventArgs e)

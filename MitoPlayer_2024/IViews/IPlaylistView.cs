@@ -77,6 +77,9 @@ namespace MitoPlayer_2024.Views
         event EventHandler CreateModelEvent;
 
         event EventHandler OpenModelTrainerEvent;
+
+        event EventHandler LiveStreamAnimationEvent;
+        event EventHandler LiveStreamAnimationSettingEvent;
         void InitializeTagsAndTagValues(List<Tag> tagList, Dictionary<String, Dictionary<String, Color>> tagValueListList);
         void InitializePlaylistList(DataTableModel model);
         void ReloadPlaylistList(DataTableModel model);

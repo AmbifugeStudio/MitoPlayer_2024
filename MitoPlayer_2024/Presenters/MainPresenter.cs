@@ -148,6 +148,8 @@ namespace MitoPlayer_2024.Presenters
             }
         }
 
+        
+
         public void InitializeViewsAndPresenters()
         {
             this.playlistView = PlaylistView.GetInstance((MainView)this.mainView);

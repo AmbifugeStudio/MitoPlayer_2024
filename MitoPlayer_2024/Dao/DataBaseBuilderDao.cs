@@ -18,9 +18,7 @@ namespace MitoPlayer_2024.Helpers
 {
     public class DataBaseBuilderDao : BaseDao, IDataBaseBuilderDao
     {
-        public DataBaseBuilderDao()
-        {
-        }
+        public DataBaseBuilderDao() { }
         public DataBaseBuilderDao(String connectionString)
         {
             this.connectionString = connectionString;
@@ -94,6 +92,7 @@ namespace MitoPlayer_2024.Helpers
 
                 connection.Close();
             }
+
             return !String.IsNullOrEmpty(tableName);
         }
         public ResultOrError CreateDatabase(String preConnectionString)
@@ -206,7 +205,6 @@ namespace MitoPlayer_2024.Helpers
                 if (!this.TableIsExists(TableName.TrainingData.ToString()))
                     result = this.BuildTrainingModelTable();
             }
-
 
             return result;
         }

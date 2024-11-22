@@ -315,6 +315,7 @@ namespace MitoPlayer_2024.Views
             this.Controls.Add(this.btnClose);
             this.Name = "ChartView";
             this.Text = "ChartView";
+            this.TopMost = true;
             this.grbFeatures.ResumeLayout(false);
             this.grbFeatures.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTracklist)).EndInit();

@@ -101,6 +101,9 @@ namespace MitoPlayer_2024.Views
 
         public event EventHandler OpenModelTrainerEvent;
 
+        public event EventHandler LiveStreamAnimationEvent;
+        public event EventHandler LiveStreamAnimationSettingEvent;
+
         private int trackListLeftOffset = 190;
         private int trackListRightOffset = 285;
         private int tagValueEditorPanelBottomOffset = 25;
@@ -2552,6 +2555,16 @@ namespace MitoPlayer_2024.Views
             {
                 this.DetectKeyEvent?.Invoke(this, new Messenger() { Rows = this.dgvTrackList.Rows });
             }
+        }
+
+        private void btnLiveStreamAnimation_Click(object sender, EventArgs e)
+        {
+            this.LiveStreamAnimationEvent?.Invoke(this, new EventArgs());
+        }
+
+        private void btnLiveStreamAnimationSetting_Click(object sender, EventArgs e)
+        {
+            this.LiveStreamAnimationSettingEvent?.Invoke(this, new EventArgs());
         }
     }
 }

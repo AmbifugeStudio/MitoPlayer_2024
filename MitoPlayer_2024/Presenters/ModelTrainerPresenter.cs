@@ -1,10 +1,10 @@
-﻿using Accord;
-using Accord.Audio;
+﻿using Accord.Audio;
 using Accord.Math;
-using Accord.Math.Distances;
+using Accord.Statistics.Models.Markov;
+using Accord.Statistics.Models.Markov.Learning;
+using Accord.Statistics.Models.Markov.Topology;
+using Accord.Statistics.Distributions.Multivariate;
 using HDF.PInvoke;
-using MathNet.Numerics;
-using MathNet.Numerics.IntegralTransforms;
 using MathNet.Numerics.LinearAlgebra;
 using Microsoft.ML;
 using Microsoft.ML.Data;
@@ -12,39 +12,28 @@ using Microsoft.ML.Trainers;
 using MitoPlayer_2024.Helpers;
 using MitoPlayer_2024.Model;
 using MitoPlayer_2024.Models;
+using MitoPlayer_2024.Trainer;
 using MitoPlayer_2024.Views;
 using NAudio.Dsp;
 using NAudio.Wave;
-using Org.BouncyCastle.Asn1.X509;
-using Org.BouncyCastle.Bcpg.Sig;
-using Org.BouncyCastle.Pqc.Crypto.Lms;
+using OxyPlot;
+using OxyPlot.Axes;
+using OxyPlot.Series;
+using OxyPlot.WindowsForms;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static Google.Protobuf.Compiler.CodeGeneratorResponse.Types;
-using Accord.Math.Optimization.Losses;
-using MitoPlayer_2024.Trainer;
-using System.Runtime.InteropServices.ComTypes;
-using OxyPlot;
-using OxyPlot.Series;
-using OxyPlot.Axes;
-using OxyPlot.WindowsForms;
-using FlacLibSharp;
-using NAudio.Mixer;
-using NWaves.FeatureExtractors;
-using Mysqlx.Session;
-using NWaves.Transforms;
-using TagLib.Ogg.Codecs;
+using MathNet.Numerics.Distributions;
+using static MitoPlayer_2024.Presenters.ModelTrainerPresenter;
+using Accord.Statistics.Distributions.Fitting;
 
 
 namespace MitoPlayer_2024.Presenters
@@ -132,11 +121,14 @@ namespace MitoPlayer_2024.Presenters
             this.ConcBag.ItemAdded += ConcBag_ItemAdded;
 
             this.currentFeatureType = FeatureType.Empty;
+
+
+            this.InitializeTrainer();
+            
         }
 
         
 
-       
         private FeatureType currentFeatureType { get; set; }
         private void SetCurrentFeatureTypeEvent(object sender, Messenger e)
         {
@@ -155,6 +147,499 @@ namespace MitoPlayer_2024.Presenters
                 case "Pitch": currentFeatureType = FeatureType.Pitch; break;
             }
         }
+        // Step 1: Extract Chroma Features
+        /* var extractor = new ChromaFeatureExtractor();
+         float[][] chromaFeatures = extractor.ExtractChromaFeatures("path/to/your/audiofile.wav");
+
+         // Step 2: Train the HMM (with example training data)
+         var hmmKeyDetector = new HMMKeyDetector();
+         float[][] trainingData = ...; // Your training chroma features
+         int[] labels = ...; // Corresponding key labels as integers
+         hmmKeyDetector.Train(trainingData, labels);
+
+         // Step 3: Predict the Key
+         string detectedKey = hmmKeyDetector.Predict(chromaFeatures[0]); // Use the first frame as an example
+         Console.WriteLine($"Detected Key: {detectedKey}");
+         */
+
+
+        /*
+
+        // Step 2: Detect Key Using KeyDetector
+        var keyDetector = new KeyDetector();
+        foreach (var frame in chromaFeatures)
+        {
+            string detectedKey = keyDetector.DetectKey(frame);
+            Console.WriteLine($"Detected Key: {detectedKey}");
+        }
+
+        // Step 3: Train and Predict Using HMMKeyDetector
+        var hmmKeyDetector = new HMMKeyDetector();
+
+        // Example training data (you need to provide actual data)
+        float[][] trainingData = chromaFeatures; // Use extracted chroma features as training data
+
+        hmmKeyDetector.Train(trainingData);
+
+        // Predict the key of the chroma feature sequence
+        string predictedKey = hmmKeyDetector.Predict(chromaFeatures);
+        Console.WriteLine($"Predicted Key: {predictedKey}");*/
+
+
+        private ChromaFeatureExtractor chromaFeatureExtractor;
+        private KeyDetector keyDetector;
+        private HMMKeyDetector hmmKeyDetector;
+        private void InitializeTrainer()
+        {
+            chromaFeatureExtractor = new ChromaFeatureExtractor();
+            keyDetector = new KeyDetector();
+            hmmKeyDetector = new HMMKeyDetector();
+
+            //TODO
+            // Train the HMM with a diverse dataset
+           /* Dictionary<string, string> trainingData = new Dictionary<string, string>
+            {
+            { "path/to/song1.wav", "C Major" },
+            { "path/to/song2.wav", "G Minor" },
+            { "path/to/song3.wav", "A Major" }
+            };
+            TrainHMM(trainingData);
+
+            // Validate the model
+            Dictionary<string, string> validationData = new Dictionary<string, string>
+            {
+            { "path/to/song4.wav", "D Major" },
+            { "path/to/song5.wav", "E Minor" }
+            };
+            ValidateModel(validationData);*/
+        }
+
+        public void TrainHMM(Dictionary<string, string> trainingData)
+        {
+            List<float[][]> trainingChromaFeatures = new List<float[][]>();
+            List<int> labels = new List<int>();
+
+            foreach (var entry in trainingData)
+            {
+                var chromaFeatures = chromaFeatureExtractor.ExtractChromaFeatures(entry.Key);
+                trainingChromaFeatures.Add(chromaFeatures);
+
+                // Convert key label to state index
+                int label = KeyToStateIndex(entry.Value);
+                labels.Add(label);
+            }
+
+            // Flatten the list of chroma features for training
+            float[][] allChromaFeatures = trainingChromaFeatures.SelectMany(x => x).ToArray();
+            int[] allLabels = labels.ToArray();
+
+            hmmKeyDetector.Train(allChromaFeatures, allLabels);
+        }
+
+        public void ValidateModel(Dictionary<string, string> validationData)
+        {
+            int correctPredictions = 0;
+            int totalPredictions = validationData.Count;
+
+            foreach (var entry in validationData)
+            {
+                var chromaFeatures = chromaFeatureExtractor.ExtractChromaFeatures(entry.Key);
+                string predictedKey = hmmKeyDetector.DetectKey(chromaFeatures);
+                if (predictedKey == entry.Value)
+                {
+                    correctPredictions++;
+                }
+            }
+
+            double accuracy = (double)correctPredictions / totalPredictions;
+            Console.WriteLine($"Validation Accuracy: {accuracy * 100}%");
+        }
+
+        private int KeyToStateIndex(string key)
+        {
+            string[] majorKeys = { "C Major", "C# Major", "D Major", "D# Major", "E Major", "F Major", "F# Major", "G Major", "G# Major", "A Major", "A# Major", "B Major" };
+            string[] minorKeys = { "C Minor", "C# Minor", "D Minor", "D# Minor", "E Minor", "F Minor", "F# Minor", "G Minor", "G# Minor", "A Minor", "A# Minor", "B Minor" };
+
+            if (majorKeys.Contains(key))
+            {
+                return Array.IndexOf(majorKeys, key);
+            }
+            else
+            {
+                return Array.IndexOf(minorKeys, key) + 12;
+            }
+        }
+
+        public string DetectKey(string filePath)
+        {
+            var chromaFeatures = chromaFeatureExtractor.ExtractChromaFeatures(filePath);
+
+            // Use K-S algorithm
+            float[] averageChroma = new float[12];
+            foreach (var chroma in chromaFeatures)
+            {
+                for (int i = 0; i < chroma.Length; i++)
+                {
+                    averageChroma[i] += chroma[i];
+                }
+            }
+            for (int i = 0; i < averageChroma.Length; i++)
+            {
+                averageChroma[i] /= chromaFeatures.Length;
+            }
+
+            string ksKey = keyDetector.DetectKey(averageChroma);
+
+            // Use HMM
+            string hmmKey = hmmKeyDetector.DetectKey(chromaFeatures);
+
+            // Combine results or choose one based on your preference
+            return $"K-S Detected Key: {ksKey}, HMM Detected Key: {hmmKey}";
+        }
+    
+
+    public void AddTrack(string filePath, string tagValue, CancellationToken cancellationToken)
+        {
+            string detectedKey = DetectKey("path/to/new_song.wav");
+            Console.WriteLine(detectedKey);
+        }
+        public class ChromaFeatureExtractor
+        {
+            public float[][] ExtractChromaFeatures(string filePath)
+            {
+                using (var reader = new AudioFileReader(filePath))
+                {
+                    int sampleRate = reader.WaveFormat.SampleRate;
+                    int channels = reader.WaveFormat.Channels;
+                    var buffer = new float[sampleRate * channels];
+                    int samplesRead = reader.Read(buffer, 0, buffer.Length);
+
+                    // Convert to mono
+                    float[] monoBuffer = new float[samplesRead / channels];
+                    for (int i = 0; i < samplesRead; i += channels)
+                    {
+                        monoBuffer[i / channels] = buffer[i];
+                    }
+
+                    // Frame the signal
+                    int frameSize = 2048;
+                    int hopSize = frameSize / 2;
+                    int numFrames = (monoBuffer.Length - frameSize) / hopSize + 1;
+                    float[][] chromaFeatures = new float[numFrames][];
+
+                    for (int frame = 0; frame < numFrames; frame++)
+                    {
+                        float[] windowedFrame = new float[frameSize];
+                        Array.Copy(monoBuffer, frame * hopSize, windowedFrame, 0, frameSize);
+
+                        // Apply Hann window
+                        for (int i = 0; i < frameSize; i++)
+                        {
+                            windowedFrame[i] = (float)(0.5 - 0.5 * Math.Cos(2 * Math.PI * i / (frameSize - 1)));
+                        }
+
+                        // Compute STFT
+                        Complex[] complexSpectrum = windowedFrame.Select(v => new Complex { X = v, Y = 0 }).ToArray();
+                        FastFourierTransform.FFT(true, (int)Math.Log(frameSize, 2.0), complexSpectrum);
+
+                        // Calculate chroma vector
+                        float[] chromaVector = new float[12];
+                        for (int i = 0; i < complexSpectrum.Length / 2; i++)
+                        {
+                            double frequency = i * sampleRate / frameSize;
+                            if (frequency > 0)
+                            {
+                                int pitchClass = (int)Math.Round(12 * Math.Log(frequency / 440.0, 2)) % 12;
+                                if (pitchClass < 0) pitchClass += 12; // Ensure pitch class is between 0 and 11
+                                chromaVector[pitchClass] += (float)Math.Sqrt(complexSpectrum[i].X * complexSpectrum[i].X + complexSpectrum[i].Y * complexSpectrum[i].Y);
+                            }
+                        }
+
+                        // Normalize chroma vector
+                        float max = chromaVector.Max();
+                        if (max > 0)
+                        {
+                            for (int i = 0; i < chromaVector.Length; i++)
+                            {
+                                chromaVector[i] /= max;
+                            }
+                        }
+
+                        chromaFeatures[frame] = chromaVector;
+                    }
+
+                    return chromaFeatures;
+                }
+            }
+        }
+        public class KeyDetector
+        {
+            private readonly float[][] majorTemplates;
+            private readonly float[][] minorTemplates;
+
+            public KeyDetector()
+            {
+                // Initialize K-S templates for major and minor keys
+                majorTemplates = new float[12][];
+                minorTemplates = new float[12][];
+
+                // K-S profile values for major keys (C, C#, D, D#, E, F, F#, G, G#, A, A#, B)
+                float[] majorProfile = { 6.35f, 2.23f, 3.48f, 2.33f, 4.38f, 4.09f, 2.52f, 5.19f, 2.39f, 3.66f, 2.29f, 2.88f };
+
+                // K-S profile values for minor keys (C, C#, D, D#, E, F, F#, G, G#, A, A#, B)
+                float[] minorProfile = { 6.33f, 2.68f, 3.52f, 5.38f, 2.60f, 3.53f, 2.54f, 4.75f, 3.98f, 2.69f, 3.34f, 3.17f };
+
+                for (int i = 0; i < 12; i++)
+                {
+                    majorTemplates[i] = RotateArray(majorProfile, i);
+                    minorTemplates[i] = RotateArray(minorProfile, i);
+                }
+            }
+            private float[] RotateArray(float[] array, int shift)
+            {
+                float[] rotated = new float[array.Length];
+                for (int i = 0; i < array.Length; i++)
+                {
+                    rotated[i] = array[(i + shift) % array.Length];
+                }
+                return rotated;
+            }
+
+            public string DetectKey(float[] chromaFeatures)
+            {
+                float maxCorrelation = float.MinValue;
+                string detectedKey = "Unknown";
+
+                for (int i = 0; i < 12; i++)
+                {
+                    float majorCorrelation = Correlate(chromaFeatures, majorTemplates[i]);
+                    float minorCorrelation = Correlate(chromaFeatures, minorTemplates[i]);
+
+                    if (majorCorrelation > maxCorrelation)
+                    {
+                        maxCorrelation = majorCorrelation;
+                        detectedKey = $"{GetNoteName(i)} Major";
+                    }
+
+                    if (minorCorrelation > maxCorrelation)
+                    {
+                        maxCorrelation = minorCorrelation;
+                        detectedKey = $"{GetNoteName(i)} Minor";
+                    }
+                }
+
+                return detectedKey;
+            }
+            private float Correlate(float[] chroma, float[] template)
+            {
+                float sum = 0;
+                for (int i = 0; i < chroma.Length; i++)
+                {
+                    sum += chroma[i] * template[i];
+                }
+                return sum + 1e-10f; // Add a small epsilon value
+            }
+
+
+            private string GetNoteName(int index)
+            {
+                string[] noteNames = { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
+                return noteNames[index];
+            }
+        }
+        public class HMMKeyDetector
+        {
+            private HiddenMarkovModel<MultivariateNormalDistribution, double[]> hmm;
+
+            public HMMKeyDetector()
+            {
+                // Define the number of states (keys) and the dimensionality of the observations (chroma features)
+                int numberOfStates = 24; // 12 major + 12 minor keys
+                int observationDimension = 12; // Chroma features
+
+                // Initialize the HMM with multivariate normal distributions
+                hmm = new HiddenMarkovModel<MultivariateNormalDistribution, double[]>(numberOfStates, new MultivariateNormalDistribution(observationDimension));
+            }
+
+            public void Train(float[][] chromaFeatures, int[] labels)
+            {
+                // Convert float[][] to double[][]
+                double[][] observations = chromaFeatures.Select(f => f.Select(v => (double)v).ToArray()).ToArray();
+
+                // Create a sequence of observations for training
+                double[][][] sequences = new double[1][][];
+                sequences[0] = observations;
+
+                // Set up the fitting options with regularization
+                var fittingOptions = new NormalOptions
+                {
+                    Regularization = 1e-5 // Add a small regularization constant
+                };
+
+                // Train the HMM using the Baum-Welch algorithm with fitting options
+                var teacher = new BaumWelchLearning<MultivariateNormalDistribution, double[]>(hmm)
+                {
+                    Tolerance = 0.01,
+                    MaxIterations = 100, // Set a reasonable number of iterations
+                    FittingOptions = fittingOptions // Apply the fitting options
+                };
+
+                // Train the model
+                hmm = teacher.Learn(sequences);
+
+                // Log the likelihood of the sequences
+                double logLikelihood = hmm.LogLikelihood(sequences[0]);
+                Console.WriteLine($"Log Likelihood: {logLikelihood}");
+            }
+
+
+            public string DetectKey(float[][] chromaFeatures)
+            {
+                // Convert float[][] to double[][]
+                double[][] observations = chromaFeatures.Select(f => f.Select(v => (double)v).ToArray()).ToArray();
+
+                // Use the Viterbi algorithm to find the most likely sequence of states
+                int[] path = hmm.Decode(observations);
+
+                // Determine the most frequent state key in the path
+                int mostLikelyState = path.GroupBy(p => p).OrderByDescending(g => g.Count()).First().Key;
+
+                // Map the state to a key name
+                string detectedKey = GetKeyName(mostLikelyState);
+
+                return detectedKey;
+            }
+
+            private string GetKeyName(int state)
+            {
+                string[] majorKeys = { "C Major", "C# Major", "D Major", "D# Major", "E Major", "F Major", "F# Major", "G Major", "G# Major", "A Major", "A# Major", "B Major" };
+                string[] minorKeys = { "C Minor", "C# Minor", "D Minor", "D# Minor", "E Minor", "F Minor", "F# Minor", "G Minor", "G# Minor", "A Minor", "A# Minor", "B Minor" };
+
+                if (state < 12)
+                {
+                    return majorKeys[state];
+                }
+                else
+                {
+                    return minorKeys[state - 12];
+                }
+            }
+        }
+
+
+      /*  public class HMMKeyDetector
+        {
+            private HiddenMarkovModel<MultivariateNormalDistribution, double[]> hmm;
+
+            public HMMKeyDetector()
+            {
+                // Initialize HMM with appropriate states and topology
+                hmm = new HiddenMarkovModel<MultivariateNormalDistribution, double[]>(new Ergodic(24), new MultivariateNormalDistribution(12));
+            }
+
+            public void Train(float[][] trainingData, int[] labels)
+            {
+                var teacher = new BaumWelchLearning<MultivariateNormalDistribution, double[]>(hmm)
+                {
+                    Tolerance = 0.01,
+                    MaxIterations = 100 // Set a reasonable number of iterations
+                };
+
+                // Convert trainingData to sequences of observations
+                double[][][] sequences = trainingData.Select(data => data.Select(d => new double[] { d }).ToArray()).ToArray();
+
+                // Flatten state sequences
+                double[] stateSequences = labels.SelectMany(label => Enumerable.Repeat((double)label, sequences[0].Length)).ToArray();
+
+                // Train the HMM
+                teacher.Learn(sequences, stateSequences);
+            }
+
+            public string Predict(float[] chromaFeatures)
+            {
+                // Convert chromaFeatures to sequence of observations
+                double[][] observations = chromaFeatures.Select(f => new double[] { f }).ToArray();
+
+                // Use the Decide method
+                int[] predictedStates = hmm.Decide(observations);
+
+                // Get the most frequent state
+                int predictedState = predictedStates.GroupBy(x => x).OrderByDescending(g => g.Count()).First().Key;
+                return GetNoteName(predictedState);
+            }
+
+            private string GetNoteName(int index)
+            {
+                string[] noteNames = { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
+                if (index < 12)
+                {
+                    return noteNames[index] + " Major";
+                }
+                else
+                {
+                    return noteNames[index - 12] + " Minor";
+                }
+            }
+        }
+
+        */
+        /*  public class HMMKeyDetector
+          {
+              private HiddenMarkovModel hmm;
+
+              public HMMKeyDetector()
+              {
+                  // Initialize HMM with appropriate states and topology
+                  hmm = new HiddenMarkovModel(new Forward(12), 12);
+              }
+
+              public void Train(float[][] trainingData, int[] labels)
+              {
+                  // Convert float[][] to int[][]
+                  int[][] intTrainingData = trainingData.Select(seq => seq.Select(f => (int)f).ToArray()).ToArray();
+
+                  var teacher = new BaumWelchLearning(hmm)
+                  {
+                      Tolerance = 0.01,
+                      MaxIterations = 0
+                  };
+                  teacher.Learn(intTrainingData);
+              }
+
+              public string Predict(float[][] chromaFeatures)
+              {
+                  // Convert float[][] to int[][]
+                  int[][] intChromaFeatures = chromaFeatures.Select(seq => seq.Select(f => (int)f).ToArray()).ToArray();
+
+                  int[] predictedStates = hmm.Decide(intChromaFeatures);
+                  int predictedState = predictedStates.Last(); // Get the last predicted state
+                  return GetNoteName(predictedState);
+              }
+
+              private string GetNoteName(int index)
+              {
+                  string[] noteNames = { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
+                  return noteNames[index];
+              }
+          }
+          */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         private void AnalyseTrackEvent(object sender, Messenger e)
         {
             this.currentTrack = this.trackDao.GetTrackWithTags(e.IntegerField1, this.tagList);
@@ -1506,7 +1991,8 @@ namespace MitoPlayer_2024.Presenters
 
                             ConcurrentBag<Track> concurrentTracks = new ConcurrentBag<Track>(batch);
 
-                            Parallel.ForEach(concurrentTracks, parallelOptions, track =>
+                            //Parallel.ForEach(concurrentTracks, parallelOptions, track =>
+                            foreach (var track in concurrentTracks)
                             {
                                 if (cancellationToken.IsCancellationRequested)
                                 {
@@ -1543,7 +2029,8 @@ namespace MitoPlayer_2024.Presenters
                                         });
                                     }
                                 }
-                            });
+                            }
+                           // });
 
                             if (cancellationToken.IsCancellationRequested)
                             {
@@ -1673,14 +2160,45 @@ namespace MitoPlayer_2024.Presenters
             public String Key { get; set; }
             public float[] Features { get; set; }
         }
-        public void AddTrack(string filePath, string tagValue, CancellationToken cancellationToken)
-        {
-            //TODO VISSZARAKNI? EZ MOST CSAK TESZT
-            // var features = ExtractFeatures(filePath, cancellationToken);
-            // tracks.Add(new TrackForTraining { Path = filePath, Key = tagValue, Features = features });
 
-            this.DetectSongKey(filePath);
-        }
+
+        
+
+        //public void AddTrack(string filePath, string tagValue, CancellationToken cancellationToken)
+        //{
+        //    //TODO VISSZARAKNI? EZ MOST CSAK TESZT
+        //    // var features = ExtractFeatures(filePath, cancellationToken);
+        //    // tracks.Add(new TrackForTraining { Path = filePath, Key = tagValue, Features = features });
+
+        //    //this.DetectSongKey(filePath);
+
+        //    // Step 1: Extract Chroma Features
+        //    var chromaExtractor = new ChromaFeatureExtractor();
+        //    float[][] chromaFeatures = chromaExtractor.ExtractChromaFeatures(filePath);
+
+        //    // Step 2: Detect Key Using KeyDetector
+        //    var keyDetector = new KeyDetector();
+        //    foreach (var frame in chromaFeatures)
+        //    {
+        //        string detectedKey = keyDetector.DetectKey(frame);
+        //        Console.WriteLine($"Detected Key: {detectedKey}");
+        //    }
+
+        //    // Step 3: Train and Predict Using HMMKeyDetector
+        //    var hmmKeyDetector = new HMMKeyDetector();
+
+        //    // Example training data (you need to provide actual data)
+        //    float[][] trainingData = chromaFeatures; // Use extracted chroma features as training data
+
+        //    hmmKeyDetector.Train(trainingData);
+
+        //    // Predict the key of the chroma feature sequence
+        //    string predictedKey = hmmKeyDetector.Predict(chromaFeatures);
+        //    Console.WriteLine($"Predicted Key: {predictedKey}");
+
+        //}
+
+
 
 
         private const int intervalSeconds = 2;
