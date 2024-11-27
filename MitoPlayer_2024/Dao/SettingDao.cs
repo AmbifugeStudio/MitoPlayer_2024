@@ -218,6 +218,8 @@ namespace MitoPlayer_2024.Dao
                 this.InitializeIntegerSetting(Settings.TrainingModelBatchCount.ToString());
             if (result.Success)
                 this.InitializeBooleanSetting(Settings.IsTracklistDetailsDisplayed.ToString());
+            if (result.Success)
+                this.InitializeBooleanSetting(Settings.IsCoverImageComponentDisplayed.ToString());
 
             return result;
         }

@@ -69,14 +69,16 @@ namespace MitoPlayer_2024.Dao
                                         @Name, 
                                         @TextColoring,
                                         @HasMultipleValues,
-                                        @Integrated,
+                                        @IsIntegrated,
+                                        @OrderInList,
                                         @ProfileId)";
 
                 command.Parameters.Add("@Id", MySqlDbType.Int32).Value = tag.Id;
                 command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = tag.Name;
                 command.Parameters.Add("@TextColoring", MySqlDbType.Bit).Value = tag.TextColoring;
                 command.Parameters.Add("@HasMultipleValues", MySqlDbType.Bit).Value = tag.HasMultipleValues;
-                command.Parameters.Add("@Integrated", MySqlDbType.Bit).Value = tag.Integrated;
+                command.Parameters.Add("@IsIntegrated", MySqlDbType.Bit).Value = tag.IsIntegrated;
+                command.Parameters.Add("@OrderInList", MySqlDbType.Int32).Value = tag.OrderInList;
                 command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
 
                 try
@@ -117,8 +119,9 @@ namespace MitoPlayer_2024.Dao
                         tag.Name = (string)reader[1];
                         tag.TextColoring = Convert.ToBoolean(reader[2]);
                         tag.HasMultipleValues = Convert.ToBoolean(reader[3]);
-                        tag.Integrated = Convert.ToBoolean(reader[4]);
-                        tag.ProfileId = (int)reader[5];
+                        tag.IsIntegrated = Convert.ToBoolean(reader[4]);
+                        tag.OrderInList = Convert.ToInt32(reader[5]);
+                        tag.ProfileId = (int)reader[6];
                         break;
                     }
                 }
@@ -150,8 +153,9 @@ namespace MitoPlayer_2024.Dao
                         tag.Name = (string)reader[1];
                         tag.TextColoring = Convert.ToBoolean(reader[2]);
                         tag.HasMultipleValues = Convert.ToBoolean(reader[3]);
-                        tag.Integrated = Convert.ToBoolean(reader[4]);
-                        tag.ProfileId = (int)reader[5];
+                        tag.IsIntegrated = Convert.ToBoolean(reader[4]);
+                        tag.OrderInList = Convert.ToInt32(reader[5]);
+                        tag.ProfileId = (int)reader[6];
                         break;
                     }
                 }
@@ -184,8 +188,9 @@ namespace MitoPlayer_2024.Dao
                         tag.Name = (string)reader[1];
                         tag.TextColoring = Convert.ToBoolean(reader[2]);
                         tag.HasMultipleValues = Convert.ToBoolean(reader[3]);
-                        tag.Integrated = Convert.ToBoolean(reader[4]);
-                        tag.ProfileId = (int)reader[5];
+                        tag.IsIntegrated = Convert.ToBoolean(reader[4]);
+                        tag.OrderInList = Convert.ToInt32(reader[5]);
+                        tag.ProfileId = (int)reader[6];
                         tagList.Add(tag);
                     }
                 }
@@ -203,7 +208,11 @@ namespace MitoPlayer_2024.Dao
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
                 command.CommandText = @"UPDATE Tag 
-                                        SET Name = @Name, TextColoring = @TextColoring, HasMultipleValues = @HasMultipleValues, Integrated = @Integrated 
+                                        SET Name = @Name, 
+                                        TextColoring = @TextColoring, 
+                                        HasMultipleValues = @HasMultipleValues, 
+                                        IsIntegrated = @IsIntegrated, 
+                                        OrderInList = @OrderInList 
                                         WHERE Id = @Id 
                                         AND ProfileId = @ProfileId";
                 
@@ -211,7 +220,8 @@ namespace MitoPlayer_2024.Dao
                 command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = tag.Name;
                 command.Parameters.Add("@TextColoring", MySqlDbType.Bit).Value = tag.TextColoring;
                 command.Parameters.Add("@HasMultipleValues", MySqlDbType.Bit).Value = tag.HasMultipleValues;
-                command.Parameters.Add("@Integrated", MySqlDbType.Bit).Value = tag.Integrated;
+                command.Parameters.Add("@IsIntegrated", MySqlDbType.Bit).Value = tag.IsIntegrated;
+                command.Parameters.Add("@OrderInList", MySqlDbType.Int32).Value = tag.OrderInList;
                 command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
                 
                 try

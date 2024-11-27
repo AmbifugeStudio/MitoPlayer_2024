@@ -38,7 +38,7 @@ namespace MitoPlayer_2024.Presenters
             this.oldTagValue = null;
 
             this.tagValueName = "New Tag Value " + this.settingDao.GetNextId(TableName.TagValue.ToString());
-            this.tagValueColor = Color.White;
+            this.tagValueColor = HexToColor("#FFFFFF");
             this.tagValueHotkey = 0;
             ((TagValueEditorView)this.view).SetTagValueName(this.tagValueName);
             ((TagValueEditorView)this.view).SetColor(this.tagValueColor);
@@ -50,7 +50,10 @@ namespace MitoPlayer_2024.Presenters
             this.view.CloseWithOk += CloseWithOk;
             this.view.CloseWithCancel += CloseWithCancel;
         }
-
+        private Color HexToColor(string hexValue)
+        {
+            return System.Drawing.ColorTranslator.FromHtml(hexValue);
+        }
         public TagValueEditorPresenter(ITagValueEditorView tagValueEditorView, Tag tag, ITagDao tagDao, ISettingDao settingDao, TagValue tagValue)
         {
             this.view = tagValueEditorView;
@@ -171,6 +174,7 @@ namespace MitoPlayer_2024.Presenters
                 }
                 else
                 {
+                    
                     this.newTagValue.Name = this.tagValueName;
                     this.newTagValue.Color = this.tagValueColor;
                     this.newTagValue.Hotkey = this.tagValueHotkey;

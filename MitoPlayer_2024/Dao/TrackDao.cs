@@ -2,6 +2,7 @@
 using MitoPlayer_2024.Model;
 using MitoPlayer_2024.Models;
 using MySql.Data.MySqlClient;
+using NWaves.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -452,6 +453,7 @@ namespace MitoPlayer_2024.Dao
                                         @Album, 
                                         @Year, 
                                         @Length, 
+                                        @Comment, 
                                         @ProfileId)";
 
                 command.Parameters.Add("@Id", MySqlDbType.Int32).Value = track.Id;
@@ -462,6 +464,7 @@ namespace MitoPlayer_2024.Dao
                 command.Parameters.Add("@Album", MySqlDbType.VarChar).Value = track.Album;
                 command.Parameters.Add("@Year", MySqlDbType.Int32).Value = track.Year;
                 command.Parameters.Add("@Length", MySqlDbType.Int32).Value = track.Length;
+                command.Parameters.Add("@Comment", MySqlDbType.VarChar).Value = track.Comment;
                 command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
 
                 try
@@ -497,6 +500,7 @@ namespace MitoPlayer_2024.Dao
                                     tra.Album, 
                                     tra.Year, 
                                     tra.Length, 
+                                    tra.Comment, 
                                     tra.ProfileId AS TrackProfileId,
                                     ttv.Id AS TagValueId, 
                                     ttv.TagId, 
@@ -534,24 +538,25 @@ namespace MitoPlayer_2024.Dao
                                 Album = reader.IsDBNull(5) ? "" : reader.GetString(5),
                                 Year = reader.GetInt32(6),
                                 Length = reader.GetInt32(7),
-                                ProfileId = reader.GetInt32(8),
+                                Comment = reader.IsDBNull(8) ? "" : reader.GetString(8), 
+                                ProfileId = reader.GetInt32(9),
                                 TrackTagValues = new List<TrackTagValue>()
                             };
                         }
 
-                        if (!reader.IsDBNull(9))
+                        if (!reader.IsDBNull(10))
                         {
                             var tagValue = new TrackTagValue
                             {
-                                Id = reader.GetInt32(9),
+                                Id = reader.GetInt32(10),
                                 TrackId = reader.GetInt32(0),
-                                TagId = reader.GetInt32(10),
-                                TagValueId = reader.IsDBNull(11) ? (int?)null : reader.GetInt32(11),
-                                HasMultipleValues = reader.GetBoolean(12),
-                                Value = reader.IsDBNull(13) ? "" : reader.GetString(13),
-                                TagName = reader.IsDBNull(14) ? "" : reader.GetString(14),
-                                TagValueName = reader.IsDBNull(15) ? "" : reader.GetString(15),
-                                ProfileId = reader.GetInt32(16)
+                                TagId = reader.GetInt32(11),
+                                TagValueId = reader.IsDBNull(12) ? (int?)null : reader.GetInt32(12),
+                                HasMultipleValues = reader.GetBoolean(13),
+                                Value = reader.IsDBNull(14) ? "" : reader.GetString(14),
+                                TagName = reader.IsDBNull(15) ? "" : reader.GetString(15),
+                                TagValueName = reader.IsDBNull(16) ? "" : reader.GetString(16),
+                                ProfileId = reader.GetInt32(17)
                             };
                             track.TrackTagValues.Add(tagValue);
                         }
@@ -583,6 +588,7 @@ namespace MitoPlayer_2024.Dao
                                         tra.Album, 
                                         tra.Year, 
                                         tra.Length, 
+                                        tra.Comment, 
                                         tra.ProfileId AS TrackProfileId,
                                         ttv.Id AS TagValueId, 
                                         ttv.TagId, 
@@ -620,24 +626,25 @@ namespace MitoPlayer_2024.Dao
                                 Album = reader.IsDBNull(5) ? "" : reader.GetString(5),
                                 Year = reader.GetInt32(6),
                                 Length = reader.GetInt32(7),
-                                ProfileId = reader.GetInt32(8),
+                                Comment = reader.IsDBNull(8) ? "" : reader.GetString(8), 
+                                ProfileId = reader.GetInt32(9),
                                 TrackTagValues = new List<TrackTagValue>()
                             };
                         }
 
-                        if (!reader.IsDBNull(9))
+                        if (!reader.IsDBNull(10))
                         {
                             var tagValue = new TrackTagValue
                             {
-                                Id = reader.GetInt32(9),
+                                Id = reader.GetInt32(10),
                                 TrackId = reader.GetInt32(0),
-                                TagId = reader.GetInt32(10),
-                                TagValueId = reader.IsDBNull(11) ? (int?) null : reader.GetInt32(11),
-                                HasMultipleValues = reader.GetBoolean(12),
-                                Value = reader.IsDBNull(13) ? "" : reader.GetString(13),
-                                TagName = reader.IsDBNull(14) ? "" : reader.GetString(14),
-                                TagValueName = reader.IsDBNull(15) ? "" : reader.GetString(15),
-                                ProfileId = reader.GetInt32(16)
+                                TagId = reader.GetInt32(11),
+                                TagValueId = reader.IsDBNull(12) ? (int?) null : reader.GetInt32(12),
+                                HasMultipleValues = reader.GetBoolean(13),
+                                Value = reader.IsDBNull(14) ? "" : reader.GetString(14),
+                                TagName = reader.IsDBNull(15) ? "" : reader.GetString(15),
+                                TagValueName = reader.IsDBNull(16) ? "" : reader.GetString(16),
+                                ProfileId = reader.GetInt32(17)
                             };
                             track.TrackTagValues.Add(tagValue);
                         }
@@ -670,6 +677,7 @@ namespace MitoPlayer_2024.Dao
                                         tra.Album, 
                                         tra.Year, 
                                         tra.Length, 
+                                        tra.Comment, 
                                         plc.OrderInList, 
                                         plc.TrackIdInPlaylist, 
                                         plc.ProfileId AS TrackProfileId,
@@ -717,31 +725,32 @@ namespace MitoPlayer_2024.Dao
                                 Album = reader.IsDBNull(5) ? "" : reader.GetString(5),
                                 Year = reader.GetInt32(6),
                                 Length = reader.GetInt32(7),
-                                OrderInList = reader.GetInt32(8),
-                                TrackIdInPlaylist = reader.GetInt32(9),
-                                ProfileId = reader.GetInt32(10),
+                                Comment = reader.IsDBNull(8) ? "" : reader.GetString(8), 
+                                OrderInList = reader.GetInt32(9),
+                                TrackIdInPlaylist = reader.GetInt32(10),
+                                ProfileId = reader.GetInt32(11),
                                 TrackTagValues = new List<TrackTagValue>()
                             };
                             trackList.Add(track);
                             trackDictionary[trackId] = track;
                         }
 
-                        if (!reader.IsDBNull(11))
+                        if (!reader.IsDBNull(12))
                         {
                             var tagValue = new TrackTagValue
                             {
-                                Id = reader.GetInt32(11),
+                                Id = reader.GetInt32(12),
                                 TrackId = trackId,
-                                TagId = reader.GetInt32(12),
+                                TagId = reader.GetInt32(13),
 
 
-                                TagValueId = reader.IsDBNull(13) ? (int?)null : reader.GetInt32(13),
-                                HasMultipleValues = reader.GetBoolean(14),
-                                Value = reader.IsDBNull(15) ? "" : reader.GetString(15),
-                                TagName = reader.IsDBNull(16) ? "" : reader.GetString(16),
-                                TagValueName = reader.IsDBNull(17) ? "" : reader.GetString(17),
+                                TagValueId = reader.IsDBNull(14) ? (int?)null : reader.GetInt32(14),
+                                HasMultipleValues = reader.GetBoolean(15),
+                                Value = reader.IsDBNull(16) ? "" : reader.GetString(16),
+                                TagName = reader.IsDBNull(17) ? "" : reader.GetString(17),
+                                TagValueName = reader.IsDBNull(18) ? "" : reader.GetString(18),
 
-                                ProfileId = reader.GetInt32(18)
+                                ProfileId = reader.GetInt32(19)
                             };
                             track.TrackTagValues.Add(tagValue);
                         }
@@ -778,6 +787,47 @@ namespace MitoPlayer_2024.Dao
                 connection.Close();
             }
             return trackIdList;
+        }
+        public void UpdateTrack(Track track)
+        {
+            using (var connection = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand())
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.CommandText = @"UPDATE Track SET 
+                                        Path = @Path, 
+                                        FileName = @FileName, 
+                                        Artist = @Artist, 
+                                        Title = @Title, 
+                                        Album = @Album, 
+                                        Year = @Year, 
+                                        Length = @Length, 
+                                        Comment = @Comment 
+                                        WHERE Id = @Id 
+                                        AND ProfileId = @ProfileId; ";
+
+                command.Parameters.Add("@Id", MySqlDbType.Int32).Value = track.Id;
+                command.Parameters.Add("@Path", MySqlDbType.VarChar).Value = track.Path;
+                command.Parameters.Add("@FileName", MySqlDbType.VarChar).Value = track.FileName;
+                command.Parameters.Add("@Artist", MySqlDbType.VarChar).Value = track.Artist;
+                command.Parameters.Add("@Title", MySqlDbType.VarChar).Value = track.Title;
+                command.Parameters.Add("@Album", MySqlDbType.VarChar).Value = track.Album;
+                command.Parameters.Add("@Year", MySqlDbType.Int32).Value = track.Year;
+                command.Parameters.Add("@Length", MySqlDbType.Int32).Value = track.Length;
+                command.Parameters.Add("@Comment", MySqlDbType.VarChar).Value = track.Comment;
+                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
+
+                try
+                {
+                    command.ExecuteNonQuery();
+                }
+                catch (MySqlException ex)
+                {
+                    MessageBox.Show("Track is not updated. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                connection.Close();
+            }
         }
         public void DeleteAllTrack()
         {

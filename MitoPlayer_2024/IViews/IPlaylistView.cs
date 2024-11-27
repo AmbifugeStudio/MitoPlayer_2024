@@ -17,12 +17,12 @@ namespace MitoPlayer_2024.Views
 {
     public interface IPlaylistView
     {
-
         //PLAYER
         event EventHandler<Messenger> SetCurrentTrackEvent;
         event EventHandler<Messenger> PlayTrackEvent;
         event EventHandler PauseTrackEvent;
         event EventHandler StopTrackEvent;
+        event EventHandler CopyCurrentPlayingTrackToDefaultPlaylistEvent;
         event EventHandler<Messenger> PrevTrackEvent;
         event EventHandler<Messenger> NextTrackEvent;
         event EventHandler RandomTrackEvent;
@@ -41,6 +41,9 @@ namespace MitoPlayer_2024.Views
         event EventHandler ScanKeyAndBpmEvent;
 
         event EventHandler<Messenger> MoveTracklistRowsEvent;
+
+        event EventHandler JumpBackwardEvent;
+         event EventHandler JumpForwardEvent;
 
         //PLAYLIST
         event EventHandler<Messenger> CreatePlaylist;
@@ -80,6 +83,8 @@ namespace MitoPlayer_2024.Views
 
         event EventHandler LiveStreamAnimationEvent;
         event EventHandler LiveStreamAnimationSettingEvent;
+        event EventHandler DisplayCoverImageComponentEvent;
+
         void InitializeTagsAndTagValues(List<Tag> tagList, Dictionary<String, Dictionary<String, Color>> tagValueListList);
         void InitializePlaylistList(DataTableModel model);
         void ReloadPlaylistList(DataTableModel model);

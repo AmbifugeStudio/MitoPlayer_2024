@@ -90,12 +90,10 @@ namespace MitoPlayer_2024
             this.mediaPlayer = new AxWMPLib.AxWindowsMediaPlayer();
             this.pnlMediaPlayer = new System.Windows.Forms.Panel();
             this.btnPlot = new System.Windows.Forms.Button();
-            this.prbVolume = new MitoPlayer_2024.Helpers.CustomProgressBar();
             this.lblCurrentTrack = new System.Windows.Forms.Label();
             this.lblTrackEnd = new System.Windows.Forms.Label();
             this.btnOpenDirectory = new System.Windows.Forms.Button();
             this.btnOpen = new System.Windows.Forms.Button();
-            this.prbTrackProgress = new MitoPlayer_2024.Helpers.CustomProgressBar();
             this.chbMute = new System.Windows.Forms.CheckBox();
             this.chbPreview = new System.Windows.Forms.CheckBox();
             this.chbShuffle = new System.Windows.Forms.CheckBox();
@@ -110,6 +108,8 @@ namespace MitoPlayer_2024
             this.pnlMarkerBackground = new System.Windows.Forms.Panel();
             this.pcbMarkerGrey = new System.Windows.Forms.PictureBox();
             this.pcbMarkerRed = new System.Windows.Forms.PictureBox();
+            this.prbVolume = new MitoPlayer_2024.Helpers.CustomProgressBar();
+            this.prbTrackProgress = new MitoPlayer_2024.Helpers.CustomProgressBar();
             this.strMenu.SuspendLayout();
             this.pnlMainMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pcbMasterPeakRightBackground)).BeginInit();
@@ -162,104 +162,104 @@ namespace MitoPlayer_2024
             // menuStripProfile
             // 
             this.menuStripProfile.Name = "menuStripProfile";
-            this.menuStripProfile.Size = new System.Drawing.Size(172, 22);
+            this.menuStripProfile.Size = new System.Drawing.Size(180, 22);
             this.menuStripProfile.Text = "Select profile";
             this.menuStripProfile.Click += new System.EventHandler(this.menuStripProfile_Click);
             // 
             // toolStripSeparator7
             // 
             this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(169, 6);
+            this.toolStripSeparator7.Size = new System.Drawing.Size(177, 6);
             // 
             // menuStripOpenFiles
             // 
             this.menuStripOpenFiles.Name = "menuStripOpenFiles";
-            this.menuStripOpenFiles.Size = new System.Drawing.Size(172, 22);
+            this.menuStripOpenFiles.Size = new System.Drawing.Size(180, 22);
             this.menuStripOpenFiles.Text = "Add files...";
             this.menuStripOpenFiles.Click += new System.EventHandler(this.menuStripOpenFiles_Click);
             // 
             // menuStripOpenDirectories
             // 
             this.menuStripOpenDirectories.Name = "menuStripOpenDirectories";
-            this.menuStripOpenDirectories.Size = new System.Drawing.Size(172, 22);
+            this.menuStripOpenDirectories.Size = new System.Drawing.Size(180, 22);
             this.menuStripOpenDirectories.Text = "Add folder...";
             this.menuStripOpenDirectories.Click += new System.EventHandler(this.menuStripOpenDirectory_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(169, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
             // 
             // menuStripCreatePlaylist
             // 
             this.menuStripCreatePlaylist.Name = "menuStripCreatePlaylist";
-            this.menuStripCreatePlaylist.Size = new System.Drawing.Size(172, 22);
+            this.menuStripCreatePlaylist.Size = new System.Drawing.Size(180, 22);
             this.menuStripCreatePlaylist.Text = "New playlist";
             this.menuStripCreatePlaylist.Click += new System.EventHandler(this.menuStripCreatePlaylist_Click);
             // 
             // menuStripLoadPlaylist
             // 
             this.menuStripLoadPlaylist.Name = "menuStripLoadPlaylist";
-            this.menuStripLoadPlaylist.Size = new System.Drawing.Size(172, 22);
+            this.menuStripLoadPlaylist.Size = new System.Drawing.Size(180, 22);
             this.menuStripLoadPlaylist.Text = "Load playlist...";
             this.menuStripLoadPlaylist.Click += new System.EventHandler(this.menuStripLoadPlaylist_Click);
             // 
             // menuStripRenamePlaylist
             // 
             this.menuStripRenamePlaylist.Name = "menuStripRenamePlaylist";
-            this.menuStripRenamePlaylist.Size = new System.Drawing.Size(172, 22);
+            this.menuStripRenamePlaylist.Size = new System.Drawing.Size(180, 22);
             this.menuStripRenamePlaylist.Text = "Rename playlist...";
             this.menuStripRenamePlaylist.Click += new System.EventHandler(this.menuStripRenamePlaylist_Click);
             // 
             // menuStripDeletePlaylist
             // 
             this.menuStripDeletePlaylist.Name = "menuStripDeletePlaylist";
-            this.menuStripDeletePlaylist.Size = new System.Drawing.Size(172, 22);
+            this.menuStripDeletePlaylist.Size = new System.Drawing.Size(180, 22);
             this.menuStripDeletePlaylist.Text = "Delete playlist...";
             this.menuStripDeletePlaylist.Click += new System.EventHandler(this.menuStripDeletePlaylist_Click);
             // 
             // toolStripSeparator8
             // 
             this.toolStripSeparator8.Name = "toolStripSeparator8";
-            this.toolStripSeparator8.Size = new System.Drawing.Size(169, 6);
+            this.toolStripSeparator8.Size = new System.Drawing.Size(177, 6);
             // 
             // menuStripExportToTXT
             // 
             this.menuStripExportToTXT.Name = "menuStripExportToTXT";
-            this.menuStripExportToTXT.Size = new System.Drawing.Size(172, 22);
+            this.menuStripExportToTXT.Size = new System.Drawing.Size(180, 22);
             this.menuStripExportToTXT.Text = "Export to *.txt";
             this.menuStripExportToTXT.Click += new System.EventHandler(this.menuStripExportToTXT_Click);
             // 
             // menuStripExportToM3U
             // 
             this.menuStripExportToM3U.Name = "menuStripExportToM3U";
-            this.menuStripExportToM3U.Size = new System.Drawing.Size(172, 22);
+            this.menuStripExportToM3U.Size = new System.Drawing.Size(180, 22);
             this.menuStripExportToM3U.Text = "Export to *.m3u";
             this.menuStripExportToM3U.Click += new System.EventHandler(this.menuStripExportToM3U_Click);
             // 
             // menuStripExportToDirectory
             // 
             this.menuStripExportToDirectory.Name = "menuStripExportToDirectory";
-            this.menuStripExportToDirectory.Size = new System.Drawing.Size(172, 22);
+            this.menuStripExportToDirectory.Size = new System.Drawing.Size(180, 22);
             this.menuStripExportToDirectory.Text = "Export to directory";
             this.menuStripExportToDirectory.Click += new System.EventHandler(this.menuStripExportToDirectory_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(169, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(177, 6);
             // 
             // menuStripPreferences
             // 
             this.menuStripPreferences.Name = "menuStripPreferences";
-            this.menuStripPreferences.Size = new System.Drawing.Size(172, 22);
-            this.menuStripPreferences.Text = "Preferences";
-            this.menuStripPreferences.Click += new System.EventHandler(this.menuStripPreferences_Click);
+            this.menuStripPreferences.Size = new System.Drawing.Size(180, 22);
+            this.menuStripPreferences.Text = "Settings";
+            this.menuStripPreferences.Click += new System.EventHandler(this.menuStripSettings_Click);
             // 
             // menuStripExit
             // 
             this.menuStripExit.Name = "menuStripExit";
-            this.menuStripExit.Size = new System.Drawing.Size(172, 22);
+            this.menuStripExit.Size = new System.Drawing.Size(180, 22);
             this.menuStripExit.Text = "Exit";
             this.menuStripExit.Click += new System.EventHandler(this.menuStripExit_Click);
             // 
@@ -382,42 +382,43 @@ namespace MitoPlayer_2024
             // menuStripStop
             // 
             this.menuStripStop.Name = "menuStripStop";
-            this.menuStripStop.Size = new System.Drawing.Size(137, 22);
+            this.menuStripStop.Size = new System.Drawing.Size(180, 22);
             this.menuStripStop.Text = "Stop";
             this.menuStripStop.Click += new System.EventHandler(this.menuStripStop_Click);
             // 
             // menuStripPause
             // 
             this.menuStripPause.Name = "menuStripPause";
-            this.menuStripPause.Size = new System.Drawing.Size(137, 22);
+            this.menuStripPause.Size = new System.Drawing.Size(180, 22);
             this.menuStripPause.Text = "Pause";
             this.menuStripPause.Click += new System.EventHandler(this.menuStripPause_Click);
             // 
             // menuStripPlay
             // 
             this.menuStripPlay.Name = "menuStripPlay";
-            this.menuStripPlay.Size = new System.Drawing.Size(137, 22);
+            this.menuStripPlay.Size = new System.Drawing.Size(180, 22);
             this.menuStripPlay.Text = "Play";
             this.menuStripPlay.Click += new System.EventHandler(this.menuStripPlay_Click);
             // 
             // menuStripPrev
             // 
             this.menuStripPrev.Name = "menuStripPrev";
-            this.menuStripPrev.Size = new System.Drawing.Size(137, 22);
+            this.menuStripPrev.Size = new System.Drawing.Size(180, 22);
             this.menuStripPrev.Text = "Previous";
             this.menuStripPrev.Click += new System.EventHandler(this.menuStripPrev_Click);
             // 
             // menuStripNext
             // 
             this.menuStripNext.Name = "menuStripNext";
-            this.menuStripNext.Size = new System.Drawing.Size(137, 22);
+            this.menuStripNext.Size = new System.Drawing.Size(180, 22);
             this.menuStripNext.Text = "Next (B)";
             this.menuStripNext.Click += new System.EventHandler(this.menuStripNext_Click);
             // 
             // menuStripRandom
             // 
+            this.menuStripRandom.Enabled = false;
             this.menuStripRandom.Name = "menuStripRandom";
-            this.menuStripRandom.Size = new System.Drawing.Size(137, 22);
+            this.menuStripRandom.Size = new System.Drawing.Size(180, 22);
             this.menuStripRandom.Text = "Random (R)";
             this.menuStripRandom.Click += new System.EventHandler(this.menuStripRandom_Click);
             // 
@@ -654,17 +655,6 @@ namespace MitoPlayer_2024
             this.btnPlot.UseVisualStyleBackColor = true;
             this.btnPlot.Click += new System.EventHandler(this.btnPlot_Click);
             // 
-            // prbVolume
-            // 
-            this.prbVolume.Location = new System.Drawing.Point(351, 10);
-            this.prbVolume.Name = "prbVolume";
-            this.prbVolume.ProgressBarBackgroundColor = System.Drawing.Color.Empty;
-            this.prbVolume.ProgressBarColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(191)))), ((int)(((byte)(128)))));
-            this.prbVolume.Size = new System.Drawing.Size(107, 23);
-            this.prbVolume.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
-            this.prbVolume.TabIndex = 12;
-            this.prbVolume.MouseDown += new System.Windows.Forms.MouseEventHandler(this.prbVolume_MouseDown);
-            // 
             // lblCurrentTrack
             // 
             this.lblCurrentTrack.Location = new System.Drawing.Point(463, 0);
@@ -715,20 +705,6 @@ namespace MitoPlayer_2024
             this.btnOpen.UseVisualStyleBackColor = true;
             this.btnOpen.Click += new System.EventHandler(this.btnOpen_Click);
             // 
-            // prbTrackProgress
-            // 
-            this.prbTrackProgress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.prbTrackProgress.Location = new System.Drawing.Point(753, 10);
-            this.prbTrackProgress.Name = "prbTrackProgress";
-            this.prbTrackProgress.ProgressBarBackgroundColor = System.Drawing.Color.Empty;
-            this.prbTrackProgress.ProgressBarColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(191)))), ((int)(((byte)(128)))));
-            this.prbTrackProgress.Size = new System.Drawing.Size(917, 24);
-            this.prbTrackProgress.Step = 1;
-            this.prbTrackProgress.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
-            this.prbTrackProgress.TabIndex = 45;
-            this.prbTrackProgress.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pBar_MouseDown);
-            // 
             // chbMute
             // 
             this.chbMute.AutoSize = true;
@@ -754,6 +730,7 @@ namespace MitoPlayer_2024
             // chbShuffle
             // 
             this.chbShuffle.AutoSize = true;
+            this.chbShuffle.Enabled = false;
             this.chbShuffle.Location = new System.Drawing.Point(216, 3);
             this.chbShuffle.Name = "chbShuffle";
             this.chbShuffle.Size = new System.Drawing.Size(59, 17);
@@ -884,6 +861,31 @@ namespace MitoPlayer_2024
             this.pcbMarkerRed.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pcbMarkerRed.TabIndex = 14;
             this.pcbMarkerRed.TabStop = false;
+            // 
+            // prbVolume
+            // 
+            this.prbVolume.Location = new System.Drawing.Point(351, 10);
+            this.prbVolume.Name = "prbVolume";
+            this.prbVolume.ProgressBarBackgroundColor = System.Drawing.Color.Empty;
+            this.prbVolume.ProgressBarColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(191)))), ((int)(((byte)(128)))));
+            this.prbVolume.Size = new System.Drawing.Size(107, 23);
+            this.prbVolume.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            this.prbVolume.TabIndex = 12;
+            this.prbVolume.MouseDown += new System.Windows.Forms.MouseEventHandler(this.prbVolume_MouseDown);
+            // 
+            // prbTrackProgress
+            // 
+            this.prbTrackProgress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.prbTrackProgress.Location = new System.Drawing.Point(753, 10);
+            this.prbTrackProgress.Name = "prbTrackProgress";
+            this.prbTrackProgress.ProgressBarBackgroundColor = System.Drawing.Color.Empty;
+            this.prbTrackProgress.ProgressBarColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(191)))), ((int)(((byte)(128)))));
+            this.prbTrackProgress.Size = new System.Drawing.Size(917, 24);
+            this.prbTrackProgress.Step = 1;
+            this.prbTrackProgress.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            this.prbTrackProgress.TabIndex = 45;
+            this.prbTrackProgress.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pBar_MouseDown);
             // 
             // MainView
             // 

@@ -1,0 +1,18 @@
+You can import a tag and its tag values ​​by entering the name of the tag in one line, then listing the tag values ​​separated by commas after a colon.
+You can write several tags (and tag values ​​to them) in several lines. 
+The whole text must be shorter than 255 characters!
+
+Format:
+tagname1(Type,Multiplicity):tagvalue1(Color),tagvalue2(Color),tagvalue3(Color),tagvalue4(Color),tagvalue5(Color)
+tagname2(Type,Multiplicity):tagvalue6(Color),tagvalue7(Color)
+tagname3(Type,Multiplicity):tagvalue6(Color),tagvalue7(Color)
+
+•  Type: The type of the tag, which can be Text or Field.
+•  Multiplicity: The multiplicity of the tag value, which can be NoMultipleValues or HasMultipleValues.
+•  TagValue: The value of the tag, which can include letters, numbers, underscores, slashes, dots, and spaces.
+•  Color: The color code, which can be a hexadecimal value (e.g., #5ABF9E) or a color name (e.g., White).
+
+Example:
+Style(Text,NoMultipleValues):Liquid(#80FF80),Deep(#D3ABAB),Roller(#FFBF80),Neuro(#80BFFF),Stadion(#FFFF80)
+HasVocal(Text,NoMultipleValues):Yes(#AAFFAA),No(#FFB7B7)
+Favourite(Text,NoMultipleValues):Yes(#AAFFAA),No(#FFB7B7)

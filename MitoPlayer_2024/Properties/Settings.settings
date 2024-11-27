@@ -3,25 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="Installed" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="DefaultDatabaseName" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="Host" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="Port" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
-    </Setting>
-    <Setting Name="UserName" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="Password" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="Database" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="HasVirtualDj" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
@@ -31,6 +13,24 @@
     </Setting>
     <Setting Name="InitialTracklistWidthValue" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="DefaultDatabaseName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">mitoplayer10dev</Value>
+    </Setting>
+    <Setting Name="Host" Type="System.String" Scope="User">
+      <Value Profile="(Default)">localhost</Value>
+    </Setting>
+    <Setting Name="UserName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">root</Value>
+    </Setting>
+    <Setting Name="Password" Type="System.String" Scope="User">
+      <Value Profile="(Default)">root</Value>
+    </Setting>
+    <Setting Name="Database" Type="System.String" Scope="User">
+      <Value Profile="(Default)">mitoplayer10dev</Value>
+    </Setting>
+    <Setting Name="Port" Type="System.String" Scope="User">
+      <Value Profile="(Default)">3306</Value>
     </Setting>
   </Settings>
 </SettingsFile>

@@ -76,12 +76,12 @@ namespace MitoPlayer_2024.Views
             this.btnFilter = new System.Windows.Forms.Button();
             this.btnSetterModeToggle = new System.Windows.Forms.Button();
             this.btnFilterModeToggle = new System.Windows.Forms.Button();
-            this.grbCovers = new System.Windows.Forms.GroupBox();
+            this.grbCoverImageComponent = new System.Windows.Forms.GroupBox();
             this.lblMessage = new System.Windows.Forms.Label();
             this.btnGenerateTrainingSet = new System.Windows.Forms.Button();
-            this.btnDetectKey = new System.Windows.Forms.Button();
             this.btnLiveStreamAnimation = new System.Windows.Forms.Button();
             this.btnLiveStreamAnimationSetting = new System.Windows.Forms.Button();
+            this.btnDisplayCoverImageToggle = new System.Windows.Forms.Button();
             this.btnColumnVisibilityWithTagEditor = new System.Windows.Forms.Button();
             this.dgvTrackList = new MitoPlayer_2024.Helpers.CustomDataGridView();
             this.contextMenuStrip1.SuspendLayout();
@@ -323,11 +323,11 @@ namespace MitoPlayer_2024.Views
             // 
             this.btnPlaylistListPanelToggle.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnPlaylistListPanelToggle.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnPlaylistListPanelToggle.Image = global::MitoPlayer_2024.Properties.Resources.Arrow_Left_20_20;
             this.btnPlaylistListPanelToggle.Location = new System.Drawing.Point(10, 13);
             this.btnPlaylistListPanelToggle.Name = "btnPlaylistListPanelToggle";
             this.btnPlaylistListPanelToggle.Size = new System.Drawing.Size(31, 23);
             this.btnPlaylistListPanelToggle.TabIndex = 22;
-            this.btnPlaylistListPanelToggle.Text = "<";
             this.btnPlaylistListPanelToggle.UseVisualStyleBackColor = true;
             this.btnPlaylistListPanelToggle.Click += new System.EventHandler(this.btnDisplayPlaylistList_Click);
             // 
@@ -336,11 +336,11 @@ namespace MitoPlayer_2024.Views
             this.btnDisplayTagComponentToggle.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnDisplayTagComponentToggle.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnDisplayTagComponentToggle.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnDisplayTagComponentToggle.Image = global::MitoPlayer_2024.Properties.Resources.Arrow_Right_20_20;
             this.btnDisplayTagComponentToggle.Location = new System.Drawing.Point(1221, 14);
             this.btnDisplayTagComponentToggle.Name = "btnDisplayTagComponentToggle";
             this.btnDisplayTagComponentToggle.Size = new System.Drawing.Size(31, 23);
             this.btnDisplayTagComponentToggle.TabIndex = 23;
-            this.btnDisplayTagComponentToggle.Text = "<";
             this.btnDisplayTagComponentToggle.UseVisualStyleBackColor = true;
             this.btnDisplayTagComponentToggle.Click += new System.EventHandler(this.btnDisplayTagEditor_Click);
             // 
@@ -362,7 +362,7 @@ namespace MitoPlayer_2024.Views
             this.dgvPlaylistList.ReadOnly = true;
             this.dgvPlaylistList.RowHeadersVisible = false;
             this.dgvPlaylistList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvPlaylistList.Size = new System.Drawing.Size(183, 597);
+            this.dgvPlaylistList.Size = new System.Drawing.Size(183, 709);
             this.dgvPlaylistList.TabIndex = 17;
             this.dgvPlaylistList.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this.dgvPlaylistList_DataBindingComplete);
             this.dgvPlaylistList.SelectionChanged += new System.EventHandler(this.dgvPlaylistList_SelectionChanged);
@@ -383,9 +383,9 @@ namespace MitoPlayer_2024.Views
             this.tagValueEditorPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tagValueEditorPanel.AutoScroll = true;
-            this.tagValueEditorPanel.Location = new System.Drawing.Point(0, 58);
+            this.tagValueEditorPanel.Location = new System.Drawing.Point(0, 59);
             this.tagValueEditorPanel.Name = "tagValueEditorPanel";
-            this.tagValueEditorPanel.Size = new System.Drawing.Size(274, 510);
+            this.tagValueEditorPanel.Size = new System.Drawing.Size(274, 509);
             this.tagValueEditorPanel.TabIndex = 36;
             this.tagValueEditorPanel.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.tagValueEditorPanel_PreviewKeyDown);
             // 
@@ -457,13 +457,13 @@ namespace MitoPlayer_2024.Views
             // 
             this.pnlTagComponent.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnlTagComponent.Controls.Add(this.lblFilter);
             this.pnlTagComponent.Controls.Add(this.btnFilter);
             this.pnlTagComponent.Controls.Add(this.btnSetterModeToggle);
             this.pnlTagComponent.Controls.Add(this.btnFilterModeToggle);
             this.pnlTagComponent.Controls.Add(this.tagValueEditorPanel);
             this.pnlTagComponent.Controls.Add(this.btnClearTagValueFilter);
             this.pnlTagComponent.Controls.Add(this.txtbFilter);
-            this.pnlTagComponent.Controls.Add(this.lblFilter);
             this.pnlTagComponent.Controls.Add(this.chbOnlyPlayingRowModeEnabled);
             this.pnlTagComponent.Location = new System.Drawing.Point(978, 43);
             this.pnlTagComponent.Name = "pnlTagComponent";
@@ -503,15 +503,15 @@ namespace MitoPlayer_2024.Views
             this.btnFilterModeToggle.UseVisualStyleBackColor = true;
             this.btnFilterModeToggle.Click += new System.EventHandler(this.btnFilterModeToggle_Click);
             // 
-            // grbCovers
+            // grbCoverImageComponent
             // 
-            this.grbCovers.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.grbCoverImageComponent.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.grbCovers.Location = new System.Drawing.Point(199, 7);
-            this.grbCovers.Name = "grbCovers";
-            this.grbCovers.Size = new System.Drawing.Size(773, 87);
-            this.grbCovers.TabIndex = 50;
-            this.grbCovers.TabStop = false;
+            this.grbCoverImageComponent.Location = new System.Drawing.Point(199, 7);
+            this.grbCoverImageComponent.Name = "grbCoverImageComponent";
+            this.grbCoverImageComponent.Size = new System.Drawing.Size(773, 87);
+            this.grbCoverImageComponent.TabIndex = 50;
+            this.grbCoverImageComponent.TabStop = false;
             // 
             // lblMessage
             // 
@@ -533,19 +533,6 @@ namespace MitoPlayer_2024.Views
             this.btnGenerateTrainingSet.Text = "Generate Training Set";
             this.btnGenerateTrainingSet.UseVisualStyleBackColor = true;
             this.btnGenerateTrainingSet.Click += new System.EventHandler(this.btnGenerateTrainingSet_Click);
-            // 
-            // btnDetectKey
-            // 
-            this.btnDetectKey.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDetectKey.Enabled = false;
-            this.btnDetectKey.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnDetectKey.Location = new System.Drawing.Point(978, 14);
-            this.btnDetectKey.Name = "btnDetectKey";
-            this.btnDetectKey.Size = new System.Drawing.Size(90, 23);
-            this.btnDetectKey.TabIndex = 31;
-            this.btnDetectKey.Text = "Detect Key";
-            this.btnDetectKey.UseVisualStyleBackColor = true;
-            this.btnDetectKey.Click += new System.EventHandler(this.btnDetectKey_Click_1);
             // 
             // btnLiveStreamAnimation
             // 
@@ -570,6 +557,20 @@ namespace MitoPlayer_2024.Views
             this.btnLiveStreamAnimationSetting.TabIndex = 54;
             this.btnLiveStreamAnimationSetting.UseVisualStyleBackColor = true;
             this.btnLiveStreamAnimationSetting.Click += new System.EventHandler(this.btnLiveStreamAnimationSetting_Click);
+            // 
+            // btnDisplayCoverImageToggle
+            // 
+            this.btnDisplayCoverImageToggle.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnDisplayCoverImageToggle.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDisplayCoverImageToggle.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnDisplayCoverImageToggle.Image = global::MitoPlayer_2024.Properties.Resources.Arrow_Up_20_20;
+            this.btnDisplayCoverImageToggle.Location = new System.Drawing.Point(978, 14);
+            this.btnDisplayCoverImageToggle.Name = "btnDisplayCoverImageToggle";
+            this.btnDisplayCoverImageToggle.Size = new System.Drawing.Size(31, 23);
+            this.btnDisplayCoverImageToggle.TabIndex = 23;
+            this.btnDisplayCoverImageToggle.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.btnDisplayCoverImageToggle.UseVisualStyleBackColor = true;
+            this.btnDisplayCoverImageToggle.Click += new System.EventHandler(this.btnDisplayCoverImageToggle_Click);
             // 
             // btnColumnVisibilityWithTagEditor
             // 
@@ -630,7 +631,7 @@ namespace MitoPlayer_2024.Views
             this.Controls.Add(this.btnLiveStreamAnimation);
             this.Controls.Add(this.btnGenerateTrainingSet);
             this.Controls.Add(this.lblMessage);
-            this.Controls.Add(this.grbCovers);
+            this.Controls.Add(this.grbCoverImageComponent);
             this.Controls.Add(this.lblTrackSumLength);
             this.Controls.Add(this.lblTrackCount);
             this.Controls.Add(this.lblSelectedItemsLength);
@@ -638,9 +639,9 @@ namespace MitoPlayer_2024.Views
             this.Controls.Add(this.pnlTagComponent);
             this.Controls.Add(this.pnlPlaylistList);
             this.Controls.Add(this.btnSave);
-            this.Controls.Add(this.btnDetectKey);
             this.Controls.Add(this.btnScanKeyAndBpm);
             this.Controls.Add(this.btnPlaylistListPanelToggle);
+            this.Controls.Add(this.btnDisplayCoverImageToggle);
             this.Controls.Add(this.btnDisplayTagComponentToggle);
             this.Controls.Add(this.btnColumnVisibilityWithTagEditor);
             this.Controls.Add(this.dgvTrackList);
@@ -707,12 +708,12 @@ namespace MitoPlayer_2024.Views
         private System.Windows.Forms.Button btnSetterModeToggle;
         private System.Windows.Forms.Button btnFilterModeToggle;
         private System.Windows.Forms.Button btnFilter;
-        private System.Windows.Forms.GroupBox grbCovers;
+        private System.Windows.Forms.GroupBox grbCoverImageComponent;
         private System.Windows.Forms.Label lblMessage;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private System.Windows.Forms.Button btnGenerateTrainingSet;
-        private System.Windows.Forms.Button btnDetectKey;
         private System.Windows.Forms.Button btnLiveStreamAnimation;
         private System.Windows.Forms.Button btnLiveStreamAnimationSetting;
+        private System.Windows.Forms.Button btnDisplayCoverImageToggle;
     }
 }

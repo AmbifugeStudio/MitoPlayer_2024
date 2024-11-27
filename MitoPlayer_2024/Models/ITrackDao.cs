@@ -67,5 +67,6 @@ namespace MitoPlayer_2024.Model
         ResultOrError CreateTrainingData(TrainingData trainingData);
         TrainingData GetTrainingData(int id);
         void DeleteTrainingData(int id);
+        void UpdateTrack(Track track);
     }
 }

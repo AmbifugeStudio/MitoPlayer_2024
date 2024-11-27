@@ -47,6 +47,7 @@
             // 
             // dgvTagList
             // 
+            this.dgvTagList.AllowDrop = true;
             this.dgvTagList.AllowUserToAddRows = false;
             this.dgvTagList.AllowUserToDeleteRows = false;
             this.dgvTagList.AllowUserToResizeColumns = false;
@@ -67,10 +68,18 @@
             this.dgvTagList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvTagList.Size = new System.Drawing.Size(271, 458);
             this.dgvTagList.TabIndex = 1;
-            this.dgvTagList.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTagList_CellDoubleClick);
-            this.dgvTagList.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvTagList_CellMouseClick);
             this.dgvTagList.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this.dgvTagList_DataBindingComplete);
+            this.dgvTagList.SelectionChanged += new System.EventHandler(this.dgvTagList_SelectionChanged);
+            this.dgvTagList.DragDrop += new System.Windows.Forms.DragEventHandler(this.dgvTagList_DragDrop);
+            this.dgvTagList.DragEnter += new System.Windows.Forms.DragEventHandler(this.dgvTagList_DragEnter);
+            this.dgvTagList.DragOver += new System.Windows.Forms.DragEventHandler(this.dgvTagList_DragOver);
+            this.dgvTagList.DragLeave += new System.EventHandler(this.dgvTagList_DragLeave);
+            this.dgvTagList.Paint += new System.Windows.Forms.PaintEventHandler(this.dgvTagList_Paint);
             this.dgvTagList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvTagList_KeyDown);
+            this.dgvTagList.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.dgvTagList_MouseDoubleClick);
+            this.dgvTagList.MouseDown += new System.Windows.Forms.MouseEventHandler(this.dgvTagList_MouseDown);
+            this.dgvTagList.MouseMove += new System.Windows.Forms.MouseEventHandler(this.dgvTagList_MouseMove);
+            this.dgvTagList.MouseUp += new System.Windows.Forms.MouseEventHandler(this.dgvTagList_MouseUp);
             // 
             // grbTags
             // 

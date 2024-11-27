@@ -63,6 +63,46 @@ namespace MitoPlayer_2024.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Arrow_Down_20_20 {
+            get {
+                object obj = ResourceManager.GetObject("Arrow_Down_20_20", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Arrow_Left_20_20 {
+            get {
+                object obj = ResourceManager.GetObject("Arrow_Left_20_20", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Arrow_Right_20_20 {
+            get {
+                object obj = ResourceManager.GetObject("Arrow_Right_20_20", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Arrow_Up_20_20 {
+            get {
+                object obj = ResourceManager.GetObject("Arrow_Up_20_20", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap BlackLine {
             get {
                 object obj = ResourceManager.GetObject("BlackLine", resourceCulture);
@@ -247,6 +287,15 @@ namespace MitoPlayer_2024.Properties {
             get {
                 object obj = ResourceManager.GetObject("Settings_20_20", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string TagValueScript {
+            get {
+                return ResourceManager.GetString("TagValueScript", resourceCulture);
             }
         }
     }

@@ -3,6 +3,7 @@ using Google.Protobuf.WellKnownTypes;
 using MathNet.Numerics.LinearAlgebra;
 using MitoPlayer_2024.Helpers;
 using MitoPlayer_2024.Models;
+using MitoPlayer_2024.Properties;
 using Mysqlx;
 using NAudio.SoundFont;
 using Org.BouncyCastle.Utilities;
@@ -43,9 +44,12 @@ namespace MitoPlayer_2024.Views
         public event EventHandler<Messenger> PlayTrackEvent;
         public event EventHandler PauseTrackEvent;
         public event EventHandler StopTrackEvent;
+        public event EventHandler CopyCurrentPlayingTrackToDefaultPlaylistEvent;
         public event EventHandler<Messenger> PrevTrackEvent;
         public event EventHandler<Messenger> NextTrackEvent;
         public event EventHandler RandomTrackEvent;
+        public event EventHandler JumpBackwardEvent;
+        public event EventHandler JumpForwardEvent;
         public event EventHandler<Messenger> ChangeVolumeEvent;
         public event EventHandler<Messenger> ChangeProgressEvent;
        // public event EventHandler GetMediaPlayerProgressStatusEvent;
@@ -103,9 +107,11 @@ namespace MitoPlayer_2024.Views
 
         public event EventHandler LiveStreamAnimationEvent;
         public event EventHandler LiveStreamAnimationSettingEvent;
+        public event EventHandler DisplayCoverImageComponentEvent;
 
         private int trackListLeftOffset = 190;
         private int trackListRightOffset = 285;
+        private int trackListTopOffset = 58;
         private int tagValueEditorPanelBottomOffset = 25;
         private int coverImageSize = 60;
         private int mainCoverImageSize = 75;
@@ -154,6 +160,7 @@ namespace MitoPlayer_2024.Views
         Color GridPlayingColor = System.Drawing.ColorTranslator.FromHtml("#4d4d4d");
         Color GridSelectionColor = System.Drawing.ColorTranslator.FromHtml("#626262");
         Color ActiveButtonColor = System.Drawing.ColorTranslator.FromHtml("#FFBF80");
+        Color RedWarningColor = System.Drawing.ColorTranslator.FromHtml("#ED6E7D");
         
         private void SetControlColors()
         {
@@ -183,9 +190,14 @@ namespace MitoPlayer_2024.Views
             this.btnPlaylistListPanelToggle.BackColor = this.ButtonColor;
             this.btnPlaylistListPanelToggle.ForeColor = this.FontColor;
             this.btnPlaylistListPanelToggle.FlatAppearance.BorderColor = this.ButtonBorderColor;
+
             this.btnDisplayTagComponentToggle.BackColor = this.ButtonColor;
             this.btnDisplayTagComponentToggle.ForeColor = this.FontColor;
             this.btnDisplayTagComponentToggle.FlatAppearance.BorderColor = this.ButtonBorderColor;
+
+            this.btnDisplayCoverImageToggle.BackColor = this.ButtonColor;
+            this.btnDisplayCoverImageToggle.ForeColor = this.FontColor;
+            this.btnDisplayCoverImageToggle.FlatAppearance.BorderColor = this.ButtonBorderColor;
 
             this.btnColumnVisibilityWithTagEditor.BackColor = this.ButtonColor;
             this.btnColumnVisibilityWithTagEditor.ForeColor = this.FontColor;
@@ -358,6 +370,18 @@ namespace MitoPlayer_2024.Views
         {
             this.UpdateTracklistColor(model.CurrentTrackIdInPlaylist);
         }
+         
+        private bool isShortTrackColouringEnabled { get; set; }
+        private TimeSpan shortTrackColouringThreshold { get; set; }
+
+        internal void InitializeShortTrackColouring(bool isColouringEnabled, TimeSpan shortTrackColouringThreshold)
+        {
+            this.isShortTrackColouringEnabled = isColouringEnabled;
+            this.shortTrackColouringThreshold = shortTrackColouringThreshold;
+        }
+
+        TimeSpan songLength = new TimeSpan();
+        TimeSpan threshold = new TimeSpan();
         public void UpdateTracklistColor(int currentTrackIdInPlaylist = -1)
         {
             bool isTagValueColoringEnabled = this.tagList != null && this.tagList.Count > 0 && this.tagValueDictionary != null && this.tagValueDictionary.Count > 0;
@@ -378,6 +402,27 @@ namespace MitoPlayer_2024.Views
                         row.DefaultCellStyle.BackColor = (currentTrackIdInPlaylist != -1 && trackIdInPlaylist == currentTrackIdInPlaylist)
                         ? this.GridPlayingColor
                         : (row.Index % 2 == 0 ? this.GridLineColor1 : this.GridLineColor2);
+
+                        if (this.isShortTrackColouringEnabled)
+                        {
+                            if (this.dgvTrackList.Columns["Length"].Visible)
+                            {
+                                string cellValue = row.Cells["Length"].Value as string;
+                                if(cellValue.Length < 6)
+                                {
+                                    cellValue = "00:" + cellValue;
+                                    TimeSpan.TryParseExact(cellValue, @"hh\:mm\:ss", null, out songLength);
+                                }
+
+                                TimeSpan threshold = this.shortTrackColouringThreshold;
+
+                                if (songLength < threshold)
+                                {
+                                    row.Cells["Length"].Style.ForeColor = this.RedWarningColor;
+                                }
+                            }
+                        }
+                        
                     }
 
                     if (isTagValueColoringEnabled)
@@ -475,11 +520,40 @@ namespace MitoPlayer_2024.Views
                 this.CallRandomTrackEvent();
             }
 
+            //V - Play previous track
+            if (this.dgvPlaylistList.Rows.Count > 0 && e.KeyCode == Keys.V)
+            {
+                this.CallPrevTrackEvent();
+            }
             //B - Play next track
             if (this.dgvPlaylistList.Rows.Count > 0 && e.KeyCode == Keys.B)
             {
                 this.CallNextTrackEvent();
             }
+
+            //LEFT/RIGHT - Step +-5 sec in track
+            if (this.dgvPlaylistList.Rows.Count > 0 && e.KeyCode == Keys.Left)
+            {
+                this.CallJumpBackwardEvent();
+            }
+            if (this.dgvPlaylistList.Rows.Count > 0 && e.KeyCode == Keys.Right)
+            {
+                this.CallJumpFourwardEvent();
+            }
+            if (this.dgvPlaylistList.Rows.Count > 0 && e.KeyCode == Keys.P)
+            {
+                this.CallPauseTrackEvent();
+            }
+            if (this.dgvPlaylistList.Rows.Count > 0 && e.KeyCode == Keys.S)
+            {
+                this.CallStopTrackEvent();
+            }
+            if (this.dgvPlaylistList.Rows.Count > 0 && e.KeyCode == Keys.D0)
+            {
+                this.CopyCurrentPlayingTrackToDefaultPlaylistEvent?.Invoke(this, EventArgs.Empty);
+            }
+
+
         }
         private void dgvTrackList_KeyUp(object sender, KeyEventArgs e)
         {
@@ -560,6 +634,14 @@ namespace MitoPlayer_2024.Views
         public void CallRandomTrackEvent()
         {
             this.RandomTrackEvent?.Invoke(this, EventArgs.Empty);
+        }
+        public void CallJumpBackwardEvent()
+        {
+            this.JumpBackwardEvent?.Invoke(this, EventArgs.Empty);
+        }
+        public void CallJumpFourwardEvent()
+        {
+            this.JumpForwardEvent?.Invoke(this, EventArgs.Empty);
         }
 
 
@@ -742,11 +824,11 @@ namespace MitoPlayer_2024.Views
         {
             if (isPlaylistListDisplayed)
             {
-                this.btnPlaylistListPanelToggle.Text = "<";
+                this.btnPlaylistListPanelToggle.Image = Resources.Arrow_Left_20_20;
             }
             else
             {
-                this.btnPlaylistListPanelToggle.Text = ">";
+                this.btnPlaylistListPanelToggle.Image = Resources.Arrow_Right_20_20;
                 this.pnlPlaylistList.Hide();
 
                 if (this.dgvTrackList.Left > 9)
@@ -761,7 +843,7 @@ namespace MitoPlayer_2024.Views
         {
             if (isPlaylistListDisplayed)
             {
-                this.btnPlaylistListPanelToggle.Text = "<";
+                this.btnPlaylistListPanelToggle.Image = Resources.Arrow_Left_20_20;
                 this.pnlPlaylistList.Show();
 
                 this.dgvTrackList.Left += this.trackListLeftOffset;
@@ -769,7 +851,7 @@ namespace MitoPlayer_2024.Views
             }
             else
             {
-                this.btnPlaylistListPanelToggle.Text = ">";
+                this.btnPlaylistListPanelToggle.Image = Resources.Arrow_Right_20_20;
                 this.pnlPlaylistList.Hide();
 
                 this.dgvTrackList.Left -= this.trackListLeftOffset;
@@ -1150,16 +1232,17 @@ namespace MitoPlayer_2024.Views
                 this.dgvTrackList.Width = this.dgvTrackList.Width + this.trackListRightOffset;
             }
         }
+        private int originalTagValueEditorPanelHeight;
         public void InitializeDisplayTagComponent(bool isTagComponentDisplayed)
         {
             if (isTagComponentDisplayed)
             {
-                this.btnDisplayTagComponentToggle.Text = ">";
+                this.btnDisplayTagComponentToggle.Image = Resources.Arrow_Right_20_20;
                 this.dgvTrackList.Width = this.dgvTrackList.Width - this.trackListRightOffset;
             }
             else
             {
-                this.btnDisplayTagComponentToggle.Text = "<";
+                this.btnDisplayTagComponentToggle.Image = Resources.Arrow_Left_20_20;
                 this.pnlTagComponent.Hide();
 
                 if (this.dgvTrackList.Width < 883)
@@ -1189,22 +1272,19 @@ namespace MitoPlayer_2024.Views
             this.txtbFilter.Text = string.Empty;
 
             this.chbOnlyPlayingRowModeEnabled.Show();
-            this.tagValueEditorPanel.Size = new Size(this.tagValueEditorPanel.Width, this.tagValueEditorPanel.Height + this.tagValueEditorPanelBottomOffset);
-
-
-
         }
+
         public void UpdateDisplayTagComponent(bool isTagComponentDisplayed)
         {
             if (isTagComponentDisplayed)
             {
-                this.btnDisplayTagComponentToggle.Text = ">";
+                this.btnDisplayTagComponentToggle.Image = Resources.Arrow_Right_20_20;
                 this.pnlTagComponent.Show();
                 this.dgvTrackList.Width = this.dgvTrackList.Width - this.trackListRightOffset;
             }
             else
             {
-                this.btnDisplayTagComponentToggle.Text = "<";
+                this.btnDisplayTagComponentToggle.Image = Resources.Arrow_Left_20_20;
                 this.pnlTagComponent.Hide();
                 this.dgvTrackList.Width = this.dgvTrackList.Width + this.trackListRightOffset;
             }
@@ -1253,14 +1333,7 @@ namespace MitoPlayer_2024.Views
 
             this.chbOnlyPlayingRowModeEnabled.Hide();
 
-            if (this.tagValueEditorPanel.Height != 449)
-            {
-                this.tagValueEditorPanel.Size = new Size(this.tagValueEditorPanel.Width, this.tagValueEditorPanel.Height - this.tagValueEditorPanelBottomOffset);
-            }
-
             this.dgvTrackList.Focus();
-
-            
 
             this.EnableFilterModeEvent?.Invoke(this, new EventArgs());
 
@@ -1327,8 +1400,6 @@ namespace MitoPlayer_2024.Views
 
             this.chbOnlyPlayingRowModeEnabled.Show();
 
-            this.tagValueEditorPanel.Size = new Size(this.tagValueEditorPanel.Width, this.tagValueEditorPanel.Height + this.tagValueEditorPanelBottomOffset);
-
             this.dgvTrackList.Focus();
 
             this.EnableSetterModeEvent?.Invoke(this, new EventArgs());
@@ -1364,7 +1435,22 @@ namespace MitoPlayer_2024.Views
         {
             if (e.KeyCode == Keys.Enter)
             {
-                this.ChangeFilterParameters();
+                if (!btnFilterIsPressed)
+                {
+                    btnFilterIsPressed = true;
+                    btnFilter.FlatAppearance.BorderColor = this.ActiveButtonColor;
+                }
+                else
+                {
+                    if (String.IsNullOrEmpty(this.txtbFilter.Text))
+                    {
+                        btnFilterIsPressed = false;
+                        btnFilter.FlatAppearance.BorderColor = this.ButtonBorderColor;
+                        txtbFilter.Text = String.Empty;
+                    }
+                }
+
+                this.ChangeFilterParametersEvent?.Invoke(this, new Messenger() { StringField1 = this.txtbFilter.Text });
             }
         }
         private void ChangeFilterParameters()
@@ -2366,7 +2452,57 @@ namespace MitoPlayer_2024.Views
         }
 
 
+        public void InitializeCoverImageComponent(bool isCoverImageComponentDisplayed)
+        {
+            this.coverImageComponentEnabled = isCoverImageComponentDisplayed;
 
+            if (this.coverImageComponentEnabled)
+            {
+                this.btnDisplayCoverImageToggle.Image = Resources.Arrow_Up_20_20;
+            }
+            else
+            {
+                this.btnDisplayCoverImageToggle.Image = Resources.Arrow_Down_20_20;
+                this.grbCoverImageComponent.Hide();
+                this.coverBrowserClickTimer.Stop();
+                if (this.dgvTrackList.Top > 43)
+                {
+                    this.dgvTrackList.Top -= this.trackListTopOffset;
+                    this.dgvTrackList.Height += this.trackListTopOffset;
+
+                }
+            }
+        }
+        private bool coverImageComponentEnabled { get; set; }
+
+        public void UpdateDisplayCoverImageComponent(bool isCoverImageComponentDisplayed)
+        {
+            this.coverImageComponentEnabled = isCoverImageComponentDisplayed;
+
+            if (this.coverImageComponentEnabled)
+            {
+                this.btnDisplayCoverImageToggle.Image = Resources.Arrow_Up_20_20;
+                this.grbCoverImageComponent.Show();
+                this.coverBrowserClickTimer.Start();
+
+                int rowIndex = 0;
+                if (this.dgvTrackList != null && this.dgvTrackList.SelectedCells.Count > 0)
+                {
+                    rowIndex = this.dgvTrackList.SelectedCells[0].RowIndex;
+                }
+                this.LoadCoversEvent?.Invoke(this, new Messenger() { IntegerField1 = rowIndex });
+                this.dgvTrackList.Top = this.dgvTrackList.Top + this.trackListTopOffset;
+                this.dgvTrackList.Height -= this.trackListTopOffset;
+            }
+            else
+            {
+                this.btnDisplayCoverImageToggle.Image = Resources.Arrow_Down_20_20;
+                this.grbCoverImageComponent.Hide();
+                this.coverBrowserClickTimer.Stop();
+                this.dgvTrackList.Top = this.dgvTrackList.Top - this.trackListTopOffset;
+                this.dgvTrackList.Height += this.trackListTopOffset;
+            }
+        }
 
         private bool isWaiting = false;
         private System.Windows.Forms.Timer coverBrowserClickTimer;
@@ -2375,56 +2511,58 @@ namespace MitoPlayer_2024.Views
 
         public void UpdateCoverList(ConcurrentQueue<ImageExtension> coverQueue)
         {
-            this.grbCovers.Controls.Clear();
-
-            List<ImageExtension> coverList = coverQueue.ToList();
-
-            int imageXOffset = 10;
-            int imageYOffset = 10;
-            int imageSpacing = 5;
-            int xPos = 10;
-            int yPos = 10;
-
-            int imageCount = coverList.Count;
-            int imageWidth = coverImageSize;
-            int imageHeight = coverImageSize;
-
-            int flowLayoutWidth = imageXOffset + ((imageCount - 1) * (imageWidth + imageSpacing) + 10 + mainCoverImageSize);
-            int flowLayoutHeight = imageYOffset + imageHeight + imageSpacing;
-            int centerOffset = (this.grbCovers.Width - flowLayoutWidth) / 2;
-
-            FlowLayoutPanel flowLayoutPanel = new FlowLayoutPanel
+            if (this.coverImageComponentEnabled)
             {
-                FlowDirection = FlowDirection.LeftToRight,
-                Anchor = AnchorStyles.Top,
-                Size = new Size(flowLayoutWidth, flowLayoutHeight),
-                Location = new Point(centerOffset, 10),
-            };
+                this.grbCoverImageComponent.Controls.Clear();
 
-            while (coverQueue.TryDequeue(out ImageExtension cover))
-            {
-                int actualImageSize = cover.IsMainCover ? mainCoverImageSize : coverImageSize;
+                List<ImageExtension> coverList = coverQueue.ToList();
 
-                PictureBoxExtension pictureBox = new PictureBoxExtension
+                int imageXOffset = 10;
+                int imageYOffset = 10;
+                int imageSpacing = 5;
+                int xPos = 10;
+                int yPos = 10;
+
+                int imageCount = coverList.Count;
+                int imageWidth = coverImageSize;
+                int imageHeight = coverImageSize;
+
+                int flowLayoutWidth = imageXOffset + ((imageCount - 1) * (imageWidth + imageSpacing) + 10 + mainCoverImageSize);
+                int flowLayoutHeight = imageYOffset + imageHeight + imageSpacing;
+                int centerOffset = (this.grbCoverImageComponent.Width - flowLayoutWidth) / 2;
+
+                FlowLayoutPanel flowLayoutPanel = new FlowLayoutPanel
                 {
-                    Image = cover.Image,
-                    FilePath = cover.FilePath,
-                    TrackIdInPlaylist = cover.TrackIdInPlaylist,
-                    SizeMode = PictureBoxSizeMode.StretchImage,
-                    Size = new Size(actualImageSize, actualImageSize),
-                    Location = new Point(xPos, yPos),
+                    FlowDirection = FlowDirection.LeftToRight,
+                    Anchor = AnchorStyles.Top,
+                    Size = new Size(flowLayoutWidth, flowLayoutHeight),
+                    Location = new Point(centerOffset, 10),
                 };
 
-                pictureBox.MouseDown += new MouseEventHandler(pcbCover_MouseDown);
-                pictureBox.MouseUp += new MouseEventHandler(pcbCover_MouseUp);
-                pictureBox.MouseDoubleClick += new MouseEventHandler(pcbCover_MouseDoubleClick);
+                while (coverQueue.TryDequeue(out ImageExtension cover))
+                {
+                    int actualImageSize = cover.IsMainCover ? mainCoverImageSize : coverImageSize;
 
-                flowLayoutPanel.Controls.Add(pictureBox);
-                xPos += pictureBox.Width + imageSpacing;
+                    PictureBoxExtension pictureBox = new PictureBoxExtension
+                    {
+                        Image = cover.Image,
+                        FilePath = cover.FilePath,
+                        TrackIdInPlaylist = cover.TrackIdInPlaylist,
+                        SizeMode = PictureBoxSizeMode.StretchImage,
+                        Size = new Size(actualImageSize, actualImageSize),
+                        Location = new Point(xPos, yPos),
+                    };
+
+                    pictureBox.MouseDown += new MouseEventHandler(pcbCover_MouseDown);
+                    pictureBox.MouseUp += new MouseEventHandler(pcbCover_MouseUp);
+                    pictureBox.MouseDoubleClick += new MouseEventHandler(pcbCover_MouseDoubleClick);
+
+                    flowLayoutPanel.Controls.Add(pictureBox);
+                    xPos += pictureBox.Width + imageSpacing;
+                }
+                this.grbCoverImageComponent.Controls.Add(flowLayoutPanel);
             }
-            this.grbCovers.Controls.Add(flowLayoutPanel);
         }
-
         private void CoverBrowserClickTimer_Tick(object sender, EventArgs e)
         {
             if (isWaiting && currentPictureBox != null)
@@ -2437,15 +2575,12 @@ namespace MitoPlayer_2024.Views
                 currentPictureBox.DoDragDrop(dataObject, DragDropEffects.Copy);
             }
         }
-
-
         private void pcbCover_MouseDown(object sender, MouseEventArgs e)
         {
             isWaiting = true;
             currentPictureBox = sender as PictureBoxExtension;
             coverBrowserClickTimer.Start();
         }
-
         private void pcbCover_MouseUp(object sender, MouseEventArgs e)
         {
             if (isWaiting)
@@ -2454,7 +2589,6 @@ namespace MitoPlayer_2024.Views
                 coverBrowserClickTimer.Stop();
             }
         }
-
         private void pcbCover_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             int trackIdInPlaylist = ((PictureBoxExtension)sender).TrackIdInPlaylist;
@@ -2486,6 +2620,11 @@ namespace MitoPlayer_2024.Views
                 }
             }
         }
+        private void btnDisplayCoverImageToggle_Click(object sender, EventArgs e)
+        {
+            this.DisplayCoverImageComponentEvent.Invoke(this, new EventArgs());
+        }
+
 
 
         private void btnTrainKeyDetector_Click(object sender, EventArgs e)
@@ -2566,5 +2705,7 @@ namespace MitoPlayer_2024.Views
         {
             this.LiveStreamAnimationSettingEvent?.Invoke(this, new EventArgs());
         }
+
+        
     }
 }

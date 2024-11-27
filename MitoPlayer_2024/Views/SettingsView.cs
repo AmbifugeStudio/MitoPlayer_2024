@@ -1,4 +1,5 @@
 ﻿using MitoPlayer_2024.Helpers;
+using Mysqlx;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,7 +12,7 @@ using System.Windows.Forms;
 
 namespace MitoPlayer_2024.Views
 {
-    public partial class PreferencesView : Form, IPreferencesView
+    public partial class SettingsView : Form, IPreferencesView
     {
         public event EventHandler CloseViewWithOkEvent;
         public event EventHandler CloseViewWithCancelEvent;
@@ -26,7 +27,7 @@ namespace MitoPlayer_2024.Views
 
 
 
-        public PreferencesView()
+        public SettingsView()
         {
             this.InitializeComponent();
             this.SetControlColors();
@@ -50,6 +51,10 @@ namespace MitoPlayer_2024.Views
             this.btnCancel.ForeColor = this.FontColor;
             this.btnCancel.FlatAppearance.BorderColor = this.ButtonBorderColor;
 
+            this.grbPlayer.ForeColor = this.FontColor;
+            this.grbVirtualDjImport.ForeColor = this.FontColor;
+            this.chbShortTrackColouring.ForeColor = this.FontColor;
+
             this.tabGeneral.BackColor = this.BackgroundColor;
         }
         private void btnClear_Click(object sender, EventArgs e)
@@ -60,8 +65,15 @@ namespace MitoPlayer_2024.Views
 
         private void btnOk_Click(object sender, EventArgs e)
         {
+            this.SetShortTrackColouringThreshold();
+            this.SetPreviewPercentage();
             this.CloseViewWithOkEvent?.Invoke(this, EventArgs.Empty);
 
+        }
+
+        private void SetPreviewPercentage()
+        {
+            this.SetPreviewPercentageEvent?.Invoke(this, new Messenger { DecimalField1 = this.nmdPreviewPercentage.Value });
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -93,8 +105,12 @@ namespace MitoPlayer_2024.Views
             this.txtBoxVirtualDjDatabasePath.Text = virtualDjDatabasePath;
             this.chbPlayTrackAfterOpenFiles.Checked = playTrackAfterOpenFiles;
             this.nmdPreviewPercentage.Value = previewPercentage;
-            this.chbShortTrackColouring.Enabled = isShortTrackColouringEnabled;
+            this.chbShortTrackColouring.Checked = isShortTrackColouringEnabled;
             this.txtbShortTrackColouringThreshold.Text = shortTrackColouringThreshold.ToString("N2");
+            if (!isShortTrackColouringEnabled)
+            {
+                this.txtbShortTrackColouringThreshold.Enabled = false;
+            }
 
             if (!hasVirtualDj)
             {
@@ -115,8 +131,6 @@ namespace MitoPlayer_2024.Views
             this.SetPlayTrackAfterOpenFilesEvent?.Invoke(this, new Messenger { BooleanField1 = this.chbPlayTrackAfterOpenFiles.Checked });
         }
 
-
-
         private void nmdPreviewPercentage_ValueChanged(object sender, EventArgs e)
         {
             this.SetPreviewPercentageEvent?.Invoke(this, new Messenger { DecimalField1 = this.nmdPreviewPercentage.Value });
@@ -124,25 +138,45 @@ namespace MitoPlayer_2024.Views
 
         private void chbShortTrackColouring_CheckedChanged(object sender, EventArgs e)
         {
+            if (!this.chbShortTrackColouring.Checked)
+            {
+                this.txtbShortTrackColouringThreshold.Enabled = false;
+            }
+            else
+            {
+                this.txtbShortTrackColouringThreshold.Enabled = true;
+            }
             this.SetShortTrackColouringEvent?.Invoke(this, new Messenger { BooleanField1 = this.chbShortTrackColouring.Checked });
         }
 
-        private void txtbShortTrackColouringThreshold_TextChanged(object sender, EventArgs e)
+        private void txtbShortTrackColouringThreshold_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (!String.IsNullOrEmpty(this.txtbShortTrackColouringThreshold.Text))
+            if(e.KeyChar == (char)Keys.Enter)
             {
-                decimal threshold = Decimal.Parse(this.txtbShortTrackColouringThreshold.Text);
-                if(threshold > 0)
+                this.SetShortTrackColouringThreshold();
+            }
+        }
+        private void SetShortTrackColouringThreshold()
+        {
+            String thresholdString = this.txtbShortTrackColouringThreshold.Text;
+            if (String.IsNullOrEmpty(thresholdString))
+            {
+                MessageBox.Show("Track colouring threshold must be set!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            else
+            {
+                try
                 {
+                    decimal threshold = 0;
+                    Decimal.TryParse(thresholdString, out threshold);
+
                     this.SetShortTrackColouringThresholdEvent?.Invoke(this, new Messenger { DecimalField1 = threshold });
                 }
-                else
+                catch (Exception ex)
                 {
-                    this.txtbShortTrackColouringThreshold.Text = "";
+                    MessageBox.Show(ex.Message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
-
-           
         }
     }
 }

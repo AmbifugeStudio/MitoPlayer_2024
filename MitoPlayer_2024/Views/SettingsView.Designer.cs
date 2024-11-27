@@ -1,6 +1,6 @@
 ﻿namespace MitoPlayer_2024.Views
 {
-    partial class PreferencesView
+    partial class SettingsView
     {
         /// <summary>
         /// Required designer variable.
@@ -32,11 +32,11 @@
             this.tabGeneral = new System.Windows.Forms.TabPage();
             this.txtbShortTrackColouringThreshold = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.grbPlayer = new System.Windows.Forms.GroupBox();
             this.label2 = new System.Windows.Forms.Label();
             this.nmdPreviewPercentage = new System.Windows.Forms.NumericUpDown();
             this.chbPlayTrackAfterOpenFiles = new System.Windows.Forms.CheckBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.grbVirtualDjImport = new System.Windows.Forms.GroupBox();
             this.txtBoxVirtualDjDatabasePath = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.chbAutomaticKeyImport = new System.Windows.Forms.CheckBox();
@@ -48,9 +48,9 @@
             this.btnCancel = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabGeneral.SuspendLayout();
-            this.groupBox3.SuspendLayout();
+            this.grbPlayer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nmdPreviewPercentage)).BeginInit();
-            this.groupBox2.SuspendLayout();
+            this.grbVirtualDjImport.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -70,8 +70,8 @@
             // 
             this.tabGeneral.Controls.Add(this.txtbShortTrackColouringThreshold);
             this.tabGeneral.Controls.Add(this.label3);
-            this.tabGeneral.Controls.Add(this.groupBox3);
-            this.tabGeneral.Controls.Add(this.groupBox2);
+            this.tabGeneral.Controls.Add(this.grbPlayer);
+            this.tabGeneral.Controls.Add(this.grbVirtualDjImport);
             this.tabGeneral.Controls.Add(this.chbShortTrackColouring);
             this.tabGeneral.Controls.Add(this.groupBox1);
             this.tabGeneral.Location = new System.Drawing.Point(4, 22);
@@ -88,7 +88,7 @@
             this.txtbShortTrackColouringThreshold.Name = "txtbShortTrackColouringThreshold";
             this.txtbShortTrackColouringThreshold.Size = new System.Drawing.Size(54, 20);
             this.txtbShortTrackColouringThreshold.TabIndex = 4;
-            this.txtbShortTrackColouringThreshold.TextChanged += new System.EventHandler(this.txtbShortTrackColouringThreshold_TextChanged);
+            this.txtbShortTrackColouringThreshold.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtbShortTrackColouringThreshold_KeyPress);
             // 
             // label3
             // 
@@ -99,17 +99,17 @@
             this.label3.TabIndex = 5;
             this.label3.Text = "Short track colouring threshold (minute):";
             // 
-            // groupBox3
+            // grbPlayer
             // 
-            this.groupBox3.Controls.Add(this.label2);
-            this.groupBox3.Controls.Add(this.nmdPreviewPercentage);
-            this.groupBox3.Controls.Add(this.chbPlayTrackAfterOpenFiles);
-            this.groupBox3.Location = new System.Drawing.Point(6, 112);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(437, 75);
-            this.groupBox3.TabIndex = 4;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Player";
+            this.grbPlayer.Controls.Add(this.label2);
+            this.grbPlayer.Controls.Add(this.nmdPreviewPercentage);
+            this.grbPlayer.Controls.Add(this.chbPlayTrackAfterOpenFiles);
+            this.grbPlayer.Location = new System.Drawing.Point(6, 112);
+            this.grbPlayer.Name = "grbPlayer";
+            this.grbPlayer.Size = new System.Drawing.Size(437, 75);
+            this.grbPlayer.TabIndex = 4;
+            this.grbPlayer.TabStop = false;
+            this.grbPlayer.Text = "Player";
             // 
             // label2
             // 
@@ -144,18 +144,18 @@
             this.chbPlayTrackAfterOpenFiles.UseVisualStyleBackColor = true;
             this.chbPlayTrackAfterOpenFiles.CheckedChanged += new System.EventHandler(this.chbPlayTrackAfterOpenFiles_CheckedChanged);
             // 
-            // groupBox2
+            // grbVirtualDjImport
             // 
-            this.groupBox2.Controls.Add(this.txtBoxVirtualDjDatabasePath);
-            this.groupBox2.Controls.Add(this.label1);
-            this.groupBox2.Controls.Add(this.chbAutomaticKeyImport);
-            this.groupBox2.Controls.Add(this.chbAutomaticBpmImport);
-            this.groupBox2.Location = new System.Drawing.Point(6, 6);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(437, 100);
-            this.groupBox2.TabIndex = 1;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "VirtualDJ Import";
+            this.grbVirtualDjImport.Controls.Add(this.txtBoxVirtualDjDatabasePath);
+            this.grbVirtualDjImport.Controls.Add(this.label1);
+            this.grbVirtualDjImport.Controls.Add(this.chbAutomaticKeyImport);
+            this.grbVirtualDjImport.Controls.Add(this.chbAutomaticBpmImport);
+            this.grbVirtualDjImport.Location = new System.Drawing.Point(6, 6);
+            this.grbVirtualDjImport.Name = "grbVirtualDjImport";
+            this.grbVirtualDjImport.Size = new System.Drawing.Size(437, 100);
+            this.grbVirtualDjImport.TabIndex = 1;
+            this.grbVirtualDjImport.TabStop = false;
+            this.grbVirtualDjImport.Text = "VirtualDJ Import";
             // 
             // txtBoxVirtualDjDatabasePath
             // 
@@ -252,7 +252,7 @@
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
-            // PreferencesView
+            // SettingsView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -260,16 +260,16 @@
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOk);
             this.Controls.Add(this.tabControl1);
-            this.Name = "PreferencesView";
-            this.Text = "PreferencesView";
+            this.Name = "SettingsView";
+            this.Text = "Settings";
             this.tabControl1.ResumeLayout(false);
             this.tabGeneral.ResumeLayout(false);
             this.tabGeneral.PerformLayout();
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
+            this.grbPlayer.ResumeLayout(false);
+            this.grbPlayer.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nmdPreviewPercentage)).EndInit();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
+            this.grbVirtualDjImport.ResumeLayout(false);
+            this.grbVirtualDjImport.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -283,12 +283,12 @@
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button btnClear;
-        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.GroupBox grbVirtualDjImport;
         private System.Windows.Forms.CheckBox chbAutomaticBpmImport;
         private System.Windows.Forms.CheckBox chbAutomaticKeyImport;
         private System.Windows.Forms.TextBox txtBoxVirtualDjDatabasePath;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.GroupBox grbPlayer;
         private System.Windows.Forms.CheckBox chbPlayTrackAfterOpenFiles;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.NumericUpDown nmdPreviewPercentage;

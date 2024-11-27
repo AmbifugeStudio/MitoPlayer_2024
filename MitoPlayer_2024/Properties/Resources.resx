@@ -124,6 +124,9 @@
   <data name="BlackLine" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\BlackLine.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Settings_20_20" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Settings_20_20.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="MasterPeakColoured1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\MasterPeakColoured1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -172,7 +175,19 @@
   <data name="MissingCover" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\MissingCover.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Settings_20_20" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Settings_20_20.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Arrow_Down_20_20" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\DownArrow_20_20.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Arrow_Left_20_20" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\LeftArrow_20_20.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Arrow_Right_20_20" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\RightArrow_20_20.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Arrow_Up_20_20" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\UpArrow_20_20.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TagValueScript" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TagValueScript.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1250</value>
   </data>
 </root>

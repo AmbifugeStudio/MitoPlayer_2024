@@ -92,7 +92,9 @@ namespace MitoPlayer_2024.Helpers
         ShortTrackColouringThreshold,
 
         TrainingModelBatchCount,
-        IsTracklistDetailsDisplayed
+        IsTracklistDetailsDisplayed,
+        IsCoverImageComponentDisplayed
+
     }
 
     public enum MediaPlayerUpdateState

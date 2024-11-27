@@ -343,11 +343,21 @@ namespace MitoPlayer_2024.Helpers
                     this.KeysArray = Array.ConvertAll(keys.Split(','), s => s);
                     this.KeysAlterArray = Array.ConvertAll(keysAlter.Split(','), s => s);
 
+                    String vdjDatabaseFilePath = String.Empty;
+
                     Parallel.ForEach(validDriveList, (drive, state, index) =>
                     {
+                        
+                        if (drive == "C")
+                        {
+                            vdjDatabaseFilePath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\VirtualDJ\\database.xml";
+                        }
+                        else
+                        {
+                            vdjDatabaseFilePath = drive + ":\\VirtualDJ\\database.xml";
+                        }
 
-
-                        String vdjDatabaseFilePath = drive + ":\\VirtualDJ\\database.xml";
+                        
                         XmlDocument xmlDoc = new XmlDocument();
                         xmlDoc.Load(vdjDatabaseFilePath);
                         XmlNodeList nodeList = xmlDoc.DocumentElement.SelectNodes("Song");

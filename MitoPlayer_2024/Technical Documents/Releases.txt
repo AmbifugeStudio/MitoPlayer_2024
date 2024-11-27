@@ -1,20 +1,30 @@
 ﻿
 
 
+- fájl exportnál original fájlnév megőrzés
+- feature: vdj és mixedinkey import szétszedése
+- fájl exportnál progress bar
+
+OK - BUG - peak meter freezez somethimes
+
+- FEATURE: paused music should continue with the set position after mouse button is pressed on the progress bar, while the song is paused
+- FEATURE: soundwaves instead of progress bar
+
+- a peak még mindig megfagy
+- 2777 zenénél nem jóü lírja ki ahosszot
+- hiba 2024-es mappa szekenneélesok 
+_ a progress bar delay-e lassú
+- preview setting defulkt ne leghyen nulla
+
+- a proggress bar-ra nyomva eltolódik a progbress
+- preview gomb megnyomása után augrojon vissza  avezérlés agridre
+- utolsó utáni playlistra drag and droppolok számot, index hibával elszáll
+- nagyok sok elem drag and drop-ja ínkeserves, le kellene korlátoznib
 
 
-- ha filterezek többször, ki/be kapcsolódik afilter, ahelyett, hoyg szűrné a következő réssztringet
-
-a lepauzált zene pauzra teljesen újraindul
-
-- nem áll le a lejátszás az utolsó utolsó zenénél
 
 - BUG: modeltrainer - samples 125/124 100% display does not disappear error
 - FEATURE: modeltrainer - owerwrite mhd5 does not work
-- BUG: where is the filter clear button?
-- FEATURE: tag value import - automatic loads the last used/saved script
-- FEATURE: tag value import - generate button generate the script about the current tags and tagvalues into the script textfields
-- FEATURE: tag values import - save button saves your last script
 
 - FEATURE: already played today - external drag and drop
 - FEATURE: track count - external drag and drop
@@ -31,18 +41,15 @@ a lepauzált zene pauzra teljesen újraindul
 
 
 - FEATURE: virtual dj open vs. scan bpm dialog windows
-- BUG - peak meter freezez somethimes
+
 - BUG: cover browser update bug after key import
 elmegyek a tageditorra, miközben szól egy zene, visszajövök, nem állítódik be a szine
 
 - FEATURE: tagvalue editor view - reorder tag values by drag and drop
 
-- FEATURE: cover browser turn on and off button (with button position change)
-
-
 a filtered lista elemeit írja ki a playlist tack coujnt - ki kéne írni, hogy ez szűrt,pl 500 számból 32
 
-- BUG: too much tag - delete tag, navigate to playlist, panel hides clear filter button in the filter mode
+
 - FEATURE: set debug message timer time in options
 - BUG: column visibility - isdisplayed will be turned off after sorting
 - REFACTOR: column visibility dark mode
@@ -57,6 +64,25 @@ a filtered lista elemeit írja ki a playlist tack coujnt - ki kéne írni, hogy 
 - FEATURE: tag editor - display according to tag/tagvalue order
 - FEATURE: load tracklist or navigate away: check save status and show dialog window is there are unsaved progress
 
+======================
+v0.15.2.15
+======================
+OK - BUG: error at playlist initilialization after tag name change
+OK - FEATURE: cover browser turn on and off
+OK - FEATURE: set the color of the length to red, if the track is short
+OK - BUG: preview does not working
+OK - REFACTOR: settings and profile requires restart (workaround)
+OK - BUG: filter textbox - filter turnes on and off after mutliple filter (text and enter into the textbox)
+OK - BUG: pause button restart the music, when the song is already paused
+OK - BUG: playing does not stop after the last song in the list
+OK - FEATURE: tag value import - generate button generate the script about the current tags and tagvalues into the script textfields
+OK - FEATURE: tag values import - save button saves your last script
+OK - FEATURE: tag value import - automatic loads the last used/saved script
+OK - BUG: add tag - textcolouring does not update in the list (it is false)
+OK - BUG: too much tag - panel hides clear filter button in the filter mode and panel does not display every tag - after tag adding!
+OK - BUG: initial volume should not be 100% after setup
+OK - FEATURE: automatikus key beolvasás Comment-ből
+OK - FEATURE: utolagos key beolvasás Comment-ből
 ======================
 v0.15.1.1
 ======================

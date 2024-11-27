@@ -47,15 +47,35 @@ namespace MitoPlayer_2024.Views
         }
 
 
-        public event EventHandler<Messenger> CloseView;
+        public event EventHandler<Messenger> CloseViewEvent;
+        public event EventHandler<Messenger> SaveScriptEvent;
+        public event EventHandler GenerateScriptEvent;
 
+        public void InitilizeScript(string script)
+        {
+            this.rtxtbScript.Text = script;
+        }
+        public void InitilizeTutorial(string tutorialText)
+        {
+            this.rtxtbTutorial.Text = tutorialText;
+        }
 
         private void btnImport_Click(object sender, EventArgs e)
         {
-            CloseView?.Invoke(this, new Messenger() { StringField1 = this.rtxtbScript.Text });
+            CloseViewEvent?.Invoke(this, new Messenger() { StringField1 = this.rtxtbScript.Text });
         }
 
-       
+        private void btnGenerate_Click(object sender, EventArgs e)
+        {
+            GenerateScriptEvent?.Invoke(this, new EventArgs());
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            SaveScriptEvent?.Invoke(this, new Messenger() { StringField1 = this.rtxtbScript.Text });
+        }
+
+        
     }
 
 }

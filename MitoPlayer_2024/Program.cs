@@ -52,7 +52,7 @@ namespace MitoPlayer_2024
 
             //vannak-e lementett adatok
             String host = Properties.Settings.Default.Host;
-            int portNumber = Properties.Settings.Default.Port;
+            int portNumber = !String.IsNullOrEmpty(Properties.Settings.Default.Port) ? int.Parse(Properties.Settings.Default.Port) : 0;
             String userName = Properties.Settings.Default.UserName;
             String password = Properties.Settings.Default.Password;
             String database = Properties.Settings.Default.Database;
@@ -72,7 +72,7 @@ namespace MitoPlayer_2024
                 if (ShowDatabaseSetupView())
                 {
                     host = Properties.Settings.Default.Host;
-                    portNumber = Properties.Settings.Default.Port;
+                    portNumber = int.Parse(Properties.Settings.Default.Port);
                     userName = Properties.Settings.Default.UserName;
                     password = Properties.Settings.Default.Password;
                     database = Properties.Settings.Default.Database;
@@ -166,7 +166,7 @@ namespace MitoPlayer_2024
         private static void ClearDatabaseSettings()
         {
             Properties.Settings.Default.Host = String.Empty;
-            Properties.Settings.Default.Port = 0;
+            Properties.Settings.Default.Port = String.Empty;
             Properties.Settings.Default.UserName = String.Empty;
             Properties.Settings.Default.Password = String.Empty;
             Properties.Settings.Default.Database = String.Empty;

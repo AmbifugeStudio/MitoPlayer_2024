@@ -31,6 +31,7 @@ namespace MitoPlayer_2024.Views
         public event EventHandler<Messenger> SetCurrentTagId;
         public event EventHandler<Messenger> SetCurrentTagValueId;
         public event EventHandler OpenTagValueImportViewEvent;
+        public event EventHandler<Messenger> MoveTagListRowEvent;
 
         public TagValueView()
         {
@@ -40,7 +41,11 @@ namespace MitoPlayer_2024.Views
             this.tagListBindingSource = new BindingSource();
             this.tagValueListBindingSource = new BindingSource();
             this.currentTag = null;
-            
+
+            tagListClickTimer = new System.Windows.Forms.Timer();
+            tagListClickTimer.Interval = tagListDoubleClickTime;
+            tagListClickTimer.Tick += TagListClickTimer_Tick;
+
             this.CenterToScreen();
         }
 
@@ -79,6 +84,7 @@ namespace MitoPlayer_2024.Views
         Color WhiteColor = System.Drawing.ColorTranslator.FromHtml("#FFFFFF");
         Color GridPlayingColor = System.Drawing.ColorTranslator.FromHtml("#4d4d4d");
         Color GridSelectionColor = System.Drawing.ColorTranslator.FromHtml("#626262");
+        Color ActiveColor = System.Drawing.ColorTranslator.FromHtml("#FFBF80");
         private void SetControlColors()
         {
             this.BackColor = this.BackgroundColor;
@@ -128,6 +134,7 @@ namespace MitoPlayer_2024.Views
         }
 
         private Tag currentTag { get; set; }
+
         public void InitializeTagListBindingSource(BindingSource tagList)
         {
             this.tagListBindingSource.DataSource = tagList;
@@ -136,6 +143,9 @@ namespace MitoPlayer_2024.Views
         private void dgvTagList_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
         {
             this.dgvTagList.Columns["Id"].Visible = false;
+            this.dgvTagList.Columns["OrderInList"].Visible = false;
+            this.dgvTagList.Columns["IsIntegrated"].Visible = false;
+
             foreach (DataGridViewColumn column in dgvTagList.Columns)
             {
                 column.SortMode = DataGridViewColumnSortMode.NotSortable;
@@ -341,13 +351,7 @@ namespace MitoPlayer_2024.Views
         }
 
 
-        private void dgvTagList_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
-        {
-            if (this.dgvTagList.SelectedRows.Count > 0)
-            {
-                this.SetCurrentTagId?.Invoke(this, new Messenger() { IntegerField1 = Convert.ToInt32(this.dgvTagList.SelectedRows[0].Index) });
-            }
-        }
+       
         private void dgvTagValueList_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             if (this.dgvTagValueList.SelectedRows.Count > 0)
@@ -392,15 +396,6 @@ namespace MitoPlayer_2024.Views
                 }
             }
         }
-
-        private void dgvTagList_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (this.dgvTagList.SelectedRows.Count > 0)
-            {
-                this.EditTag?.Invoke(this, new Messenger() { IntegerField1 = Convert.ToInt32(this.dgvTagList.SelectedRows[0].Index) });
-            }
-        }
-
         private void dgvTagValueList_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             if (this.dgvTagValueList.SelectedRows.Count > 0)
@@ -409,8 +404,226 @@ namespace MitoPlayer_2024.Views
             }
         }
 
-       
+        /*private void dgvTagList_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (this.dgvTagList.SelectedRows.Count > 0)
+            {
+                this.EditTag?.Invoke(this, new Messenger() { IntegerField1 = Convert.ToInt32(this.dgvTagList.SelectedRows[0].Index) });
+            }
+        }*/
 
+
+
+        private int firstSelectedTagRowIndex = -1;
+        private bool isTagDragging = false;
+        private bool isTagListMouseDown = false;
+        private Point tagListDragStartPoint;
+        private System.Windows.Forms.Timer tagListClickTimer;
+        private const int tagListDoubleClickTime = 2000;
+        private const string TagListDataFormat = "TagListData";
+        private int tagListInsertionLineIndex = -1;
         
+        private void dgvTagList_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dgvTagList.SelectedRows.Count > 0)
+            {
+                int selectedIndex = dgvTagList.SelectedRows[0].Index;
+                firstSelectedTagRowIndex = selectedIndex;
+
+                if (!isTagDragging)
+                    this.SetCurrentTagId?.Invoke(this, new Messenger() { IntegerField1 = Convert.ToInt32(this.dgvTagList.SelectedRows[0].Index) });
+            }
+        }
+        private void dgvTagList_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (!isTagDragging)
+            {
+                this.CallEditTagEvent();
+            }
+        }
+        private void dgvTagList_MouseDown(object sender, MouseEventArgs e)
+        {
+            var hitTestInfo = dgvTagList.HitTest(e.X, e.Y);
+            if (e.Button == MouseButtons.Left) // Prevent dragging the first row
+            {
+                if (dgvTagList.SelectedRows.Count == 1 && dgvTagList.SelectedRows[0].Index == hitTestInfo.RowIndex)
+                {
+                    // Single row is already selected, start drag-and-drop
+                    isTagListMouseDown = true;
+                    isTagDragging = false;
+                    tagListDragStartPoint = e.Location;
+                    firstSelectedTagRowIndex = hitTestInfo.RowIndex;
+                    tagListClickTimer.Start();
+                }
+                else
+                {
+                    // Row is not selected, select it
+                    dgvTagList.ClearSelection();
+                    dgvTagList.Rows[hitTestInfo.RowIndex].Selected = true;
+                    isTagListMouseDown = true;
+                    isTagDragging = false;
+                    tagListDragStartPoint = e.Location;
+                    firstSelectedTagRowIndex = hitTestInfo.RowIndex;
+                    tagListClickTimer.Start();
+                }
+            }
+        }
+        private void dgvTagList_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (isTagListMouseDown && !isTagDragging)
+            {
+                if (Math.Abs(e.X - tagListDragStartPoint.X) > SystemInformation.DragSize.Width ||
+                Math.Abs(e.Y - tagListDragStartPoint.Y) > SystemInformation.DragSize.Height)
+                {
+                    isTagDragging = true;
+                    tagListClickTimer.Stop();
+                    dgvTagList.DoDragDrop(new DataObject(TagListDataFormat, dgvTagList.SelectedRows[0]), DragDropEffects.Move);
+                }
+            }
+        }
+        private void dgvTagList_MouseUp(object sender, MouseEventArgs e)
+        {
+            isTagListMouseDown = false;
+            if (!isTagDragging)
+            {
+                tagListClickTimer.Stop();
+            }
+            isTagDragging = false;
+        }
+        private void TagListClickTimer_Tick(object sender, EventArgs e)
+        {
+            tagListClickTimer.Stop();
+            if (!isTagDragging)
+            {
+                this.CallEditTagEvent();
+            }
+        }
+        public void CallEditTagEvent()
+        {
+            if (this.dgvTagList.SelectedRows.Count > 0)
+            {
+                this.EditTag?.Invoke(this, new Messenger() { IntegerField1 = Convert.ToInt32(this.dgvTagList.SelectedRows[0].Index) });
+            }
+        }
+        private int highlightedTagRowIndex = -1;
+        private void dgvTagList_DragOver(object sender, DragEventArgs e)
+        {
+            Point clientPoint = dgvTagList.PointToClient(new Point(e.X, e.Y));
+            int rowIndex = dgvTagList.HitTest(clientPoint.X, clientPoint.Y).RowIndex;
+
+            if (e.Data.GetDataPresent(TagListDataFormat))
+            {
+                // Handle drag over within playlist list
+                if (rowIndex <= 0) // Prevent dropping on the first row
+                {
+                    e.Effect = DragDropEffects.None;
+                    tagListInsertionLineIndex = -1;
+                }
+                else
+                {
+                    e.Effect = DragDropEffects.Move;
+
+                    Rectangle rowBounds = dgvTagList.GetRowDisplayRectangle(rowIndex, false);
+                    int rowHeight = rowBounds.Height;
+                    int cursorY = clientPoint.Y - rowBounds.Top;
+
+                    if (cursorY < rowHeight / 2)
+                    {
+                        DrawTagListInsertionLine(rowIndex);
+                    }
+                    else
+                    {
+                        DrawTagListInsertionLine(rowIndex + 1);
+                    }
+                }
+                highlightedTagRowIndex = -1; // Ensure border is not drawn
+            }
+
+            dgvTagList.Invalidate(); // Update the line or border
+        }
+        private void DrawTagListInsertionLine(int rowIndex)
+        {
+            tagListInsertionLineIndex = rowIndex;
+            dgvTagList.Invalidate();
+        }
+        private void dgvTagList_DragDrop(object sender, DragEventArgs e)
+        {
+            Point clientPoint = dgvTagList.PointToClient(new Point(e.X, e.Y));
+            int rowIndex = dgvTagList.HitTest(clientPoint.X, clientPoint.Y).RowIndex;
+
+            if (e.Data.GetDataPresent(TagListDataFormat))
+            {
+                // Handle drop within playlist list
+                if (rowIndex > 0) // Prevent dropping on the first row
+                {
+                    this.MoveTagListRowEvent?.Invoke(this, new Messenger() { IntegerField1 = firstSelectedTagRowIndex, IntegerField2 = rowIndex });
+                }
+                highlightedTagRowIndex = -1; // Clear the border
+            }
+
+            // Re-select the moved rows using BeginInvoke to ensure it runs after the DataGridView has rendered
+            dgvTagList.BeginInvoke(new Action(() =>
+            {
+                dgvTagList.ClearSelection();
+                dgvTagList.Rows[rowIndex].Selected = true;
+            }));
+
+            // Clear the insertion line and highlighted row
+            tagListInsertionLineIndex = -1;
+            highlightedTagRowIndex = -1;
+            dgvTagList.Invalidate(); // Clear the line and border
+        }
+        private void dgvTagList_DragLeave(object sender, EventArgs e)
+        {
+            highlightedTagRowIndex = -1;
+            dgvTagList.Invalidate(); // Clear the border
+        }
+        private void DrawHighlightedTagListRowBorder(int rowIndex)
+        {
+            highlightedTagRowIndex = rowIndex;
+            dgvTagList.Invalidate();
+        }
+        private void dgvTagList_Paint(object sender, PaintEventArgs e)
+        {
+            if (highlightedTagRowIndex >= 0 && highlightedTagRowIndex < dgvTagList.Rows.Count)
+            {
+                Rectangle rowRect = dgvTagList.GetRowDisplayRectangle(highlightedTagRowIndex, true);
+                using (Pen pen = new Pen(this.ActiveColor, 2)) // Change to your desired color
+                {
+                    e.Graphics.DrawRectangle(pen, rowRect);
+                }
+            }
+
+            if (tagListInsertionLineIndex >= 0 && tagListInsertionLineIndex <= dgvTagList.Rows.Count)
+            {
+                int y = 0;
+                if (tagListInsertionLineIndex < dgvTagList.Rows.Count)
+                {
+                    Rectangle rowRect = dgvTagList.GetRowDisplayRectangle(tagListInsertionLineIndex, true);
+                    y = rowRect.Top;
+                }
+                else
+                {
+                    Rectangle rowRect = dgvTagList.GetRowDisplayRectangle(tagListInsertionLineIndex - 1, true);
+                    y = rowRect.Bottom;
+                }
+
+                using (Pen pen = new Pen(this.ActiveColor, 2))
+                {
+                    e.Graphics.DrawLine(pen, new Point(0, y), new Point(dgvTagList.Width, y));
+                }
+            }
+        }
+        private void dgvTagList_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                e.Effect = DragDropEffects.Copy;
+            }
+            else
+            {
+                e.Effect = DragDropEffects.None;
+            }
+        }
     }
 }

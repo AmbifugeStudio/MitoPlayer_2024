@@ -41,18 +41,13 @@ namespace MitoPlayer_2024.Presenters
         }
         private void MediaPlayer_PlayStateChange(object sender, AxWMPLib._WMPOCXEvents_PlayStateChangeEvent e)
         {
-            if (e.newState == (int)WMPLib.WMPPlayState.wmppsPlaying)
+            if (e.newState == (int)WMPLib.WMPPlayState.wmppsPlaying && currentState == MediaPlayerUpdateState.AfterPlay)
             {
                 if (this.IsPreviewEnabled)
                 {
                     this.PreviewPercent = this.settingDao.GetIntegerSetting(Settings.PreviewPercentage.ToString());
                     this.currentPlayPosition = this.MediaPlayer.currentMedia.duration / 100 * this.PreviewPercent;
                     this.MediaPlayer.Ctlcontrols.currentPosition = this.currentPlayPosition;
-                }
-                else
-                {
-                    this.currentPlayPosition = 0;
-                    this.MediaPlayer.Ctlcontrols.currentPosition = 0;
                 }
             }
         }
@@ -121,6 +116,9 @@ namespace MitoPlayer_2024.Presenters
         {
             return this.workingTable;
         }
+
+        private MediaPlayerUpdateState currentState { get; set; }
+
         public MediaPlayerUpdateState PlayTrack()
         {
             MediaPlayerUpdateState result = MediaPlayerUpdateState.Undefined;
@@ -141,11 +139,13 @@ namespace MitoPlayer_2024.Presenters
 
                     if (System.IO.File.Exists(path))
                     {
+                        currentState = MediaPlayerUpdateState.AfterPlay;
+
                         this.MediaPlayer.URL = path;
                         this.currentPlayPosition = 0;
                         this.MediaPlayer.Ctlcontrols.play();
 
-                        result = MediaPlayerUpdateState.AfterPlay;
+                        result = currentState;
                     }
                 }
             }
@@ -161,21 +161,25 @@ namespace MitoPlayer_2024.Presenters
 
                         if (System.IO.File.Exists(path))
                         {
+                            currentState = MediaPlayerUpdateState.AfterPlay;
+
                             this.MediaPlayer.URL = path;
                             this.currentPlayPosition = 0;
                             this.MediaPlayer.Ctlcontrols.play();
 
-                            result = MediaPlayerUpdateState.AfterPlay;
+                            result = currentState;
                         }
                     }
                 }
             }
             else if (this.MediaPlayer.playState == WMPLib.WMPPlayState.wmppsPaused)
             {
+                currentState = MediaPlayerUpdateState.AfterPlayAfterPause;
+
                 this.MediaPlayer.Ctlcontrols.currentPosition = this.currentPlayPosition;
                 this.MediaPlayer.Ctlcontrols.play();
 
-                result = MediaPlayerUpdateState.AfterPlayAfterPause;
+                result = currentState;
             }
 
             return result;
@@ -421,6 +425,29 @@ namespace MitoPlayer_2024.Presenters
             return result;
         }
 
+        public void JumpForward()
+        {
+            double cp = this.MediaPlayer.Ctlcontrols.currentPosition;
 
+            if (cp + 5 > this.MediaPlayer.currentMedia.duration)
+                cp = this.MediaPlayer.currentMedia.duration;
+            else
+                cp += 5;
+
+            this.currentPlayPosition = cp;
+            this.MediaPlayer.Ctlcontrols.currentPosition = cp;
+        }
+        public void JumpBackward()
+        {
+            double cp = this.MediaPlayer.Ctlcontrols.currentPosition;
+
+            if (cp - 5 <= 0)
+                cp = 0;
+            else
+                cp -= 5;
+
+            this.currentPlayPosition = cp;
+            this.MediaPlayer.Ctlcontrols.currentPosition = cp;
+        }
     }
 }

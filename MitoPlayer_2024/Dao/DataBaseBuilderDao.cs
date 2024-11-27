@@ -285,7 +285,7 @@ namespace MitoPlayer_2024.Helpers
                                         Name varchar(50) NOT NULL, 
                                         StringValue varchar(255), 
                                         IntegerValue int(11), 
-                                        DecimalValue decimal(10,0), 
+                                        DecimalValue decimal(10,3), 
                                         BooleanValue tinyint(4), 
                                         ProfileId int(11), 
 
@@ -391,6 +391,7 @@ namespace MitoPlayer_2024.Helpers
                                         Album varchar(100) DEFAULT NULL, 
                                         Year int(11) DEFAULT NULL, 
                                         Length int(11) DEFAULT NULL, 
+                                        Comment varchar(100) DEFAULT NULL, 
                                         ProfileId int(11) DEFAULT NULL, 
 
                                         PRIMARY KEY (Id)) 
@@ -461,7 +462,8 @@ namespace MitoPlayer_2024.Helpers
                                         Name varchar(50) NOT NULL, 
                                         TextColoring tinyint(4) NOT NULL,
                                         HasMultipleValues tinyint(4) NOT NULL,
-                                        Integrated tinyint(4) NOT NULL,
+                                        IsIntegrated tinyint(4) NOT NULL,
+                                        OrderInList int(11) NOT NULL, 
                                         ProfileId int(11) NOT NULL, 
 
                                         PRIMARY KEY (Id)) 
@@ -572,7 +574,7 @@ namespace MitoPlayer_2024.Helpers
                                         Name varchar(50) NOT NULL,
                                         CreateDate datetime NOT NULL, 
                                         SampleCount int(11), 
-                                        Balance decimal(10,0), 
+                                        Balance decimal(10,3), 
                                         IsTemplate tinyint(4) NOT NULL,
 
                                         ExtractChromaFeatures tinyint(4) NOT NULL,             

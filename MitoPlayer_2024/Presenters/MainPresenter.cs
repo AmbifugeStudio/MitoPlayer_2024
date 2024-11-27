@@ -5,6 +5,7 @@ using MitoPlayer_2024.Model;
 using MitoPlayer_2024.Models;
 using MitoPlayer_2024.Views;
 using MySql.Data.MySqlClient;
+using Mysqlx;
 using MySqlX.XDevAPI.Common;
 using NAudio.Wave;
 using Org.BouncyCastle.Asn1.X509;
@@ -12,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -52,7 +54,7 @@ namespace MitoPlayer_2024.Presenters
         private TrackEditorPresenter trackEditorPresenter { get; set; }
         private TemplateEditorPresenter templateEditorPresenter { get; set; }
         private HarmonizerPresenter harmonizerPresenter { get; set; }
-        private PreferencesPresenter preferencesPresenter { get; set; }
+        private SettingsPresenter preferencesPresenter { get; set; }
         private AboutPresenter aboutPresenter { get; set; }
         private string[] scannedFileNames { get; set; }
         private string connectionString { get; set; }
@@ -70,9 +72,9 @@ namespace MitoPlayer_2024.Presenters
             this.mainView.ShowTrackEditorView += ShowTrackEditorView;
             this.mainView.ShowTemplateEditorView += ShowTemplateEditorView;
             this.mainView.ShowHarmonizerView += ShowHarmonizerView;
-            this.mainView.ShowPreferencesView += ShowPreferencesView;
+            this.mainView.ShowPreferencesView += ShowSettingsView;
             this.mainView.ShowAboutView += ShowAboutView;
-            this.mainView.Preferences += Preferences;
+            this.mainView.Settings += Preferences;
             this.mainView.About += About;
 
             //FUNCTIONS
@@ -237,7 +239,7 @@ namespace MitoPlayer_2024.Presenters
                 Name = "Key",
                 TextColoring = true,
                 HasMultipleValues = false,
-                Integrated = true,
+                IsIntegrated = true,
                 ProfileId = profileId
             };
 
@@ -262,7 +264,7 @@ namespace MitoPlayer_2024.Presenters
                     Id = this.trackDao.GetNextId(TableName.TrackProperty.ToString()),
                     Name = tag.Name + "TagValueId",
                     Type = "System.Int32",
-                    IsEnabled = true,
+                    IsEnabled = false,
                     ColumnGroup = ColumnGroup.TracklistColumns.ToString(),
                     SortingId = this.settingDao.GetNextTrackPropertySortingId(),
                 };
@@ -303,7 +305,7 @@ namespace MitoPlayer_2024.Presenters
                     Name = "Bpm",
                     TextColoring = true,
                     HasMultipleValues = true,
-                    Integrated = true,
+                    IsIntegrated = true,
                     ProfileId = profileId
                 };
 
@@ -329,7 +331,7 @@ namespace MitoPlayer_2024.Presenters
                     Id = this.trackDao.GetNextId(TableName.TrackProperty.ToString()),
                     Name = tag.Name + "TagValueId",
                     Type = "System.Decimal",
-                    IsEnabled = true,
+                    IsEnabled = false,
                     ColumnGroup = ColumnGroup.TracklistColumns.ToString(),
                     SortingId = this.settingDao.GetNextTrackPropertySortingId(),
                 };
@@ -407,15 +409,33 @@ namespace MitoPlayer_2024.Presenters
 
         private void ReloadMainView()
         {
+            
 
-            if (this.playlistView != null && this.actualView.GetType() == typeof(PlaylistView))
-                ((PlaylistView)this.playlistView).CallStopTrackEvent();
-            else if (this.trackEditorView != null && this.actualView.GetType() == typeof(TrackEditorView))
-                ((TrackEditorView)this.trackEditorView).CallStopTrackEvent();
-            else if (this.harmonizerView != null && this.actualView.GetType() == typeof(HarmonizerView))
-                ((HarmonizerView)this.harmonizerView).CallStopTrackEvent();
+            /* if (this.playlistView != null && this.actualView.GetType() == typeof(PlaylistView))
+                 ((PlaylistView)this.playlistView).CallStopTrackEvent();
+             else if (this.trackEditorView != null && this.actualView.GetType() == typeof(TrackEditorView))
+                 ((TrackEditorView)this.trackEditorView).CallStopTrackEvent();
+             else if (this.harmonizerView != null && this.actualView.GetType() == typeof(HarmonizerView))
+                 ((HarmonizerView)this.harmonizerView).CallStopTrackEvent();*/
 
-            this.InitializeProfileAndPlaylist();
+            // this.InitializeProfileAndPlaylist();
+            // this.ShowPlaylistView();
+
+            // this.InitializeProfileAndPlaylist();
+            // this.InitializeViewsAndPresenters();
+
+            //  if (this.playlistView != null && this.actualView != null && this.actualView.GetType() == typeof(PlaylistView))
+            // {
+
+
+            /* bool automaticKeyImport = this.settingDao.GetBooleanSetting(Settings.AutomaticKeyImport.ToString()).Value;
+             bool automaticBpmImport = this.settingDao.GetBooleanSetting(Settings.AutomaticBpmImport.ToString()).Value;
+
+             if ((automaticKeyImport == false && automaticBpmImport == false) || (automaticKeyImport == true || automaticBpmImport == true))
+             {
+                 ((PlaylistView)this.playlistView).SetKeyAndBpmAnalization(this.HasVirtualDj() && (automaticKeyImport || automaticBpmImport));
+             }*/
+            // }
         }
 
         //VIEWS
@@ -439,16 +459,20 @@ namespace MitoPlayer_2024.Presenters
         }
         private void ShowPlaylistView(object sender, EventArgs e)
         {
+            this.ShowPlaylistView();
+        }
+        private void ShowPlaylistView() {
             this.HideAllForm();
 
             this.playlistPresenter.Initialize(this.mediaPlayerComponent);
             ((PlaylistView)this.playlistView).Show();
-            //((PlaylistView)this.playlistView).EnableTracklistSelection();
 
             this.actualView = this.playlistView;
             ((MainView)mainView).SetMenuStripAccessibility(this.actualView);
         }
-        
+
+
+
         private void ShowTagValueEditorView(object sender, EventArgs e)
         {
             this.HideAllForm();
@@ -485,24 +509,15 @@ namespace MitoPlayer_2024.Presenters
             ((MainView)mainView).SetMenuStripAccessibility(this.actualView);
             this.harmonizerPresenter = new HarmonizerPresenter((IHarmonizerView)this.actualView, this.mediaPlayerComponent, this.trackDao, this.settingDao);
         }
-        private void ShowPreferencesView(object sender, EventArgs e)
+        private void ShowSettingsView(object sender, EventArgs e)
         {
-            PreferencesView preferencesView = new PreferencesView();
-            PreferencesPresenter presenter = new PreferencesPresenter(preferencesView, this.trackDao, this.tagDao, this.profileDao, this.settingDao);
-            preferencesView.ShowDialog((PreferencesView)this.preferencesView);
+            SettingsView preferencesView = new SettingsView();
+            SettingsPresenter presenter = new SettingsPresenter(preferencesView, this.trackDao, this.tagDao, this.profileDao, this.settingDao);
+            preferencesView.ShowDialog((SettingsView)this.preferencesView);
 
-            bool automaticKeyImport = this.settingDao.GetBooleanSetting(Settings.AutomaticKeyImport.ToString()).Value;
-            bool automaticBpmImport = this.settingDao.GetBooleanSetting(Settings.AutomaticBpmImport.ToString()).Value;
+            
 
-            if (this.playlistView != null && this.actualView != null && this.actualView.GetType() == typeof(PlaylistView))
-            {
-                if((automaticKeyImport == false && automaticBpmImport == false) ||(automaticKeyImport == true || automaticBpmImport == true))
-                {
-                    ((PlaylistView)this.playlistView).SetKeyAndBpmAnalization(this.HasVirtualDj() && (automaticKeyImport || automaticBpmImport));
-                }
-            }
-
-            this.ReloadMainView();
+           // this.ReloadMainView();
 
             /*if (presenter.databaseCleared)
             {
@@ -634,7 +649,7 @@ namespace MitoPlayer_2024.Presenters
         }
         private void Preferences(object sender, EventArgs e)
         {
-            this.ShowPreferencesView(this, new EventArgs());
+            this.ShowSettingsView(this, new EventArgs());
         }
         private void Exit(object sender, EventArgs e)
         {
@@ -928,6 +943,7 @@ namespace MitoPlayer_2024.Presenters
                                         track.Title = file.Tag.Title;
                                         track.Year = (int)file.Tag.Year;
                                         track.Length = file.Properties.Duration.TotalSeconds;
+                                        track.Comment = file.Tag.Comment;
                                     }
                                 }
                                 else if (path.EndsWith(".wav"))
@@ -949,6 +965,12 @@ namespace MitoPlayer_2024.Presenters
                                             track.Album = vorbisComment.Album.FirstOrDefault();
                                             track.Title = vorbisComment.Title.FirstOrDefault();
                                             track.Year = int.TryParse(vorbisComment.Date.FirstOrDefault()?.Substring(0, 4), out int year) ? year : 0;
+                                            
+                                            var comment = vorbisComment["COMMENT"];
+                                            if (comment != null && comment.Count > 0)
+                                            {
+                                                track.Comment = comment[0];
+                                            }
                                         }
                                         track.Length = file.StreamInfo.Duration;
                                     }
@@ -1007,6 +1029,48 @@ namespace MitoPlayer_2024.Presenters
                         {
                             MessageBox.Show(result.ErrorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
+                        else
+                        {
+                            TagValue tv = null;
+                            String tagValueName = String.Empty;
+                            String keyCode = String.Empty;
+                            String[] parts = null;
+
+                            foreach (Track track in trackList)
+                            {
+                                if (!String.IsNullOrEmpty(track.Comment))
+                                {
+                                    parts = track.Comment.Split('-');
+                                    if (parts != null && parts.Length > 0)
+                                    {
+                                        keyCode = parts[0].TrimEnd();
+
+                                        if(keyCode.Count()== 2)
+                                        {
+                                            keyCode = "0" + keyCode;
+                                        }
+
+                                        tv = keyTagValueList.Find(x => x.Name == keyCode);
+
+                                        if (tv != null)
+                                        {
+                                            if (track.TrackTagValues != null && track.TrackTagValues.Count > 0)
+                                            {
+                                                TrackTagValue ttv = track.TrackTagValues.Find(x => x.TagName == "Key");
+                                                if (ttv != null)
+                                                {
+                                                    ttv.TagValueId = tv.Id;
+                                                    ttv.TagValueName = tv.Name;
+                                                    this.trackDao.UpdateTrackTagValue(ttv);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                
+                            }
+                        }
+
                     }
                 }
                 return trackList;

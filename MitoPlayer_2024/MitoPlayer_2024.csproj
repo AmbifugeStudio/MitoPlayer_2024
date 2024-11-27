@@ -19,7 +19,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <PublishUrl>C:\Users\Mitoklin\Desktop\MitoPlayer\MitopLayer2024_v0.14.3.10\</PublishUrl>
+    <PublishUrl>C:\Users\Mitoklin\Desktop\MitoPlayer\MitopLayer2024_v0.15.1.1\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -34,8 +34,8 @@
     <PublisherName>László Szarka</PublisherName>
     <MinimumRequiredVersion>0.14.3.10</MinimumRequiredVersion>
     <AutorunEnabled>true</AutorunEnabled>
-    <ApplicationRevision>10</ApplicationRevision>
-    <ApplicationVersion>0.14.3.10</ApplicationVersion>
+    <ApplicationRevision>1</ApplicationRevision>
+    <ApplicationVersion>0.15.1.1</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -307,7 +307,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Tmp\Class1.cs" />
-    <Compile Include="Tmp\CustomDataGridView.cs">
+    <Compile Include="Helpers\FormElements\CustomDataGridView.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Tmp\CustomHScrollBar.cs">
@@ -363,7 +363,7 @@
     <Compile Include="Presenters\MediaPlayerComponent.cs" />
     <Compile Include="Presenters\PlaylistEditorPresenter.cs" />
     <Compile Include="Presenters\PlaylistPresenter.cs" />
-    <Compile Include="Presenters\PreferencesPresenter.cs" />
+    <Compile Include="Presenters\SettingsPresenter.cs" />
     <Compile Include="Presenters\ColumnVisibilityEditorPresenter.cs" />
     <Compile Include="Presenters\ProfileEditorPresenter.cs" />
     <Compile Include="Presenters\ProfilePresenter.cs" />
@@ -470,11 +470,11 @@
     </Compile>
     <Compile Include="Dao\BaseDao.cs" />
     <Compile Include="Dao\TrackDao.cs" />
-    <Compile Include="Views\PreferencesView.cs">
+    <Compile Include="Views\SettingsView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\PreferencesView.Designer.cs">
-      <DependentUpon>PreferencesView.cs</DependentUpon>
+    <Compile Include="Views\SettingsView.Designer.cs">
+      <DependentUpon>SettingsView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\ProfileEditorView.cs">
       <SubType>Form</SubType>
@@ -581,8 +581,8 @@
       <DependentUpon>PlaylistView.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\PreferencesView.resx">
-      <DependentUpon>PreferencesView.cs</DependentUpon>
+    <EmbeddedResource Include="Views\SettingsView.resx">
+      <DependentUpon>SettingsView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\ProfileEditorView.resx">
       <DependentUpon>ProfileEditorView.cs</DependentUpon>
@@ -687,6 +687,15 @@
     <None Include="Resources\MarkerGrey.png" />
     <None Include="Resources\MissingCover.png" />
     <None Include="Resources\Settings_20_20.png" />
+    <None Include="Resources\DownArrow.png" />
+    <None Include="Resources\LeftArrow.png" />
+    <None Include="Resources\RightArrow.png" />
+    <None Include="Resources\UpArrow.png" />
+    <None Include="Resources\DownArrow_20_20.png" />
+    <None Include="Resources\LeftArrow_20_20.png" />
+    <None Include="Resources\RightArrow_20_20.png" />
+    <None Include="Resources\UpArrow_20_20.png" />
+    <None Include="Resources\TagValueScript.txt" />
     <Content Include="Technical Documents\Releases.txt" />
     <Content Include="Technical Documents\DevProcess.txt" />
     <Content Include="Technical Documents\TestCases.txt" />

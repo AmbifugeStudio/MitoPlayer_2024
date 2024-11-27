@@ -117,19 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="rtxtbTutorial.Text" xml:space="preserve">
-    <value>You can import a tag and its tag values ​​by entering the name of the tag in one line, then listing the tag values ​​separated by commas after a colon.
-You can write several tags (and tag values ​​to them) in several lines. 
-The whole text must be shorter than 255 characters!
-
-Format:
-tagname1:tagvalue1,tagvalue2,tagvalue3,tagvalue4,tagvalue5
-tagname2:tagvalue6,tagvalue7
-tagname3:tagvalue6,tagvalue7
-
-Example:
-Style:Liquid(#80FF80),Deep(#D3ABAB),Roller(#FFBF80),Neuro(#80BFFF),Stadion(#FFFF80)
-HasVocal:Yes(#80FF80)
-Favourite:Yes(#80FF80)</value>
-  </data>
 </root>

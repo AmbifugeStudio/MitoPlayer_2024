@@ -33,7 +33,7 @@ namespace MitoPlayer_2024
         public event EventHandler ExportToM3U;
         public event EventHandler ExportToTXT;
         public event EventHandler ExportToDirectory;
-        public event EventHandler Preferences;
+        public event EventHandler Settings;
         public event EventHandler Exit;
 
         public event EventHandler RemoveMissingTracks;
@@ -236,9 +236,9 @@ namespace MitoPlayer_2024
         {
             this.ExportToDirectory?.Invoke(this, Messenger.Empty);
         }
-        private void menuStripPreferences_Click(object sender, EventArgs e)
+        private void menuStripSettings_Click(object sender, EventArgs e)
         {
-            this.Preferences?.Invoke(this, EventArgs.Empty);
+            this.Settings?.Invoke(this, EventArgs.Empty);
         }
         private void menuStripExit_Click(object sender, EventArgs e)
         {
@@ -617,8 +617,25 @@ namespace MitoPlayer_2024
             leftReferenceHeight = this.pcbMasterPeakLeftColoured.Height;
             rightReferenceHeight = this.pcbMasterPeakLeftColoured.Height;
 
-            leftPeak = (int)(Math.Round(this.mmDevice.AudioMeterInformation.PeakValues[0] * 100));
-            rightPeak = (int)(Math.Round(this.mmDevice.AudioMeterInformation.PeakValues[1] * 100));
+            if(this.mmDevice.AudioMeterInformation.PeakValues != null && this.mmDevice.AudioMeterInformation.PeakValues.Count > 0)
+            {
+                try
+                {
+                    leftPeak = (int)(Math.Round(this.mmDevice.AudioMeterInformation.PeakValues[0] * 100));
+                    rightPeak = (int)(Math.Round(this.mmDevice.AudioMeterInformation.PeakValues[1] * 100));
+                }
+                catch (Exception ex)
+                {
+                    leftPeak = 0;
+                    rightPeak = 0;
+                }
+            }
+            else
+            {
+                leftPeak = 0; 
+                rightPeak = 0;
+            }
+            
             masterPeak = (int)(Math.Round(this.mmDevice.AudioMeterInformation.MasterPeakValue * 100));
 
             masterPeakInDecibel = this.ConvertToDecibels(this.mmDevice.AudioMeterInformation.MasterPeakValue);

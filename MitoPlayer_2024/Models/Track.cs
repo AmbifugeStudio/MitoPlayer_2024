@@ -17,6 +17,7 @@ namespace MitoPlayer_2024.Model
         public string Artist { get; set; }
         public string Title { get; set; }
         public string Album { get; set; }
+        public string Comment { get; set; }
         public int Year { get; set; }
         public double Length { get; set; }
         public bool IsMissing { get; set; }

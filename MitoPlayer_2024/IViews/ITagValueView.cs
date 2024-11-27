@@ -26,6 +26,7 @@ namespace MitoPlayer_2024.Views
         event EventHandler<Messenger> SetCurrentTagId;
         event EventHandler<Messenger> SetCurrentTagValueId;
         event EventHandler OpenTagValueImportViewEvent;
+        event EventHandler<Messenger> MoveTagListRowEvent;
         void Show();
     }
 }

@@ -4,6 +4,7 @@ using MitoPlayer_2024.Models;
 using MitoPlayer_2024.Views;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -13,7 +14,7 @@ using System.Windows.Forms;
 
 namespace MitoPlayer_2024.Presenters
 {
-    internal class PreferencesPresenter
+    internal class SettingsPresenter
     {
         private IPreferencesView view;
         private ITrackDao trackDao;
@@ -31,7 +32,7 @@ namespace MitoPlayer_2024.Presenters
         private decimal shortTrackColouringThreshold;
 
         public bool databaseCleared = false;
-        public PreferencesPresenter(IPreferencesView view, ITrackDao trackDao,ITagDao tagDao, IProfileDao profileDao, ISettingDao settingDao)
+        public SettingsPresenter(IPreferencesView view, ITrackDao trackDao,ITagDao tagDao, IProfileDao profileDao, ISettingDao settingDao)
         {
             this.view = view;
             this.trackDao = trackDao;
@@ -140,40 +141,66 @@ namespace MitoPlayer_2024.Presenters
 
         private void SetShortTrackColouringThresholdEvent(object sender, Messenger e)
         {
-           this.isShortTrackColouringEnabled = e.BooleanField1;
+           
+            this.shortTrackColouringThreshold = e.DecimalField1;
         }
 
         private void SetShortTrackColouringEvent(object sender, Messenger e)
         {
-            this.shortTrackColouringThreshold = Convert.ToInt32(e.DecimalField1);
+            this.isShortTrackColouringEnabled = e.BooleanField1;
         }
         private void CloseViewWithOkEvent(object sender, EventArgs e)
         {
-           /* if (!File.Exists(this.virtualDjDatabasePath))
+            ResultOrError result = new ResultOrError();
+
+            if (this.isShortTrackColouringEnabled)
             {
-                MessageBox.Show("VirtualDJ database file does not exists!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                this.view.SetImportSettings(this.automaticBpmImport, this.automaticKeyImport, this.virtualDjDatabasePath, this.playTrackAfterOpenFiles);
+                if(this.shortTrackColouringThreshold <= 0)
+                {
+                    String error = "Track colouring threshold must be set!";
+                    MessageBox.Show(error, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    result.AddError(error);
+                }
             }
             else
             {
-                
-            }*/
-            this.settingDao.SetBooleanSetting(Settings.AutomaticBpmImport.ToString(), this.automaticBpmImport);
-            this.settingDao.SetBooleanSetting(Settings.AutomaticKeyImport.ToString(), this.automaticKeyImport);
-            this.settingDao.SetStringSetting(Settings.VirtualDjDatabasePath.ToString(), this.virtualDjDatabasePath);
-            this.settingDao.SetBooleanSetting(Settings.PlayTrackAfterOpenFiles.ToString(), this.playTrackAfterOpenFiles);
-            this.settingDao.SetBooleanSetting(Settings.PlayTrackAfterOpenFiles.ToString(), this.playTrackAfterOpenFiles);
-            this.settingDao.SetBooleanSetting(Settings.IsShortTrackColouringEnabled.ToString(), this.isShortTrackColouringEnabled);
-            this.settingDao.SetDecimalSetting(Settings.ShortTrackColouringThreshold.ToString(), this.shortTrackColouringThreshold);
+                this.shortTrackColouringThreshold = 0;
+            }
+            if (result.Success)
+            {
+                if (MessageBox.Show("Application restart is required.", "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK)
+                {
+                    this.settingDao.SetBooleanSetting(Settings.AutomaticBpmImport.ToString(), this.automaticBpmImport);
+                    this.settingDao.SetBooleanSetting(Settings.AutomaticKeyImport.ToString(), this.automaticKeyImport);
+                    this.settingDao.SetStringSetting(Settings.VirtualDjDatabasePath.ToString(), this.virtualDjDatabasePath);
+                    this.settingDao.SetBooleanSetting(Settings.PlayTrackAfterOpenFiles.ToString(), this.playTrackAfterOpenFiles);
+                    this.settingDao.SetBooleanSetting(Settings.PlayTrackAfterOpenFiles.ToString(), this.playTrackAfterOpenFiles);
+                    this.settingDao.SetIntegerSetting(Settings.PreviewPercentage.ToString(), this.previewPercentage);
 
-            ((PreferencesView)this.view).DialogResult = DialogResult.OK;
-            ((PreferencesView)this.view).Close();
+                    this.settingDao.SetBooleanSetting(Settings.IsShortTrackColouringEnabled.ToString(), this.isShortTrackColouringEnabled);
+                    this.settingDao.SetDecimalSetting(Settings.ShortTrackColouringThreshold.ToString(), this.shortTrackColouringThreshold);
+
+                    Process.Start(Application.ExecutablePath);
+                    Application.Exit();
+                }
+                
+            }
+            /* if (!File.Exists(this.virtualDjDatabasePath))
+             {
+                 MessageBox.Show("VirtualDJ database file does not exists!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                 this.view.SetImportSettings(this.automaticBpmImport, this.automaticKeyImport, this.virtualDjDatabasePath, this.playTrackAfterOpenFiles);
+             }
+             else
+             {
+
+             }*/
+            
 
         }
         private void CloseViewWithCancelEvent(object sender, EventArgs e)
         {
-            ((PreferencesView)this.view).DialogResult = DialogResult.Cancel;
-            ((PreferencesView)this.view).Close();
+            ((SettingsView)this.view).DialogResult = DialogResult.Cancel;
+            ((SettingsView)this.view).Close();
         }
     }
 }

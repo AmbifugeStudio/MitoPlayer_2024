@@ -106,7 +106,7 @@ namespace MitoPlayer_2024.Presenters
             if (result)
             {
                 Properties.Settings.Default.Host = host;
-                Properties.Settings.Default.Port = portNumber;
+                Properties.Settings.Default.Port = portNumber.ToString();
                 Properties.Settings.Default.UserName = userName;
                 Properties.Settings.Default.Password = password;
                 Properties.Settings.Default.Database = database;
