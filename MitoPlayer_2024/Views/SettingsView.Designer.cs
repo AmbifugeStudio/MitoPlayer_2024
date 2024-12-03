@@ -30,6 +30,9 @@
         {
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabGeneral = new System.Windows.Forms.TabPage();
+            this.chbLogMessageEnabled = new System.Windows.Forms.CheckBox();
+            this.nmdLogMessageDisplayTime = new System.Windows.Forms.NumericUpDown();
+            this.label4 = new System.Windows.Forms.Label();
             this.txtbShortTrackColouringThreshold = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.grbPlayer = new System.Windows.Forms.GroupBox();
@@ -48,6 +51,7 @@
             this.btnCancel = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabGeneral.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nmdLogMessageDisplayTime)).BeginInit();
             this.grbPlayer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nmdPreviewPercentage)).BeginInit();
             this.grbVirtualDjImport.SuspendLayout();
@@ -68,6 +72,9 @@
             // 
             // tabGeneral
             // 
+            this.tabGeneral.Controls.Add(this.chbLogMessageEnabled);
+            this.tabGeneral.Controls.Add(this.nmdLogMessageDisplayTime);
+            this.tabGeneral.Controls.Add(this.label4);
             this.tabGeneral.Controls.Add(this.txtbShortTrackColouringThreshold);
             this.tabGeneral.Controls.Add(this.label3);
             this.tabGeneral.Controls.Add(this.grbPlayer);
@@ -81,6 +88,49 @@
             this.tabGeneral.TabIndex = 0;
             this.tabGeneral.Text = "General";
             this.tabGeneral.UseVisualStyleBackColor = true;
+            // 
+            // chbLogMessageEnabled
+            // 
+            this.chbLogMessageEnabled.AutoSize = true;
+            this.chbLogMessageEnabled.Location = new System.Drawing.Point(12, 246);
+            this.chbLogMessageEnabled.Name = "chbLogMessageEnabled";
+            this.chbLogMessageEnabled.Size = new System.Drawing.Size(122, 17);
+            this.chbLogMessageEnabled.TabIndex = 8;
+            this.chbLogMessageEnabled.Text = "Display log message";
+            this.chbLogMessageEnabled.UseVisualStyleBackColor = true;
+            this.chbLogMessageEnabled.CheckedChanged += new System.EventHandler(this.chbLogMessageEnabled_CheckedChanged);
+            // 
+            // nmdLogMessageDisplayTime
+            // 
+            this.nmdLogMessageDisplayTime.Location = new System.Drawing.Point(209, 264);
+            this.nmdLogMessageDisplayTime.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.nmdLogMessageDisplayTime.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nmdLogMessageDisplayTime.Name = "nmdLogMessageDisplayTime";
+            this.nmdLogMessageDisplayTime.Size = new System.Drawing.Size(54, 20);
+            this.nmdLogMessageDisplayTime.TabIndex = 1;
+            this.nmdLogMessageDisplayTime.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nmdLogMessageDisplayTime.ValueChanged += new System.EventHandler(this.nmdLogMessageDisplayTime_ValueChanged);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(9, 266);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(156, 13);
+            this.label4.TabIndex = 6;
+            this.label4.Text = "Log message display time (sec):";
             // 
             // txtbShortTrackColouringThreshold
             // 
@@ -106,7 +156,7 @@
             this.grbPlayer.Controls.Add(this.chbPlayTrackAfterOpenFiles);
             this.grbPlayer.Location = new System.Drawing.Point(6, 112);
             this.grbPlayer.Name = "grbPlayer";
-            this.grbPlayer.Size = new System.Drawing.Size(437, 75);
+            this.grbPlayer.Size = new System.Drawing.Size(265, 75);
             this.grbPlayer.TabIndex = 4;
             this.grbPlayer.TabStop = false;
             this.grbPlayer.Text = "Player";
@@ -116,15 +166,15 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(7, 46);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(62, 13);
+            this.label2.Size = new System.Drawing.Size(65, 13);
             this.label2.TabIndex = 2;
-            this.label2.Text = "Preview (%)";
+            this.label2.Text = "Preview (%):";
             // 
             // nmdPreviewPercentage
             // 
-            this.nmdPreviewPercentage.Location = new System.Drawing.Point(75, 42);
+            this.nmdPreviewPercentage.Location = new System.Drawing.Point(203, 44);
             this.nmdPreviewPercentage.Name = "nmdPreviewPercentage";
-            this.nmdPreviewPercentage.Size = new System.Drawing.Size(76, 20);
+            this.nmdPreviewPercentage.Size = new System.Drawing.Size(54, 20);
             this.nmdPreviewPercentage.TabIndex = 1;
             this.nmdPreviewPercentage.Value = new decimal(new int[] {
             1,
@@ -265,6 +315,7 @@
             this.tabControl1.ResumeLayout(false);
             this.tabGeneral.ResumeLayout(false);
             this.tabGeneral.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nmdLogMessageDisplayTime)).EndInit();
             this.grbPlayer.ResumeLayout(false);
             this.grbPlayer.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nmdPreviewPercentage)).EndInit();
@@ -295,5 +346,8 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox txtbShortTrackColouringThreshold;
         private System.Windows.Forms.CheckBox chbShortTrackColouring;
+        private System.Windows.Forms.CheckBox chbLogMessageEnabled;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.NumericUpDown nmdLogMessageDisplayTime;
     }
 }

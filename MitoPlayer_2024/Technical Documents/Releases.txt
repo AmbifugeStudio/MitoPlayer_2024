@@ -1,17 +1,34 @@
 ﻿
 
 
-- fájl exportnál original fájlnév megőrzés
-- feature: vdj és mixedinkey import szétszedése
-- fájl exportnál progress bar
 
-OK - BUG - peak meter freezez somethimes
 
-- FEATURE: paused music should continue with the set position after mouse button is pressed on the progress bar, while the song is paused
-- FEATURE: soundwaves instead of progress bar
 
-- a peak még mindig megfagy
-- 2777 zenénél nem jóü lírja ki ahosszot
+
+
+- üres listán nem tudom contorl s-t nomyni
+
+- BUG: drag and drop from tracklist to tha same playlist: duplicated elements has been added
+
+- ha elviszem meg visszahozom a drag and dropé-ot, beakad
+
+
+- FEATURE: key export from virtualdj or mixedinkey option
+- FEATURE: bpm export from virtualdj or mixedinkey option
+
+- FEATURE: export to txt - keep original file name option
+- FEATURE: export to txt - progress bar
+
+- FEATURE: paused music should continue with from the position where mouse button is pressed on the progress bar, while the song is paused
+- FEATURE: soundwave instead of progress bar
+- FEATURE: paused music should continue with from the position where mouse button is pressed on the soundwave, while the song is paused
+
+- BUG: large number of tracks: length is wrong (2777 tracks)
+
+
+
+
+-  2777 zenénél nem jóü lírja ki ahosszot
 - hiba 2024-es mappa szekenneélesok 
 _ a progress bar delay-e lassú
 - preview setting defulkt ne leghyen nulla
@@ -20,6 +37,11 @@ _ a progress bar delay-e lassú
 - preview gomb megnyomása után augrojon vissza  avezérlés agridre
 - utolsó utáni playlistra drag and droppolok számot, index hibával elszáll
 - nagyok sok elem drag and drop-ja ínkeserves, le kellene korlátoznib
+
+- kéne eg ylast saved version visszaállítás gmbb
+
+- ha szűrök, elbaszódik a mediaplayer playlist-je
+- oszlop rendező kétszer fut meg, ha rákattintok
 
 
 
@@ -31,14 +53,22 @@ _ a progress bar delay-e lassú
 - FEATURE: length of short tracks display in red
 
 - REFACTOR: hdm5 file create, when save dialog press ok
-
+- exportnál opció, hogy kiegészítse _ karakterekkel, hogy egy sorban legyenek már a számok
 - ninc sspecial tracktagvalue-ja a számoknak??
 - warning se jó, törölni meg újralétrehozni kellett
 - és a sorting id alapján jelenik meg, nem a legváégán, ha újra létrehozom
-
+- drag and dropuátn kattintanom kell ahhoz, hgy shift kattal kijelöljek többet (nem működik a shift+egér)
 
 - BUG: tracklist display index - sorting id fix
+- progress bar nem jelenik meg eléág gyorsan, ha csak play-re noymunk 
+- playlist-nél arra érvéányesöljenek a parancsok, ahova az egérrel kattintok, he ami ki van jelölve
+SŐT jelöld már ki jobb kattra is!
 
+- nagyon hazsnos lenne, ha exportnál a path-ba lenne playlist neve é LÉTRHEOZ automatikusan eg ymappát
+
+- file exporter ismerje már fel, hogy ha már létezik a knyvtárban a fájl
+
+- amikor drag and droppolok, akkor nem ugrik arra za oldalra, mert visszaugrik az ereetio helszínre
 
 - FEATURE: virtual dj open vs. scan bpm dialog windows
 
@@ -64,6 +94,19 @@ a filtered lista elemeit írja ki a playlist tack coujnt - ki kéne írni, hogy 
 - FEATURE: tag editor - display according to tag/tagvalue order
 - FEATURE: load tracklist or navigate away: check save status and show dialog window is there are unsaved progress
 
+======================
+v0.15.2.25
+======================
+OK - BUG: If tracklist was empty (after delete all track/clear), the list cannot be saved
+OK - FEATURE: display actual playlist and load playlist
+OK - BUG: drag and drop from tracklist to playlist does not work
+OK - BUG: i can't add tracks to the default playlist
+OK - BUG: drag and drop activates in the tracklist, when the cursor is not on selected element
+OK - FEATURE: dropped files must be selected after drop
+OK - BUG: focus on tracklist after press preview button
+OK - BUG: peak meter freezes sometimes
+OK - BUG: file drop into empty list
+OK - BUG: file drop into the empty part of tracklist
 ======================
 v0.15.2.15
 ======================

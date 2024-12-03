@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MitoPlayer_2024.Views
 {
-    public interface IPreferencesView
+    public interface ISettingsView
     {
         event EventHandler CloseViewWithOkEvent;
         event EventHandler CloseViewWithCancelEvent;
@@ -21,6 +21,9 @@ namespace MitoPlayer_2024.Views
         event EventHandler<Messenger> SetShortTrackColouringEvent;
         event EventHandler<Messenger> SetShortTrackColouringThresholdEvent;
 
+        event EventHandler<Messenger> SetLogMessageDisplayTimeEvent;
+        event EventHandler<Messenger> SetLogMessageEnabledEvent;
+
         void SetImportSettings(
             bool automaticBpmImport, 
             bool automaticKeyImport,
@@ -29,6 +32,8 @@ namespace MitoPlayer_2024.Views
             bool hasVirtualDj, 
             int previewPercentage,
             bool isShortTrackColouringEnabled,
-            decimal shortTrackColouringThreshold);
+            decimal shortTrackColouringThreshold,
+            bool isLogMessageEnabled,
+            decimal logMessageDisplayTime);
     }
 }

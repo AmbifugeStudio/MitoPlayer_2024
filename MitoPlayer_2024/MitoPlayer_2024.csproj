@@ -415,7 +415,7 @@
     <Compile Include="IViews\IHarmonizerView.cs" />
     <Compile Include="IViews\IPlaylistEditorView.cs" />
     <Compile Include="IViews\IPlaylistView.cs" />
-    <Compile Include="IViews\IPreferencesView.cs" />
+    <Compile Include="IViews\ISettingsView.cs" />
     <Compile Include="IViews\IColumnVisibilityEditorView.cs" />
     <Compile Include="IViews\IProfileEditorView.cs" />
     <Compile Include="IViews\IProfileView.cs" />

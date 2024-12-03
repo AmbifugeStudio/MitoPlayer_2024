@@ -16,7 +16,7 @@ namespace MitoPlayer_2024.Presenters
 {
     internal class SettingsPresenter
     {
-        private IPreferencesView view;
+        private ISettingsView view;
         private ITrackDao trackDao;
         private ITagDao tagDao;
         private IProfileDao profileDao;
@@ -30,9 +30,11 @@ namespace MitoPlayer_2024.Presenters
         private int previewPercentage;
         private bool isShortTrackColouringEnabled;
         private decimal shortTrackColouringThreshold;
+        private bool isLogMessageEnabled;
+        private decimal logMessageDisplayTime;
 
         public bool databaseCleared = false;
-        public SettingsPresenter(IPreferencesView view, ITrackDao trackDao,ITagDao tagDao, IProfileDao profileDao, ISettingDao settingDao)
+        public SettingsPresenter(ISettingsView view, ITrackDao trackDao,ITagDao tagDao, IProfileDao profileDao, ISettingDao settingDao)
         {
             this.view = view;
             this.trackDao = trackDao;
@@ -45,8 +47,11 @@ namespace MitoPlayer_2024.Presenters
             this.virtualDjDatabasePath = this.settingDao.GetStringSetting(Settings.VirtualDjDatabasePath.ToString());
             this.playTrackAfterOpenFiles = this.settingDao.GetBooleanSetting(Settings.PlayTrackAfterOpenFiles.ToString()).Value;
             this.previewPercentage = this.settingDao.GetIntegerSetting(Settings.PreviewPercentage.ToString());
+            
             this.isShortTrackColouringEnabled = this.settingDao.GetBooleanSetting(Settings.IsShortTrackColouringEnabled.ToString()).Value;
             this.shortTrackColouringThreshold = this.settingDao.GetDecimalSetting(Settings.ShortTrackColouringThreshold.ToString());
+            this.isLogMessageEnabled = this.settingDao.GetBooleanSetting(Settings.IsLogMessageEnabled.ToString()).Value;
+            this.logMessageDisplayTime = this.settingDao.GetDecimalSetting(Settings.LogMessageDisplayTime.ToString());
 
             this.hasVirtualDj = this.HasVirtualDj();
 
@@ -58,7 +63,9 @@ namespace MitoPlayer_2024.Presenters
                 this.hasVirtualDj,
                 this.previewPercentage,
                 this.isShortTrackColouringEnabled,
-                this.shortTrackColouringThreshold);
+                this.shortTrackColouringThreshold,
+                this.isLogMessageEnabled,
+                this.logMessageDisplayTime);
 
             this.view.CloseViewWithOkEvent += CloseViewWithOkEvent;
             this.view.CloseViewWithCancelEvent += CloseViewWithCancelEvent;
@@ -70,7 +77,8 @@ namespace MitoPlayer_2024.Presenters
             this.view.SetPreviewPercentageEvent += SetPreviewPercentageEvent;
             this.view.SetShortTrackColouringEvent += SetShortTrackColouringEvent;
             this.view.SetShortTrackColouringThresholdEvent += SetShortTrackColouringThresholdEvent;
-
+            this.view.SetLogMessageDisplayTimeEvent += SetLogMessageDisplayTimeEvent;
+            this.view.SetLogMessageEnabledEvent += SetLogMessageEnabledEvent;
         }
 
         
@@ -149,6 +157,15 @@ namespace MitoPlayer_2024.Presenters
         {
             this.isShortTrackColouringEnabled = e.BooleanField1;
         }
+        private void SetLogMessageEnabledEvent(object sender, Messenger e)
+        {
+            this.isLogMessageEnabled = e.BooleanField1;
+        }
+
+        private void SetLogMessageDisplayTimeEvent(object sender, Messenger e)
+        {
+            this.logMessageDisplayTime = Convert.ToInt32(e.DecimalField1);
+        }
         private void CloseViewWithOkEvent(object sender, EventArgs e)
         {
             ResultOrError result = new ResultOrError();
@@ -179,6 +196,8 @@ namespace MitoPlayer_2024.Presenters
 
                     this.settingDao.SetBooleanSetting(Settings.IsShortTrackColouringEnabled.ToString(), this.isShortTrackColouringEnabled);
                     this.settingDao.SetDecimalSetting(Settings.ShortTrackColouringThreshold.ToString(), this.shortTrackColouringThreshold);
+                    this.settingDao.SetBooleanSetting(Settings.IsLogMessageEnabled.ToString(), this.isLogMessageEnabled);
+                    this.settingDao.SetDecimalSetting(Settings.LogMessageDisplayTime.ToString(), this.logMessageDisplayTime);
 
                     Process.Start(Application.ExecutablePath);
                     Application.Exit();

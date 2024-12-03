@@ -14,6 +14,8 @@ namespace MitoPlayer_2024.Helpers
         public int[] ColumnDisplayIndexArray {  get; set; }
         public int CurrentPlaylistId {  get; set; }
         public int CurrentTrackIdInPlaylist {  get; set; }
+        public String CurrentPlaylistName {  get; set; }
+
         public DataTableModel()
         {
 

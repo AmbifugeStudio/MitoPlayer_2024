@@ -44,7 +44,7 @@ namespace MitoPlayer_2024.Presenters
         private ITrackEditorView trackEditorView { get; set; }
         private ITemplateEditorView templateEditorView { get; set; }
         private IHarmonizerView harmonizerView { get; set; }
-        private IPreferencesView preferencesView { get; set; }
+        private ISettingsView preferencesView { get; set; }
         private IAboutView aboutView { get; set; }
         private ISetupView setupView { get; set; }
         private ProfileEditorPresenter profileEditorPresenter { get; set; }

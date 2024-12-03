@@ -30,7 +30,10 @@ namespace MitoPlayer_2024
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-           SettingDao = new SettingDao();
+            SettingDao = new SettingDao();
+
+          //  Properties.Settings.Default.Reset();
+           // Properties.Settings.Default.Save();
 
             ResultOrError result = IsDatabasePrepared();
             if (result.Success)

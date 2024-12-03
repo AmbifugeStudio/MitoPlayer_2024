@@ -240,10 +240,18 @@ namespace MitoPlayer_2024.Presenters
                     }
                     if (true)
                     {
-                        TrackTagValue ttv = this.trackList[i].TrackTagValues.Find(x => x.TagName == "Vocal");
-                        if (ttv != null && !String.IsNullOrEmpty(ttv.TagValueName) && (ttv.TagValueName.Equals("Full vocal") || ttv.TagValueName.Equals("Partial vocal")))
+                        TrackTagValue ttv = this.trackList[i].TrackTagValues.Find(x => x.TagName == "HasVocal");
+                        if (ttv != null && !String.IsNullOrEmpty(ttv.TagValueName) && (ttv.TagValueName.Equals("3_FullVocal")))
                         {
-                            hasVocal = "V";
+                            hasVocal = "_V";
+                        }
+                        else if (ttv != null && !String.IsNullOrEmpty(ttv.TagValueName) && (ttv.TagValueName.Equals("2_HalfVocal")))
+                        {
+                            hasVocal = "_h";
+                        }
+                        else
+                        {
+                            hasVocal = "__";
                         }
                     }
 
@@ -253,6 +261,10 @@ namespace MitoPlayer_2024.Presenters
                     }
                     if (!String.IsNullOrEmpty(bpmNumber))
                     {
+                        if (bpmNumber.Length == 2 || bpmNumber.Length == 1)
+                        {
+                            bpmNumber += "_";
+                        }
                         if (!String.IsNullOrEmpty(hasVocal))
                         {
                             newFileName = bpmNumber + newFileName;
