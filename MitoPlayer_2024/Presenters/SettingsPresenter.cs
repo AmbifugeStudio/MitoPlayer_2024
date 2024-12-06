@@ -16,7 +16,7 @@ namespace MitoPlayer_2024.Presenters
 {
     internal class SettingsPresenter
     {
-        private IPreferencesView view;
+        private ISettingsView view;
         private ITrackDao trackDao;
         private ITagDao tagDao;
         private IProfileDao profileDao;
@@ -24,7 +24,9 @@ namespace MitoPlayer_2024.Presenters
 
         private bool automaticBpmImport; 
         private bool automaticKeyImport;
-        private String virtualDjDatabasePath;
+        private bool importBpmFromVirtualDj;
+        private bool importKeyFromVirtualDj;
+
         private bool playTrackAfterOpenFiles;
         private bool hasVirtualDj;
         private int previewPercentage;
@@ -32,7 +34,7 @@ namespace MitoPlayer_2024.Presenters
         private decimal shortTrackColouringThreshold;
 
         public bool databaseCleared = false;
-        public SettingsPresenter(IPreferencesView view, ITrackDao trackDao,ITagDao tagDao, IProfileDao profileDao, ISettingDao settingDao)
+        public SettingsPresenter(ISettingsView view, ITrackDao trackDao,ITagDao tagDao, IProfileDao profileDao, ISettingDao settingDao)
         {
             this.view = view;
             this.trackDao = trackDao;
@@ -42,38 +44,41 @@ namespace MitoPlayer_2024.Presenters
 
             this.automaticBpmImport = this.settingDao.GetBooleanSetting(Settings.AutomaticBpmImport.ToString()).Value;
             this.automaticKeyImport = this.settingDao.GetBooleanSetting(Settings.AutomaticKeyImport.ToString()).Value;
-            this.virtualDjDatabasePath = this.settingDao.GetStringSetting(Settings.VirtualDjDatabasePath.ToString());
+            this.importBpmFromVirtualDj = this.settingDao.GetBooleanSetting(Settings.ImportBpmFromVirtualDj.ToString()).Value;
+            this.importKeyFromVirtualDj = this.settingDao.GetBooleanSetting(Settings.ImportKeyFromVirtualDj.ToString()).Value;
             this.playTrackAfterOpenFiles = this.settingDao.GetBooleanSetting(Settings.PlayTrackAfterOpenFiles.ToString()).Value;
-            this.previewPercentage = this.settingDao.GetIntegerSetting(Settings.PreviewPercentage.ToString());
             this.isShortTrackColouringEnabled = this.settingDao.GetBooleanSetting(Settings.IsShortTrackColouringEnabled.ToString()).Value;
+            this.previewPercentage = this.settingDao.GetIntegerSetting(Settings.PreviewPercentage.ToString());
             this.shortTrackColouringThreshold = this.settingDao.GetDecimalSetting(Settings.ShortTrackColouringThreshold.ToString());
 
             this.hasVirtualDj = this.HasVirtualDj();
 
-            this.view.SetImportSettings(
-                this.automaticBpmImport, 
-                this.automaticKeyImport, 
-                this.virtualDjDatabasePath,
-                this.playTrackAfterOpenFiles,
-                this.hasVirtualDj,
-                this.previewPercentage,
-                this.isShortTrackColouringEnabled,
-                this.shortTrackColouringThreshold);
+            Messenger msg = new Messenger();
+            msg.BooleanField1 = this.automaticBpmImport;
+            msg.BooleanField2 = this.automaticKeyImport;
+            msg.BooleanField3 = this.importBpmFromVirtualDj;
+            msg.BooleanField4 = this.importKeyFromVirtualDj;
+            msg.BooleanField5 = this.playTrackAfterOpenFiles;
+            msg.BooleanField6 = this.isShortTrackColouringEnabled;
+            msg.BooleanField7 = this.hasVirtualDj;
+            msg.IntegerField1 = this.previewPercentage;
+            msg.DecimalField1 = this.shortTrackColouringThreshold;
+
+            this.view.InitializeSettings(msg);
 
             this.view.CloseViewWithOkEvent += CloseViewWithOkEvent;
             this.view.CloseViewWithCancelEvent += CloseViewWithCancelEvent;
             this.view.ClearDatabaseEvent += ClearDatabaseEvent;
             this.view.SetAutomaticBpmImportEvent += SetAutomaticBpmImportEvent;
             this.view.SetAutomaticKeyImportEvent += SetAutomaticKeyImportEvent;
-            this.view.SetVirtualDjDatabasePathEvent += SetVirtualDjDatabasePathEvent;
             this.view.SetPlayTrackAfterOpenFilesEvent += SetPlayTrackAfterOpenFilesEvent;
             this.view.SetPreviewPercentageEvent += SetPreviewPercentageEvent;
             this.view.SetShortTrackColouringEvent += SetShortTrackColouringEvent;
             this.view.SetShortTrackColouringThresholdEvent += SetShortTrackColouringThresholdEvent;
+            this.view.SetImportBpmFromVirtualDjEvent += SetImportBpmFromVirtualDjEvent;
+            this.view.SetImportKeyFromVirtualDjEvent += SetImportKeyFromVirtualDjEvent;
 
         }
-
-        
 
         private bool HasVirtualDj()
         {
@@ -125,9 +130,14 @@ namespace MitoPlayer_2024.Presenters
         {
             this.automaticKeyImport = e.BooleanField1;
         }
-        private void SetVirtualDjDatabasePathEvent(object sender, Messenger e)
+        private void SetImportKeyFromVirtualDjEvent(object sender, Messenger e)
         {
-            this.virtualDjDatabasePath = e.StringField1;
+            this.importBpmFromVirtualDj = e.BooleanField1;
+        }
+
+        private void SetImportBpmFromVirtualDjEvent(object sender, Messenger e)
+        {
+            this.importKeyFromVirtualDj = e.BooleanField1;
         }
         private void SetPlayTrackAfterOpenFilesEvent(object sender, Messenger e)
         {
@@ -172,7 +182,9 @@ namespace MitoPlayer_2024.Presenters
                 {
                     this.settingDao.SetBooleanSetting(Settings.AutomaticBpmImport.ToString(), this.automaticBpmImport);
                     this.settingDao.SetBooleanSetting(Settings.AutomaticKeyImport.ToString(), this.automaticKeyImport);
-                    this.settingDao.SetStringSetting(Settings.VirtualDjDatabasePath.ToString(), this.virtualDjDatabasePath);
+                    this.settingDao.SetBooleanSetting(Settings.ImportBpmFromVirtualDj.ToString(), this.importBpmFromVirtualDj);
+                    this.settingDao.SetBooleanSetting(Settings.ImportKeyFromVirtualDj.ToString(), this.importKeyFromVirtualDj);
+
                     this.settingDao.SetBooleanSetting(Settings.PlayTrackAfterOpenFiles.ToString(), this.playTrackAfterOpenFiles);
                     this.settingDao.SetBooleanSetting(Settings.PlayTrackAfterOpenFiles.ToString(), this.playTrackAfterOpenFiles);
                     this.settingDao.SetIntegerSetting(Settings.PreviewPercentage.ToString(), this.previewPercentage);

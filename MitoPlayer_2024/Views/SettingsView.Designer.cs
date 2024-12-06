@@ -28,97 +28,123 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.tabGeneral = new System.Windows.Forms.TabPage();
-            this.txtbShortTrackColouringThreshold = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.grbPlayer = new System.Windows.Forms.GroupBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.nmdPreviewPercentage = new System.Windows.Forms.NumericUpDown();
-            this.chbPlayTrackAfterOpenFiles = new System.Windows.Forms.CheckBox();
-            this.grbVirtualDjImport = new System.Windows.Forms.GroupBox();
-            this.txtBoxVirtualDjDatabasePath = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.chbAutomaticKeyImport = new System.Windows.Forms.CheckBox();
-            this.chbAutomaticBpmImport = new System.Windows.Forms.CheckBox();
-            this.chbShortTrackColouring = new System.Windows.Forms.CheckBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.btnClear = new System.Windows.Forms.Button();
             this.btnOk = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
-            this.tabControl1.SuspendLayout();
-            this.tabGeneral.SuspendLayout();
+            this.chbShortTrackColouring = new System.Windows.Forms.CheckBox();
+            this.grbVirtualDjImport = new System.Windows.Forms.GroupBox();
+            this.chbAutomaticBpmImport = new System.Windows.Forms.CheckBox();
+            this.chbAutomaticKeyImport = new System.Windows.Forms.CheckBox();
+            this.grbPlayer = new System.Windows.Forms.GroupBox();
+            this.chbPlayTrackAfterOpenFiles = new System.Windows.Forms.CheckBox();
+            this.nmdPreviewPercentage = new System.Windows.Forms.NumericUpDown();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.txtbShortTrackColouringThreshold = new System.Windows.Forms.TextBox();
+            this.rdbImportBpmFromVirtualDj = new System.Windows.Forms.RadioButton();
+            this.rdbImportBpmFromMixedInKey = new System.Windows.Forms.RadioButton();
+            this.rdbImportKeyFromVirtualDj = new System.Windows.Forms.RadioButton();
+            this.rdbImportKeyFromMixedInKey = new System.Windows.Forms.RadioButton();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.grbVirtualDjImport.SuspendLayout();
             this.grbPlayer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nmdPreviewPercentage)).BeginInit();
-            this.grbVirtualDjImport.SuspendLayout();
-            this.groupBox1.SuspendLayout();
+            this.panel1.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
-            // tabControl1
+            // btnOk
             // 
-            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tabControl1.Controls.Add(this.tabGeneral);
-            this.tabControl1.Location = new System.Drawing.Point(12, 12);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(742, 359);
-            this.tabControl1.TabIndex = 0;
+            this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnOk.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnOk.Location = new System.Drawing.Point(722, 533);
+            this.btnOk.Name = "btnOk";
+            this.btnOk.Size = new System.Drawing.Size(75, 23);
+            this.btnOk.TabIndex = 1;
+            this.btnOk.Text = "Ok";
+            this.btnOk.UseVisualStyleBackColor = true;
+            this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
             // 
-            // tabGeneral
+            // btnCancel
             // 
-            this.tabGeneral.Controls.Add(this.txtbShortTrackColouringThreshold);
-            this.tabGeneral.Controls.Add(this.label3);
-            this.tabGeneral.Controls.Add(this.grbPlayer);
-            this.tabGeneral.Controls.Add(this.grbVirtualDjImport);
-            this.tabGeneral.Controls.Add(this.chbShortTrackColouring);
-            this.tabGeneral.Controls.Add(this.groupBox1);
-            this.tabGeneral.Location = new System.Drawing.Point(4, 22);
-            this.tabGeneral.Name = "tabGeneral";
-            this.tabGeneral.Padding = new System.Windows.Forms.Padding(3);
-            this.tabGeneral.Size = new System.Drawing.Size(734, 333);
-            this.tabGeneral.TabIndex = 0;
-            this.tabGeneral.Text = "General";
-            this.tabGeneral.UseVisualStyleBackColor = true;
+            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnCancel.Location = new System.Drawing.Point(803, 533);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(75, 23);
+            this.btnCancel.TabIndex = 1;
+            this.btnCancel.Text = "Cancel";
+            this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
-            // txtbShortTrackColouringThreshold
+            // chbShortTrackColouring
             // 
-            this.txtbShortTrackColouringThreshold.Location = new System.Drawing.Point(209, 213);
-            this.txtbShortTrackColouringThreshold.Name = "txtbShortTrackColouringThreshold";
-            this.txtbShortTrackColouringThreshold.Size = new System.Drawing.Size(54, 20);
-            this.txtbShortTrackColouringThreshold.TabIndex = 4;
-            this.txtbShortTrackColouringThreshold.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtbShortTrackColouringThreshold_KeyPress);
+            this.chbShortTrackColouring.AutoSize = true;
+            this.chbShortTrackColouring.Location = new System.Drawing.Point(18, 199);
+            this.chbShortTrackColouring.Name = "chbShortTrackColouring";
+            this.chbShortTrackColouring.Size = new System.Drawing.Size(124, 17);
+            this.chbShortTrackColouring.TabIndex = 3;
+            this.chbShortTrackColouring.Text = "Short track colouring";
+            this.chbShortTrackColouring.UseVisualStyleBackColor = true;
+            this.chbShortTrackColouring.CheckedChanged += new System.EventHandler(this.chbShortTrackColouring_CheckedChanged);
             // 
-            // label3
+            // grbVirtualDjImport
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(9, 216);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(194, 13);
-            this.label3.TabIndex = 5;
-            this.label3.Text = "Short track colouring threshold (minute):";
+            this.grbVirtualDjImport.Controls.Add(this.panel2);
+            this.grbVirtualDjImport.Controls.Add(this.panel1);
+            this.grbVirtualDjImport.Location = new System.Drawing.Point(12, 12);
+            this.grbVirtualDjImport.Name = "grbVirtualDjImport";
+            this.grbVirtualDjImport.Size = new System.Drawing.Size(416, 78);
+            this.grbVirtualDjImport.TabIndex = 1;
+            this.grbVirtualDjImport.TabStop = false;
+            this.grbVirtualDjImport.Text = "Metadata Import";
+            // 
+            // chbAutomaticBpmImport
+            // 
+            this.chbAutomaticBpmImport.AutoSize = true;
+            this.chbAutomaticBpmImport.Location = new System.Drawing.Point(3, 3);
+            this.chbAutomaticBpmImport.Name = "chbAutomaticBpmImport";
+            this.chbAutomaticBpmImport.Size = new System.Drawing.Size(129, 17);
+            this.chbAutomaticBpmImport.TabIndex = 0;
+            this.chbAutomaticBpmImport.Text = "Automatic Bpm Import";
+            this.chbAutomaticBpmImport.UseVisualStyleBackColor = true;
+            this.chbAutomaticBpmImport.CheckedChanged += new System.EventHandler(this.chbAutomaticBpmImport_CheckedChanged);
+            // 
+            // chbAutomaticKeyImport
+            // 
+            this.chbAutomaticKeyImport.AutoSize = true;
+            this.chbAutomaticKeyImport.Location = new System.Drawing.Point(3, 3);
+            this.chbAutomaticKeyImport.Name = "chbAutomaticKeyImport";
+            this.chbAutomaticKeyImport.Size = new System.Drawing.Size(126, 17);
+            this.chbAutomaticKeyImport.TabIndex = 0;
+            this.chbAutomaticKeyImport.Text = "Automatic Key Import";
+            this.chbAutomaticKeyImport.UseVisualStyleBackColor = true;
+            this.chbAutomaticKeyImport.CheckedChanged += new System.EventHandler(this.chbAutomaticKeyImport_CheckedChanged);
             // 
             // grbPlayer
             // 
+            this.grbPlayer.Controls.Add(this.flowLayoutPanel1);
             this.grbPlayer.Controls.Add(this.label2);
             this.grbPlayer.Controls.Add(this.nmdPreviewPercentage);
             this.grbPlayer.Controls.Add(this.chbPlayTrackAfterOpenFiles);
-            this.grbPlayer.Location = new System.Drawing.Point(6, 112);
+            this.grbPlayer.Location = new System.Drawing.Point(12, 118);
             this.grbPlayer.Name = "grbPlayer";
             this.grbPlayer.Size = new System.Drawing.Size(437, 75);
             this.grbPlayer.TabIndex = 4;
             this.grbPlayer.TabStop = false;
             this.grbPlayer.Text = "Player";
             // 
-            // label2
+            // chbPlayTrackAfterOpenFiles
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(7, 46);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(62, 13);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "Preview (%)";
+            this.chbPlayTrackAfterOpenFiles.AutoSize = true;
+            this.chbPlayTrackAfterOpenFiles.Location = new System.Drawing.Point(6, 19);
+            this.chbPlayTrackAfterOpenFiles.Name = "chbPlayTrackAfterOpenFiles";
+            this.chbPlayTrackAfterOpenFiles.Size = new System.Drawing.Size(145, 17);
+            this.chbPlayTrackAfterOpenFiles.TabIndex = 0;
+            this.chbPlayTrackAfterOpenFiles.Text = "Play track after open files";
+            this.chbPlayTrackAfterOpenFiles.UseVisualStyleBackColor = true;
+            this.chbPlayTrackAfterOpenFiles.CheckedChanged += new System.EventHandler(this.chbPlayTrackAfterOpenFiles_CheckedChanged);
             // 
             // nmdPreviewPercentage
             // 
@@ -133,167 +159,153 @@
             0});
             this.nmdPreviewPercentage.ValueChanged += new System.EventHandler(this.nmdPreviewPercentage_ValueChanged);
             // 
-            // chbPlayTrackAfterOpenFiles
+            // label2
             // 
-            this.chbPlayTrackAfterOpenFiles.AutoSize = true;
-            this.chbPlayTrackAfterOpenFiles.Location = new System.Drawing.Point(6, 19);
-            this.chbPlayTrackAfterOpenFiles.Name = "chbPlayTrackAfterOpenFiles";
-            this.chbPlayTrackAfterOpenFiles.Size = new System.Drawing.Size(145, 17);
-            this.chbPlayTrackAfterOpenFiles.TabIndex = 0;
-            this.chbPlayTrackAfterOpenFiles.Text = "Play track after open files";
-            this.chbPlayTrackAfterOpenFiles.UseVisualStyleBackColor = true;
-            this.chbPlayTrackAfterOpenFiles.CheckedChanged += new System.EventHandler(this.chbPlayTrackAfterOpenFiles_CheckedChanged);
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(7, 46);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(62, 13);
+            this.label2.TabIndex = 2;
+            this.label2.Text = "Preview (%)";
             // 
-            // grbVirtualDjImport
+            // label3
             // 
-            this.grbVirtualDjImport.Controls.Add(this.txtBoxVirtualDjDatabasePath);
-            this.grbVirtualDjImport.Controls.Add(this.label1);
-            this.grbVirtualDjImport.Controls.Add(this.chbAutomaticKeyImport);
-            this.grbVirtualDjImport.Controls.Add(this.chbAutomaticBpmImport);
-            this.grbVirtualDjImport.Location = new System.Drawing.Point(6, 6);
-            this.grbVirtualDjImport.Name = "grbVirtualDjImport";
-            this.grbVirtualDjImport.Size = new System.Drawing.Size(437, 100);
-            this.grbVirtualDjImport.TabIndex = 1;
-            this.grbVirtualDjImport.TabStop = false;
-            this.grbVirtualDjImport.Text = "VirtualDJ Import";
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(15, 222);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(194, 13);
+            this.label3.TabIndex = 5;
+            this.label3.Text = "Short track colouring threshold (minute):";
             // 
-            // txtBoxVirtualDjDatabasePath
+            // txtbShortTrackColouringThreshold
             // 
-            this.txtBoxVirtualDjDatabasePath.Enabled = false;
-            this.txtBoxVirtualDjDatabasePath.Location = new System.Drawing.Point(94, 62);
-            this.txtBoxVirtualDjDatabasePath.Name = "txtBoxVirtualDjDatabasePath";
-            this.txtBoxVirtualDjDatabasePath.Size = new System.Drawing.Size(337, 20);
-            this.txtBoxVirtualDjDatabasePath.TabIndex = 3;
-            this.txtBoxVirtualDjDatabasePath.TextChanged += new System.EventHandler(this.txtBoxVirtualDjDatabasePath_TextChanged);
+            this.txtbShortTrackColouringThreshold.Location = new System.Drawing.Point(215, 219);
+            this.txtbShortTrackColouringThreshold.Name = "txtbShortTrackColouringThreshold";
+            this.txtbShortTrackColouringThreshold.Size = new System.Drawing.Size(54, 20);
+            this.txtbShortTrackColouringThreshold.TabIndex = 4;
+            this.txtbShortTrackColouringThreshold.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtbShortTrackColouringThreshold_KeyPress);
             // 
-            // label1
+            // rdbImportBpmFromVirtualDj
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(7, 65);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(81, 13);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "Database Path:";
+            this.rdbImportBpmFromVirtualDj.AutoSize = true;
+            this.rdbImportBpmFromVirtualDj.Location = new System.Drawing.Point(135, 2);
+            this.rdbImportBpmFromVirtualDj.Name = "rdbImportBpmFromVirtualDj";
+            this.rdbImportBpmFromVirtualDj.Size = new System.Drawing.Size(122, 17);
+            this.rdbImportBpmFromVirtualDj.TabIndex = 1;
+            this.rdbImportBpmFromVirtualDj.TabStop = true;
+            this.rdbImportBpmFromVirtualDj.Text = "Import From VirtualDj";
+            this.rdbImportBpmFromVirtualDj.UseVisualStyleBackColor = true;
+            this.rdbImportBpmFromVirtualDj.CheckedChanged += new System.EventHandler(this.rdbImportBpmFromVirtualDj_CheckedChanged);
             // 
-            // chbAutomaticKeyImport
+            // rdbImportBpmFromMixedInKey
             // 
-            this.chbAutomaticKeyImport.AutoSize = true;
-            this.chbAutomaticKeyImport.Location = new System.Drawing.Point(6, 42);
-            this.chbAutomaticKeyImport.Name = "chbAutomaticKeyImport";
-            this.chbAutomaticKeyImport.Size = new System.Drawing.Size(126, 17);
-            this.chbAutomaticKeyImport.TabIndex = 0;
-            this.chbAutomaticKeyImport.Text = "Automatic Key Import";
-            this.chbAutomaticKeyImport.UseVisualStyleBackColor = true;
-            this.chbAutomaticKeyImport.CheckedChanged += new System.EventHandler(this.chbAutomaticKeyImport_CheckedChanged);
+            this.rdbImportBpmFromMixedInKey.AutoSize = true;
+            this.rdbImportBpmFromMixedInKey.Location = new System.Drawing.Point(259, 2);
+            this.rdbImportBpmFromMixedInKey.Name = "rdbImportBpmFromMixedInKey";
+            this.rdbImportBpmFromMixedInKey.Size = new System.Drawing.Size(138, 17);
+            this.rdbImportBpmFromMixedInKey.TabIndex = 1;
+            this.rdbImportBpmFromMixedInKey.TabStop = true;
+            this.rdbImportBpmFromMixedInKey.Text = "Import From MixedInKey";
+            this.rdbImportBpmFromMixedInKey.UseVisualStyleBackColor = true;
+            this.rdbImportBpmFromMixedInKey.CheckedChanged += new System.EventHandler(this.rdbImportBpmFromMixedInKey_CheckedChanged);
             // 
-            // chbAutomaticBpmImport
+            // rdbImportKeyFromVirtualDj
             // 
-            this.chbAutomaticBpmImport.AutoSize = true;
-            this.chbAutomaticBpmImport.Location = new System.Drawing.Point(6, 19);
-            this.chbAutomaticBpmImport.Name = "chbAutomaticBpmImport";
-            this.chbAutomaticBpmImport.Size = new System.Drawing.Size(129, 17);
-            this.chbAutomaticBpmImport.TabIndex = 0;
-            this.chbAutomaticBpmImport.Text = "Automatic Bpm Import";
-            this.chbAutomaticBpmImport.UseVisualStyleBackColor = true;
-            this.chbAutomaticBpmImport.CheckedChanged += new System.EventHandler(this.chbAutomaticBpmImport_CheckedChanged);
+            this.rdbImportKeyFromVirtualDj.AutoSize = true;
+            this.rdbImportKeyFromVirtualDj.Location = new System.Drawing.Point(135, 3);
+            this.rdbImportKeyFromVirtualDj.Name = "rdbImportKeyFromVirtualDj";
+            this.rdbImportKeyFromVirtualDj.Size = new System.Drawing.Size(122, 17);
+            this.rdbImportKeyFromVirtualDj.TabIndex = 1;
+            this.rdbImportKeyFromVirtualDj.TabStop = true;
+            this.rdbImportKeyFromVirtualDj.Text = "Import From VirtualDj";
+            this.rdbImportKeyFromVirtualDj.UseVisualStyleBackColor = true;
+            this.rdbImportKeyFromVirtualDj.CheckedChanged += new System.EventHandler(this.rdbImportKeyFromVirtualDj_CheckedChanged);
             // 
-            // chbShortTrackColouring
+            // rdbImportKeyFromMixedInKey
             // 
-            this.chbShortTrackColouring.AutoSize = true;
-            this.chbShortTrackColouring.Location = new System.Drawing.Point(12, 193);
-            this.chbShortTrackColouring.Name = "chbShortTrackColouring";
-            this.chbShortTrackColouring.Size = new System.Drawing.Size(124, 17);
-            this.chbShortTrackColouring.TabIndex = 3;
-            this.chbShortTrackColouring.Text = "Short track colouring";
-            this.chbShortTrackColouring.UseVisualStyleBackColor = true;
-            this.chbShortTrackColouring.CheckedChanged += new System.EventHandler(this.chbShortTrackColouring_CheckedChanged);
+            this.rdbImportKeyFromMixedInKey.AutoSize = true;
+            this.rdbImportKeyFromMixedInKey.Location = new System.Drawing.Point(259, 3);
+            this.rdbImportKeyFromMixedInKey.Name = "rdbImportKeyFromMixedInKey";
+            this.rdbImportKeyFromMixedInKey.Size = new System.Drawing.Size(138, 17);
+            this.rdbImportKeyFromMixedInKey.TabIndex = 1;
+            this.rdbImportKeyFromMixedInKey.TabStop = true;
+            this.rdbImportKeyFromMixedInKey.Text = "Import From MixedInKey";
+            this.rdbImportKeyFromMixedInKey.UseVisualStyleBackColor = true;
+            this.rdbImportKeyFromMixedInKey.CheckedChanged += new System.EventHandler(this.rdbImportKeyFromMixedInKey_CheckedChanged);
             // 
-            // groupBox1
+            // panel1
             // 
-            this.groupBox1.Controls.Add(this.btnClear);
-            this.groupBox1.Location = new System.Drawing.Point(528, 6);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(200, 100);
-            this.groupBox1.TabIndex = 0;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Database";
+            this.panel1.Controls.Add(this.chbAutomaticBpmImport);
+            this.panel1.Controls.Add(this.rdbImportBpmFromMixedInKey);
+            this.panel1.Controls.Add(this.rdbImportBpmFromVirtualDj);
+            this.panel1.Location = new System.Drawing.Point(4, 19);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(406, 25);
+            this.panel1.TabIndex = 6;
             // 
-            // btnClear
+            // panel2
             // 
-            this.btnClear.Location = new System.Drawing.Point(119, 71);
-            this.btnClear.Name = "btnClear";
-            this.btnClear.Size = new System.Drawing.Size(75, 23);
-            this.btnClear.TabIndex = 0;
-            this.btnClear.Text = "Clear";
-            this.btnClear.UseVisualStyleBackColor = true;
-            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
+            this.panel2.Controls.Add(this.rdbImportKeyFromMixedInKey);
+            this.panel2.Controls.Add(this.chbAutomaticKeyImport);
+            this.panel2.Controls.Add(this.rdbImportKeyFromVirtualDj);
+            this.panel2.Location = new System.Drawing.Point(4, 45);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(406, 25);
+            this.panel2.TabIndex = 7;
             // 
-            // btnOk
+            // flowLayoutPanel1
             // 
-            this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOk.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnOk.Location = new System.Drawing.Point(598, 377);
-            this.btnOk.Name = "btnOk";
-            this.btnOk.Size = new System.Drawing.Size(75, 23);
-            this.btnOk.TabIndex = 1;
-            this.btnOk.Text = "Ok";
-            this.btnOk.UseVisualStyleBackColor = true;
-            this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
-            // 
-            // btnCancel
-            // 
-            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnCancel.Location = new System.Drawing.Point(679, 377);
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 1;
-            this.btnCancel.Text = "Cancel";
-            this.btnCancel.UseVisualStyleBackColor = true;
-            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(388, 16);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(8, 8);
+            this.flowLayoutPanel1.TabIndex = 3;
             // 
             // SettingsView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(766, 412);
+            this.ClientSize = new System.Drawing.Size(890, 568);
+            this.Controls.Add(this.txtbShortTrackColouringThreshold);
             this.Controls.Add(this.btnCancel);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.btnOk);
-            this.Controls.Add(this.tabControl1);
+            this.Controls.Add(this.grbPlayer);
+            this.Controls.Add(this.grbVirtualDjImport);
+            this.Controls.Add(this.chbShortTrackColouring);
             this.Name = "SettingsView";
             this.Text = "Settings";
-            this.tabControl1.ResumeLayout(false);
-            this.tabGeneral.ResumeLayout(false);
-            this.tabGeneral.PerformLayout();
+            this.grbVirtualDjImport.ResumeLayout(false);
             this.grbPlayer.ResumeLayout(false);
             this.grbPlayer.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nmdPreviewPercentage)).EndInit();
-            this.grbVirtualDjImport.ResumeLayout(false);
-            this.grbVirtualDjImport.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.TabControl tabControl1;
-        private System.Windows.Forms.TabPage tabGeneral;
         private System.Windows.Forms.Button btnOk;
         private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Button btnClear;
+        private System.Windows.Forms.CheckBox chbShortTrackColouring;
         private System.Windows.Forms.GroupBox grbVirtualDjImport;
-        private System.Windows.Forms.CheckBox chbAutomaticBpmImport;
         private System.Windows.Forms.CheckBox chbAutomaticKeyImport;
-        private System.Windows.Forms.TextBox txtBoxVirtualDjDatabasePath;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.CheckBox chbAutomaticBpmImport;
         private System.Windows.Forms.GroupBox grbPlayer;
-        private System.Windows.Forms.CheckBox chbPlayTrackAfterOpenFiles;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.NumericUpDown nmdPreviewPercentage;
+        private System.Windows.Forms.CheckBox chbPlayTrackAfterOpenFiles;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox txtbShortTrackColouringThreshold;
-        private System.Windows.Forms.CheckBox chbShortTrackColouring;
+        private System.Windows.Forms.RadioButton rdbImportKeyFromMixedInKey;
+        private System.Windows.Forms.RadioButton rdbImportBpmFromMixedInKey;
+        private System.Windows.Forms.RadioButton rdbImportKeyFromVirtualDj;
+        private System.Windows.Forms.RadioButton rdbImportBpmFromVirtualDj;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
     }
 }

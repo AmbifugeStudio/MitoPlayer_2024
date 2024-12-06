@@ -143,13 +143,38 @@ namespace MitoPlayer_2024.Dao
         public ResultOrError InitializeProfileSettings()
         {
             ResultOrError result = this.CreateColumns();
-            if(result.Success)
+
+            //INNER SETTINGS
+            if (result.Success)
                 this.InitializeStringSetting(Settings.LastOpenDirectoryPath.ToString());
+            if (result.Success)
+                this.InitializeIntegerSetting(Settings.LastOpenFilesFilterIndex.ToString());
             if (result.Success)
                 this.InitializeStringSetting(Settings.PlaylistColumnVisibility.ToString());
             if (result.Success)
                 this.InitializeStringSetting(Settings.TrackColumnVisibility.ToString());
+            if (result.Success)
+                this.InitializeIntegerSetting(Settings.CurrentPlaylistId.ToString());
 
+            //SETTING MENU
+            if (result.Success)
+                this.InitializeBooleanSetting(Settings.AutomaticBpmImport.ToString());
+            if (result.Success)
+                this.InitializeBooleanSetting(Settings.AutomaticKeyImport.ToString());
+            if (result.Success)
+                this.InitializeBooleanSetting(Settings.ImportBpmFromVirtualDj.ToString());
+            if (result.Success)
+                this.InitializeBooleanSetting(Settings.ImportKeyFromVirtualDj.ToString());
+            if (result.Success)
+                this.InitializeBooleanSetting(Settings.PlayTrackAfterOpenFiles.ToString());
+            if (result.Success)
+                this.InitializeIntegerSetting(Settings.PreviewPercentage.ToString());
+            if (result.Success)
+                this.InitializeBooleanSetting(Settings.IsShortTrackColouringEnabled.ToString());
+            if (result.Success)
+                this.InitializeDecimalSetting(Settings.ShortTrackColouringThreshold.ToString());
+
+            //PLAYER SETTINGS
             if (result.Success)
                 this.InitializeBooleanSetting(Settings.IsShuffleEnabled.ToString());
             if (result.Success)
@@ -157,13 +182,19 @@ namespace MitoPlayer_2024.Dao
             if (result.Success)
                 this.InitializeBooleanSetting(Settings.IsMuteEnabled.ToString());
             if (result.Success)
-                this.InitializeIntegerSetting(Settings.LastOpenFilesFilterIndex.ToString());
+                this.InitializeBooleanSetting(Settings.IsPreviewEnabled.ToString());
 
+            //PLAYER FORM VIEW ELEMENT VISIBILITY
             if (result.Success)
-                this.InitializeBooleanSetting(Settings.AutomaticBpmImport.ToString());
+                this.InitializeBooleanSetting(Settings.IsTagEditorComponentDisplayed.ToString());
             if (result.Success)
-                this.InitializeBooleanSetting(Settings.AutomaticKeyImport.ToString());
+                this.InitializeBooleanSetting(Settings.IsOnlyPlayingRowModeEnabled.ToString());
+            if (result.Success)
+                this.InitializeBooleanSetting(Settings.IsPlaylistListDisplayed.ToString());
+            if (result.Success)
+                this.InitializeBooleanSetting(Settings.IsCoverImageComponentDisplayed.ToString());
 
+            //EXPORT TO DIRECTORY
             if (result.Success)
                 this.InitializeStringSetting(Settings.LastExportDirectoryPath.ToString());
             if (result.Success)
@@ -183,43 +214,15 @@ namespace MitoPlayer_2024.Dao
             if (result.Success)
                 this.InitializeDecimalSetting(Settings.TitleMinimumCharacter.ToString());
 
+            //LIVE STREAM ANIMATION
             if (result.Success)
-                this.InitializeStringSetting(Settings.VirtualDjDatabasePath.ToString());
+                this.InitializeStringSetting(Settings.LiveStreamAnimationImagePath.ToString());
 
-            if (result.Success)
-                this.InitializeBooleanSetting(Settings.IsTagEditorDisplayed.ToString());
-            if (result.Success)
-                this.InitializeIntegerSetting(Settings.CurrentTagIndexForTracklistColouring.ToString());
-            if (result.Success)
-                this.InitializeBooleanSetting(Settings.PlayTrackAfterOpenFiles.ToString());
             
-            if (result.Success)
-                this.InitializeBooleanSetting(Settings.IsPlaylistListDisplayed.ToString());
-            
-            if (result.Success)
-                this.InitializeIntegerSetting(Settings.CurrentPlaylistId.ToString());
-            if (result.Success)
-                this.InitializeBooleanSetting(Settings.IsOnlyPlayingRowModeEnabled.ToString());
-            if (result.Success)
-                this.InitializeBooleanSetting(Settings.IsFilterModeEnabled.ToString());
-            if (result.Success)
-                this.InitializeBooleanSetting(Settings.InitialTracklistLeftValue.ToString());
-            if (result.Success)
-                this.InitializeBooleanSetting(Settings.InitialTracklistWidth.ToString()); 
-            if (result.Success)
-                this.InitializeBooleanSetting(Settings.IsPreviewEnabled.ToString());
-            if (result.Success)
-                this.InitializeIntegerSetting(Settings.PreviewPercentage.ToString());
-            if (result.Success)
-                this.InitializeBooleanSetting(Settings.IsShortTrackColouringEnabled.ToString());
-            if (result.Success)
-                this.InitializeDecimalSetting(Settings.ShortTrackColouringThreshold.ToString()); 
             if (result.Success)
                 this.InitializeIntegerSetting(Settings.TrainingModelBatchCount.ToString());
             if (result.Success)
                 this.InitializeBooleanSetting(Settings.IsTracklistDetailsDisplayed.ToString());
-            if (result.Success)
-                this.InitializeBooleanSetting(Settings.IsCoverImageComponentDisplayed.ToString());
 
             return result;
         }

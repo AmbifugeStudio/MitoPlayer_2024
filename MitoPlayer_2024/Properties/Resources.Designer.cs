@@ -113,6 +113,16 @@ namespace MitoPlayer_2024.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap DotRed_20_20 {
+            get {
+                object obj = ResourceManager.GetObject("DotRed_20_20", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap MarkerBlack {
             get {
                 object obj = ResourceManager.GetObject("MarkerBlack", resourceCulture);
@@ -291,7 +301,9 @@ namespace MitoPlayer_2024.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Key(Text,NoMultipleValues):01A(#5ABF9E),01B(#55D4AA),02A(#73B175),02B(#75C375),03A(#93B85C),03B(#9ECB58),04A(#D2BF59),04B(#ECD455),05A(#D48A62),05B(#ED9360),06A(#D47D6E),06B(#ED816E),07A(#D36E7A),07B(#ED6E7D),08A(#BB75B3),08B(#CF77C6),09A(#8F80AB),09B(#9884BA),10A(#759CD1),10B(#7AA7E9),11A(#57B7D0),11B(#54CCEA),12A(#59C6C7),12B(#55DDDC)
+        ///Bpm(Text,HasMultipleValues):Bpm(#FFFFFF)
+        ///Style(Text,NoMultipleValues):1_Liquid(#80FF80),2_Deep(#D3ABAB),3_B_Roller(#FFBF80),5_Neuro(#80BFFF),4_Stadion(#FFFF80),3_A_Jungle(#0 [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string TagValueScript {
             get {

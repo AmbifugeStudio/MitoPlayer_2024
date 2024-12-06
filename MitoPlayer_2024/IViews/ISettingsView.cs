@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MitoPlayer_2024.Views
 {
-    public interface IPreferencesView
+    public interface ISettingsView
     {
         event EventHandler CloseViewWithOkEvent;
         event EventHandler CloseViewWithCancelEvent;
@@ -20,15 +20,9 @@ namespace MitoPlayer_2024.Views
 
         event EventHandler<Messenger> SetShortTrackColouringEvent;
         event EventHandler<Messenger> SetShortTrackColouringThresholdEvent;
+        event EventHandler<Messenger> SetImportBpmFromVirtualDjEvent;
+        event EventHandler<Messenger> SetImportKeyFromVirtualDjEvent;
 
-        void SetImportSettings(
-            bool automaticBpmImport, 
-            bool automaticKeyImport,
-            String virtualDjDatabasePath, 
-            bool playTrackAfterOpenFiles,
-            bool hasVirtualDj, 
-            int previewPercentage,
-            bool isShortTrackColouringEnabled,
-            decimal shortTrackColouringThreshold);
+        void InitializeSettings(Messenger msg);
     }
 }

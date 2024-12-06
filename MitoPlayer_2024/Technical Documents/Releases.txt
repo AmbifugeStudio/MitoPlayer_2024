@@ -1,8 +1,23 @@
 ﻿
 
 
+
+- FEATURE: Separate VirtualDj and MixedInKey exports
+
+- FEATURE: Live mode on/off 
+- FEATURE: automatic live mode on (and disabled), when the live stream animation is window is enabled
+- FEATURE: live stream background directory by track style (choosen tag)
+- FEATURE: live stream color design by track style (choosen tag)
+- FEATURE: display (and edit) note at the start of live stream
+
+
+- LIVE mode: számot ne lehessen elindítani
+- BUG: drag and drop duplicates track
+
+
+
 - fájl exportnál original fájlnév megőrzés
-- feature: vdj és mixedinkey import szétszedése
+
 - fájl exportnál progress bar
 
 OK - BUG - peak meter freezez somethimes
@@ -36,9 +51,7 @@ _ a progress bar delay-e lassú
 - warning se jó, törölni meg újralétrehozni kellett
 - és a sorting id alapján jelenik meg, nem a legváégán, ha újra létrehozom
 
-
 - BUG: tracklist display index - sorting id fix
-
 
 - FEATURE: virtual dj open vs. scan bpm dialog windows
 
@@ -65,6 +78,13 @@ a filtered lista elemeit írja ki a playlist tack coujnt - ki kéne írni, hogy 
 - FEATURE: load tracklist or navigate away: check save status and show dialog window is there are unsaved progress
 
 ======================
+v0.15.2.19
+======================
+OK - REFACTOR: organize settings
+OK - FEATURE: Settings panel - remove general tab and database clear
+OK - BUG: short track colouring should be enabled by default
+OK - BUG: preview default setting should be 30%
+======================
 v0.15.2.15
 ======================
 OK - BUG: error at playlist initilialization after tag name change
@@ -86,7 +106,7 @@ OK - FEATURE: utolagos key beolvasás Comment-ből
 ======================
 v0.15.1.1
 ======================
-- REFACTOR: SMall refactors
+- REFACTOR: Small refactors
 ======================
 v0.15.1.0
 ======================

@@ -12,7 +12,7 @@ using System.Windows.Forms;
 
 namespace MitoPlayer_2024.Views
 {
-    public partial class SettingsView : Form, IPreferencesView
+    public partial class SettingsView : Form, ISettingsView
     {
         public event EventHandler CloseViewWithOkEvent;
         public event EventHandler CloseViewWithCancelEvent;
@@ -24,6 +24,8 @@ namespace MitoPlayer_2024.Views
         public event EventHandler<Messenger> SetPreviewPercentageEvent;
         public event EventHandler<Messenger> SetShortTrackColouringEvent;
         public event EventHandler<Messenger> SetShortTrackColouringThresholdEvent;
+        public event EventHandler<Messenger> SetImportBpmFromVirtualDjEvent;
+        public event EventHandler<Messenger> SetImportKeyFromVirtualDjEvent;
 
 
 
@@ -54,8 +56,6 @@ namespace MitoPlayer_2024.Views
             this.grbPlayer.ForeColor = this.FontColor;
             this.grbVirtualDjImport.ForeColor = this.FontColor;
             this.chbShortTrackColouring.ForeColor = this.FontColor;
-
-            this.tabGeneral.BackColor = this.BackgroundColor;
         }
         private void btnClear_Click(object sender, EventArgs e)
         {
@@ -63,67 +63,108 @@ namespace MitoPlayer_2024.Views
 
         }
 
-        private void btnOk_Click(object sender, EventArgs e)
-        {
-            this.SetShortTrackColouringThreshold();
-            this.SetPreviewPercentage();
-            this.CloseViewWithOkEvent?.Invoke(this, EventArgs.Empty);
-
-        }
+       
 
         private void SetPreviewPercentage()
         {
             this.SetPreviewPercentageEvent?.Invoke(this, new Messenger { DecimalField1 = this.nmdPreviewPercentage.Value });
         }
 
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            this.CloseViewWithCancelEvent?.Invoke(this, EventArgs.Empty);
-        }
+       
 
         private void chbAutomaticBpmImport_CheckedChanged(object sender, EventArgs e)
         {
+            if (this.chbAutomaticBpmImport.Checked)
+            {
+                this.rdbImportBpmFromVirtualDj.Enabled = true;
+                this.rdbImportBpmFromMixedInKey.Enabled = true;
+            }
+            else
+            {
+                this.rdbImportBpmFromVirtualDj.Enabled = false;
+                this.rdbImportBpmFromMixedInKey.Enabled = false;
+            }
             this.SetAutomaticBpmImportEvent?.Invoke(this,new Messenger { BooleanField1 = this.chbAutomaticBpmImport.Checked });
         }
 
         private void chbAutomaticKeyImport_CheckedChanged(object sender, EventArgs e)
         {
+            if (this.chbAutomaticKeyImport.Checked)
+            {
+                this.rdbImportKeyFromVirtualDj.Enabled = true;
+                this.rdbImportKeyFromMixedInKey.Enabled = true;
+            }
+            else
+            {
+                this.rdbImportKeyFromVirtualDj.Enabled = false;
+                this.rdbImportKeyFromMixedInKey.Enabled = false;
+            }
             this.SetAutomaticKeyImportEvent?.Invoke(this, new Messenger { BooleanField1 = this.chbAutomaticKeyImport.Checked });
         }
-        public void SetImportSettings(
-            bool automaticBpmImport, 
-            bool automaticKeyImport, 
-            String virtualDjDatabasePath, 
-            bool playTrackAfterOpenFiles, 
-            bool hasVirtualDj, 
-            int previewPercentage,
-            bool isShortTrackColouringEnabled,
-            decimal shortTrackColouringThreshold)
+        public void InitializeSettings(Messenger msg)
         {
-            this.chbAutomaticBpmImport.Checked = automaticBpmImport;
-            this.chbAutomaticKeyImport.Checked = automaticKeyImport;
-            this.txtBoxVirtualDjDatabasePath.Text = virtualDjDatabasePath;
-            this.chbPlayTrackAfterOpenFiles.Checked = playTrackAfterOpenFiles;
-            this.nmdPreviewPercentage.Value = previewPercentage;
-            this.chbShortTrackColouring.Checked = isShortTrackColouringEnabled;
-            this.txtbShortTrackColouringThreshold.Text = shortTrackColouringThreshold.ToString("N2");
-            if (!isShortTrackColouringEnabled)
+            this.chbAutomaticBpmImport.Checked = msg.BooleanField1;
+            this.chbAutomaticKeyImport.Checked = msg.BooleanField2;
+
+            if (msg.BooleanField3)
+            {
+                this.rdbImportBpmFromVirtualDj.Checked = true;
+                this.rdbImportBpmFromMixedInKey.Checked = false;
+            }
+            else
+            {
+                this.rdbImportBpmFromVirtualDj.Checked = false;
+                this.rdbImportBpmFromMixedInKey.Checked = true;
+            }
+            if (msg.BooleanField4)
+            {
+                this.rdbImportKeyFromVirtualDj.Checked = true;
+                this.rdbImportKeyFromMixedInKey.Checked = false;
+            }
+            else
+            {
+                this.rdbImportKeyFromVirtualDj.Checked = false;
+                this.rdbImportKeyFromMixedInKey.Checked = true;
+            }
+            if (this.chbAutomaticBpmImport.Checked)
+            {
+                this.rdbImportBpmFromVirtualDj.Enabled = true;
+                this.rdbImportBpmFromMixedInKey.Enabled = true;
+            }
+            else
+            {
+                this.rdbImportBpmFromVirtualDj.Enabled = false;
+                this.rdbImportBpmFromMixedInKey.Enabled = false;
+            }
+            if (this.chbAutomaticKeyImport.Checked)
+            {
+                this.rdbImportKeyFromVirtualDj.Enabled = true;
+                this.rdbImportKeyFromMixedInKey.Enabled = true;
+            }
+            else
+            {
+                this.rdbImportKeyFromVirtualDj.Enabled = false;
+                this.rdbImportKeyFromMixedInKey.Enabled = false;
+            }
+
+            this.chbPlayTrackAfterOpenFiles.Checked = msg.BooleanField5;
+            this.chbShortTrackColouring.Checked = msg.BooleanField6;
+
+            this.nmdPreviewPercentage.Value = msg.IntegerField1;
+            this.txtbShortTrackColouringThreshold.Text = msg.DecimalField1.ToString("N2");
+
+            if (!msg.BooleanField6)
             {
                 this.txtbShortTrackColouringThreshold.Enabled = false;
             }
 
-            if (!hasVirtualDj)
+            if (!msg.BooleanField7)
             {
                 this.chbAutomaticBpmImport.Checked = false;
                 this.chbAutomaticKeyImport.Checked = false;
                 this.chbAutomaticBpmImport.Enabled = false;
                 this.chbAutomaticKeyImport.Enabled = false;
             }
-        }
-
-        private void txtBoxVirtualDjDatabasePath_TextChanged(object sender, EventArgs e)
-        {
-            this.SetVirtualDjDatabasePathEvent?.Invoke(this, new Messenger { StringField1 = this.txtBoxVirtualDjDatabasePath.Text });
         }
 
         private void chbPlayTrackAfterOpenFiles_CheckedChanged(object sender, EventArgs e)
@@ -177,6 +218,45 @@ namespace MitoPlayer_2024.Views
                     MessageBox.Show(ex.Message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
+        }
+
+        private void btnOk_Click(object sender, EventArgs e)
+        {
+            this.CloseWithOk();
+        }
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            this.CloseWithCancel();
+        }
+        private void CloseWithOk()
+        {
+            this.SetShortTrackColouringThreshold();
+            this.SetPreviewPercentage();
+            this.CloseViewWithOkEvent?.Invoke(this, EventArgs.Empty);
+        }
+        private void CloseWithCancel()
+        {
+            this.CloseViewWithCancelEvent?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void rdbImportBpmFromVirtualDj_CheckedChanged(object sender, EventArgs e)
+        {
+            this.SetImportBpmFromVirtualDjEvent?.Invoke(this, new Messenger { BooleanField1 = this.rdbImportBpmFromVirtualDj.Checked });
+        }
+
+        private void rdbImportBpmFromMixedInKey_CheckedChanged(object sender, EventArgs e)
+        {
+            this.SetImportBpmFromVirtualDjEvent?.Invoke(this, new Messenger { BooleanField1 = this.rdbImportBpmFromVirtualDj.Checked });
+        }
+
+        private void rdbImportKeyFromVirtualDj_CheckedChanged(object sender, EventArgs e)
+        {
+            this.SetImportKeyFromVirtualDjEvent?.Invoke(this, new Messenger { BooleanField1 = this.rdbImportKeyFromVirtualDj.Checked });
+        }
+
+        private void rdbImportKeyFromMixedInKey_CheckedChanged(object sender, EventArgs e)
+        {
+            this.SetImportKeyFromVirtualDjEvent?.Invoke(this, new Messenger { BooleanField1 = this.rdbImportKeyFromVirtualDj.Checked });
         }
     }
 }

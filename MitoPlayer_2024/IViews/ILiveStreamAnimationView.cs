@@ -12,6 +12,9 @@ namespace MitoPlayer_2024.IViews
 
     public interface ILiveStreamAnimationView
     {
-       
+        event EventHandler TrackChangeCheckEvent;
+        void FirstInitialization(Messenger msg);
+        void InitializeView(Messenger msg);
+
     }
 }

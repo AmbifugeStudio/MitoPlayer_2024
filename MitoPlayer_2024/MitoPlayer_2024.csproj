@@ -294,9 +294,10 @@
     <Compile Include="Dao\SettingDao.cs" />
     <Compile Include="Dao\TagDao.cs" />
     <Compile Include="Dao\DataBaseBuilderDao.cs" />
-    <Compile Include="IViews\ILiveStreamAnimationViewSetting.cs" />
+    <Compile Include="IViews\ILiveStreamAnimationSettingView.cs" />
     <Compile Include="IViews\ILiveStreamAnimationView.cs" />
     <Compile Include="Presenters\LiveStreamAnimationPresenter.cs" />
+    <Compile Include="Presenters\LiveStreamAnimationSettingPresenter.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -415,7 +416,7 @@
     <Compile Include="IViews\IHarmonizerView.cs" />
     <Compile Include="IViews\IPlaylistEditorView.cs" />
     <Compile Include="IViews\IPlaylistView.cs" />
-    <Compile Include="IViews\IPreferencesView.cs" />
+    <Compile Include="IViews\ISettingsView.cs" />
     <Compile Include="IViews\IColumnVisibilityEditorView.cs" />
     <Compile Include="IViews\IProfileEditorView.cs" />
     <Compile Include="IViews\IProfileView.cs" />
@@ -470,6 +471,12 @@
     </Compile>
     <Compile Include="Dao\BaseDao.cs" />
     <Compile Include="Dao\TrackDao.cs" />
+    <Compile Include="Views\LiveStreamAnimationSettingView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\LiveStreamAnimationSettingView.Designer.cs">
+      <DependentUpon>LiveStreamAnimationSettingView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\SettingsView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -580,6 +587,9 @@
     <EmbeddedResource Include="Views\PlaylistView.resx">
       <DependentUpon>PlaylistView.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\LiveStreamAnimationSettingView.resx">
+      <DependentUpon>LiveStreamAnimationSettingView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\SettingsView.resx">
       <DependentUpon>SettingsView.cs</DependentUpon>
@@ -696,6 +706,7 @@
     <None Include="Resources\RightArrow_20_20.png" />
     <None Include="Resources\UpArrow_20_20.png" />
     <None Include="Resources\TagValueScript.txt" />
+    <None Include="Resources\DotRed_20_20.png" />
     <Content Include="Technical Documents\Releases.txt" />
     <Content Include="Technical Documents\DevProcess.txt" />
     <Content Include="Technical Documents\TestCases.txt" />

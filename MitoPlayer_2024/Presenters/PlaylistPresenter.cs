@@ -154,7 +154,11 @@ namespace MitoPlayer_2024.Presenters
             {
                 this.liveStreamAnimationView = new LiveStreamAnimationView();
                 this.liveStreamAnimationPresenter = new LiveStreamAnimationPresenter(liveStreamAnimationView, this.mediaPlayerComponent, this.tagDao, this.trackDao, this.settingDao);
-                this.liveStreamAnimationView.Show();
+                if (!this.liveStreamAnimationPresenter.ViewIsReadyToShow)
+                {
+                    this.liveStreamAnimationView.Dispose();
+                    this.liveStreamAnimationView = null;
+                }
             }
             else
             {
@@ -165,16 +169,17 @@ namespace MitoPlayer_2024.Presenters
                 }
             }
         }
-
+        private LiveStreamAnimationSettingView liveStreamAnimationSettingView { get; set; }
+        private LiveStreamAnimationSettingPresenter liveStreamAnimationSettingPresenter { get; set; }
         private void LiveStreamAnimationSettingEvent(object sender, EventArgs e)
         {
-           /* LiveStreamAnimationSettingView liveStreamAnimationView = new LiveStreamAnimationSettingView();
-            LiveStreamAnimationSettingPresenter liveStreamAnimationPresenter = new LiveStreamAnimationSettingPresenter(liveStreamAnimationView, this.mediaPlayerComponent, this.tagDao, this.trackDao, this.settingDao);
+            LiveStreamAnimationSettingView liveStreamAnimationSettingView = new LiveStreamAnimationSettingView();
+            LiveStreamAnimationSettingPresenter liveStreamAnimationSettingPresenter = new LiveStreamAnimationSettingPresenter(liveStreamAnimationSettingView, this.settingDao);
 
-            if (liveStreamAnimationView.ShowDialog((LiveStreamAnimationSettingView)this.liveStreamAnimationView) == DialogResult.OK)
+            if (liveStreamAnimationSettingView.ShowDialog((LiveStreamAnimationSettingView)this.liveStreamAnimationSettingView) == DialogResult.OK)
             {
 
-            }*/
+            }
         }
 
         private void OpenModelTrainerEvent(object sender, EventArgs e)
@@ -595,7 +600,7 @@ namespace MitoPlayer_2024.Presenters
         private bool isTagComponentDisplayed { get; set; }
         private void InitializeTagComponent()
         {
-            this.isTagComponentDisplayed = this.settingDao.GetBooleanSetting(Settings.IsTagEditorDisplayed.ToString()).Value;
+            this.isTagComponentDisplayed = this.settingDao.GetBooleanSetting(Settings.IsTagEditorComponentDisplayed.ToString()).Value;
             this.isOnlyPlayingRowModeEnabled = this.settingDao.GetBooleanSetting(Settings.IsOnlyPlayingRowModeEnabled.ToString()).Value;
             //this.isFilterModeEnabled = this.settingDao.GetBooleanSetting(Settings.IsFilterModeEnabled.ToString()).Value;
 
@@ -2726,7 +2731,7 @@ namespace MitoPlayer_2024.Presenters
         private void DisplayTagComponentEvent(object sender, EventArgs e)
         {
             this.isTagComponentDisplayed = !this.isTagComponentDisplayed;
-            this.settingDao.SetBooleanSetting(Settings.IsTagEditorDisplayed.ToString(), this.isTagComponentDisplayed);
+            this.settingDao.SetBooleanSetting(Settings.IsTagEditorComponentDisplayed.ToString(), this.isTagComponentDisplayed);
             ((PlaylistView)this.playlistView).UpdateDisplayTagComponent(this.isTagComponentDisplayed);
         }
 

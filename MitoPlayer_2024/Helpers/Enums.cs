@@ -38,30 +38,42 @@ namespace MitoPlayer_2024.Helpers
     }
     public enum Settings
     {
-        FirstRun,
-        Volume,   
-        IsMuteEnabled,
-        IsShuffleEnabled,
-        IsPreviewEnabled,
-        PreviewPercentage,
-        LastOpenFilesFilterIndex,
-        LastOpenDirectoryPath,
+        //GLOBAL SETTINGS (??)
         LastGeneratedPlaylistId,
+        LastGeneratedProfileId,
+        LastGeneratedTagId,
+        LastGeneratedTagValueId,
+        CurrentPlaylistId,
+        //INNER SETTINGS
+        LastOpenDirectoryPath,
+        LastOpenFilesFilterIndex,
         PlaylistColumnNames,
         PlaylistColumnTypes,
         PlaylistColumnVisibility,
         TrackColumnNames,
         TrackColumnTypes,
         TrackColumnVisibility,
-        LastGeneratedProfileId,
-        LastGeneratedTagId,
-        LastGeneratedTagValueId,
-        Keys,
-        KeysAlter,
-        KeyCodes,
-        KeyColors,
-
-        ExportPath,
+        //SETTING MENU
+        AutomaticBpmImport,
+        AutomaticKeyImport,
+        ImportBpmFromVirtualDj,
+        ImportKeyFromVirtualDj,
+        PlayTrackAfterOpenFiles,
+        PreviewPercentage,
+        IsShortTrackColouringEnabled,
+        ShortTrackColouringThreshold,
+        //PLAYER SETTINGS
+        IsShuffleEnabled,
+        Volume,
+        IsMuteEnabled,
+        IsPreviewEnabled,
+        //PLAYER FORM VIEW ELEMENT VISIBILITY
+        IsTagEditorComponentDisplayed,
+        IsOnlyPlayingRowModeEnabled,
+        IsPlaylistListDisplayed,
+        IsCoverImageComponentDisplayed,
+        //EXPORT TO DIRECTORY
+        LastExportDirectoryPath,
         IsRowNumberChecked,
         IsKeyCodeChecked,
         IsBpmNumberChecked,
@@ -70,31 +82,16 @@ namespace MitoPlayer_2024.Helpers
         IsTrunkedTitleChecked,
         ArtistMinimumCharacter,
         TitleMinimumCharacter,
-        LastExportDirectoryPath,
-
-        AutomaticBpmImport,
-        AutomaticKeyImport,
-        VirtualDjDatabasePath,
-
-        IsTagEditorDisplayed,
-        CurrentTagIndexForTracklistColouring,
-        PlayTrackAfterOpenFiles,
-        IsPlaylistListDisplayed,
-
-        CurrentPlaylistId,
-        IsOnlyPlayingRowModeEnabled,
-        IsFilterModeEnabled,
-
-        InitialTracklistLeftValue,
-        InitialTracklistWidth,
-
-        IsShortTrackColouringEnabled,
-        ShortTrackColouringThreshold,
-
+        //LIVE STREAM ANIMATION
+        LiveStreamAnimationImagePath,
+        //BPM AND KEY IMPORT
+        Keys,
+        KeysAlter,
+        KeyCodes,
+        KeyColors,
+        //VARIOUS
         TrainingModelBatchCount,
         IsTracklistDetailsDisplayed,
-        IsCoverImageComponentDisplayed
-
     }
 
     public enum MediaPlayerUpdateState
