@@ -291,10 +291,9 @@ namespace MitoPlayer_2024.Views
             // lblTrackSumLength
             // 
             this.lblTrackSumLength.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.lblTrackSumLength.AutoSize = true;
             this.lblTrackSumLength.Location = new System.Drawing.Point(12, 659);
             this.lblTrackSumLength.Name = "lblTrackSumLength";
-            this.lblTrackSumLength.Size = new System.Drawing.Size(88, 13);
+            this.lblTrackSumLength.Size = new System.Drawing.Size(181, 13);
             this.lblTrackSumLength.TabIndex = 3;
             this.lblTrackSumLength.Text = "Length: 00:00:00";
             this.lblTrackSumLength.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
