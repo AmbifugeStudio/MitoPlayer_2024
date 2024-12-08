@@ -27,6 +27,9 @@ namespace MitoPlayer_2024.Views
         public event EventHandler<Messenger> SetImportBpmFromVirtualDjEvent;
         public event EventHandler<Messenger> SetImportKeyFromVirtualDjEvent;
 
+        public event EventHandler<Messenger> SetLogMessageDisplayTimeEvent;
+        public event EventHandler<Messenger> SetLogMessageEnabledEvent;
+
 
 
         public SettingsView()
@@ -56,6 +59,7 @@ namespace MitoPlayer_2024.Views
             this.grbPlayer.ForeColor = this.FontColor;
             this.grbVirtualDjImport.ForeColor = this.FontColor;
             this.chbShortTrackColouring.ForeColor = this.FontColor;
+
         }
         private void btnClear_Click(object sender, EventArgs e)
         {
@@ -63,11 +67,15 @@ namespace MitoPlayer_2024.Views
 
         }
 
-       
+
 
         private void SetPreviewPercentage()
         {
             this.SetPreviewPercentageEvent?.Invoke(this, new Messenger { DecimalField1 = this.nmdPreviewPercentage.Value });
+        }
+        private void SetLogMessageDisplayTime()
+        {
+            this.SetLogMessageDisplayTimeEvent?.Invoke(this, new Messenger { DecimalField1 = this.nmdLogMessageDisplayTime.Value });
         }
 
        
@@ -146,25 +154,6 @@ namespace MitoPlayer_2024.Views
                 this.rdbImportKeyFromVirtualDj.Enabled = false;
                 this.rdbImportKeyFromMixedInKey.Enabled = false;
             }
-
-            this.chbPlayTrackAfterOpenFiles.Checked = msg.BooleanField5;
-            this.chbShortTrackColouring.Checked = msg.BooleanField6;
-
-            this.nmdPreviewPercentage.Value = msg.IntegerField1;
-            this.txtbShortTrackColouringThreshold.Text = msg.DecimalField1.ToString("N2");
-
-            if (!msg.BooleanField6)
-            {
-                this.txtbShortTrackColouringThreshold.Enabled = false;
-            }
-
-            if (!msg.BooleanField7)
-            {
-                this.chbAutomaticBpmImport.Checked = false;
-                this.chbAutomaticKeyImport.Checked = false;
-                this.chbAutomaticBpmImport.Enabled = false;
-                this.chbAutomaticKeyImport.Enabled = false;
-            }
         }
 
         private void chbPlayTrackAfterOpenFiles_CheckedChanged(object sender, EventArgs e)
@@ -176,7 +165,6 @@ namespace MitoPlayer_2024.Views
         {
             this.SetPreviewPercentageEvent?.Invoke(this, new Messenger { DecimalField1 = this.nmdPreviewPercentage.Value });
         }
-
         private void chbShortTrackColouring_CheckedChanged(object sender, EventArgs e)
         {
             if (!this.chbShortTrackColouring.Checked)
@@ -189,7 +177,6 @@ namespace MitoPlayer_2024.Views
             }
             this.SetShortTrackColouringEvent?.Invoke(this, new Messenger { BooleanField1 = this.chbShortTrackColouring.Checked });
         }
-
         private void txtbShortTrackColouringThreshold_KeyPress(object sender, KeyPressEventArgs e)
         {
             if(e.KeyChar == (char)Keys.Enter)
@@ -258,5 +245,27 @@ namespace MitoPlayer_2024.Views
         {
             this.SetImportKeyFromVirtualDjEvent?.Invoke(this, new Messenger { BooleanField1 = this.rdbImportKeyFromVirtualDj.Checked });
         }
+        
+
+
+
+        private void nmdLogMessageDisplayTime_ValueChanged(object sender, EventArgs e)
+        {
+            this.SetLogMessageDisplayTimeEvent?.Invoke(this, new Messenger { DecimalField1 = this.nmdPreviewPercentage.Value });
+        }
+        private void chbLogMessageEnabled_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!this.chbLogMessageEnabled.Checked)
+            {
+                this.nmdLogMessageDisplayTime.Enabled = false;
+            }
+            else
+            {
+                this.nmdLogMessageDisplayTime.Enabled = true;
+            }
+            this.SetLogMessageEnabledEvent?.Invoke(this, new Messenger { BooleanField1 = this.chbLogMessageEnabled.Checked });
+        }
+
+        
     }
 }

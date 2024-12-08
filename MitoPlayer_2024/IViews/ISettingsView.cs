@@ -22,7 +22,8 @@ namespace MitoPlayer_2024.Views
         event EventHandler<Messenger> SetShortTrackColouringThresholdEvent;
         event EventHandler<Messenger> SetImportBpmFromVirtualDjEvent;
         event EventHandler<Messenger> SetImportKeyFromVirtualDjEvent;
+        event EventHandler<Messenger> SetLogMessageDisplayTimeEvent;
+        event EventHandler<Messenger> SetLogMessageEnabledEvent;
 
-        void InitializeSettings(Messenger msg);
     }
 }

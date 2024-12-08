@@ -125,7 +125,19 @@ namespace MitoPlayer_2024.Presenters
                 {
                     sourceTrackList.Add(track);
                     this.AddTracksToPlaylist(0, sourceTrackList);
-                    ((PlaylistView)this.playlistView).UpdateAfterCopyTracksToPlaylist(sourceTrackList.Count(), "Default Playlist");
+
+                    bool isLogMessageDisplayed = this.settingDao.GetBooleanSetting(Settings.IsLogMessageEnabled.ToString()).Value;
+                    decimal logMessageDisplayTime = this.settingDao.GetDecimalSetting(Settings.LogMessageDisplayTime.ToString());
+                    if (isLogMessageDisplayed)
+                    {
+                        String message = sourceTrackList.Count() + " track";
+                        if(sourceTrackList.Count() > 1)
+                        {
+                            message += "s";
+                        }
+                        message += " copied to playlist [Default Playlist]";
+                        this.playlistView.DisplayLog(message, logMessageDisplayTime);
+                    }
                 }
             }
         }
@@ -384,6 +396,12 @@ namespace MitoPlayer_2024.Presenters
                 ColumnVisibilityArray = this.playlistListColumnVisibilityArray,
                 CurrentPlaylistId = this.currentPlaylistId
             };
+
+            if(this.currentPlaylistId > -1)
+            {
+                Playlist currentPlayist = this.trackDao.GetPlaylist(this.currentPlaylistId);
+                model.CurrentPlaylistName = currentPlayist.Name;
+            }
 
             this.playlistView.InitializePlaylistList(model);
         }
@@ -898,7 +916,23 @@ namespace MitoPlayer_2024.Presenters
                     errorMessage = ex.Message;
                 }
             });
-            ((PlaylistView)this.playlistView).UpdateAfterTracklistSave(errorMessage);
+
+            bool isLogMessageDisplayed = this.settingDao.GetBooleanSetting(Settings.IsLogMessageEnabled.ToString()).Value;
+            decimal logMessageDisplayTime = this.settingDao.GetDecimalSetting(Settings.LogMessageDisplayTime.ToString());
+            if (isLogMessageDisplayed)
+            {
+                String message = "";
+                if (!String.IsNullOrEmpty(errorMessage))
+                {
+                    message = errorMessage;
+                }
+                else
+                {
+                    message = "Playlist saved successfully!";
+                }
+                this.playlistView.DisplayLog(message, logMessageDisplayTime);
+            }
+
         }
         public void SaveTrackListSync()
         {
@@ -928,7 +962,21 @@ namespace MitoPlayer_2024.Presenters
                 errorMessage = ex.Message;
             }
 
-            ((PlaylistView)this.playlistView).UpdateAfterTracklistSave(errorMessage);
+            bool isLogMessageDisplayed = this.settingDao.GetBooleanSetting(Settings.IsLogMessageEnabled.ToString()).Value;
+            decimal logMessageDisplayTime = this.settingDao.GetDecimalSetting(Settings.LogMessageDisplayTime.ToString());
+            if (isLogMessageDisplayed)
+            {
+                String message = "";
+                if (String.IsNullOrEmpty(errorMessage))
+                {
+                    message = errorMessage;
+                }
+                else
+                {
+                    message = "Playlist saved successfully!";
+                }
+                this.playlistView.DisplayLog(message, logMessageDisplayTime);
+            }
         }
 
         private bool isSaving = false;
@@ -1135,8 +1183,7 @@ namespace MitoPlayer_2024.Presenters
 
         private void MoveTracklistRowsEvent(object sender, Messenger e)
         {
-
-            List<int> sourceIndices = e.SelectedIndices;
+            List<int> sourceIndices = e.SelectedIndices.OrderBy(i => i).ToList(); // Rendezés növekvő sorrendbe
             int targetIndex = e.IntegerField1;
 
             // Create a list to hold the rows to be moved
@@ -1167,7 +1214,7 @@ namespace MitoPlayer_2024.Presenters
             this.ReloadTrackList();
             this.TrackListChanged();
         }
-       
+
         private void InternalDragAndDropIntoTracklistEvent(object sender, Messenger e)
         {
             List<Model.Track> sourceTrackList = new List<Model.Track>();
@@ -1212,7 +1259,20 @@ namespace MitoPlayer_2024.Presenters
                     if (sourceTrackList != null && sourceTrackList.Count > 0)
                     {
                         this.AddTracksToPlaylist(playlistId, sourceTrackList);
-                        ((PlaylistView)this.playlistView).UpdateAfterCopyTracksToPlaylist(sourceTrackList.Count(), playlistRow["Name"].ToString());
+
+                        bool isLogMessageDisplayed = this.settingDao.GetBooleanSetting(Settings.IsLogMessageEnabled.ToString()).Value;
+                        decimal logMessageDisplayTime = this.settingDao.GetDecimalSetting(Settings.LogMessageDisplayTime.ToString());
+                        if (isLogMessageDisplayed)
+                        {
+                            String message = sourceTrackList.Count() + " track";
+                            if (sourceTrackList.Count() > 1)
+                            {
+                                message += "s";
+                            }
+                            message += " copied to playlist [" + playlistRow["Name"].ToString() + "]";
+                            this.playlistView.DisplayLog(message, logMessageDisplayTime);
+                        }
+
                     }
                 }
             }
@@ -1469,6 +1529,29 @@ namespace MitoPlayer_2024.Presenters
                 }
 
                 this.AddTracksToPlaylist(this.currentPlaylistId, trackList, dragIndex);
+
+                bool isLogMessageDisplayed = this.settingDao.GetBooleanSetting(Settings.IsLogMessageEnabled.ToString()).Value;
+                decimal logMessageDisplayTime = this.settingDao.GetDecimalSetting(Settings.LogMessageDisplayTime.ToString());
+                if (isLogMessageDisplayed)
+                {
+                    if (this.currentPlaylistId != -1)
+                    {
+                        Playlist playlist = this.trackDao.GetPlaylist(this.currentPlaylistId);
+                        String playlistName = String.Empty;
+                        if(playlist != null)
+                        {
+                            playlistName = playlist.Name;
+                        }
+
+                        String message = trackList.Count() + " track";
+                        if (trackList.Count() > 1)
+                        {
+                            message += "s";
+                        }
+                        message += " added to playlist [" + playlistName + "]";
+                        this.playlistView.DisplayLog(message, logMessageDisplayTime);
+                    }
+                }
             }
         }
         private void ExternalDragAndDropIntoPlaylistEvent(object sender, Messenger e)
@@ -1506,6 +1589,19 @@ namespace MitoPlayer_2024.Presenters
                 }
 
                 this.AddTracksToPlaylist(playlistId, trackList);
+
+                bool isLogMessageDisplayed = this.settingDao.GetBooleanSetting(Settings.IsLogMessageEnabled.ToString()).Value;
+                decimal logMessageDisplayTime = this.settingDao.GetDecimalSetting(Settings.LogMessageDisplayTime.ToString());
+                if (isLogMessageDisplayed)
+                {
+                    String message = trackList.Count() + " track";
+                    if (trackList.Count() > 1)
+                    {
+                        message += "s";
+                    }
+                    message += " added to playlist [" + playlistRow["Name"].ToString() + "]";
+                    this.playlistView.DisplayLog(message, logMessageDisplayTime);
+                }
             }
         }
         private void AddTracksToPlaylist(int playlistId, List<Model.Track> trackList, int dragIndex = -1, bool internalDragAndDrop = false)
@@ -2147,6 +2243,10 @@ namespace MitoPlayer_2024.Presenters
         {
             this.mediaPlayerComponent.ChangePreview(isPreviewEnabled);
             this.settingDao.SetBooleanSetting(Settings.IsPreviewEnabled.ToString(), isPreviewEnabled);
+
+            ((PlaylistView)this.playlistView).SetFocusToDataGridView();
+
+            
         }
 
        
@@ -2289,20 +2389,34 @@ namespace MitoPlayer_2024.Presenters
 
         private void LoadPlaylistEvent(object sender, Messenger e)
         {
-                if (this.isTrackListChanged)
+            String message = String.Empty;
+
+            if (this.isTrackListChanged)
+            {
+                this.SaveTrackListSync();
+                this.isTrackListChanged = false;
+                this.playlistView.ChangeSaveButtonColor(false);
+            }
+
+            this.currentPlaylistId = Convert.ToInt32(this.playlistListTable.Rows[e.IntegerField1]["Id"]);
+            this.settingDao.SetIntegerSetting(Settings.CurrentPlaylistId.ToString(), this.currentPlaylistId);
+
+            if(this.currentPlaylistId != -1)
+            {
+                message = "Playlist [" + this.playlistListTable.Rows[e.IntegerField1]["Name"].ToString() + "] has been loaded";
+
+                bool isLogMessageDisplayed = this.settingDao.GetBooleanSetting(Settings.IsLogMessageEnabled.ToString()).Value;
+                decimal logMessageDisplayTime = this.settingDao.GetDecimalSetting(Settings.LogMessageDisplayTime.ToString());
+                if (isLogMessageDisplayed)
                 {
-                    this.SaveTrackListSync();
-                    this.isTrackListChanged = false;
-                    this.playlistView.ChangeSaveButtonColor(false);
+                    this.playlistView.DisplayLog(message, logMessageDisplayTime);
                 }
+            }
 
-                this.currentPlaylistId = Convert.ToInt32(this.playlistListTable.Rows[e.IntegerField1]["Id"]);
-                this.settingDao.SetIntegerSetting(Settings.CurrentPlaylistId.ToString(), this.currentPlaylistId);
+            this.ReloadPlaylist();
+            this.InitializeTrackListRows(this.trackListTable, null);
 
-                this.ReloadPlaylist();
-                this.InitializeTrackListRows(this.trackListTable, null);
-
-                this.mediaPlayerComponent.SetWorkingTable(this.trackListTable);
+            this.mediaPlayerComponent.SetWorkingTable(this.trackListTable);
         }
 
         /*

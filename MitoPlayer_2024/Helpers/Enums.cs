@@ -92,6 +92,9 @@ namespace MitoPlayer_2024.Helpers
         //VARIOUS
         TrainingModelBatchCount,
         IsTracklistDetailsDisplayed,
+        IsLogMessageEnabled,
+        LogMessageDisplayTime
+
     }
 
     public enum MediaPlayerUpdateState

@@ -32,6 +32,8 @@ namespace MitoPlayer_2024.Presenters
         private int previewPercentage;
         private bool isShortTrackColouringEnabled;
         private decimal shortTrackColouringThreshold;
+        private bool isLogMessageEnabled;
+        private decimal logMessageDisplayTime;
 
         public bool databaseCleared = false;
         public SettingsPresenter(ISettingsView view, ITrackDao trackDao,ITagDao tagDao, IProfileDao profileDao, ISettingDao settingDao)
@@ -50,21 +52,11 @@ namespace MitoPlayer_2024.Presenters
             this.isShortTrackColouringEnabled = this.settingDao.GetBooleanSetting(Settings.IsShortTrackColouringEnabled.ToString()).Value;
             this.previewPercentage = this.settingDao.GetIntegerSetting(Settings.PreviewPercentage.ToString());
             this.shortTrackColouringThreshold = this.settingDao.GetDecimalSetting(Settings.ShortTrackColouringThreshold.ToString());
+            this.isLogMessageEnabled = this.settingDao.GetBooleanSetting(Settings.IsLogMessageEnabled.ToString()).Value;
+            this.logMessageDisplayTime = this.settingDao.GetDecimalSetting(Settings.LogMessageDisplayTime.ToString());
 
             this.hasVirtualDj = this.HasVirtualDj();
 
-            Messenger msg = new Messenger();
-            msg.BooleanField1 = this.automaticBpmImport;
-            msg.BooleanField2 = this.automaticKeyImport;
-            msg.BooleanField3 = this.importBpmFromVirtualDj;
-            msg.BooleanField4 = this.importKeyFromVirtualDj;
-            msg.BooleanField5 = this.playTrackAfterOpenFiles;
-            msg.BooleanField6 = this.isShortTrackColouringEnabled;
-            msg.BooleanField7 = this.hasVirtualDj;
-            msg.IntegerField1 = this.previewPercentage;
-            msg.DecimalField1 = this.shortTrackColouringThreshold;
-
-            this.view.InitializeSettings(msg);
 
             this.view.CloseViewWithOkEvent += CloseViewWithOkEvent;
             this.view.CloseViewWithCancelEvent += CloseViewWithCancelEvent;
@@ -75,8 +67,6 @@ namespace MitoPlayer_2024.Presenters
             this.view.SetPreviewPercentageEvent += SetPreviewPercentageEvent;
             this.view.SetShortTrackColouringEvent += SetShortTrackColouringEvent;
             this.view.SetShortTrackColouringThresholdEvent += SetShortTrackColouringThresholdEvent;
-            this.view.SetImportBpmFromVirtualDjEvent += SetImportBpmFromVirtualDjEvent;
-            this.view.SetImportKeyFromVirtualDjEvent += SetImportKeyFromVirtualDjEvent;
 
         }
 
@@ -159,6 +149,15 @@ namespace MitoPlayer_2024.Presenters
         {
             this.isShortTrackColouringEnabled = e.BooleanField1;
         }
+        private void SetLogMessageEnabledEvent(object sender, Messenger e)
+        {
+            this.isLogMessageEnabled = e.BooleanField1;
+        }
+
+        private void SetLogMessageDisplayTimeEvent(object sender, Messenger e)
+        {
+            this.logMessageDisplayTime = Convert.ToInt32(e.DecimalField1);
+        }
         private void CloseViewWithOkEvent(object sender, EventArgs e)
         {
             ResultOrError result = new ResultOrError();
@@ -191,6 +190,8 @@ namespace MitoPlayer_2024.Presenters
 
                     this.settingDao.SetBooleanSetting(Settings.IsShortTrackColouringEnabled.ToString(), this.isShortTrackColouringEnabled);
                     this.settingDao.SetDecimalSetting(Settings.ShortTrackColouringThreshold.ToString(), this.shortTrackColouringThreshold);
+                    this.settingDao.SetBooleanSetting(Settings.IsLogMessageEnabled.ToString(), this.isLogMessageEnabled);
+                    this.settingDao.SetDecimalSetting(Settings.LogMessageDisplayTime.ToString(), this.logMessageDisplayTime);
 
                     Process.Start(Application.ExecutablePath);
                     Application.Exit();

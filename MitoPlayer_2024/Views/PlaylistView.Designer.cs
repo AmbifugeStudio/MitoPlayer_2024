@@ -83,6 +83,7 @@ namespace MitoPlayer_2024.Views
             this.btnLiveStreamAnimationSetting = new System.Windows.Forms.Button();
             this.btnDisplayCoverImageToggle = new System.Windows.Forms.Button();
             this.btnColumnVisibilityWithTagEditor = new System.Windows.Forms.Button();
+            this.lblActualPlaylistName = new System.Windows.Forms.Label();
             this.dgvTrackList = new MitoPlayer_2024.Helpers.CustomDataGridView();
             this.contextMenuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPlaylistList)).BeginInit();
@@ -584,6 +585,14 @@ namespace MitoPlayer_2024.Views
             this.btnColumnVisibilityWithTagEditor.UseVisualStyleBackColor = true;
             this.btnColumnVisibilityWithTagEditor.Click += new System.EventHandler(this.btnColumnVisibility_Click);
             // 
+            // lblActualPlaylistName
+            // 
+            this.lblActualPlaylistName.Location = new System.Drawing.Point(85, 13);
+            this.lblActualPlaylistName.Name = "lblActualPlaylistName";
+            this.lblActualPlaylistName.Size = new System.Drawing.Size(108, 23);
+            this.lblActualPlaylistName.TabIndex = 55;
+            this.lblActualPlaylistName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // dgvTrackList
             // 
             this.dgvTrackList.AllowDrop = true;
@@ -626,6 +635,7 @@ namespace MitoPlayer_2024.Views
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(1264, 681);
+            this.Controls.Add(this.lblActualPlaylistName);
             this.Controls.Add(this.btnLiveStreamAnimationSetting);
             this.Controls.Add(this.btnLiveStreamAnimation);
             this.Controls.Add(this.btnGenerateTrainingSet);
@@ -714,5 +724,6 @@ namespace MitoPlayer_2024.Views
         private System.Windows.Forms.Button btnLiveStreamAnimation;
         private System.Windows.Forms.Button btnLiveStreamAnimationSetting;
         private System.Windows.Forms.Button btnDisplayCoverImageToggle;
+        private System.Windows.Forms.Label lblActualPlaylistName;
     }
 }

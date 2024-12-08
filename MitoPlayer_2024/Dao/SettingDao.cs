@@ -219,8 +219,15 @@ namespace MitoPlayer_2024.Dao
                 this.InitializeStringSetting(Settings.LiveStreamAnimationImagePath.ToString());
 
             
+            
+            
+            if (result.Success)
+                this.InitializeBooleanSetting(Settings.IsLogMessageEnabled.ToString());
+            if (result.Success)
+                this.InitializeDecimalSetting(Settings.LogMessageDisplayTime.ToString());
             if (result.Success)
                 this.InitializeIntegerSetting(Settings.TrainingModelBatchCount.ToString());
+           
             if (result.Success)
                 this.InitializeBooleanSetting(Settings.IsTracklistDetailsDisplayed.ToString());
 
