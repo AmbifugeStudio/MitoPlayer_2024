@@ -25,5 +25,6 @@ namespace MitoPlayer_2024.Views
         event EventHandler<Messenger> SetLogMessageDisplayTimeEvent;
         event EventHandler<Messenger> SetLogMessageEnabledEvent;
 
+        void InitializeSettings(Messenger msg);
     }
 }

@@ -89,11 +89,12 @@ namespace MitoPlayer_2024.Helpers
         KeysAlter,
         KeyCodes,
         KeyColors,
+        //LOG
+        IsLogMessageEnabled,
+        LogMessageDisplayTime,
         //VARIOUS
         TrainingModelBatchCount,
-        IsTracklistDetailsDisplayed,
-        IsLogMessageEnabled,
-        LogMessageDisplayTime
+        IsTracklistDetailsDisplayed
 
     }
 

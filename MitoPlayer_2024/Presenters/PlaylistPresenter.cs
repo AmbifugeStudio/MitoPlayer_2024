@@ -1422,67 +1422,114 @@ namespace MitoPlayer_2024.Presenters
                         }
                     }
 
-                    if (this.HasVirtualDj())
-                    {
+                    this.ImportKeysAndBpmsFromExternalSource(ref trackList, tagList);
 
-                        var automaticKeyImport = this.settingDao.GetBooleanSetting(Settings.AutomaticKeyImport.ToString()).Value;
-                        var automaticBpmImport = this.settingDao.GetBooleanSetting(Settings.AutomaticBpmImport.ToString()).Value;
-
-                        var keyTagValueList = automaticKeyImport ? this.tagDao.GetTagValuesByTagId(tagList.Find(x => x.Name == "Key")?.Id ?? 0) : new List<TagValue>();
-                        var bpmTagValueList = automaticBpmImport ? this.tagDao.GetTagValuesByTagId(tagList.Find(x => x.Name == "Bpm")?.Id ?? 0) : new List<TagValue>();
-
-                        var result = VirtualDJReader.Instance.ReadKeyAndBpmFromVirtualDJDatabase(ref trackList, this.trackDao, keyTagValueList, bpmTagValueList);
-                        if (!result.Success)
-                        {
-                            MessageBox.Show(result.ErrorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-                        else
-                        {
-                            TagValue tv = null;
-                            String tagValueName = String.Empty;
-                            String keyCode = String.Empty;
-                            String[] parts = null;
-
-                            foreach (Track track in trackList)
-                            {
-                                if (!String.IsNullOrEmpty(track.Comment))
-                                {
-                                    parts = track.Comment.Split('-');
-                                    if (parts != null && parts.Length > 0)
-                                    {
-                                        keyCode = parts[0].TrimEnd();
-
-                                        if (keyCode.Count() == 2)
-                                        {
-                                            keyCode = "0" + keyCode;
-                                        }
-
-                                        tv = keyTagValueList.Find(x => x.Name == keyCode);
-
-                                        if (tv != null)
-                                        {
-                                            if (track.TrackTagValues != null && track.TrackTagValues.Count > 0)
-                                            {
-                                                TrackTagValue ttv = track.TrackTagValues.Find(x => x.TagName == "Key");
-                                                if (ttv != null)
-                                                {
-                                                    ttv.TagValueId = tv.Id;
-                                                    ttv.TagValueName = tv.Name;
-                                                    this.trackDao.UpdateTrackTagValue(ttv);
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-
-                            }
-                        }
-                    }
+                    
                 }
                 return trackList;
             }
            
         }
+
+        private void ImportKeysAndBpmsFromExternalSource(ref List<Model.Track> trackList, List<Tag> tagList)
+        {
+            bool automaticKeyImport = this.settingDao.GetBooleanSetting(Settings.AutomaticKeyImport.ToString()).Value;
+            bool automaticBpmImport = this.settingDao.GetBooleanSetting(Settings.AutomaticBpmImport.ToString()).Value;
+            bool importKeyFromVirtualDj = this.settingDao.GetBooleanSetting(Settings.ImportKeyFromVirtualDj.ToString()).Value;
+            bool importBpmFromVirtualDj = this.settingDao.GetBooleanSetting(Settings.ImportBpmFromVirtualDj.ToString()).Value;
+
+            if (automaticKeyImport && automaticBpmImport && importKeyFromVirtualDj && importBpmFromVirtualDj)
+            {
+                if (this.HasVirtualDj())
+                {
+                    List<TagValue> keyTagValueList = this.tagDao.GetTagValuesByTagId(tagList.Find(x => x.Name == "Key")?.Id ?? 0);
+                    List<TagValue> bpmTagValueList = this.tagDao.GetTagValuesByTagId(tagList.Find(x => x.Name == "Bpm")?.Id ?? 0);
+                    var result = VirtualDJReader.Instance.ReadKeysAndBpmsFromVirtualDJDatabase(ref trackList, this.trackDao, keyTagValueList, bpmTagValueList);
+                    if (!result.Success)
+                    {
+                        MessageBox.Show(result.ErrorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+            else
+            {
+                if (automaticKeyImport)
+                {
+                    List<TagValue> keyTagValueList = this.tagDao.GetTagValuesByTagId(tagList.Find(x => x.Name == "Key")?.Id ?? 0);
+
+                    if (importKeyFromVirtualDj)
+                    {
+                        if (this.HasVirtualDj())
+                        {
+                            var result = VirtualDJReader.Instance.ReadKeysFromVirtualDJDatabase(ref trackList, this.trackDao, keyTagValueList);
+                            if (!result.Success)
+                            {
+                                MessageBox.Show(result.ErrorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        TagValue tv = null;
+                        String tagValueName = String.Empty;
+                        String keyCode = String.Empty;
+                        String[] parts = null;
+
+                        foreach (Track track in trackList)
+                        {
+                            if (!String.IsNullOrEmpty(track.Comment))
+                            {
+                                parts = track.Comment.Split('-');
+                                if (parts != null && parts.Length > 0)
+                                {
+                                    keyCode = parts[0].TrimEnd();
+
+                                    if (keyCode.Count() == 2)
+                                    {
+                                        keyCode = "0" + keyCode;
+                                    }
+
+                                    tv = keyTagValueList.Find(x => x.Name == keyCode);
+
+                                    if (tv != null)
+                                    {
+                                        if (track.TrackTagValues != null && track.TrackTagValues.Count > 0)
+                                        {
+                                            TrackTagValue ttv = track.TrackTagValues.Find(x => x.TagName == "Key");
+                                            if (ttv != null)
+                                            {
+                                                ttv.TagValueId = tv.Id;
+                                                ttv.TagValueName = tv.Name;
+                                                this.trackDao.UpdateTrackTagValue(ttv);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                }
+
+                if (automaticBpmImport)
+                {
+                    if (importBpmFromVirtualDj)
+                    {
+                        if (this.HasVirtualDj())
+                        {
+                            List<TagValue> bpmTagValueList = this.tagDao.GetTagValuesByTagId(tagList.Find(x => x.Name == "Bpm")?.Id ?? 0);
+                            var result = VirtualDJReader.Instance.ReadBpmsFromVirtualDJDatabase(ref trackList, this.trackDao, bpmTagValueList);
+                            if (!result.Success)
+                            {
+                                MessageBox.Show(result.ErrorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+
         private void ScanDirectory(string path)
         {
             string[] files = Directory.GetFiles(path);
@@ -2767,7 +2814,7 @@ namespace MitoPlayer_2024.Presenters
 
                         }
 
-                        VirtualDJReader.Instance.ReadKeyAndBpmFromVirtualDJDatabase(ref trackList, this.trackDao, keyTagValueList, bpmTagValueList);
+                        VirtualDJReader.Instance.ReadKeysAndBpmsFromVirtualDJDatabase(ref trackList, this.trackDao, keyTagValueList, bpmTagValueList);
 
                         TagValue tv = null;
                         String tagValueName = String.Empty;

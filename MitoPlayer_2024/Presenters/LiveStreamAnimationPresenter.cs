@@ -232,8 +232,23 @@ namespace MitoPlayer_2024.Presenters
                     var vorbisComment = file.VorbisComment;
                     if (vorbisComment != null)
                     {
-                        this.currentTrackArtist = vorbisComment.Artist.FirstOrDefault() ?? fileName;
-                        this.currentTrackTitle = vorbisComment.Title.FirstOrDefault();
+                        if(vorbisComment.Artist != null && vorbisComment.Title != null)
+                        {
+                            this.currentTrackArtist = vorbisComment.Artist.FirstOrDefault();
+                            this.currentTrackTitle = vorbisComment.Title.FirstOrDefault();
+                        }
+                        else if(vorbisComment.Artist == null && vorbisComment.Title != null)
+                        {
+                            this.currentTrackArtist = vorbisComment.Title.FirstOrDefault();
+                        }
+                        else if (vorbisComment.Artist != null && vorbisComment.Title == null)
+                        {
+                            this.currentTrackTitle = vorbisComment.Artist.FirstOrDefault();
+                        }
+                        else
+                        {
+                            this.currentTrackArtist = fileName;
+                        }
                         this.currentTrackAlbum = vorbisComment.Album.FirstOrDefault();
 
                         foreach (var block in file.Metadata)

@@ -312,10 +312,9 @@ namespace MitoPlayer_2024.Views
             // lblSelectedItemsLength
             // 
             this.lblSelectedItemsLength.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.lblSelectedItemsLength.AutoSize = true;
             this.lblSelectedItemsLength.Location = new System.Drawing.Point(206, 659);
             this.lblSelectedItemsLength.Name = "lblSelectedItemsLength";
-            this.lblSelectedItemsLength.Size = new System.Drawing.Size(88, 13);
+            this.lblSelectedItemsLength.Size = new System.Drawing.Size(106, 13);
             this.lblSelectedItemsLength.TabIndex = 3;
             this.lblSelectedItemsLength.Text = "Length: 00:00:00";
             // 
@@ -526,9 +525,9 @@ namespace MitoPlayer_2024.Views
             this.btnGenerateTrainingSet.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnGenerateTrainingSet.Enabled = false;
             this.btnGenerateTrainingSet.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnGenerateTrainingSet.Location = new System.Drawing.Point(300, 649);
+            this.btnGenerateTrainingSet.Location = new System.Drawing.Point(318, 649);
             this.btnGenerateTrainingSet.Name = "btnGenerateTrainingSet";
-            this.btnGenerateTrainingSet.Size = new System.Drawing.Size(124, 23);
+            this.btnGenerateTrainingSet.Size = new System.Drawing.Size(73, 23);
             this.btnGenerateTrainingSet.TabIndex = 52;
             this.btnGenerateTrainingSet.Text = "Generate Training Set";
             this.btnGenerateTrainingSet.UseVisualStyleBackColor = true;
@@ -538,7 +537,7 @@ namespace MitoPlayer_2024.Views
             // 
             this.btnLiveStreamAnimation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnLiveStreamAnimation.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnLiveStreamAnimation.Location = new System.Drawing.Point(430, 649);
+            this.btnLiveStreamAnimation.Location = new System.Drawing.Point(397, 649);
             this.btnLiveStreamAnimation.Name = "btnLiveStreamAnimation";
             this.btnLiveStreamAnimation.Size = new System.Drawing.Size(133, 23);
             this.btnLiveStreamAnimation.TabIndex = 53;
@@ -551,7 +550,7 @@ namespace MitoPlayer_2024.Views
             this.btnLiveStreamAnimationSetting.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnLiveStreamAnimationSetting.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnLiveStreamAnimationSetting.Image = ((System.Drawing.Image)(resources.GetObject("btnLiveStreamAnimationSetting.Image")));
-            this.btnLiveStreamAnimationSetting.Location = new System.Drawing.Point(569, 649);
+            this.btnLiveStreamAnimationSetting.Location = new System.Drawing.Point(536, 649);
             this.btnLiveStreamAnimationSetting.Name = "btnLiveStreamAnimationSetting";
             this.btnLiveStreamAnimationSetting.Size = new System.Drawing.Size(23, 23);
             this.btnLiveStreamAnimationSetting.TabIndex = 54;

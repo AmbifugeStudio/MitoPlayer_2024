@@ -50,25 +50,45 @@ namespace MitoPlayer_2024.Presenters
             this.importKeyFromVirtualDj = this.settingDao.GetBooleanSetting(Settings.ImportKeyFromVirtualDj.ToString()).Value;
             this.playTrackAfterOpenFiles = this.settingDao.GetBooleanSetting(Settings.PlayTrackAfterOpenFiles.ToString()).Value;
             this.isShortTrackColouringEnabled = this.settingDao.GetBooleanSetting(Settings.IsShortTrackColouringEnabled.ToString()).Value;
+            this.isLogMessageEnabled = this.settingDao.GetBooleanSetting(Settings.IsLogMessageEnabled.ToString()).Value;
             this.previewPercentage = this.settingDao.GetIntegerSetting(Settings.PreviewPercentage.ToString());
             this.shortTrackColouringThreshold = this.settingDao.GetDecimalSetting(Settings.ShortTrackColouringThreshold.ToString());
-            this.isLogMessageEnabled = this.settingDao.GetBooleanSetting(Settings.IsLogMessageEnabled.ToString()).Value;
             this.logMessageDisplayTime = this.settingDao.GetDecimalSetting(Settings.LogMessageDisplayTime.ToString());
 
             this.hasVirtualDj = this.HasVirtualDj();
 
+            Messenger msg = new Messenger();
+            msg.BooleanField1 = this.automaticBpmImport;
+            msg.BooleanField2 = this.automaticKeyImport;
+            msg.BooleanField3 = this.importBpmFromVirtualDj;
+            msg.BooleanField4 = this.importKeyFromVirtualDj;
+            msg.BooleanField5 = this.playTrackAfterOpenFiles;
+            msg.BooleanField6 = this.isShortTrackColouringEnabled;
+            msg.BooleanField7 = this.isLogMessageEnabled;
+            msg.IntegerField1 = this.previewPercentage;
+            msg.DecimalField1 = this.shortTrackColouringThreshold;
+            msg.DecimalField2 = this.logMessageDisplayTime;
+
+           
 
             this.view.CloseViewWithOkEvent += CloseViewWithOkEvent;
             this.view.CloseViewWithCancelEvent += CloseViewWithCancelEvent;
             this.view.ClearDatabaseEvent += ClearDatabaseEvent;
             this.view.SetAutomaticBpmImportEvent += SetAutomaticBpmImportEvent;
             this.view.SetAutomaticKeyImportEvent += SetAutomaticKeyImportEvent;
+            this.view.SetImportKeyFromVirtualDjEvent += SetImportKeyFromVirtualDjEvent;
+            this.view.SetImportBpmFromVirtualDjEvent += SetImportBpmFromVirtualDjEvent;
             this.view.SetPlayTrackAfterOpenFilesEvent += SetPlayTrackAfterOpenFilesEvent;
             this.view.SetPreviewPercentageEvent += SetPreviewPercentageEvent;
             this.view.SetShortTrackColouringEvent += SetShortTrackColouringEvent;
             this.view.SetShortTrackColouringThresholdEvent += SetShortTrackColouringThresholdEvent;
+            this.view.SetLogMessageEnabledEvent += SetShortTrackColouringThresholdEvent;
+            this.view.SetLogMessageDisplayTimeEvent += SetLogMessageDisplayTimeEvent;
 
+            this.view.InitializeSettings(msg);
         }
+
+
 
         private bool HasVirtualDj()
         {
@@ -122,12 +142,13 @@ namespace MitoPlayer_2024.Presenters
         }
         private void SetImportKeyFromVirtualDjEvent(object sender, Messenger e)
         {
-            this.importBpmFromVirtualDj = e.BooleanField1;
+            this.importKeyFromVirtualDj = e.BooleanField1;
         }
 
         private void SetImportBpmFromVirtualDjEvent(object sender, Messenger e)
         {
-            this.importKeyFromVirtualDj = e.BooleanField1;
+            
+            this.importBpmFromVirtualDj = e.BooleanField1;
         }
         private void SetPlayTrackAfterOpenFilesEvent(object sender, Messenger e)
         {

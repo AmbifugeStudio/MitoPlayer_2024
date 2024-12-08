@@ -739,20 +739,21 @@ namespace MitoPlayer_2024.Views
                 //SUM OF TIME
                 TimeSpan t = TimeSpan.FromSeconds(seconds);
                 String length = String.Empty;
-                if (t.Hours > 0)
+                if (t.Days > 0)
+                {
+                    length = string.Format("{0:D2}.{1:D2}:{2:D2}:{3:D2}", t.Days, t.Hours, t.Minutes, t.Seconds);
+                }
+                else if (t.Hours > 0)
                 {
                     length = string.Format("{0:D2}:{1:D2}:{2:D2}", t.Hours, t.Minutes, t.Seconds);
                 }
+                else if (t.Minutes > 0)
+                {
+                    length = string.Format("{0:D2}:{1:D2}", t.Minutes, t.Seconds);
+                }
                 else
                 {
-                    if (t.Minutes > 0)
-                    {
-                        length = string.Format("{0:D2}:{1:D2}", t.Minutes, t.Seconds);
-                    }
-                    else
-                    {
-                        length = string.Format("{0:D2}:{1:D2}", 0, t.Seconds);
-                    }
+                    length = string.Format("{0:D2}:{1:D2}", 0, t.Seconds);
                 }
                 trackSumLenght = length.ToString();
             }
@@ -1733,9 +1734,24 @@ namespace MitoPlayer_2024.Views
 
                 // Calculate total time
                 TimeSpan totalTime = TimeSpan.FromSeconds(totalSeconds);
-                string length = totalTime.Hours > 0
-                ? $"{totalTime.Hours:D2}:{totalTime.Minutes:D2}:{totalTime.Seconds:D2}"
-                : $"{totalTime.Minutes:D2}:{totalTime.Seconds:D2}";
+                string length;
+
+                if (totalTime.Days > 0)
+                {
+                    length = $"{totalTime.Days:D2}.{totalTime.Hours:D2}:{totalTime.Minutes:D2}:{totalTime.Seconds:D2}";
+                }
+                else if (totalTime.Hours > 0)
+                {
+                    length = $"{totalTime.Hours:D2}:{totalTime.Minutes:D2}:{totalTime.Seconds:D2}";
+                }
+                else if (totalTime.Minutes > 0)
+                {
+                    length = $"{totalTime.Minutes:D2}:{totalTime.Seconds:D2}";
+                }
+                else
+                {
+                    length = $"{0:D2}:{totalTime.Seconds:D2}";
+                }
 
                 this.lblSelectedItemsLength.Text = $"Length: {length}";
             }
@@ -2368,7 +2384,7 @@ namespace MitoPlayer_2024.Views
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
                 // Handle drag over from external source (files)
-                if (rowIndex <= 0) // Prevent dropping on the first row
+                if (rowIndex < 0) // Prevent dropping on the first row
                 {
                     e.Effect = DragDropEffects.None;
                     highlightedPlaylistRowIndex = -1;

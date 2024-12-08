@@ -59,6 +59,8 @@ namespace MitoPlayer_2024.Views
             this.grbPlayer.ForeColor = this.FontColor;
             this.grbVirtualDjImport.ForeColor = this.FontColor;
             this.chbShortTrackColouring.ForeColor = this.FontColor;
+            this.grbTracklist.ForeColor = this.FontColor;
+            this.grbLog.ForeColor = this.FontColor;
 
         }
         private void btnClear_Click(object sender, EventArgs e)
@@ -77,24 +79,20 @@ namespace MitoPlayer_2024.Views
         {
             this.SetLogMessageDisplayTimeEvent?.Invoke(this, new Messenger { DecimalField1 = this.nmdLogMessageDisplayTime.Value });
         }
-
-       
-
         private void chbAutomaticBpmImport_CheckedChanged(object sender, EventArgs e)
         {
             if (this.chbAutomaticBpmImport.Checked)
             {
                 this.rdbImportBpmFromVirtualDj.Enabled = true;
-                this.rdbImportBpmFromMixedInKey.Enabled = true;
+                this.rdbImportBpmFromVirtualDj.Checked = true;
+
             }
             else
             {
                 this.rdbImportBpmFromVirtualDj.Enabled = false;
-                this.rdbImportBpmFromMixedInKey.Enabled = false;
             }
             this.SetAutomaticBpmImportEvent?.Invoke(this,new Messenger { BooleanField1 = this.chbAutomaticBpmImport.Checked });
         }
-
         private void chbAutomaticKeyImport_CheckedChanged(object sender, EventArgs e)
         {
             if (this.chbAutomaticKeyImport.Checked)
@@ -117,12 +115,10 @@ namespace MitoPlayer_2024.Views
             if (msg.BooleanField3)
             {
                 this.rdbImportBpmFromVirtualDj.Checked = true;
-                this.rdbImportBpmFromMixedInKey.Checked = false;
             }
             else
             {
                 this.rdbImportBpmFromVirtualDj.Checked = false;
-                this.rdbImportBpmFromMixedInKey.Checked = true;
             }
             if (msg.BooleanField4)
             {
@@ -137,12 +133,11 @@ namespace MitoPlayer_2024.Views
             if (this.chbAutomaticBpmImport.Checked)
             {
                 this.rdbImportBpmFromVirtualDj.Enabled = true;
-                this.rdbImportBpmFromMixedInKey.Enabled = true;
+                this.rdbImportBpmFromVirtualDj.Checked = true;
             }
             else
             {
                 this.rdbImportBpmFromVirtualDj.Enabled = false;
-                this.rdbImportBpmFromMixedInKey.Enabled = false;
             }
             if (this.chbAutomaticKeyImport.Checked)
             {
@@ -153,6 +148,50 @@ namespace MitoPlayer_2024.Views
             {
                 this.rdbImportKeyFromVirtualDj.Enabled = false;
                 this.rdbImportKeyFromMixedInKey.Enabled = false;
+            }
+            if (msg.BooleanField5)
+            {
+                this.chbPlayTrackAfterOpenFiles.Checked = true;
+            }
+            else
+            {
+                this.chbPlayTrackAfterOpenFiles.Checked = false;
+            }
+            if (msg.BooleanField6)
+            {
+                this.chbShortTrackColouring.Checked = true;
+            }
+            else
+            {
+                this.chbShortTrackColouring.Checked = false;
+            }
+            if (msg.BooleanField7)
+            {
+                this.chbLogMessageEnabled.Checked = true;
+            }
+            else
+            {
+                this.chbLogMessageEnabled.Checked = false;
+            }
+            if(msg.IntegerField1 > 0)
+            {
+                this.nmdPreviewPercentage.Value = msg.IntegerField1;
+            }
+            if (msg.DecimalField1 > 0)
+            {
+                this.txtbShortTrackColouringThreshold.Text = msg.DecimalField1.ToString("N2");
+            }
+            else
+            {
+                this.txtbShortTrackColouringThreshold.Text = String.Empty;
+            }
+            if (msg.DecimalField2 > 0)
+            {
+                this.nmdLogMessageDisplayTime.Value = msg.DecimalField2;
+            }
+            else
+            {
+                this.nmdLogMessageDisplayTime.Value = 1;
             }
         }
 
@@ -186,25 +225,29 @@ namespace MitoPlayer_2024.Views
         }
         private void SetShortTrackColouringThreshold()
         {
-            String thresholdString = this.txtbShortTrackColouringThreshold.Text;
-            if (String.IsNullOrEmpty(thresholdString))
+            if (chbShortTrackColouring.Checked)
             {
-                MessageBox.Show("Track colouring threshold must be set!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-            else
-            {
-                try
+                String thresholdString = this.txtbShortTrackColouringThreshold.Text;
+                if (String.IsNullOrEmpty(thresholdString))
                 {
-                    decimal threshold = 0;
-                    Decimal.TryParse(thresholdString, out threshold);
+                    MessageBox.Show("Track colouring threshold must be set!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                else
+                {
+                    try
+                    {
+                        decimal threshold = 0;
+                        Decimal.TryParse(thresholdString, out threshold);
 
-                    this.SetShortTrackColouringThresholdEvent?.Invoke(this, new Messenger { DecimalField1 = threshold });
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        this.SetShortTrackColouringThresholdEvent?.Invoke(this, new Messenger { DecimalField1 = threshold });
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
                 }
             }
+            
         }
 
         private void btnOk_Click(object sender, EventArgs e)
@@ -265,7 +308,5 @@ namespace MitoPlayer_2024.Views
             }
             this.SetLogMessageEnabledEvent?.Invoke(this, new Messenger { BooleanField1 = this.chbLogMessageEnabled.Checked });
         }
-
-        
     }
 }

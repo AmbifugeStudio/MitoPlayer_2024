@@ -121,19 +121,20 @@ namespace MitoPlayer_2024.Views
                 {
                     this.pcbCover.Image = msg.Image;
                 }
-                if (!String.IsNullOrEmpty(msg.StringField2))
+                if (!String.IsNullOrEmpty(msg.StringField2) && !String.IsNullOrEmpty(msg.StringField3))
                 {
-                    trackInfo += msg.StringField2;
+                    trackInfo = msg.StringField2 + " - " + msg.StringField3;
                     
                 }
-                if (!String.IsNullOrEmpty(msg.StringField3))
+                else if (!String.IsNullOrEmpty(msg.StringField2) && String.IsNullOrEmpty(msg.StringField3))
                 {
-                    trackInfo += " - " + msg.StringField3;
+                    trackInfo = msg.StringField2;
                 }
-                /*if (!String.IsNullOrEmpty(msg.StringField4))
+                else if (String.IsNullOrEmpty(msg.StringField2) && !String.IsNullOrEmpty(msg.StringField3))
                 {
-                    trackInfo += "\n" + msg.StringField4;
-                }*/
+                    trackInfo = msg.StringField3;
+                }
+
                 this.lblTitle.Text = trackInfo;
             }
         }
