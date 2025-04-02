@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/logo.png" width="200" alt="MitoPlayer logo"/>
+  <img src="./assets/mitoplayer.png" width="200" alt="MitoPlayer logo"/>
 </p>
 
 <h1 align="center">MitoPlayer 2024</h1>
