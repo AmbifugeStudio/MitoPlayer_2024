@@ -1,20 +1,70 @@
-In 2024, I worked on one of my main projects: a custom MP3 player app designed for DJs to help them quickly create harmonious playlists. The idea came from my own need as a DJ for a tool that could automate some of my mixing techniques and present a large music library in a clear, organized way.
+<p align="center">
+  <img src="./assets/logo.png" width="200" alt="MitoPlayer logo"/>
+</p>
 
-The first version was built using Java with a Swing-based interface, and it allowed me to manage playlists, define custom properties (like tone, style, and vocal presence), and create rules to make sure the tracks worked well together.
+<h1 align="center">MitoPlayer 2024</h1>
 
-In 2024, I rewrote the app using C#, WinForms, and added a MySQL database to expand its features. The app now includes:
+<p align="center">
+  A smart playlist assistant and custom MP3 player for DJs, focused on harmony and metadata-driven mixing.
+</p>
 
-- Playing MP3 files and managing playlists
-- Importing BPM and key data from MixedInKey or VirtualDJ
-- Handling custom metadata (like tone, BPM, and intro length)
-- Filtering tracks by metadata
-- Browsing by album covers
-- Exporting and renaming tracks
-- Live streaming and displaying data from VirtualDJ
-- Drag-and-drop support for external software
-- Rule and template management (coming soon)
-- Semi-automatic and fully-automatic playlist generation (coming soon)
+# MitoPlayer 2024
 
-The future goal of the development is to enable users to define rules that establish the relationships between metadata, such as how different tones relate to each other and to what degree (e.g., the harmony between tones). Based on these rules, users will be able to create templates that generate playlists where the tracks match perfectly according to the specified metadata and rules.
+**Custom MP3 player and playlist assistant for DJs**, designed to organize large music libraries, assign rich metadata, and generate harmonically compatible playlists — faster and more intuitively than traditional tools.
 
-This app not only supports DJs with their work but also provides a personalized solution for organizing and picking music. I use it every day not only to enjoy my music but also to carefully curate and organize my playlists, discovering new ways to blend tracks and create the perfect listening experience. It’s become an essential tool that helps me stay inspired and energized while fine-tuning my music collection.
+## 🎧 Why I built it
+
+As a DJ, I needed a tool that helps me manage my music with custom properties like tone, BPM, vocal presence, and more. MitoPlayer lets me filter, organize, and preview tracks in a clean interface — with full control over playlist generation.
+
+Originally built in Java/Swing, the app was rewritten in 2024 using **C# (WinForms)** and **MySQL** for better performance and extensibility.
+
+---
+
+## ✨ Features
+
+- 🎵 MP3 playback & playlist management  
+- 🔑 BPM and key import (MixedInKey / VirtualDJ)  
+- 🏷️ Custom metadata (tone, BPM, vocals, intro length, style, etc.)  
+- 🧠 Advanced filtering & tag-based rules  
+- 🖼️ Album cover browsing  
+- 🎚️ VirtualDJ integration (live info display)  
+- 📦 Track export & batch renaming  
+- 🖱️ Drag-and-drop support with other DJ tools  
+- 📋 Tag management with color coding  
+- ⚙️ Rule system and template-based playlist generation *(coming soon)*  
+
+---
+
+## 📸 Screenshots
+
+| Playlist browser | Filtering by tag | Harmonized playlist |
+|------------------|------------------|----------------------|
+| ![screenshot1](./screenshots/playlist_full.png) | ![screenshot2](./screenshots/filter_tagview.png) | ![screenshot3](./screenshots/harmonized.png) |
+
+| Tag management | Export window | Settings |
+|----------------|----------------|----------|
+| ![screenshot4](./screenshots/tag_settings.png) | ![screenshot5](./screenshots/export_tracks.png) | ![screenshot6](./screenshots/settings.png) |
+
+---
+
+## 🔧 Tech Stack
+
+- C# (.NET 6)
+- WinForms UI
+- MySQL backend
+- VirtualDJ / MixedInKey integration
+
+---
+
+## 🚧 Roadmap
+
+- [ ] Playlist templates based on harmony rules  
+- [ ] Full auto-mode playlist builder  
+- [ ] Smart recommendations  
+- [ ] Custom audio preview control  
+
+---
+
+## 📬 Contact
+
+Feel free to reach out or open an issue if you're interested in using or contributing to the project.
