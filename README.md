@@ -37,13 +37,17 @@ Originally built in Java/Swing, the app was rewritten in 2024 using **C# (WinFor
 
 ## 📸 Screenshots
 
-| Playlist browser | Filtering by tag | Harmonized playlist |
-|------------------|------------------|----------------------|
-| ![screenshot1](./screenshots/playlist_full.png) | ![screenshot2](./screenshots/filter_tagview.png) | ![screenshot3](./screenshots/harmonized.png) |
+### Main Interface
+![Main UI](./screenshots/main_ui.png)
 
-| Tag management | Export window | Settings |
-|----------------|----------------|----------|
-| ![screenshot4](./screenshots/tag_settings.png) | ![screenshot5](./screenshots/export_tracks.png) | ![screenshot6](./screenshots/settings.png) |
+### Filter & Tag View
+![Filter View](./screenshots/filter_view.png)
+
+### Tag Editor
+![Tag Editor](./screenshots/tag_editor.png)
+
+### Export Dialog
+![Export](./screenshots/export_dialog.png)
 
 ---
 
