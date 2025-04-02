@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./assets/logo.png" width="200" alt="MitoPlayer logo"/>
+  <img src="assets/logo.png" width="200" alt="MitoPlayer logo"/>
 </p>
 
 <h1 align="center">MitoPlayer 2024</h1>
@@ -38,16 +38,16 @@ Originally built in Java/Swing, the app was rewritten in 2024 using **C# (WinFor
 ## 📸 Screenshots
 
 ### Main Interface
-![Main UI](./screenshots/main_ui.png)
+![Main UI](./assets/main_ui.png)
 
 ### Filter & Tag View
-![Filter View](./screenshots/filter_view.png)
+![Filter View](./assets/filter_view.png)
 
 ### Tag Editor
-![Tag Editor](./screenshots/tag_editor.png)
+![Tag Editor](./assets/tag_editor.png)
 
 ### Export Dialog
-![Export](./screenshots/export_dialog.png)
+![Export](./assets/export_dialog.png)
 
 ---
 
