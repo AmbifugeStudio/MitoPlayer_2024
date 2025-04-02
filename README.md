@@ -72,3 +72,9 @@ Originally built in Java/Swing, the app was rewritten in 2024 using **C# (WinFor
 ## 📬 Contact
 
 Feel free to reach out or open an issue if you're interested in using or contributing to the project.
+
+---
+
+## 🛡️ License
+
+Proprietary – all rights reserved.
