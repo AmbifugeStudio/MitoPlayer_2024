@@ -58,6 +58,9 @@ namespace MitoPlayer_2024.Views
             this.btnCancel.ForeColor = this.FontColor;
             this.btnCancel.FlatAppearance.BorderColor = this.ButtonBorderColor;
 
+            this.grbFileNamePrefix.ForeColor = this.FontColor;
+            this.grbFileName.ForeColor = this.FontColor;
+
             this.dgvTrackList.BackgroundColor = this.ButtonColor;
             this.dgvTrackList.ColumnHeadersDefaultCellStyle.BackColor = this.ButtonColor;
             this.dgvTrackList.ColumnHeadersDefaultCellStyle.ForeColor = this.FontColor;
@@ -174,7 +177,13 @@ namespace MitoPlayer_2024.Views
             this.SetTitleMinimumCharacterEvent?.Invoke(this, new Messenger() { DecimalField1 = this.numTitle.Value });
         }
 
-       
+        private void ExportToDirectoryView_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.KeyCode == Keys.Escape)
+            {
+                ;
+            }
+        }
     }
 
 }

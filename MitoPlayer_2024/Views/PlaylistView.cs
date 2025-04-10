@@ -381,6 +381,9 @@ namespace MitoPlayer_2024.Views
                     if (isMissing)
                     {
                         row.DefaultCellStyle.ForeColor = Color.Salmon;
+                        row.DefaultCellStyle.BackColor = (currentTrackIdInPlaylist != -1 && trackIdInPlaylist == currentTrackIdInPlaylist)
+                        ? this.GridPlayingColor
+                        : (row.Index % 2 == 0 ? this.GridLineColor1 : this.GridLineColor2);
                     }
                     else
                     {
@@ -635,11 +638,14 @@ namespace MitoPlayer_2024.Views
         {
             String artist = "Playing: ";
             String title = String.Empty;
+            String path = String.Empty;
 
-            if (dgvTrackList.Rows[currentTrackIndex].Cells["Title"] != null)
+            if (dgvTrackList.Rows[currentTrackIndex].Cells["Title"].Value != null)
                 artist += (string)dgvTrackList.Rows[currentTrackIndex].Cells["Artist"].Value;
-            if (dgvTrackList.Rows[currentTrackIndex].Cells["Title"] != null)
+            if (dgvTrackList.Rows[currentTrackIndex].Cells["Title"].Value != null)
                 title = (string)dgvTrackList.Rows[currentTrackIndex].Cells["Title"].Value;
+            if (dgvTrackList.Rows[currentTrackIndex].Cells["Path"].Value != null)
+                path = (string)dgvTrackList.Rows[currentTrackIndex].Cells["Path"].Value;
 
             if (!String.IsNullOrEmpty(title))
             {
@@ -647,6 +653,7 @@ namespace MitoPlayer_2024.Views
             }
 
             ((MainView)this.parentView).UpdateAfterPlayTrack(artist);
+            ((MainView)this.parentView).InitializeSoundWavesAndPlot(path);
             this.UpdateTracklistColor(currentTrackIdInPlaylist);
         }
         public void UpdateAfterPlayTrackAfterPause()
@@ -854,6 +861,13 @@ namespace MitoPlayer_2024.Views
             if (e.Button == MouseButtons.Right)
             {
                 contextMenuStrip1.Show(Cursor.Position);
+            }
+            else
+            {
+                if (!isPlaylistDragging)
+                {
+                    this.CallLoadPlaylistEvent();
+                }
             }
         }
 
@@ -2304,11 +2318,11 @@ namespace MitoPlayer_2024.Views
         // Event handler for double-clicks in the playlist DataGridView
         private void dgvPlaylistList_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            if (!isPlaylistDragging)
+           /* if (!isPlaylistDragging)
             {
                // this.LoadPlaylistEvent?.Invoke(this, new ListEventArgs() { IntegerField1 = this.dgvPlaylistList.SelectedRows[0].Index });
                 this.CallLoadPlaylistEvent();
-            }
+            }*/
         }
         // Event handler for mouse down events in the playlist DataGridView
         private void dgvPlaylistList_MouseDown(object sender, MouseEventArgs e)
@@ -2336,6 +2350,11 @@ namespace MitoPlayer_2024.Views
                     firstSelectedPlaylistRowIndex = hitTestInfo.RowIndex;
                     playlistListClickTimer.Start();
                 }
+            }
+            if (hitTestInfo.RowIndex >= 0 && e.Button == MouseButtons.Right)
+            {
+                dgvPlaylistList.ClearSelection();
+                dgvPlaylistList.Rows[hitTestInfo.RowIndex].Selected = true;
             }
         }
         // Event handler for mouse move events in the playlist DataGridView
@@ -2810,6 +2829,11 @@ namespace MitoPlayer_2024.Views
         internal void SetFocusToDataGridView()
         {
             this.dgvTrackList.Focus();
+        }
+
+        private void dgvPlaylistList_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+
         }
     }
 }

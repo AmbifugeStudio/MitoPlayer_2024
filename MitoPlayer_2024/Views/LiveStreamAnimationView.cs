@@ -53,6 +53,7 @@ namespace MitoPlayer_2024.Views
 
 
         public event EventHandler TrackChangeCheckEvent;
+        public event EventHandler CloseViewEvent;
         public LiveStreamAnimationView()
         {
             InitializeComponent();
@@ -242,7 +243,7 @@ namespace MitoPlayer_2024.Views
             }
             else if (e.Button == MouseButtons.Left && e.X >= this.ClientSize.Width - 10 && e.Y <= 10)
             {
-                this.Close();
+                this.CloseLiveStreamAnimationView(sender);
             }
             else
             {
@@ -250,6 +251,23 @@ namespace MitoPlayer_2024.Views
                 this.dragCursorPoint = Cursor.Position;
                 this.dragFormPoint = this.Location;
             }
+        }
+        private void CloseLiveStreamAnimationView(object sender)
+        {
+            this.timer.Stop();
+            this.timer.Dispose();
+            this.timer = null;
+            this.doubleClickTimer.Stop();
+            this.doubleClickTimer.Dispose();
+            this.doubleClickTimer = null;
+            this.imageChangeTimer.Stop();
+            this.imageChangeTimer.Dispose();
+            this.imageChangeTimer = null;
+            this.trackChangeCheckTimer.Stop();
+            this.trackChangeCheckTimer.Dispose();
+            this.trackChangeCheckTimer = null;
+
+            this.CloseViewEvent(sender, EventArgs.Empty);
         }
         private void pcbImage_MouseMove(object sender, MouseEventArgs e)
         {

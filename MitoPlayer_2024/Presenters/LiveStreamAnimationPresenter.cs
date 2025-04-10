@@ -26,15 +26,18 @@ namespace MitoPlayer_2024.Presenters
         private ITrackDao trackDao { get; set; }
         private ISettingDao settingDao { get; set; }
         private MediaPlayerComponent mediaPlayerComponent { get; set; }
-        
+        private PlaylistPresenter playlistPresenter { get; set; }
+
         public bool ViewIsReadyToShow { get; set; }
 
         private string[] imageExtensions = { ".jpg", ".jpeg", ".png", ".bmp", ".gif" };
         private List<String> imagePathList = new List<String>();
         private Random random { get; set; }
-        public LiveStreamAnimationPresenter(ILiveStreamAnimationView liveStreamAnimationView, MediaPlayerComponent mediaPlayerComponent, ITagDao tagDao, ITrackDao trackDao, ISettingDao settingDao)
+        public LiveStreamAnimationPresenter(ILiveStreamAnimationView liveStreamAnimationView, PlaylistPresenter playlistPresenter, MediaPlayerComponent mediaPlayerComponent, ITagDao tagDao, ITrackDao trackDao, ISettingDao settingDao)
         {
             this.view = liveStreamAnimationView;
+            this.playlistPresenter = playlistPresenter;
+
             this.mediaPlayerComponent = mediaPlayerComponent;
             this.tagDao = tagDao;
             this.trackDao = trackDao;
@@ -42,17 +45,23 @@ namespace MitoPlayer_2024.Presenters
             this.random = new Random();
 
             this.view.TrackChangeCheckEvent += TrackChangeCheckEvent;
+            this.view.CloseViewEvent += View_CloseViewEvent;
 
             this.ViewIsReadyToShow = this.IsImageDirectoryPrepared();
 
             if (this.ViewIsReadyToShow)
             {
                 this.InitializeView(true);
+                this.playlistPresenter.IsPlayTrackEnabled = false;
             }
             
         }
 
-        
+        private void View_CloseViewEvent(object sender, EventArgs e)
+        {
+            this.playlistPresenter.IsPlayTrackEnabled = true;
+            ((LiveStreamAnimationView)this.view).Close();
+        }
 
         private bool IsImageDirectoryPrepared()
         {

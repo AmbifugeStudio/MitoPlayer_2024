@@ -217,6 +217,8 @@ namespace MitoPlayer_2024.Dao
             //LIVE STREAM ANIMATION
             if (result.Success)
                 this.InitializeStringSetting(Settings.LiveStreamAnimationImagePath.ToString());
+            if (result.Success)
+                this.InitializeBooleanSetting(Settings.PreventMusicPlayingWhileStream.ToString());
 
             
             
@@ -979,7 +981,9 @@ namespace MitoPlayer_2024.Dao
                 if (!withAndWithoutProfile)
                 {
                     command.CommandText = @"SELECT * FROM TrackProperty 
-                                        WHERE ColumnGroup = @ColumnGroup AND ProfileId = @ProfileId ";
+                                        WHERE ColumnGroup = @ColumnGroup 
+                                        AND ProfileId = @ProfileId 
+                                        ORDER BY SortingId ";
                     command.Parameters.Add("@ColumnGroup", MySqlDbType.VarChar).Value = columnGroup;
                     if (!withoutProfile)
                         command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
@@ -989,7 +993,8 @@ namespace MitoPlayer_2024.Dao
                 else
                 {
                     command.CommandText = @"SELECT * FROM TrackProperty 
-                                        WHERE ColumnGroup = @ColumnGroup ";
+                                        WHERE ColumnGroup = @ColumnGroup 
+                                        ORDER BY SortingId ";
                     command.Parameters.Add("@ColumnGroup", MySqlDbType.VarChar).Value = columnGroup;
                     if (!withoutProfile)
                         command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;

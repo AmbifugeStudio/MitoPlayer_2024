@@ -1,18 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Configuration;
-using MitoPlayer_2024.Views;
-using MitoPlayer_2024.Presenters;
-using AxWMPLib;
-using System.Runtime.CompilerServices;
-using MySql.Data.MySqlClient;
-using System.Data;
-using MitoPlayer_2024.Dao;
+﻿using MitoPlayer_2024.Dao;
 using MitoPlayer_2024.Helpers;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
+using MitoPlayer_2024.Presenters;
+using MitoPlayer_2024.Views;
+using System;
+using System.Windows.Forms;
 
 namespace MitoPlayer_2024
 {
@@ -35,6 +26,7 @@ namespace MitoPlayer_2024
           //  Properties.Settings.Default.Reset();
            // Properties.Settings.Default.Save();
 
+            
             ResultOrError result = IsDatabasePrepared();
             if (result.Success)
             {
@@ -59,7 +51,7 @@ namespace MitoPlayer_2024
             String userName = Properties.Settings.Default.UserName;
             String password = Properties.Settings.Default.Password;
             String database = Properties.Settings.Default.Database;
-
+            database = "mitoplayer11dev";
             String preConnectionString = String.Empty;
             bool isConnectionStringReady = false;
 
@@ -79,7 +71,7 @@ namespace MitoPlayer_2024
                     userName = Properties.Settings.Default.UserName;
                     password = Properties.Settings.Default.Password;
                     database = Properties.Settings.Default.Database;
-
+                   
                     preConnectionString =
                       "Data Source=" + host + ";" +
                       "port=" + portNumber + ";" +

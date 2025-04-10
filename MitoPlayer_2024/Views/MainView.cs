@@ -2,6 +2,12 @@
 using MitoPlayer_2024.Helpers;
 using MitoPlayer_2024.Views;
 using NAudio.CoreAudioApi;
+using NAudio.Wave;
+using OxyPlot.Annotations;
+using OxyPlot.Axes;
+using OxyPlot.Series;
+using OxyPlot;
+using OxyPlot.WindowsForms;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -86,11 +92,18 @@ namespace MitoPlayer_2024
             this.tmrPeak.Start();
         }
 
+
+
         Color BackgroundColor = System.Drawing.ColorTranslator.FromHtml("#363639");
         Color FontColor = System.Drawing.ColorTranslator.FromHtml("#c6c6c6");
         Color ButtonColor = System.Drawing.ColorTranslator.FromHtml("#292a2d");
         Color ButtonBorderColor = System.Drawing.ColorTranslator.FromHtml("#1b1b1b");
         Color WarningColor = System.Drawing.ColorTranslator.FromHtml("#ff8088");
+        OxyColor OxyBackgroundColor = OxyColor.Parse("#363639");
+        OxyColor OxyFontColor = OxyColor.Parse("#c6c6c6");
+        OxyColor OxyButtonColor = OxyColor.Parse("#292a2d");
+        OxyColor OxyButtonBorderColor = OxyColor.Parse("#1b1b1b");
+        OxyColor OxyActiveColor = OxyColor.Parse("#FFBF80");
         private void SetControlColors()
         {
             this.strMenu.BackColor = this.BackgroundColor;
@@ -468,6 +481,97 @@ namespace MitoPlayer_2024
             this.tmrPlayer.Start();
             this.lblCurrentTrack.Text = artist;
         }
+        public void InitializeSoundWavesAndPlot(String path)
+        {
+            /*int downsampleFactor = 1000; // Példa érték
+            var (downsampledSamples, downsampledSampleRate) = InitializeSoundWaves(path, downsampleFactor);
+            double totalDurationInMinutes = downsampledSamples.Length / (double)(downsampledSampleRate * 60);
+            PlotSoundWaves(downsampledSamples, totalDurationInMinutes, downsampledSampleRate);*/
+        }
+
+        private (float[] samples, int sampleRate) InitializeSoundWaves(string path, int downsampleFactor)
+        {
+            if (!string.IsNullOrEmpty(path))
+            {
+                using (var reader = new AudioFileReader(path))
+                {
+                    int originalSampleRate = reader.WaveFormat.SampleRate;
+                    int downsampledSampleRate = originalSampleRate / downsampleFactor;
+                    int bufferSize = originalSampleRate / downsampleFactor;
+                    float[] buffer = new float[bufferSize];
+                    List<float> downsampledSamples = new List<float>();
+
+                    int read;
+                    while ((read = reader.Read(buffer, 0, buffer.Length)) > 0)
+                    {
+                        for (int i = 0; i < read; i += downsampleFactor)
+                        {
+                            downsampledSamples.Add(buffer[i]);
+                        }
+                    }
+
+                    return (downsampledSamples.ToArray(), downsampledSampleRate);
+                }
+            }
+            return (new float[0], 0);
+        }
+
+        private float[] Downsample(float[] data, int factor)
+        {
+            int newSize = data.Length / factor;
+            float[] result = new float[newSize];
+            for (int i = 0; i < newSize; i++)
+            {
+                result[i] = data[i * factor];
+            }
+            return result;
+        }
+
+        private void PlotSoundWaves(float[] soundwave, double totalDurationInMinutes, int downsampledSampleRate)
+        {
+            var plotView = new PlotView
+            {
+                Dock = DockStyle.Fill
+            };
+
+            var plotModel = new PlotModel();
+
+            var xAxis = new LinearAxis
+            {
+                Position = AxisPosition.Bottom,
+                IsAxisVisible = false // Rejtett tengely
+            };
+            plotModel.Axes.Add(xAxis);
+
+            var yAxis = new LinearAxis
+            {
+                Position = AxisPosition.Left,
+                IsAxisVisible = false // Rejtett tengely
+            };
+            plotModel.Axes.Add(yAxis);
+
+            var lineSeries = new LineSeries
+            {
+                MarkerType = MarkerType.None,
+                Color = this.OxyActiveColor
+            };
+
+            double timeIncrement = totalDurationInMinutes / soundwave.Length;
+
+            for (int i = 0; i < soundwave.Length; i++)
+            {
+                double timeInMinutes = i * timeIncrement;
+                lineSeries.Points.Add(new DataPoint(timeInMinutes, soundwave[i]));
+            }
+
+            plotModel.Series.Add(lineSeries);
+
+            plotView.Model = plotModel;
+
+            this.UpdateSoundWavePlot(plotView);
+        }
+
+
         public void UpdateAfterPlayTrackAfterPause()
         {
             this.tmrPlayer.Stop();
@@ -706,6 +810,12 @@ namespace MitoPlayer_2024
         private void btnPlot_Click(object sender, EventArgs e)
         {
             this.OpenChartEvent?.Invoke(this, new EventArgs());
+        }
+
+        public void UpdateSoundWavePlot(PlotView plot)
+        {
+            this.pnlFrequency.Controls.Clear();
+            this.pnlFrequency.Controls.Add(plot);
         }
     }
 

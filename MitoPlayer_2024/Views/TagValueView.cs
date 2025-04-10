@@ -444,29 +444,33 @@ namespace MitoPlayer_2024.Views
         private void dgvTagList_MouseDown(object sender, MouseEventArgs e)
         {
             var hitTestInfo = dgvTagList.HitTest(e.X, e.Y);
-            if (e.Button == MouseButtons.Left) // Prevent dragging the first row
+            if(hitTestInfo.RowIndex != -1)
             {
-                if (dgvTagList.SelectedRows.Count == 1 && dgvTagList.SelectedRows[0].Index == hitTestInfo.RowIndex)
+                if (e.Button == MouseButtons.Left) // Prevent dragging the first row
                 {
-                    // Single row is already selected, start drag-and-drop
-                    isTagListMouseDown = true;
-                    isTagDragging = false;
-                    tagListDragStartPoint = e.Location;
-                    firstSelectedTagRowIndex = hitTestInfo.RowIndex;
-                    tagListClickTimer.Start();
-                }
-                else
-                {
-                    // Row is not selected, select it
-                    dgvTagList.ClearSelection();
-                    dgvTagList.Rows[hitTestInfo.RowIndex].Selected = true;
-                    isTagListMouseDown = true;
-                    isTagDragging = false;
-                    tagListDragStartPoint = e.Location;
-                    firstSelectedTagRowIndex = hitTestInfo.RowIndex;
-                    tagListClickTimer.Start();
+                    if (dgvTagList.SelectedRows.Count == 1 && dgvTagList.SelectedRows[0].Index == hitTestInfo.RowIndex)
+                    {
+                        // Single row is already selected, start drag-and-drop
+                        isTagListMouseDown = true;
+                        isTagDragging = false;
+                        tagListDragStartPoint = e.Location;
+                        firstSelectedTagRowIndex = hitTestInfo.RowIndex;
+                        tagListClickTimer.Start();
+                    }
+                    else
+                    {
+                        // Row is not selected, select it
+                        dgvTagList.ClearSelection();
+                        dgvTagList.Rows[hitTestInfo.RowIndex].Selected = true;
+                        isTagListMouseDown = true;
+                        isTagDragging = false;
+                        tagListDragStartPoint = e.Location;
+                        firstSelectedTagRowIndex = hitTestInfo.RowIndex;
+                        tagListClickTimer.Start();
+                    }
                 }
             }
+            
         }
         private void dgvTagList_MouseMove(object sender, MouseEventArgs e)
         {

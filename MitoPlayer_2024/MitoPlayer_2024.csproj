@@ -113,7 +113,7 @@
       <HintPath>..\packages\Accord.Statistics.3.8.0\lib\net462\Accord.Statistics.dll</HintPath>
     </Reference>
     <Reference Include="BouncyCastle.Cryptography, Version=2.0.0.0, Culture=neutral, PublicKeyToken=072edcf4a5328938, processorArchitecture=MSIL">
-      <HintPath>..\packages\BouncyCastle.Cryptography.2.2.1\lib\net461\BouncyCastle.Cryptography.dll</HintPath>
+      <HintPath>..\packages\BouncyCastle.Cryptography.2.3.1\lib\net461\BouncyCastle.Cryptography.dll</HintPath>
     </Reference>
     <Reference Include="cs-hidden-markov-models, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\cs-hidden-markov-models.1.0.1\lib\net452\Release\cs-hidden-markov-models.dll</HintPath>
@@ -239,8 +239,8 @@
     <Reference Include="System.Diagnostics.DiagnosticSource, Version=7.0.0.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Diagnostics.DiagnosticSource.7.0.2\lib\net462\System.Diagnostics.DiagnosticSource.dll</HintPath>
     </Reference>
-    <Reference Include="System.IO.Pipelines, Version=5.0.0.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.IO.Pipelines.5.0.2\lib\net461\System.IO.Pipelines.dll</HintPath>
+    <Reference Include="System.IO.Pipelines, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.Pipelines.6.0.0\lib\net461\System.IO.Pipelines.dll</HintPath>
     </Reference>
     <Reference Include="System.Management" />
     <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -294,10 +294,13 @@
     <Compile Include="Dao\SettingDao.cs" />
     <Compile Include="Dao\TagDao.cs" />
     <Compile Include="Dao\DataBaseBuilderDao.cs" />
+    <Compile Include="Helpers\CustomColor.cs" />
     <Compile Include="IViews\ILiveStreamAnimationSettingView.cs" />
     <Compile Include="IViews\ILiveStreamAnimationView.cs" />
+    <Compile Include="IViews\IPlaylistCreatorView.cs" />
     <Compile Include="Presenters\LiveStreamAnimationPresenter.cs" />
     <Compile Include="Presenters\LiveStreamAnimationSettingPresenter.cs" />
+    <Compile Include="Presenters\PlaylistCreatorPresenter.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -457,6 +460,12 @@
     <Compile Include="Views\ModelTrainerView.Designer.cs">
       <DependentUpon>ModelTrainerView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\PlaylistCreatorView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\PlaylistCreatorView.Designer.cs">
+      <DependentUpon>PlaylistCreatorView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\PlaylistEditorView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -580,6 +589,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\ModelTrainerView.resx">
       <DependentUpon>ModelTrainerView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\PlaylistCreatorView.resx">
+      <DependentUpon>PlaylistCreatorView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\PlaylistEditorView.resx">
       <DependentUpon>PlaylistEditorView.cs</DependentUpon>

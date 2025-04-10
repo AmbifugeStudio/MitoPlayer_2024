@@ -19,31 +19,28 @@ namespace MitoPlayer_2024.Views
             this.SetControlColors();
             this.CenterToScreen();
         }
-        //Dark Color Theme
-        Color BackgroundColor = System.Drawing.ColorTranslator.FromHtml("#363639");
-        Color FontColor = System.Drawing.ColorTranslator.FromHtml("#c6c6c6");
-        Color ButtonColor = System.Drawing.ColorTranslator.FromHtml("#292a2d");
-        Color ButtonBorderColor = System.Drawing.ColorTranslator.FromHtml("#1b1b1b");
-        Color GridHeaderColor = System.Drawing.ColorTranslator.FromHtml("#36373a");
-        Color GridLineColor1 = System.Drawing.ColorTranslator.FromHtml("#131315");
-        Color GridLineColor2 = System.Drawing.ColorTranslator.FromHtml("#212224");
-        Color WhiteColor = System.Drawing.ColorTranslator.FromHtml("#FFFFFF");
-        Color GridPlayingColor = System.Drawing.ColorTranslator.FromHtml("#4d4d4d");
-        Color GridSelectionColor = System.Drawing.ColorTranslator.FromHtml("#626262");
+       
+
         private void SetControlColors()
         {
-            this.BackColor = this.BackgroundColor;
-            this.ForeColor = this.FontColor;
+            this.BackColor = CustomColor.BackColor;
+            this.ForeColor = CustomColor.ForeColor;
 
-            this.btnImport.BackColor = this.ButtonColor;
-            this.btnImport.ForeColor = this.FontColor;
-            this.btnImport.FlatAppearance.BorderColor = this.ButtonBorderColor;
+            this.btnImport.BackColor = CustomColor.ButtonBackColor;
+            this.btnImport.ForeColor = CustomColor.ForeColor;
+            this.btnImport.FlatAppearance.BorderColor = CustomColor.ButtonBorderColor;
+            this.btnGenerate.BackColor = CustomColor.ButtonBackColor;
+            this.btnGenerate.ForeColor = CustomColor.ForeColor;
+            this.btnGenerate.FlatAppearance.BorderColor = CustomColor.ButtonBorderColor;
+            this.btnSave.BackColor = CustomColor.ButtonBackColor;
+            this.btnSave.ForeColor = CustomColor.ForeColor;
+            this.btnSave.FlatAppearance.BorderColor = CustomColor.ButtonBorderColor;
 
-            this.rtxtbScript.BackColor = this.ButtonColor;
-            this.rtxtbScript.ForeColor = this.FontColor;
+            this.rtxtbScript.BackColor = CustomColor.ButtonBackColor;
+            this.rtxtbScript.ForeColor = CustomColor.ForeColor;
 
-            this.rtxtbTutorial.BackColor = this.ButtonColor;
-            this.rtxtbTutorial.ForeColor = this.FontColor;
+            this.rtxtbTutorial.BackColor = CustomColor.ButtonBackColor;
+            this.rtxtbTutorial.ForeColor = CustomColor.ForeColor;
         }
 
 

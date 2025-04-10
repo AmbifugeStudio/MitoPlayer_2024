@@ -84,6 +84,7 @@ namespace MitoPlayer_2024.Helpers
         TitleMinimumCharacter,
         //LIVE STREAM ANIMATION
         LiveStreamAnimationImagePath,
+        PreventMusicPlayingWhileStream,
         //BPM AND KEY IMPORT
         Keys,
         KeysAlter,

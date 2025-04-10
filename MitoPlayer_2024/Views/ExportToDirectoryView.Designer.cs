@@ -34,20 +34,20 @@
             this.txtBoxPath = new System.Windows.Forms.TextBox();
             this.btnBrowse = new System.Windows.Forms.Button();
             this.dgvTrackList = new System.Windows.Forms.DataGridView();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.grbFileNamePrefix = new System.Windows.Forms.GroupBox();
             this.chbTrunkBpm = new System.Windows.Forms.CheckBox();
             this.chbBpmNumber = new System.Windows.Forms.CheckBox();
             this.chbKeyCode = new System.Windows.Forms.CheckBox();
             this.chbRowNumber = new System.Windows.Forms.CheckBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.grbFileName = new System.Windows.Forms.GroupBox();
             this.numTitle = new System.Windows.Forms.NumericUpDown();
             this.numArtist = new System.Windows.Forms.NumericUpDown();
             this.chbTrunkTitle = new System.Windows.Forms.CheckBox();
             this.chbTrunkArtist = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTrackList)).BeginInit();
-            this.groupBox1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
+            this.grbFileNamePrefix.SuspendLayout();
+            this.grbFileName.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numTitle)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numArtist)).BeginInit();
             this.SuspendLayout();
@@ -127,21 +127,21 @@
             this.dgvTrackList.TabIndex = 9;
             this.dgvTrackList.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this.dgvTrackList_DataBindingComplete);
             // 
-            // groupBox1
+            // grbFilenamePrefix
             // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.grbFileNamePrefix.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox1.Controls.Add(this.chbTrunkBpm);
-            this.groupBox1.Controls.Add(this.chbBpmNumber);
-            this.groupBox1.Controls.Add(this.chbKeyCode);
-            this.groupBox1.Controls.Add(this.chbRowNumber);
-            this.groupBox1.Location = new System.Drawing.Point(495, 60);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(184, 90);
-            this.groupBox1.TabIndex = 10;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Filename Prefix";
+            this.grbFileNamePrefix.Controls.Add(this.chbTrunkBpm);
+            this.grbFileNamePrefix.Controls.Add(this.chbBpmNumber);
+            this.grbFileNamePrefix.Controls.Add(this.chbKeyCode);
+            this.grbFileNamePrefix.Controls.Add(this.chbRowNumber);
+            this.grbFileNamePrefix.Location = new System.Drawing.Point(495, 60);
+            this.grbFileNamePrefix.Name = "grbFilenamePrefix";
+            this.grbFileNamePrefix.Size = new System.Drawing.Size(184, 90);
+            this.grbFileNamePrefix.TabIndex = 10;
+            this.grbFileNamePrefix.TabStop = false;
+            this.grbFileNamePrefix.Text = "Filename Prefix";
             // 
             // chbTrunkBpm
             // 
@@ -196,18 +196,18 @@
             this.label2.TabIndex = 6;
             this.label2.Text = "Tracklist";
             // 
-            // groupBox2
+            // grbFileName
             // 
-            this.groupBox2.Controls.Add(this.numTitle);
-            this.groupBox2.Controls.Add(this.numArtist);
-            this.groupBox2.Controls.Add(this.chbTrunkTitle);
-            this.groupBox2.Controls.Add(this.chbTrunkArtist);
-            this.groupBox2.Location = new System.Drawing.Point(495, 156);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(184, 100);
-            this.groupBox2.TabIndex = 11;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Filename";
+            this.grbFileName.Controls.Add(this.numTitle);
+            this.grbFileName.Controls.Add(this.numArtist);
+            this.grbFileName.Controls.Add(this.chbTrunkTitle);
+            this.grbFileName.Controls.Add(this.chbTrunkArtist);
+            this.grbFileName.Location = new System.Drawing.Point(495, 156);
+            this.grbFileName.Name = "grbFileName";
+            this.grbFileName.Size = new System.Drawing.Size(184, 100);
+            this.grbFileName.TabIndex = 11;
+            this.grbFileName.TabStop = false;
+            this.grbFileName.Text = "Filename";
             // 
             // numTitle
             // 
@@ -272,8 +272,8 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(691, 407);
-            this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.grbFileName);
+            this.Controls.Add(this.grbFileNamePrefix);
             this.Controls.Add(this.dgvTrackList);
             this.Controls.Add(this.btnBrowse);
             this.Controls.Add(this.txtBoxPath);
@@ -284,11 +284,12 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "ExportToDirectoryView";
             this.Text = "Export To Directory";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ExportToDirectoryView_KeyDown);
             ((System.ComponentModel.ISupportInitialize)(this.dgvTrackList)).EndInit();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
+            this.grbFileNamePrefix.ResumeLayout(false);
+            this.grbFileNamePrefix.PerformLayout();
+            this.grbFileName.ResumeLayout(false);
+            this.grbFileName.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numTitle)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numArtist)).EndInit();
             this.ResumeLayout(false);
@@ -304,13 +305,13 @@
         private System.Windows.Forms.TextBox txtBoxPath;
         private System.Windows.Forms.Button btnBrowse;
         private System.Windows.Forms.DataGridView dgvTrackList;
-        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox grbFileNamePrefix;
         private System.Windows.Forms.CheckBox chbBpmNumber;
         private System.Windows.Forms.CheckBox chbKeyCode;
         private System.Windows.Forms.CheckBox chbRowNumber;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.CheckBox chbTrunkBpm;
-        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.GroupBox grbFileName;
         private System.Windows.Forms.NumericUpDown numArtist;
         private System.Windows.Forms.CheckBox chbTrunkArtist;
         private System.Windows.Forms.NumericUpDown numTitle;

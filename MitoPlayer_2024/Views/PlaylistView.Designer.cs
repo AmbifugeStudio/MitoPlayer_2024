@@ -355,14 +355,15 @@ namespace MitoPlayer_2024.Views
             this.dgvPlaylistList.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
             this.dgvPlaylistList.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
             this.dgvPlaylistList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            this.dgvPlaylistList.Location = new System.Drawing.Point(0, 1);
+            this.dgvPlaylistList.Location = new System.Drawing.Point(0, 0);
             this.dgvPlaylistList.MultiSelect = false;
             this.dgvPlaylistList.Name = "dgvPlaylistList";
             this.dgvPlaylistList.ReadOnly = true;
             this.dgvPlaylistList.RowHeadersVisible = false;
             this.dgvPlaylistList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvPlaylistList.Size = new System.Drawing.Size(183, 709);
+            this.dgvPlaylistList.Size = new System.Drawing.Size(183, 601);
             this.dgvPlaylistList.TabIndex = 17;
+            this.dgvPlaylistList.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvPlaylistList_CellMouseClick);
             this.dgvPlaylistList.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this.dgvPlaylistList_DataBindingComplete);
             this.dgvPlaylistList.SelectionChanged += new System.EventHandler(this.dgvPlaylistList_SelectionChanged);
             this.dgvPlaylistList.DragDrop += new System.Windows.Forms.DragEventHandler(this.dgvPlaylistList_DragDrop);

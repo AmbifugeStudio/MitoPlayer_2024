@@ -1,5 +1,39 @@
 ﻿
+OK - FEATURE: playlist list - right click should also select the row
+OK - FEATURE: playlist list - load list with one click
+OK - BUG: scan key and bpm button does not working well
+OK - BUG: missing tracks are not displayed in red
+OK - BUG: no scroll on the playlist list
+OK - BUG: scan key/bpm button - mixedinkey key import does not work
 
+- BUG: bpb and key export - bpm export does not work sometimes
+
+- FEATURE: export to m3u - playlistname into name text field
+
+- FEATURE: toggle button to display/hide key and bpm tag editor panel
+
+- BUG: tag value mateadata editor - delete tag - index error
+- BUG: drag and drop track into list - in reverse order
+
+
+- FEATURE: next song - scroll should move down, if the selection of the playing song moves down (and same to up)
+
+- FEATURE: preview end setting
+
+- FEATURE: cover browser - one click on cover, select the list element
+- FEATURE: cover browser - one click on cover, scroll should not be changed, if the selected is visible in the tracklist
+
+- BUG: long playlist name does not fit in the log at the top of playlist list
+
+- BUG: 2024 directory scan - missing bpms
+
+- FEATURE: export to directory - enter and excape key function
+- BUG: tracklist column ordering does not work sometimes
+
+
+- FEATURE: playlist list - load list content to another tracklist (tracklist2)
+- FEATURE: tracklist 2 and splitter
+- REFACTOR: splitter size change instead of tracklist size change
 
 - FEATURE: no need to restart application after cahnge settings
 
@@ -25,7 +59,6 @@
 - FEATURE: paused music should continue with from the position where mouse button is pressed on the soundwave, while the song is paused
 
 
--  2777 zenénél nem jóü lírja ki ahosszot
 - hiba 2024-es mappa szekenneélesok 
 _ a progress bar delay-e lassú
 - preview setting defulkt ne leghyen nulla

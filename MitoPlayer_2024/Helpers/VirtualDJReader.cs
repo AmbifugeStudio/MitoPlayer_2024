@@ -19,6 +19,7 @@ using static Mysqlx.Expect.Open.Types.Condition.Types;
 using System.Diagnostics;
 using System.Collections.Concurrent;
 using System.Threading;
+using Accord.Math.Distances;
 
 namespace MitoPlayer_2024.Helpers
 {
@@ -608,10 +609,14 @@ namespace MitoPlayer_2024.Helpers
             {
                 try
                 {
-                     String vdjDatabaseFilePath = String.Empty;
-
-                    Parallel.ForEach(validDriveList, (drive, state, index) =>
+                    String vdjDatabaseFilePath = String.Empty;
+                    String drive = String.Empty;
+                    int index = 0;
+                    // Parallel.ForEach(validDriveList, (drive, state, index) =>
+                    for (int i = 0;i < validDriveList.Count; i++)
                     {
+                        drive = validDriveList[i];
+                        index = i;
 
                         if (drive == "C")
                         {
@@ -669,8 +674,8 @@ namespace MitoPlayer_2024.Helpers
 
                         }
 
-
-                    });
+                    }
+                    //});
                 }
                 catch (Exception ex)
                 {
