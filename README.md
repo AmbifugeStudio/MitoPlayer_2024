@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./assets/logo.png" width="200" alt="MitoPlayer logo"/>
+  <img src="./assets/mitoplayer.png" width="200" alt="MitoPlayer logo"/>
 </p>
 
 <h1 align="center">MitoPlayer 2024</h1>
@@ -37,13 +37,17 @@ Originally built in Java/Swing, the app was rewritten in 2024 using **C# (WinFor
 
 ## 📸 Screenshots
 
-| Playlist browser | Filtering by tag | Harmonized playlist |
-|------------------|------------------|----------------------|
-| ![screenshot1](./screenshots/playlist_full.png) | ![screenshot2](./screenshots/filter_tagview.png) | ![screenshot3](./screenshots/harmonized.png) |
+### Main Interface
+![Main UI](./assets/main_ui.png)
 
-| Tag management | Export window | Settings |
-|----------------|----------------|----------|
-| ![screenshot4](./screenshots/tag_settings.png) | ![screenshot5](./screenshots/export_tracks.png) | ![screenshot6](./screenshots/settings.png) |
+### Filter & Tag View
+![Filter View](./assets/filter_view.png)
+
+### Tag Editor
+![Tag Editor](./assets/tag_editor.png)
+
+### Export Dialog
+![Export](./assets/export_dialog.png)
 
 ---
 
@@ -68,3 +72,9 @@ Originally built in Java/Swing, the app was rewritten in 2024 using **C# (WinFor
 ## 📬 Contact
 
 Feel free to reach out or open an issue if you're interested in using or contributing to the project.
+
+---
+
+## 🛡️ License
+
+Proprietary – all rights reserved.
