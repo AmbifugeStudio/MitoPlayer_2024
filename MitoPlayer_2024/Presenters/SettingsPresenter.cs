@@ -1,4 +1,5 @@
 ﻿using MitoPlayer_2024.Helpers;
+using MitoPlayer_2024.Helpers.ErrorHandling;
 using MitoPlayer_2024.Model;
 using MitoPlayer_2024.Models;
 using MitoPlayer_2024.Views;
@@ -44,16 +45,16 @@ namespace MitoPlayer_2024.Presenters
             this.profileDao = profileDao;
             this.settingDao = settingDao;
 
-            this.automaticBpmImport = this.settingDao.GetBooleanSetting(Settings.AutomaticBpmImport.ToString()).Value;
-            this.automaticKeyImport = this.settingDao.GetBooleanSetting(Settings.AutomaticKeyImport.ToString()).Value;
-            this.importBpmFromVirtualDj = this.settingDao.GetBooleanSetting(Settings.ImportBpmFromVirtualDj.ToString()).Value;
-            this.importKeyFromVirtualDj = this.settingDao.GetBooleanSetting(Settings.ImportKeyFromVirtualDj.ToString()).Value;
-            this.playTrackAfterOpenFiles = this.settingDao.GetBooleanSetting(Settings.PlayTrackAfterOpenFiles.ToString()).Value;
-            this.isShortTrackColouringEnabled = this.settingDao.GetBooleanSetting(Settings.IsShortTrackColouringEnabled.ToString()).Value;
-            this.isLogMessageEnabled = this.settingDao.GetBooleanSetting(Settings.IsLogMessageEnabled.ToString()).Value;
-            this.previewPercentage = this.settingDao.GetIntegerSetting(Settings.PreviewPercentage.ToString());
-            this.shortTrackColouringThreshold = this.settingDao.GetDecimalSetting(Settings.ShortTrackColouringThreshold.ToString());
-            this.logMessageDisplayTime = this.settingDao.GetDecimalSetting(Settings.LogMessageDisplayTime.ToString());
+            this.automaticBpmImport = this.settingDao.GetBooleanSetting(Settings.AutomaticBpmImport.ToString()).Value.Value;
+            this.automaticKeyImport = this.settingDao.GetBooleanSetting(Settings.AutomaticKeyImport.ToString()).Value.Value;
+            this.importBpmFromVirtualDj = this.settingDao.GetBooleanSetting(Settings.ImportBpmFromVirtualDj.ToString()).Value.Value;
+            this.importKeyFromVirtualDj = this.settingDao.GetBooleanSetting(Settings.ImportKeyFromVirtualDj.ToString()).Value.Value;
+            this.playTrackAfterOpenFiles = this.settingDao.GetBooleanSetting(Settings.PlayTrackAfterOpenFiles.ToString()).Value.Value;
+            this.isShortTrackColouringEnabled = this.settingDao.GetBooleanSetting(Settings.IsShortTrackColouringEnabled.ToString()).Value.Value;
+            this.isLogMessageEnabled = this.settingDao.GetBooleanSetting(Settings.IsLogMessageEnabled.ToString()).Value.Value;
+            this.previewPercentage = this.settingDao.GetIntegerSetting(Settings.PreviewPercentage.ToString()).Value;
+            this.shortTrackColouringThreshold = this.settingDao.GetDecimalSetting(Settings.ShortTrackColouringThreshold.ToString()).Value;
+            this.logMessageDisplayTime = this.settingDao.GetDecimalSetting(Settings.LogMessageDisplayTime.ToString()).Value;
 
             this.hasVirtualDj = this.HasVirtualDj();
 

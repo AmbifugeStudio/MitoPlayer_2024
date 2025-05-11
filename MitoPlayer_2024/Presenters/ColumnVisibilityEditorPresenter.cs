@@ -46,7 +46,7 @@ namespace MitoPlayer_2024.Presenters
             this.trackPropertyTable.Columns.Add("IsEnabled", typeof(bool));
 
             List<TrackProperty> tpList = new List<TrackProperty>();
-            tpList = this.settingDao.GetTrackPropertyListByColumnGroup(ColumnGroup.TracklistColumns.ToString());
+            tpList = this.settingDao.GetTrackPropertyListByColumnGroup(ColumnGroup.TracklistColumns.ToString()).Value;
             if (tpList != null && tpList.Count > 0)
             {
                 tpList = tpList.OrderBy(x => x.SortingId).ToList();

@@ -54,15 +54,15 @@ namespace MitoPlayer_2024.Presenters
 
         public void Initialize()
         {
-            this.exportPath = this.settingDao.GetStringSetting(Settings.LastExportDirectoryPath.ToString());
-            this.isRowNumberChecked = this.settingDao.GetBooleanSetting(Settings.IsRowNumberChecked.ToString()).Value;
-            this.isKeyCodeChecked = this.settingDao.GetBooleanSetting(Settings.IsKeyCodeChecked.ToString()).Value;
-            this.isBpmNumberChecked = this.settingDao.GetBooleanSetting(Settings.IsBpmNumberChecked.ToString()).Value;
-            this.isTrunkBpmChecked = this.settingDao.GetBooleanSetting(Settings.IsTrunkedBpmChecked.ToString()).Value;
-            this.isTrunkedArtistChecked = this.settingDao.GetBooleanSetting(Settings.IsTrunkedArtistChecked.ToString()).Value;
-            this.isTrunkedTitleChecked = this.settingDao.GetBooleanSetting(Settings.IsTrunkedTitleChecked.ToString()).Value;
-            this.artistMinimumCharacter = this.settingDao.GetDecimalSetting(Settings.ArtistMinimumCharacter.ToString());
-            this.titleMinimumCharacter = this.settingDao.GetDecimalSetting(Settings.TitleMinimumCharacter.ToString());
+            this.exportPath = this.settingDao.GetStringSetting(Settings.LastExportDirectoryPath.ToString()).Value;
+            this.isRowNumberChecked = this.settingDao.GetBooleanSetting(Settings.IsRowNumberChecked.ToString()).Value.Value;
+            this.isKeyCodeChecked = this.settingDao.GetBooleanSetting(Settings.IsKeyCodeChecked.ToString()).Value.Value;
+            this.isBpmNumberChecked = this.settingDao.GetBooleanSetting(Settings.IsBpmNumberChecked.ToString()).Value.Value;
+            this.isTrunkBpmChecked = this.settingDao.GetBooleanSetting(Settings.IsTrunkedBpmChecked.ToString()).Value.Value;
+            this.isTrunkedArtistChecked = this.settingDao.GetBooleanSetting(Settings.IsTrunkedArtistChecked.ToString()).Value.Value;
+            this.isTrunkedTitleChecked = this.settingDao.GetBooleanSetting(Settings.IsTrunkedTitleChecked.ToString()).Value.Value;
+            this.artistMinimumCharacter = this.settingDao.GetDecimalSetting(Settings.ArtistMinimumCharacter.ToString()).Value;
+            this.titleMinimumCharacter = this.settingDao.GetDecimalSetting(Settings.TitleMinimumCharacter.ToString()).Value;
 
             this.InitializeSettings();
             this.InitializeDataTable();

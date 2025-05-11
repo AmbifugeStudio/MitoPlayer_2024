@@ -45,7 +45,7 @@ namespace MitoPlayer_2024.Presenters
             {
                 if (this.IsPreviewEnabled)
                 {
-                    this.PreviewPercent = this.settingDao.GetIntegerSetting(Settings.PreviewPercentage.ToString());
+                    this.PreviewPercent = this.settingDao.GetIntegerSetting(Settings.PreviewPercentage.ToString()).Value;
                     this.currentPlayPosition = this.MediaPlayer.currentMedia.duration / 100 * this.PreviewPercent;
                     this.MediaPlayer.Ctlcontrols.currentPosition = this.currentPlayPosition;
                 }

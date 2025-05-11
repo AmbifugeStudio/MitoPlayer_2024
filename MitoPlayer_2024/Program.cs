@@ -1,8 +1,10 @@
 ﻿using MitoPlayer_2024.Dao;
-using MitoPlayer_2024.Helpers;
+using MitoPlayer_2024.Helpers.ErrorHandling;
 using MitoPlayer_2024.Presenters;
 using MitoPlayer_2024.Views;
 using System;
+using System.Data.SQLite;
+using System.IO;
 using System.Windows.Forms;
 
 namespace MitoPlayer_2024
@@ -23,11 +25,12 @@ namespace MitoPlayer_2024
 
             SettingDao = new SettingDao();
 
-          //  Properties.Settings.Default.Reset();
-           // Properties.Settings.Default.Save();
+            //TEST 
+            //Properties.Settings.Default.Reset();
+            //Properties.Settings.Default.Save();
 
-            
-            ResultOrError result = IsDatabasePrepared();
+            ResultOrError result = IsSQLiteDatabasePrepared();
+            //ResultOrError result = IsDatabasePrepared();
             if (result.Success)
             {
                 IMainView mainView = new MainView();
@@ -41,23 +44,98 @@ namespace MitoPlayer_2024
             }
         }
 
-        private static ResultOrError IsDatabasePrepared()
+        private static ResultOrError IsSQLiteDatabasePrepared()
         {
             ResultOrError result = new ResultOrError();
 
-            //vannak-e lementett adatok
+            String dbPath = "mitoplayer12dev.db";
+            String connectionString = $"Data Source={dbPath};Version=3";
+
+            try
+            {
+                if (!File.Exists(dbPath))
+                {
+                    SQLiteConnection.CreateFile(dbPath);
+
+                    if (!File.Exists(dbPath))
+                    {
+                        result.AddError("Database could not be created.");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                result.AddError("Database could not be created: " + ex.Message);
+            }
+
+            try
+            {
+                if (result)
+                {
+
+                    SettingDao = new SettingDao(connectionString);
+
+                    if (!DatabaseHasTables(dbPath))
+                    {
+                        
+
+                        result = SettingDao.CreateTableStructure();
+
+                        if (!result)
+                        {
+                            result.AddError("Datatables could not be created.");
+                        }
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                result.AddError("Datatables could not be created: " + ex.Message);
+            }
+
+            if (result)
+            {
+                ConnectionString = connectionString;
+            }
+
+            return result;
+        }
+        private static bool DatabaseHasTables(string dbPath)
+        {
+            if (!File.Exists(dbPath))
+                return false;
+
+            using (var conn = new SQLiteConnection($"Data Source={dbPath};Version=3;"))
+            {
+                conn.Open();
+
+                var cmd = conn.CreateCommand();
+                cmd.CommandText = "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' LIMIT 1;";
+
+                var result = cmd.ExecuteScalar();
+                return result != null;
+            }
+        }
+
+        private static ResultOrError IsDatabasePrepared()
+        {
+            ResultOrError result = new ResultOrError();
+            String dbPath = "mitoplayer12dev";
+
+            // check if saved data exists
             String host = Properties.Settings.Default.Host;
             int portNumber = !String.IsNullOrEmpty(Properties.Settings.Default.Port) ? int.Parse(Properties.Settings.Default.Port) : 0;
             String userName = Properties.Settings.Default.UserName;
             String password = Properties.Settings.Default.Password;
             String database = Properties.Settings.Default.Database;
-            database = "mitoplayer11dev";
+            database = "mitoplayer12dev";
             String preConnectionString = String.Empty;
             bool isConnectionStringReady = false;
 
-            //ha bármelyik hiányzik, be kell kérni új adatokat
-            //ha mind ki van töltve, akkor ellenőrizni kell, hogy azok megfelelőek-e
-            //ha nem megfelelő, akkor be kell kérni új adatokat
+            // if any data is missing, new data must be requested
+            // if all fields are filled, check whether the data is valid
+            // if the data is not valid, new data must be requested
             if (String.IsNullOrEmpty(host) ||
                portNumber <= 0 ||
                String.IsNullOrEmpty(userName) ||
@@ -116,10 +194,10 @@ namespace MitoPlayer_2024
                 }
             }
 
-            //ha a connection string megfelel, ellenőrizni kell, hogy létezik-e az adatbázis
-            //ha már létezik, az azt jelenti, hogy már az inicializálás lefutott, tehát minden adat a helyén, indulhat a program
-            //ha még nem létezik, akkor létre kell hozni az adatbázist és a táblastruktúrát
-            //bármilyen hiba esetén az adatbázist törölni kell!
+            // if the connection string is valid, check whether the database exists
+            // if it already exists, that means initialization has already run, so all data is in place, and the program can start
+            // if it doesn't exist yet, the database and the table structure must be created
+            // in case of any error, the database must be deleted! 
             if (isConnectionStringReady)
             {
                 if (!SettingDao.IsDatabaseExists(preConnectionString))
@@ -140,12 +218,11 @@ namespace MitoPlayer_2024
             if (!result.Success) 
             {
                 ClearDatabaseSettings();
-                result = SettingDao.DeleteDatabase();
+                result = SettingDao.DeleteDatabase(dbPath);
             }
 
             return result;
         }
-
         private static bool ShowDatabaseSetupView()
         {
             bool result = false;
@@ -157,7 +234,6 @@ namespace MitoPlayer_2024
             result = presenter.IsDatabaseConnectionReady;
             return result;
         }
-
         private static void ClearDatabaseSettings()
         {
             Properties.Settings.Default.Host = String.Empty;

@@ -37,7 +37,7 @@ namespace MitoPlayer_2024.Presenters
             this.currentTag = tag;
             this.oldTagValue = null;
 
-            this.tagValueName = "New Tag Value " + this.settingDao.GetNextId(TableName.TagValue.ToString());
+            this.tagValueName = "New Tag Value ";
             this.tagValueColor = HexToColor("#FFFFFF");
             this.tagValueHotkey = 0;
             ((TagValueEditorView)this.view).SetTagValueName(this.tagValueName);
@@ -103,7 +103,7 @@ namespace MitoPlayer_2024.Presenters
 
 
             String oldTagValueName = String.Empty;
-            List<TagValue> tagValueList = this.tagDao.GetTagValuesByTagId(this.currentTag.Id);
+            List<TagValue> tagValueList = this.tagDao.GetTagValuesByTagId(this.currentTag.Id).Value;
             if (tagValueList != null && tagValueList.Count > 0 && this.newTagValue != null)
             {
                 tagValueList.RemoveAll(x => x.Name == this.newTagValue.Name);
@@ -157,7 +157,7 @@ namespace MitoPlayer_2024.Presenters
                 if(this.newTagValue == null)
                 {
                     TagValue tagValue = new TagValue();
-                    tagValue.Id = this.tagDao.GetNextId(TableName.TagValue.ToString());
+                    tagValue.Id = this.settingDao.GetNextId(TableName.TagValue.ToString());
                     tagValue.Name = this.tagValueName;
                     tagValue.TagId = this.currentTag.Id;
                     tagValue.TagName = this.currentTag.Name;

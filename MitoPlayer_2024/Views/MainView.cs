@@ -481,6 +481,12 @@ namespace MitoPlayer_2024
             this.tmrPlayer.Start();
             this.lblCurrentTrack.Text = artist;
         }
+        public void UpdateAfterPlayTrackInSelectorTrackList(String artist)
+        {
+            this.tmrPlayer.Stop();
+            this.tmrPlayer.Start();
+            this.lblCurrentTrack.Text = artist;
+        }
         public void InitializeSoundWavesAndPlot(String path)
         {
             /*int downsampleFactor = 1000; // Példa érték
@@ -578,7 +584,23 @@ namespace MitoPlayer_2024
             this.tmrPlayer.Start();
             this.lblCurrentTrack.Text = this.lblCurrentTrack.Text.Replace("Paused: ", "Playing: ");
         }
+        public void UpdateAfterPlayTrackAfterPauseInSelectorTrackList()
+        {
+            this.tmrPlayer.Stop();
+            this.tmrPlayer.Start();
+            this.lblCurrentTrack.Text = this.lblCurrentTrack.Text.Replace("Paused: ", "Playing: ");
+        }
         public void UpdateAfterStopTrack()
+        {
+            this.tmrPlayer.Stop();
+            this.lblCurrentTrack.Text = "Playing: -";
+
+            leftReferenceHeight = this.pcbMasterPeakLeftColoured.Height;
+            rightReferenceHeight = this.pcbMasterPeakLeftColoured.Height;
+            this.pcbMasterPeakLeftBackground.Height = leftReferenceHeight;
+            this.pcbMasterPeakRightBackground.Height = rightReferenceHeight;
+        }
+        public void UpdateAfterStopTrackInSelectorTrackList()
         {
             this.tmrPlayer.Stop();
             this.lblCurrentTrack.Text = "Playing: -";
@@ -598,9 +620,16 @@ namespace MitoPlayer_2024
             this.pcbMasterPeakLeftBackground.Height = leftReferenceHeight;
             this.pcbMasterPeakRightBackground.Height = rightReferenceHeight;
         }
-        //private int leftReferenceHeight = 0;
-        // private int rightReferenceHeight = 0;
+        public void UpdateAfterPauseTrackInSelectorTrackList()
+        {
+            this.tmrPlayer.Stop();
+            this.lblCurrentTrack.Text = this.lblCurrentTrack.Text.Replace("Playing: ", "Paused: ");
 
+            leftReferenceHeight = this.pcbMasterPeakLeftColoured.Height;
+            rightReferenceHeight = this.pcbMasterPeakLeftColoured.Height;
+            this.pcbMasterPeakLeftBackground.Height = leftReferenceHeight;
+            this.pcbMasterPeakRightBackground.Height = rightReferenceHeight;
+        }
 
         public void InitializeMediaPlayerProgressStatus(double duration, String durationString, double currentPosition, String currentPositionString)
         {

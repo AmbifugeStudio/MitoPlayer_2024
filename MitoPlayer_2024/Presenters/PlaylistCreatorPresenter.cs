@@ -79,7 +79,7 @@ namespace MitoPlayer_2024.Presenters
             playlistListBindingSource = new BindingSource();
             playlistListTable = new DataTable();
 
-            List<TrackProperty> tpList = settingDao.GetTrackPropertyListByColumnGroup(ColumnGroup.PlaylistColumns.ToString());
+            List<TrackProperty> tpList = settingDao.GetTrackPropertyListByColumnGroup(ColumnGroup.PlaylistColumns.ToString()).Value;
             if (tpList != null && tpList.Count > 0)
             {
                 foreach (TrackProperty tp in tpList)
@@ -92,7 +92,7 @@ namespace MitoPlayer_2024.Presenters
         {
             playlistListTable.Clear();
 
-            List<Playlist> playlistList = trackDao.GetAllPlaylist();
+            List<Playlist> playlistList = trackDao.GetAllPlaylist().Value;
             if (playlistList != null && playlistList.Count > 0)
             {
                 playlistList = playlistList.OrderBy(x => x.OrderInList).ToList();
@@ -123,7 +123,7 @@ namespace MitoPlayer_2024.Presenters
         {
             playlistListTable.Clear();
 
-            List<Playlist> playlistList = trackDao.GetAllPlaylist();
+            List<Playlist> playlistList = trackDao.GetAllPlaylist().Value;
             if (playlistList != null && playlistList.Count > 0)
             {
                 playlistList = playlistList.OrderBy(x => x.OrderInList).ToList();
@@ -146,14 +146,14 @@ namespace MitoPlayer_2024.Presenters
         private void InitializeTagList()
         {
             tagValueDictionary = new Dictionary<String, Dictionary<String, Color>>();
-            List<Tag> tagList = tagDao.GetAllTag();
+            List<Tag> tagList = tagDao.GetAllTag().Value;
             if (tagList != null && tagList.Count > 0)
             {
                 this.tagList = tagList;
                 List<TagValue> tagValueList = new List<TagValue>();
                 foreach (Tag tag in this.tagList)
                 {
-                    tagValueList = tagDao.GetTagValuesByTagId(tag.Id);
+                    tagValueList = tagDao.GetTagValuesByTagId(tag.Id).Value;
                     if (tagValueList != null && tagValueList.Count > 0)
                     {
                         Dictionary<String, Color> tvDic = new Dictionary<String, Color>();
@@ -179,7 +179,7 @@ namespace MitoPlayer_2024.Presenters
             tracklistBindingSource = new BindingSource();
             tracklistTable = new DataTable();
 
-            List<TrackProperty> tpList = settingDao.GetTrackPropertyListByColumnGroup(ColumnGroup.TracklistColumns.ToString());
+            List<TrackProperty> tpList = settingDao.GetTrackPropertyListByColumnGroup(ColumnGroup.TracklistColumns.ToString()).Value;
             if (tpList != null && tpList.Count > 0)
             {
                 foreach (TrackProperty tp in tpList)
@@ -192,7 +192,7 @@ namespace MitoPlayer_2024.Presenters
         {
             tracklistTable.Clear();
 
-            List<Track> trackList = trackDao.GetTracklistWithTagsByPlaylistId(currentPlaylistId, tagList);
+            List<Track> trackList = trackDao.GetTracklistWithTagsByPlaylistId(currentPlaylistId, tagList).Value;
             if (trackList != null && trackList.Count > 0)
             {
                 trackList = trackList.OrderBy(x => x.OrderInList).ToList();
@@ -273,7 +273,7 @@ namespace MitoPlayer_2024.Presenters
         {
             tracklistTable.Clear();
 
-            List<Track> trackList = trackDao.GetTracklistWithTagsByPlaylistId(currentPlaylistId, tagList);
+            List<Track> trackList = trackDao.GetTracklistWithTagsByPlaylistId(currentPlaylistId, tagList).Value;
             if (trackList != null && trackList.Count > 0)
             {
                 trackList = trackList.OrderBy(x => x.OrderInList).ToList();
@@ -332,7 +332,7 @@ namespace MitoPlayer_2024.Presenters
             selectorTracklistBindingSource = new BindingSource();
             selectorTracklistTable = new DataTable();
 
-            List<TrackProperty> tpList = settingDao.GetTrackPropertyListByColumnGroup(ColumnGroup.TracklistColumns.ToString());
+            List<TrackProperty> tpList = settingDao.GetTrackPropertyListByColumnGroup(ColumnGroup.TracklistColumns.ToString()).Value;
             if (tpList != null && tpList.Count > 0)
             {
                 foreach (TrackProperty tp in tpList)
@@ -345,7 +345,7 @@ namespace MitoPlayer_2024.Presenters
         {
             selectorTracklistTable.Clear();
 
-            List<Track> trackList = trackDao.GetTracklistWithTagsByPlaylistId(currentSelectorPlaylistId, tagList);
+            List<Track> trackList = trackDao.GetTracklistWithTagsByPlaylistId(currentSelectorPlaylistId, tagList).Value;
             if (trackList != null && trackList.Count > 0)
             {
                 trackList = trackList.OrderBy(x => x.OrderInList).ToList();
@@ -403,7 +403,7 @@ namespace MitoPlayer_2024.Presenters
         {
             selectorTracklistTable.Clear();
 
-            List<Track> trackList = trackDao.GetTracklistWithTagsByPlaylistId(currentSelectorPlaylistId, tagList);
+            List<Track> trackList = trackDao.GetTracklistWithTagsByPlaylistId(currentSelectorPlaylistId, tagList).Value;
             if (trackList != null && trackList.Count > 0)
             {
                 trackList = trackList.OrderBy(x => x.OrderInList).ToList();

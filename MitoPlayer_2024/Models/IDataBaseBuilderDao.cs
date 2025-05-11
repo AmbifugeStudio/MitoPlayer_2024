@@ -1,9 +1,5 @@
-﻿using MitoPlayer_2024.Helpers;
+﻿using MitoPlayer_2024.Helpers.ErrorHandling;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MitoPlayer_2024.Models
 {
@@ -13,7 +9,7 @@ namespace MitoPlayer_2024.Models
         bool IsDatabaseExists(String preConnectionString);
         ResultOrError CreateDatabase(String preConnectionString);
         ResultOrError CreateTableStructure();
-        ResultOrError DeleteDatabase();
+        ResultOrError DeleteDatabase(String databaseFilePath);
 
     }
 }

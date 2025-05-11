@@ -30,7 +30,7 @@ namespace MitoPlayer_2024.Model
         public float[] Features { get; set; }
 
         public Track() {
-            this.Id = -1;
+            this.Id = 1;
         }
 
     }

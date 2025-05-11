@@ -112,6 +112,10 @@ a filtered lista elemeit írja ki a playlist tack coujnt - ki kéne írni, hogy 
 - FEATURE: load tracklist or navigate away: check save status and show dialog window is there are unsaved progress
 
 ======================
+v0.16.0.0
+======================
+OK - REFACTOR: SqLite integration
+======================
 v0.15.2.32
 ======================
 OK - BUG: Live Stream animation - flac artist and title displayed wrong way (duplicated title)

@@ -1,28 +1,19 @@
 ﻿using FlacLibSharp;
 using MitoPlayer_2024.Dao;
 using MitoPlayer_2024.Helpers;
+using MitoPlayer_2024.Helpers.ErrorHandling;
 using MitoPlayer_2024.Model;
 using MitoPlayer_2024.Models;
 using MitoPlayer_2024.Views;
-using MySql.Data.MySqlClient;
-using Mysqlx;
-using MySqlX.XDevAPI.Common;
 using NAudio.Wave;
-using Org.BouncyCastle.Asn1.X509;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml.Linq;
-using static Mysqlx.Expect.Open.Types.Condition.Types;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace MitoPlayer_2024.Presenters
@@ -40,6 +31,8 @@ namespace MitoPlayer_2024.Presenters
         private IProfileEditorView profileEditorView { get; set; }
         private IPlaylistView playlistView { get; set; }
         private ITagValueView tagValueView { get; set; }
+
+        //private ISelectorView selectorView { get; set; }
         private IRuleEditorView ruleEditorView { get; set; }
         private ITrackEditorView trackEditorView { get; set; }
         private ITemplateEditorView templateEditorView { get; set; }
@@ -112,11 +105,8 @@ namespace MitoPlayer_2024.Presenters
             this.mainView.ExportToDirectory += ExportToDirectory;
             this.mainView.GetMediaPlayerProgressStatusEvent += GetMediaPlayerProgressStatusEvent;
 
-            this.mainView.OpenChartEvent += OpenChartEvent;
             //Other
             this.mainView.Exit += Exit;
-
-
 
             this.settingDao = settingDao;
             this.profileDao = new ProfileDao(connectionString);
@@ -127,42 +117,6 @@ namespace MitoPlayer_2024.Presenters
             this.InitializeViewsAndPresenters();
         }
 
-        private ChartView chartView { get;set; }
-        private ChartPresenter chartPresenter { get;set; }
-        private void OpenChartEvent(object sender, EventArgs e)
-        {
-            if (this.mediaPlayerComponent != null && this.mediaPlayerComponent.CurrentTrackIdInPlaylist > -1)
-            {
-                if (this.chartView == null || this.chartView.IsDisposed)
-                {
-                    this.chartView = new ChartView();
-                    this.chartPresenter = new ChartPresenter(chartView, this.mediaPlayerComponent, this.tagDao, this.trackDao, this.settingDao);
-                    this.chartView.Show();
-                } 
-                else 
-                {
-                    bool isFormOpen = Application.OpenForms.OfType<ChartView>().Any();
-                    if (!isFormOpen)
-                    {
-                        this.chartView.BringToFront();
-                    }
-                }
-            }
-        }
-
-        
-
-        public void InitializeViewsAndPresenters()
-        {
-            this.playlistView = PlaylistView.GetInstance((MainView)this.mainView);
-            this.playlistPresenter = new PlaylistPresenter(this.playlistView, this.trackDao, this.tagDao, this.settingDao);
-
-            this.tagValueView = TagValueView.GetInstance((MainView)this.mainView);
-            this.tagValueEditorPresenter = new TagValuePresenter(this.tagValueView, this.tagDao, this.trackDao, this.settingDao);
-
-            this.ShowPlaylistView(this, new EventArgs());
-        }
-
         public void InitializeProfileAndPlaylist()
         {
             ResultOrError result = new ResultOrError();
@@ -171,50 +125,77 @@ namespace MitoPlayer_2024.Presenters
             this.mediaPlayerComponent = null;
             this.mediaPlayerComponent = new MediaPlayerComponent(((MainView)this.mainView).mediaPlayer, this.settingDao);
 
-            Profile profile = this.profileDao.GetActiveProfile();
-            if (profile == null)
+            Profile profile = null;
+            ResultOrError<Profile> profResult = this.profileDao.GetActiveProfile();
+            if (profResult)
             {
-                profile = new Profile();
-                profile.Id = 0;
-                profile.Name = DefaultName.Profile.ToString();
-                profile.IsActive = true;
-                result = this.profileDao.CreateProfile(profile);
+                if(profResult.Value == null)
+                {
+                    profile = new Profile();
+                    profile.Id = 1;
+                    profile.Name = DefaultName.Profile.ToString();
+                    profile.IsActive = true;
+
+                    result = this.profileDao.CreateProfile(profile);
+                }
+                else
+                {
+                    profile = profResult.Value;
+                }
+            }
+            else
+            {
+                result.AddError(profResult.ErrorMessage);
             }
 
-            if (result.Success)
+            if (result)
             {
                 this.settingDao.SetProfileId(profile.Id);
                 this.trackDao.SetProfileId(profile.Id);
                 this.tagDao.SetProfileId(profile.Id);
             }
 
-            if (result.Success)
+            if (result)
             {
                 result = this.settingDao.InitializeProfileSettings();
             }
 
-            if (result.Success)
+            Playlist pls = null;
+            if (result)
             {
-                //Default playlist inicializálás
-                Playlist pls = this.trackDao.GetActivePlaylist();
-                if (pls == null)
+                //Default playlist initialize
+                ResultOrError<Playlist> plsResult = this.trackDao.GetActivePlaylist();
+                if (plsResult)
                 {
-                    pls = new Playlist();
-                    pls.Id = this.trackDao.GetNextId(TableName.Playlist.ToString());
-                    pls.Name = "Default Playlist";
-                    pls.OrderInList = 0;
-                    pls.QuickListGroup = 0;
-                    pls.IsActive = true;
-                    pls.ProfileId = profile.Id;
-                    result = this.trackDao.CreatePlaylist(pls);
-                    if (result.Success)
+                    if (plsResult.Value == null)
                     {
-                        result = this.CreateTestData(profile.Id);
+                        pls = new Playlist();
+                        pls.Id = 1;
+                        pls.Name = "Default Playlist";
+                        pls.OrderInList = 0;
+                        pls.QuickListGroup = 0;
+                        pls.IsActive = true;
+                        pls.ProfileId = profile.Id;
+
+                        result = this.trackDao.CreatePlaylist(pls);
+
+                        if (result)
+                            result = this.CreateTestData(profile.Id);
+                        if (result)
+                            result = this.settingDao.SetIntegerSetting(Settings.CurrentPlaylistId.ToString(), 1);
                     }
-                    this.settingDao.SetIntegerSetting(Settings.CurrentPlaylistId.ToString(), pls.Id);
+                    else
+                    {
+                        pls = plsResult.Value;
+                    }
                 }
+                else
+                {
+                    result.AddError(plsResult.ErrorMessage);
+                }
+                
             }
-            if (result.Success)
+            if (result)
             {
                 //this.ShowPlaylistView(this, new EventArgs());
             }
@@ -222,8 +203,23 @@ namespace MitoPlayer_2024.Presenters
             {
                 MessageBox.Show(result.ErrorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Application.Exit();
-            } 
+            }
         }
+        public void InitializeViewsAndPresenters()
+        {
+            this.playlistView = PlaylistView.GetInstance((MainView)this.mainView);
+            this.playlistPresenter = new PlaylistPresenter(this.playlistView, this.trackDao, this.tagDao, this.settingDao);
+
+            this.tagValueView = TagValueView.GetInstance((MainView)this.mainView);
+            this.tagValueEditorPresenter = new TagValuePresenter(this.tagValueView, this.tagDao, this.trackDao, this.settingDao);
+
+            //this.selectorView = SelectorView.GetInstance((MainView)this.mainView);
+           // this.playlistPresenter = new PlaylistPresenter(this.playlistView, this.trackDao, this.tagDao, this.settingDao);
+
+            this.ShowPlaylistView(this, new EventArgs());
+        }
+
+       
 
         private ResultOrError CreateTestData(int profileId)
         {
@@ -235,7 +231,7 @@ namespace MitoPlayer_2024.Presenters
 
             Tag tag = new Tag()
             {
-                Id = this.tagDao.GetNextId(TableName.Tag.ToString()),
+                Id = this.settingDao.GetNextId(TableName.Tag.ToString()),
                 Name = "Key",
                 TextColoring = true,
                 HasMultipleValues = false,
@@ -245,44 +241,44 @@ namespace MitoPlayer_2024.Presenters
 
             result = this.tagDao.CreateTag(tag);
 
-            if (result.Success)
+            if (result)
             {
                 TrackProperty tp = new TrackProperty()
                 {
-                    Id = this.trackDao.GetNextId(TableName.TrackProperty.ToString()),
+                    Id =  this.settingDao.GetNextId(TableName.TrackProperty.ToString()),
                     Name = tag.Name,
                     Type = "System.String",
                     IsEnabled = true,
                     ColumnGroup = ColumnGroup.TracklistColumns.ToString(),
-                    SortingId = this.settingDao.GetNextTrackPropertySortingId(),
+                    SortingId = this.settingDao.GetNextTrackPropertySortingId().Value,
                 };
 
                 result = this.settingDao.CreateTrackProperty(tp);
 
                 tp = new TrackProperty()
                 {
-                    Id = this.trackDao.GetNextId(TableName.TrackProperty.ToString()),
+                    Id = this.settingDao.GetNextId(TableName.TrackProperty.ToString()),
                     Name = tag.Name + "TagValueId",
                     Type = "System.Int32",
                     IsEnabled = false,
                     ColumnGroup = ColumnGroup.TracklistColumns.ToString(),
-                    SortingId = this.settingDao.GetNextTrackPropertySortingId(),
+                    SortingId = this.settingDao.GetNextTrackPropertySortingId().Value,
                 };
 
                 result = this.settingDao.CreateTrackProperty(tp);
 
             }
 
-            if (result.Success)
+            if (result)
             {
                 TagValue tv = null;
                 for (int i = 0; i <= keyNameArray.Count() - 1; i++)
                 {
                     tv = new TagValue()
                     {
+                        Id = this.settingDao.GetNextId(TableName.TagValue.ToString()),
                         TagId = tag.Id,
                         TagName = tag.Name,
-                        Id = this.tagDao.GetNextId(TableName.TagValue.ToString()),
                         Name = keyNameArray[i],
                         Color = this.HexToColor(keyColorArray[i]),
                         ProfileId = profileId
@@ -290,18 +286,18 @@ namespace MitoPlayer_2024.Presenters
 
                     result = this.tagDao.CreateTagValue(tv);
 
-                    if (!result.Success)
+                    if (!result)
                     {
                         break;
                     }
                 }
             }
 
-            if (result.Success)
+            if (result)
             {
                 tag = new Tag()
                 {
-                    Id = this.tagDao.GetNextId(TableName.Tag.ToString()),
+                    Id = this.settingDao.GetNextId(TableName.Tag.ToString()),
                     Name = "Bpm",
                     TextColoring = true,
                     HasMultipleValues = true,
@@ -312,40 +308,43 @@ namespace MitoPlayer_2024.Presenters
                 result = this.tagDao.CreateTag(tag);
             }
 
-            if (result.Success)
+            if (result)
             {
                 TrackProperty tp = new TrackProperty()
                 {
-                    Id = this.trackDao.GetNextId(TableName.TrackProperty.ToString()),
+                    Id = this.settingDao.GetNextId(TableName.TrackProperty.ToString()),
                     Name = tag.Name,
                     Type = "System.String",
                     IsEnabled = true,
                     ColumnGroup = ColumnGroup.TracklistColumns.ToString(),
-                    SortingId = this.settingDao.GetNextTrackPropertySortingId()
-                };
-
-                result = this.settingDao.CreateTrackProperty(tp);
-
-                tp = new TrackProperty()
-                {
-                    Id = this.trackDao.GetNextId(TableName.TrackProperty.ToString()),
-                    Name = tag.Name + "TagValueId",
-                    Type = "System.Decimal",
-                    IsEnabled = false,
-                    ColumnGroup = ColumnGroup.TracklistColumns.ToString(),
-                    SortingId = this.settingDao.GetNextTrackPropertySortingId(),
+                    SortingId = this.settingDao.GetNextTrackPropertySortingId().Value
                 };
 
                 result = this.settingDao.CreateTrackProperty(tp);
             }
 
-            if (result.Success)
+            if (result)
+            {
+                TrackProperty tp = new TrackProperty()
+                {
+                    Id = this.settingDao.GetNextId(TableName.TrackProperty.ToString()),
+                    Name = tag.Name + "TagValueId",
+                    Type = "System.Decimal",
+                    IsEnabled = false,
+                    ColumnGroup = ColumnGroup.TracklistColumns.ToString(),
+                    SortingId = this.settingDao.GetNextTrackPropertySortingId().Value,
+                };
+
+                result = this.settingDao.CreateTrackProperty(tp);
+            }
+
+            if (result)
             {
                 TagValue tv = new TagValue()
                 {
+                    Id = this.settingDao.GetNextId(TableName.TagValue.ToString()),
                     TagId = tag.Id,
                     TagName = tag.Name,
-                    Id = this.tagDao.GetNextId(TableName.TagValue.ToString()),
                     Name = "Bpm",
                     Color = Color.White,
                     ProfileId = profileId
@@ -354,11 +353,10 @@ namespace MitoPlayer_2024.Presenters
                 result = this.tagDao.CreateTagValue(tv);
             }
 
-            if (result.Success)
+            if (result)
             {
                 TrainingData trainingData = new TrainingData()
                 {
-                    Id = this.trackDao.GetNextId(TableName.TrainingData.ToString()),
                     Name = "VocalTemplate",
                     CreateDate = DateTime.Now,
                     SampleCount = 0,
@@ -376,7 +374,7 @@ namespace MitoPlayer_2024.Presenters
 
                 };
 
-                this.trackDao.CreateTrainingData(trainingData);
+                //this.trackDao.CreateTrainingData(trainingData);
             }
 
             return result;    
@@ -545,7 +543,7 @@ namespace MitoPlayer_2024.Presenters
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Multiselect = true;
             ofd.Filter = "Audio files (*.mp3,*.wav,*.flac)|*.mp3;*.wav;*.flac|Playlist files (*.m3u)|*.m3u";
-            ofd.FilterIndex = this.settingDao.GetIntegerSetting(Settings.LastOpenFilesFilterIndex.ToString());
+            ofd.FilterIndex = this.settingDao.GetIntegerSetting(Settings.LastOpenFilesFilterIndex.ToString()).Value;
             if (ofd.ShowDialog() == DialogResult.OK)
             {
                 trackList = this.ReadFiles(ofd.FileNames);
@@ -565,7 +563,7 @@ namespace MitoPlayer_2024.Presenters
 
             using (var fbd = new FolderBrowserDialog())
             {
-                String lastDirectoryPath = this.settingDao.GetStringSetting(Settings.LastOpenDirectoryPath.ToString());
+                String lastDirectoryPath = this.settingDao.GetStringSetting(Settings.LastOpenDirectoryPath.ToString()).Value;
 
                 if (Directory.Exists(lastDirectoryPath))
                     fbd.SelectedPath = lastDirectoryPath;
@@ -911,7 +909,7 @@ namespace MitoPlayer_2024.Presenters
                         }
                     }
 
-                    List<Tag> tagList = tagDao.GetAllTag();
+                    List<Tag> tagList = tagDao.GetAllTag().Value;
 
                     foreach (var path in filePathList)
                     {
@@ -926,7 +924,7 @@ namespace MitoPlayer_2024.Presenters
                         }
                         else
                         {
-                            Model.Track trackFromDb = this.trackDao.GetTrackWithTagsByPath(track.Path, tagList);
+                            Model.Track trackFromDb = this.trackDao.GetTrackWithTagsByPath(track.Path, tagList).Value;
                             if (trackFromDb != null)
                             {
                                 track = trackFromDb;
@@ -993,7 +991,6 @@ namespace MitoPlayer_2024.Presenters
                                 foreach (Tag tag in tagList)
                                 {
                                     TrackTagValue ttv = new TrackTagValue();
-                                    ttv.Id = this.trackDao.GetNextId(TableName.TrackTagValue.ToString());
                                     ttv.TrackId = track.Id;
                                     ttv.TagId = tag.Id;
                                     ttv.TagName = tag.Name;
@@ -1024,17 +1021,17 @@ namespace MitoPlayer_2024.Presenters
 
         private void ImportKeysAndBpmsFromExternalSource(ref List<Model.Track> trackList,List<Tag> tagList)
         {
-            bool automaticKeyImport = this.settingDao.GetBooleanSetting(Settings.AutomaticKeyImport.ToString()).Value;
-            bool automaticBpmImport = this.settingDao.GetBooleanSetting(Settings.AutomaticBpmImport.ToString()).Value;
-            bool importKeyFromVirtualDj = this.settingDao.GetBooleanSetting(Settings.ImportKeyFromVirtualDj.ToString()).Value;
-            bool importBpmFromVirtualDj = this.settingDao.GetBooleanSetting(Settings.ImportBpmFromVirtualDj.ToString()).Value;
+            bool automaticKeyImport = this.settingDao.GetBooleanSetting(Settings.AutomaticKeyImport.ToString()).Value.Value;
+            bool automaticBpmImport = this.settingDao.GetBooleanSetting(Settings.AutomaticBpmImport.ToString()).Value.Value;
+            bool importKeyFromVirtualDj = this.settingDao.GetBooleanSetting(Settings.ImportKeyFromVirtualDj.ToString()).Value.Value;
+            bool importBpmFromVirtualDj = this.settingDao.GetBooleanSetting(Settings.ImportBpmFromVirtualDj.ToString()).Value.Value;
 
             if (automaticKeyImport && automaticBpmImport && importKeyFromVirtualDj && importBpmFromVirtualDj)
             {
                 if (this.HasVirtualDj())
                 {
-                    List<TagValue> keyTagValueList = this.tagDao.GetTagValuesByTagId(tagList.Find(x => x.Name == "Key")?.Id ?? 0);
-                    List<TagValue> bpmTagValueList = this.tagDao.GetTagValuesByTagId(tagList.Find(x => x.Name == "Bpm")?.Id ?? 0);
+                    List<TagValue> keyTagValueList = this.tagDao.GetTagValuesByTagId(tagList.Find(x => x.Name == "Key")?.Id ?? 0).Value;
+                    List<TagValue> bpmTagValueList = this.tagDao.GetTagValuesByTagId(tagList.Find(x => x.Name == "Bpm")?.Id ?? 0).Value;
                     var result = VirtualDJReader.Instance.ReadKeysAndBpmsFromVirtualDJDatabase(ref trackList, this.trackDao, keyTagValueList, bpmTagValueList);
                     if (!result.Success)
                     {
@@ -1046,7 +1043,7 @@ namespace MitoPlayer_2024.Presenters
             {
                 if (automaticKeyImport)
                 {
-                    List<TagValue> keyTagValueList = this.tagDao.GetTagValuesByTagId(tagList.Find(x => x.Name == "Key")?.Id ?? 0);
+                    List<TagValue> keyTagValueList = this.tagDao.GetTagValuesByTagId(tagList.Find(x => x.Name == "Key")?.Id ?? 0).Value;
 
                     if (importKeyFromVirtualDj)
                     {
@@ -1108,7 +1105,7 @@ namespace MitoPlayer_2024.Presenters
                     {
                         if (this.HasVirtualDj())
                         {
-                            List<TagValue> bpmTagValueList = this.tagDao.GetTagValuesByTagId(tagList.Find(x => x.Name == "Bpm")?.Id ?? 0);
+                            List<TagValue> bpmTagValueList = this.tagDao.GetTagValuesByTagId(tagList.Find(x => x.Name == "Bpm")?.Id ?? 0).Value;
                             var result = VirtualDJReader.Instance.ReadBpmsFromVirtualDJDatabase(ref trackList, this.trackDao, bpmTagValueList);
                             if (!result.Success)
                             {
@@ -1194,7 +1191,7 @@ namespace MitoPlayer_2024.Presenters
                 this.mainView.ResetMediaPlayerProgressStatus();
                 
             }
-
+/*
             if (this.mediaPlayerComponent.MediaPlayer.playState == WMPLib.WMPPlayState.wmppsPlaying ||
                 this.mediaPlayerComponent.MediaPlayer.playState == WMPLib.WMPPlayState.wmppsPaused)
             {
@@ -1211,7 +1208,30 @@ namespace MitoPlayer_2024.Presenters
                 {
                     this.chartPresenter.UpdateLinePosition(0);
                 }
-            }
+            }*/
         }
+
+       /* private ChartView chartView { get; set; }
+        private ChartPresenter chartPresenter { get; set; }
+        private void OpenChartEvent(object sender, EventArgs e)
+        {
+            if (this.mediaPlayerComponent != null && this.mediaPlayerComponent.CurrentTrackIdInPlaylist > -1)
+            {
+                if (this.chartView == null || this.chartView.IsDisposed)
+                {
+                    this.chartView = new ChartView();
+                    this.chartPresenter = new ChartPresenter(chartView, this.mediaPlayerComponent, this.tagDao, this.trackDao, this.settingDao);
+                    this.chartView.Show();
+                }
+                else
+                {
+                    bool isFormOpen = Application.OpenForms.OfType<ChartView>().Any();
+                    if (!isFormOpen)
+                    {
+                        this.chartView.BringToFront();
+                    }
+                }
+            }
+        }*/
     }
 }

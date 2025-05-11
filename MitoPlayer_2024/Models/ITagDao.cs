@@ -1,39 +1,35 @@
-﻿using MitoPlayer_2024.Helpers;
+﻿using MitoPlayer_2024.Helpers.ErrorHandling;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MitoPlayer_2024.Models
 {
     public interface ITagDao
     {
-        int GetNextId(String tableName);
 
         #region TAG
         void SetProfileId(int profileId);
         ResultOrError CreateTag(Tag tag);
-        Tag GetTag(int id);
-        Tag GetTagByName(String name);
-        List<Tag> GetAllTag();
-        void UpdateTag(Tag tag);
-        void DeleteTag(int id);
-        void DeleteAllTag();
-        void ClearTagTable();
+        ResultOrError<Tag> GetTag(int id);
+        ResultOrError<Tag> GetTagByName(String name);
+        ResultOrError<List<Tag>> GetAllTag();
+        ResultOrError UpdateTag(Tag tag);
+        ResultOrError DeleteTag(int id);
+        ResultOrError DeleteAllTag();
+        ResultOrError ClearTagTable();
         #endregion
 
         #region TAGVALUE
         ResultOrError CreateTagValue(TagValue tagValue);
-        List<TagValue> GetTagValuesByTagId(int id);
-        TagValue GetTagValue(int id);
-        TagValue GetTagValueByTagId(int id, int tagId);
-        TagValue GetTagValueByName(int tagId, String name);
-        void UpdateTagValue(TagValue tag);
-        void DeleteTagValue(int id);
-        void DeleteTagValuesByTagId(int tagId);
-        void DeleteAllTagValue();
-        void ClearTagValueTable();
+        ResultOrError<List<TagValue>> GetTagValuesByTagId(int id);
+        ResultOrError<TagValue> GetTagValue(int id);
+        ResultOrError<TagValue> GetTagValueByTagId(int id, int tagId);
+        ResultOrError<TagValue> GetTagValueByName(int tagId, String name);
+        ResultOrError UpdateTagValue(TagValue tag);
+        ResultOrError DeleteTagValue(int id);
+        ResultOrError DeleteTagValuesByTagId(int tagId);
+        ResultOrError DeleteAllTagValue();
+        ResultOrError ClearTagValueTable();
         #endregion
     }
 }

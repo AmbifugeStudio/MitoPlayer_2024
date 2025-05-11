@@ -1,11 +1,11 @@
 ﻿
 using MitoPlayer_2024.Helpers;
+using MitoPlayer_2024.Helpers.ErrorHandling;
 using MitoPlayer_2024.Models;
-using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Windows.Forms;
+using System.Data.SQLite;
 
 namespace MitoPlayer_2024.Dao
 {
@@ -15,253 +15,286 @@ namespace MitoPlayer_2024.Dao
         {
             this.connectionString = connectionString;
         }
-        public override int GetNextId(String tableName)
-        {
-            int lastId = -1;
 
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
-            {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT Id 
-                                        FROM " + tableName + " " +
-                                        "ORDER BY Id " +
-                                        "desc LIMIT 1";
-
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        lastId = (int)reader[0];
-                    }
-                }
-                connection.Close();
-            }
-            return lastId + 1;
-        }
         public ResultOrError CreateProfile(Profile profile)
         {
             ResultOrError result = new ResultOrError();
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
-            {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"INSERT INTO Profile 
-                                        values ( 
-                                        @Id, 
-                                        @Name, 
-                                        @IsActive)";
 
-                command.Parameters.Add("@Id", MySqlDbType.Int32).Value = profile.Id;
-                command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = profile.Name;
-                command.Parameters.Add("@IsActive", MySqlDbType.Bit).Value = profile.IsActive;
-                try
+            try
+            {
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
                 {
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = @"INSERT INTO Profile (Name, IsActive)
+                                            VALUES (@Name, @IsActive)";
+
+                    command.Parameters.Add("@Name", DbType.String).Value = profile.Name ?? "";
+                    command.Parameters.Add("@IsActive", DbType.Int32).Value = profile.IsActive ? 1 : 0;
+
+                    connection.Open();
                     command.ExecuteNonQuery();
                 }
-                catch (MySqlException ex)
-                {
-                    result.AddError("Profile [" + profile.Name + "] is not inserted. \n" + ex.Message);
-                }
-                connection.Close();
             }
+            catch (SQLiteException ex)
+            {
+                result.AddError($"Profile [{profile.Name}] is not inserted. \n{ex.Message}");
+                Logger.Error($"Error occurred while inserting profile [{profile.Name}].", ex);
+            }
+
+            return result;
+        }
+        public ResultOrError<Profile> GetActiveProfile()
+        {
+            ResultOrError<Profile> result = new ResultOrError<Profile>();
+            Profile profile = null;
+
+            try
+            {
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
+                {
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = @"SELECT * FROM Profile WHERE IsActive = 1";
+
+                    connection.Open();
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            profile = new Profile
+                            {
+                                Id = reader.ReadInt("Id"),
+                                Name = reader.ReadString("Name"),
+                                IsActive = reader.ReadBool("IsActive")
+                            };
+                            result.Value = profile;
+                        }
+                        else
+                        {
+                            //result.AddError("No active profile found.");
+                        }
+                    }
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                result.AddError($"Error occurred while fetching active profile.\n{ex.Message}");
+                Logger.Error("Error occurred while fetching active profile.", ex);
+            }
+
+            return result;
+        }
+        public ResultOrError<Profile> GetProfile(int id)
+        {
+            ResultOrError<Profile> result = new ResultOrError<Profile>();
+            Profile profile = null;
+
+            try
+            {
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
+                {
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = @"SELECT * FROM Profile WHERE Id = @Id";
+
+                    command.Parameters.Add("@Id", DbType.Int32).Value = id;
+
+                    connection.Open();
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            profile = new Profile
+                            {
+                                Id = reader.ReadInt("Id"),
+                                Name = reader.ReadString("Name"),
+                                IsActive = reader.ReadBool("IsActive")
+                            };
+                            result.Value = profile;
+                        }
+                        else
+                        {
+                            result.AddError($"Profile with ID [{id}] not found.");
+                        }
+                    }
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                result.AddError($"Error occurred while fetching profile with ID [{id}].\n{ex.Message}");
+                Logger.Error($"Error occurred while fetching profile with ID [{id}].", ex);
+            }
+
+            return result;
+        }
+        public ResultOrError<Profile> GetProfileByName(string name)
+        {
+            ResultOrError<Profile> result = new ResultOrError<Profile>();
+            Profile profile = null;
+
+            try
+            {
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
+                {
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = @"SELECT * FROM Profile WHERE Name = @Name";
+
+                    command.Parameters.Add("@Name", DbType.String).Value = name;
+
+                    connection.Open();
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            profile = new Profile
+                            {
+                                Id = reader.ReadInt("Id"),
+                                Name = reader.ReadString("Name"),
+                                IsActive = reader.ReadBool("IsActive")
+                            };
+                            result.Value = profile;
+                        }
+                        else
+                        {
+                            result.AddError($"Profile with Name [{name}] not found.");
+                        }
+                    }
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                result.AddError($"Error occurred while fetching profile with Name [{name}].\n{ex.Message}");
+                Logger.Error($"Error occurred while fetching profile with Name [{name}].", ex);
+            }
+
+            return result;
+        }
+        public ResultOrError<List<Profile>> GetAllProfile()
+        {
+            ResultOrError<List<Profile>> result = new ResultOrError<List<Profile>> { Value = new List<Profile>() };
+
+            try
+            {
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
+                {
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = @"SELECT * FROM Profile";
+
+                    connection.Open();
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Profile profile = new Profile
+                            {
+                                Id = reader.ReadInt("Id"),
+                                Name = reader.ReadString("Name"),
+                                IsActive = reader.ReadBool("IsActive")
+                            };
+                            result.Value.Add(profile);
+                        }
+                    }
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                result.AddError($"Error occurred while fetching all profiles.\n{ex.Message}");
+                Logger.Error("Error occurred while fetching all profiles.", ex);
+            }
+
+            return result;
+        }
+        public ResultOrError UpdateProfile(Profile profile)
+        {
+            ResultOrError result = new ResultOrError();
+
+            try
+            {
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
+                {
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = @"UPDATE Profile 
+                                            SET Name = @Name, IsActive = @IsActive 
+                                            WHERE Id = @Id";
+
+                    command.Parameters.Add("@Id", DbType.Int32).Value = profile.Id;
+                    command.Parameters.Add("@Name", DbType.String).Value = profile.Name ?? "";
+                    command.Parameters.Add("@IsActive", DbType.Int32).Value = profile.IsActive ? 1 : 0;
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                result.AddError($"Error occurred while updating profile [{profile.Name}].\n{ex.Message}");
+                Logger.Error($"Error occurred while updating profile [{profile.Name}].", ex);
+            }
+
             return result;
         }
 
-        public Profile GetActiveProfile()
+        public ResultOrError DeleteProfile(int id)
         {
-            Profile profile = null;
+            ResultOrError result = new ResultOrError();
 
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
+            try
             {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * 
-                                        FROM Profile 
-                                        WHERE IsActive = true ";
-
-                using (var reader = command.ExecuteReader())
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
                 {
-                    while (reader.Read())
-                    {
-                        profile = new Profile();
-                        profile.Id = (int)reader[0];
-                        profile.Name = (string)reader[1];
-                        profile.IsActive = true;
-                        break;
-                    }
-                }
-                connection.Close();
-            }
-            return profile;
-        }
-        public Profile GetProfile(int id)
-        {
-            Profile profile = null;
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = @"DELETE FROM Profile WHERE Id = @Id";
 
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
-            {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * 
-                                        FROM Profile 
-                                        WHERE Id = @Id ";
+                    command.Parameters.Add("@Id", DbType.Int32).Value = id;
 
-                command.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        profile = new Profile();
-                        profile.Id = (int)reader[0];
-                        profile.Name = (string)reader[1];
-                        profile.IsActive = Convert.ToBoolean(reader[2]);
-                    }
-                }
-                connection.Close();
-            }
-            return profile;
-        }
-        public Profile GetProfileByName(String name)
-        {
-            Profile profile = null;
-
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
-            {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * 
-                                        FROM Profile 
-                                        WHERE Name = @Name ";
-
-                command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = name;
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        profile = new Profile();
-                        profile.Id = (int)reader[0];
-                        profile.Name = (string)reader[1];
-                        profile.IsActive = Convert.ToBoolean(reader[2]);
-                    }
-                }
-                connection.Close();
-            }
-            return profile;
-        }
-        public List<Profile> GetAllProfile()
-        {
-            List<Profile> profileList = null;
-
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
-            {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * 
-                                        FROM Profile ";
-
-                using (var reader = command.ExecuteReader())
-                {
-                    profileList = new List<Profile>();
-                    while (reader.Read())
-                    {
-                        Profile profile = new Profile();
-                        profile.Id = (int)reader[0];
-                        profile.Name = (string)reader[1];
-                        profile.IsActive = Convert.ToBoolean(reader[2]);
-                        profileList.Add(profile);
-                    }
-                }
-                connection.Close();
-            }
-            return profileList;
-        }
-
-        public void UpdateProfile(Profile profile)
-        {
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
-            {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"UPDATE Profile 
-                                        SET 
-                                        Name = @Name, 
-                                        IsActive = @IsActive 
-                                        WHERE Id = @Id ";
-
-                command.Parameters.Add("@Id", MySqlDbType.Int32).Value = profile.Id;
-                command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = profile.Name;
-                command.Parameters.Add("@IsActive", MySqlDbType.Bit).Value = profile.IsActive;
-                try
-                {
+                    connection.Open();
                     command.ExecuteNonQuery();
                 }
-                catch (MySqlException ex)
-                {
-                    MessageBox.Show("Profile is not updated. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                connection.Close();
             }
-        }
-
-
-        public void DeleteProfile(int id)
-        {
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
+            catch (SQLiteException ex)
             {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"DELETE FROM Profile 
-                                        WHERE Id = @Id ";
+                result.AddError($"Error occurred while deleting profile with ID [{id}].\n{ex.Message}");
+                Logger.Error($"Error occurred while deleting profile with ID [{id}].", ex);
+            }
 
-                command.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
-                try
+            return result;
+        }
+        public ResultOrError ClearProfileTable()
+        {
+            ResultOrError result = new ResultOrError();
+
+            try
+            {
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
                 {
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = @"DELETE FROM Profile";
+
+                    connection.Open();
                     command.ExecuteNonQuery();
                 }
-                catch (MySqlException ex)
-                {
-                    MessageBox.Show("Profile is not deleted. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                connection.Close();
             }
-        }
-        public void ClearProfileTable()
-        {
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
+            catch (SQLiteException ex)
             {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = "DELETE FROM Profile ";
-
-                try
-                {
-                    command.ExecuteNonQuery();
-                }
-                catch (MySqlException ex)
-                {
-                    MessageBox.Show("Profile is not deleted. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                connection.Close();
+                result.AddError($"Error occurred while clearing the profile table.\n{ex.Message}");
+                Logger.Error("Error occurred while clearing the profile table.", ex);
             }
+
+            return result;
         }
 
 

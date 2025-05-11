@@ -1,10 +1,7 @@
-﻿using MitoPlayer_2024.Helpers;
+﻿using MitoPlayer_2024.Helpers.ErrorHandling;
 using MitoPlayer_2024.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MitoPlayer_2024.Model
 {
@@ -15,58 +12,59 @@ namespace MitoPlayer_2024.Model
         int GetProfileId();
 
         #region PLAYLIST
-        bool IsPlaylistNameAlreadyExists(String name);
+        ResultOrError<bool> IsPlaylistNameAlreadyExists(String name);
         ResultOrError CreatePlaylist(Playlist playlist);
-        Playlist GetPlaylist(int id);
-        Playlist GetPlaylistByName(String name);
-        Playlist GetActivePlaylist();
-        List<Playlist> GetAllPlaylist();
-        void SetActivePlaylist(int id);
-        void UpdatePlaylist(Playlist playlist);
-        void DeletePlaylist(int id);
-        void DeleteAllPlaylist();
-        void ClearPlaylistTable();
+        ResultOrError<Playlist> GetPlaylist(int id);
+        ResultOrError<Playlist> GetPlaylistByName(String name);
+        ResultOrError<Playlist> GetActivePlaylist();
+        ResultOrError<List<Playlist>> GetAllPlaylist();
+        ResultOrError SetActivePlaylist(int id);
+        ResultOrError UpdatePlaylist(Playlist playlist);
+        ResultOrError DeletePlaylist(int id);
+        ResultOrError DeleteAllPlaylist();
+        ResultOrError ClearPlaylistTable();
         #endregion
 
         #region TRACK
-        void CreateTrack(Track track);
-        Track GetTrackWithTags(int id, List<Tag> tagList);
-        Track GetTrackWithTagsByPath(string path, List<Tag> tagList);
-        List<Track> GetTracklistWithTagsByPlaylistId(int playlistId, List<Tag> tagList);
-        List<int> GetAllTrackIdInList();
-        void DeleteAllTrack();
-        void ClearTrackTable();
+        ResultOrError CreateTrack(Track track);
+        ResultOrError<Track> GetTrackWithTags(int id, List<Tag> tagList);
+        ResultOrError<Track> GetTrackWithTagsByPath(string path, List<Tag> tagList);
+        ResultOrError<List<Track>> GetTracklistWithTagsByPlaylistId(int playlistId, List<Tag> tagList);
+        ResultOrError<List<int>> GetAllTrackIdInList();
+        ResultOrError UpdateTrack(Track track);
+        ResultOrError DeleteAllTrack();
+        ResultOrError ClearTrackTable();
         #endregion
 
         #region PLAYLISTCONTENT
-        int GetNextSmallestTrackIdInPlaylist();
-        void CreatePlaylistContent(PlaylistContent plc);
-        void CreatePlaylistContentBatch(List<PlaylistContent> playlistContents);
-        PlaylistContent GetPlaylistContentByTrackIdInPlaylist(int trackIdInPlaylist);
-        void UpdatePlaylistContent(PlaylistContent plc);
-        void DeletePlaylistContentByPlaylistId(int playlistId);
-        void DeleteAllPlaylistContent();
-        void ClearPlaylistContentTable();
+        ResultOrError<int> GetNextSmallestTrackIdInPlaylist();
+        ResultOrError CreatePlaylistContent(PlaylistContent plc);
+        ResultOrError CreatePlaylistContentBatch(List<PlaylistContent> playlistContents);
+        ResultOrError<PlaylistContent> GetPlaylistContentByTrackIdInPlaylist(int trackIdInPlaylist);
+        ResultOrError UpdatePlaylistContent(PlaylistContent plc);
+        ResultOrError DeletePlaylistContentByPlaylistId(int playlistId);
+        ResultOrError DeleteAllPlaylistContent();
+        ResultOrError ClearPlaylistContentTable();
         #endregion
 
         #region TRACKTAGVALUE
-        bool IsTrackTagValueAlreadyExists(int trackId, int tagId);
+        ResultOrError<bool> IsTrackTagValueAlreadyExists(int trackId, int tagId);
         ResultOrError CreateTrackTagValue(TrackTagValue ttv);
-        List<TrackTagValue> LoadTrackTagValuesByTrackIds(List<int> trackIds, List<Tag> tagList);
-        void UpdateTrackTagValue(TrackTagValue trackTagValue);
-        void UpdateTrackTagValues(List<TrackTagValue> trackTagValueList);
-        
-        void DeleteTagValueFromTrackTagValues(int tagValueId);
-        void DeleteTrackTagValueByTagId(int tagId);
-        void DeleteTrackTagValueByTrackId(int trackId);
-        void DeleteAllTrackTagValue();
-        void ClearTrackTagValueTable();
+        ResultOrError<List<TrackTagValue>> LoadTrackTagValuesByTrackIds(List<int> trackIds, List<Tag> tagList);
+        ResultOrError UpdateTrackTagValue(TrackTagValue trackTagValue);
+        ResultOrError UpdateTrackTagValues(List<TrackTagValue> trackTagValueList);
+
+        ResultOrError DeleteTagValueFromTrackTagValues(int tagValueId);
+        ResultOrError DeleteTrackTagValueByTagId(int tagId);
+        ResultOrError DeleteTrackTagValueByTrackId(int trackId);
+        ResultOrError DeleteAllTrackTagValue();
+        ResultOrError ClearTrackTagValueTable();
         #endregion
 
         List<TrainingData> GetAllTrainingData();
         ResultOrError CreateTrainingData(TrainingData trainingData);
         TrainingData GetTrainingData(int id);
         void DeleteTrainingData(int id);
-        void UpdateTrack(Track track);
+
     }
 }

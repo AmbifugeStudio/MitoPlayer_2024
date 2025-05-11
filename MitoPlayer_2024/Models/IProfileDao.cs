@@ -1,24 +1,20 @@
-﻿using MitoPlayer_2024.Helpers;
+﻿using MitoPlayer_2024.Helpers.ErrorHandling;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MitoPlayer_2024.Models
 {
     public interface IProfileDao
     {
         #region PROFILE
-        int GetNextId(String tableName);
         ResultOrError CreateProfile(Profile profile);
-        Profile GetActiveProfile();
-        Profile GetProfile(int id);
-        Profile GetProfileByName(String name);
-        List<Profile> GetAllProfile();
-        void UpdateProfile(Profile profile);
-        void DeleteProfile(int id);
-        void ClearProfileTable();
+        ResultOrError<Profile> GetActiveProfile();
+        ResultOrError<Profile> GetProfile(int id);
+        ResultOrError<Profile> GetProfileByName(String name);
+        ResultOrError<List<Profile>> GetAllProfile();
+        ResultOrError UpdateProfile(Profile profile);
+        ResultOrError DeleteProfile(int id);
+        ResultOrError ClearProfileTable();
         #endregion
     }
 }

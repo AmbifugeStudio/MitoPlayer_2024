@@ -26,7 +26,7 @@ namespace MitoPlayer_2024.Presenters
             this.view = liveStreamAnimationView;
             this.settingDao = settingDao;
 
-            this.imagePath = this.settingDao.GetStringSetting(Settings.LiveStreamAnimationImagePath.ToString());
+            this.imagePath = this.settingDao.GetStringSetting(Settings.LiveStreamAnimationImagePath.ToString()).Value;
 
             this.view.SetImagePathEvent += SetImagePathEvent;
             this.view.BrowseDirectoryEvent += BrowseDirectoryEvent;
@@ -46,7 +46,7 @@ namespace MitoPlayer_2024.Presenters
         {
             using (var fbd = new FolderBrowserDialog())
             {
-                String lastDirectoryPath = this.settingDao.GetStringSetting(Settings.LiveStreamAnimationImagePath.ToString());
+                String lastDirectoryPath = this.settingDao.GetStringSetting(Settings.LiveStreamAnimationImagePath.ToString()).Value;
 
                 if (Directory.Exists(lastDirectoryPath))
                     fbd.SelectedPath = lastDirectoryPath;

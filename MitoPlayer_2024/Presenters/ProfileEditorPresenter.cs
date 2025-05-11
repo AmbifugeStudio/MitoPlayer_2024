@@ -31,7 +31,7 @@ namespace MitoPlayer_2024.Presenters
             this.settingDao = settingDao;
             this.isEditMode = false;
 
-            this.lastGeneratedProfileId = this.settingDao.GetIntegerSetting(Settings.LastGeneratedProfileId.ToString(),true);
+            this.lastGeneratedProfileId = this.settingDao.GetIntegerSetting(Settings.LastGeneratedProfileId.ToString(), true).Value;
            
             this.lastGeneratedProfileId = this.lastGeneratedProfileId + 1;
             ((ProfileEditorView)this.view).SetProfileName("New Profile " + this.lastGeneratedProfileId.ToString());
@@ -70,7 +70,7 @@ namespace MitoPlayer_2024.Presenters
                     }
                     else
                     {
-                        Profile profile = this.profileDao.GetProfileByName(e.StringField1);
+                        Profile profile = this.profileDao.GetProfileByName(e.StringField1).Value;
                         if (profile != null)
                         {
                             MessageBox.Show("Profile name already exists!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -91,7 +91,7 @@ namespace MitoPlayer_2024.Presenters
             {
                 if (!String.IsNullOrEmpty(e.StringField1))
                 {
-                    List<Profile> profileList = this.profileDao.GetAllProfile();
+                    List<Profile> profileList = this.profileDao.GetAllProfile().Value;
                     if (profileList != null && profileList.Count > 0)
                     {
                         if (profileList.Exists(x => x.Name.Equals(e.StringField1)))
@@ -101,7 +101,6 @@ namespace MitoPlayer_2024.Presenters
                         else
                         {
                             Profile profile = new Profile();
-                            profile.Id = this.profileDao.GetNextId(TableName.Profile.ToString());
                             profile.Name = e.StringField1;
                             this.newProfile = profile;
                             ((ProfileEditorView)this.view).DialogResult = DialogResult.OK;

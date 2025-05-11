@@ -32,7 +32,7 @@ namespace MitoPlayer_2024.Presenters
         }
         private void InitializeVolume()
         {
-            int volume = this.settingDao.GetIntegerSetting(Settings.Volume.ToString());
+            int volume = this.settingDao.GetIntegerSetting(Settings.Volume.ToString()).Value;
             if (volume == -1)
                 volume = 50;
            // this.view.SetVolume(volume);

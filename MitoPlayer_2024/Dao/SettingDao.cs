@@ -1,22 +1,10 @@
-﻿using Google.Protobuf.WellKnownTypes;
-using MitoPlayer_2024.Helpers;
+﻿using MitoPlayer_2024.Helpers;
+using MitoPlayer_2024.Helpers.ErrorHandling;
 using MitoPlayer_2024.Models;
-using MySql.Data.MySqlClient;
-using Mysqlx.Crud;
-using MySqlX.XDevAPI.Common;
-using Org.BouncyCastle.Asn1.Mozilla;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data;
-using System.IO;
-using System.Linq;
-using System.Runtime.Remoting.Messaging;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Xml.Linq;
-using static System.Net.WebRequestMethods;
+using System.Data.SQLite;
 
 namespace MitoPlayer_2024.Dao
 {
@@ -34,32 +22,52 @@ namespace MitoPlayer_2024.Dao
             this.connectionString = connectionString;
             this.databaseBuilderDao = new DataBaseBuilderDao(connectionString);
         }
-        public override int GetNextId(String tableName)
+        public int GetNextId(string tableName)
         {
             int lastId = -1;
 
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
+            try
             {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT Id 
-                                        FROM " + tableName + " " +
-                                        "ORDER BY Id " +
-                                        "desc LIMIT 1";
-
-                using (var reader = command.ExecuteReader())
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
                 {
-                    while (reader.Read())
+                    connection.Open();
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+
+                    command.CommandText = $@"SELECT Id 
+                                      FROM {tableName} 
+                                      ORDER BY Id DESC 
+                                      LIMIT 1";
+
+                    using (var reader = command.ExecuteReader())
                     {
-                        lastId = (int)reader[0];
+                        if (reader.Read())
+                        {
+                            lastId = reader.ReadInt("Id");
+                        }
                     }
                 }
-                connection.Close();
             }
-            return lastId + 1;
+            catch (SQLiteException ex)
+            {
+                Logger.Error($"Error occurred while fetching the last ID from table: {tableName}", ex);
+            }
+
+            if(lastId == -1)
+            {
+                return 1;
+            }
+            else if(lastId > 0)
+            {
+                return lastId + 1;
+            }
+            else
+            {
+                return 1;
+            }
         }
+
         public void SetProfileId(int profileId)
         {
             this.profileId = profileId;
@@ -80,9 +88,9 @@ namespace MitoPlayer_2024.Dao
         {
             return this.databaseBuilderDao.CreateDatabase(preConnectionString);
         }
-        public ResultOrError DeleteDatabase()
+        public ResultOrError DeleteDatabase(String databaseFilePath)
         {
-            return this.databaseBuilderDao.DeleteDatabase();
+            return this.databaseBuilderDao.DeleteDatabase(databaseFilePath);
         }
         public ResultOrError CreateTableStructure()
         {
@@ -104,21 +112,32 @@ namespace MitoPlayer_2024.Dao
             String[] colTypeArray = Array.ConvertAll(colTypes.Split(','), s => s);
             bool[] colVisibilityArray = Array.ConvertAll(colVisibility.Split(','), s => Boolean.Parse(s));
 
-            TrackProperty tp = this.GetTrackPropertyByNameAndGroup(colNameArray[0], ColumnGroup.PlaylistColumns.ToString());
-            if(tp == null || tp.Name == null)
+            ResultOrError<TrackProperty> tpResult = this.GetTrackPropertyByNameAndGroup(colNameArray[0], ColumnGroup.PlaylistColumns.ToString());
+            
+            if (tpResult)
             {
-                result = this.InitializeColumns(colNameArray, colTypeArray, colVisibilityArray, ColumnGroup.PlaylistColumns.ToString());
-                if (result.Success)
+                if (tpResult.Value == null || tpResult.Value.Name == null)
                 {
-                    colNames = System.Configuration.ConfigurationManager.AppSettings[Settings.TrackColumnNames.ToString()];
-                    colTypes = System.Configuration.ConfigurationManager.AppSettings[Settings.TrackColumnTypes.ToString()];
-                    colVisibility = System.Configuration.ConfigurationManager.AppSettings[Settings.TrackColumnVisibility.ToString()];
-                    colNameArray = Array.ConvertAll(colNames.Split(','), s => s);
-                    colTypeArray = Array.ConvertAll(colTypes.Split(','), s => s);
-                    colVisibilityArray = Array.ConvertAll(colVisibility.Split(','), s => Boolean.Parse(s));
-                    result = this.InitializeColumns(colNameArray, colTypeArray, colVisibilityArray, ColumnGroup.TracklistColumns.ToString());
-                } 
+                    result = this.InitializeColumns(colNameArray, colTypeArray, colVisibilityArray, ColumnGroup.PlaylistColumns.ToString());
+                    
+                    if (result)
+                    {
+                        colNames = System.Configuration.ConfigurationManager.AppSettings[Settings.TrackColumnNames.ToString()];
+                        colTypes = System.Configuration.ConfigurationManager.AppSettings[Settings.TrackColumnTypes.ToString()];
+                        colVisibility = System.Configuration.ConfigurationManager.AppSettings[Settings.TrackColumnVisibility.ToString()];
+                        colNameArray = Array.ConvertAll(colNames.Split(','), s => s);
+                        colTypeArray = Array.ConvertAll(colTypes.Split(','), s => s);
+                        colVisibilityArray = Array.ConvertAll(colVisibility.Split(','), s => Boolean.Parse(s));
+
+                        result = this.InitializeColumns(colNameArray, colTypeArray, colVisibilityArray, ColumnGroup.TracklistColumns.ToString());
+                    }
+                }
             }
+            else
+            {
+                result.AddError(tpResult.ErrorMessage);
+            }
+
             return result;
         }
 
@@ -132,11 +151,11 @@ namespace MitoPlayer_2024.Dao
         public ResultOrError InitializeGlobalSettings()
         {
             ResultOrError result = this.InitializeIntegerSetting(Settings.LastGeneratedPlaylistId.ToString(), true);
-            if (result.Success)
+            if (result)
                 this.InitializeIntegerSetting(Settings.LastGeneratedProfileId.ToString(), true);
-            if (result.Success)
+            if (result)
                 this.InitializeIntegerSetting(Settings.LastGeneratedTagId.ToString(), true);
-            if (result.Success)
+            if (result)
                 this.InitializeIntegerSetting(Settings.LastGeneratedTagValueId.ToString(), true);
             return result;
         }
@@ -145,92 +164,90 @@ namespace MitoPlayer_2024.Dao
             ResultOrError result = this.CreateColumns();
 
             //INNER SETTINGS
-            if (result.Success)
+            if (result)
                 this.InitializeStringSetting(Settings.LastOpenDirectoryPath.ToString());
-            if (result.Success)
+            if (result)
                 this.InitializeIntegerSetting(Settings.LastOpenFilesFilterIndex.ToString());
-            if (result.Success)
+            if (result)
                 this.InitializeStringSetting(Settings.PlaylistColumnVisibility.ToString());
-            if (result.Success)
+            if (result)
                 this.InitializeStringSetting(Settings.TrackColumnVisibility.ToString());
-            if (result.Success)
+            if (result)
                 this.InitializeIntegerSetting(Settings.CurrentPlaylistId.ToString());
 
             //SETTING MENU
-            if (result.Success)
+            if (result)
                 this.InitializeBooleanSetting(Settings.AutomaticBpmImport.ToString());
-            if (result.Success)
+            if (result)
                 this.InitializeBooleanSetting(Settings.AutomaticKeyImport.ToString());
-            if (result.Success)
+            if (result)
                 this.InitializeBooleanSetting(Settings.ImportBpmFromVirtualDj.ToString());
-            if (result.Success)
+            if (result)
                 this.InitializeBooleanSetting(Settings.ImportKeyFromVirtualDj.ToString());
-            if (result.Success)
+            if (result)
                 this.InitializeBooleanSetting(Settings.PlayTrackAfterOpenFiles.ToString());
-            if (result.Success)
+            if (result)
                 this.InitializeIntegerSetting(Settings.PreviewPercentage.ToString());
-            if (result.Success)
+            if (result)
                 this.InitializeBooleanSetting(Settings.IsShortTrackColouringEnabled.ToString());
-            if (result.Success)
+            if (result)
                 this.InitializeDecimalSetting(Settings.ShortTrackColouringThreshold.ToString());
 
             //PLAYER SETTINGS
-            if (result.Success)
+            if (result)
                 this.InitializeBooleanSetting(Settings.IsShuffleEnabled.ToString());
-            if (result.Success)
+            if (result)
                 this.InitializeIntegerSetting(Settings.Volume.ToString());
-            if (result.Success)
+            if (result)
                 this.InitializeBooleanSetting(Settings.IsMuteEnabled.ToString());
-            if (result.Success)
+            if (result)
                 this.InitializeBooleanSetting(Settings.IsPreviewEnabled.ToString());
 
             //PLAYER FORM VIEW ELEMENT VISIBILITY
-            if (result.Success)
+            if (result)
                 this.InitializeBooleanSetting(Settings.IsTagEditorComponentDisplayed.ToString());
-            if (result.Success)
+            if (result)
                 this.InitializeBooleanSetting(Settings.IsOnlyPlayingRowModeEnabled.ToString());
-            if (result.Success)
+            if (result)
                 this.InitializeBooleanSetting(Settings.IsPlaylistListDisplayed.ToString());
-            if (result.Success)
+            if (result)
                 this.InitializeBooleanSetting(Settings.IsCoverImageComponentDisplayed.ToString());
 
             //EXPORT TO DIRECTORY
-            if (result.Success)
+            if (result)
                 this.InitializeStringSetting(Settings.LastExportDirectoryPath.ToString());
-            if (result.Success)
+            if (result)
                 this.InitializeBooleanSetting(Settings.IsRowNumberChecked.ToString());
-            if (result.Success)
+            if (result)
                 this.InitializeBooleanSetting(Settings.IsKeyCodeChecked.ToString());
-            if (result.Success)
+            if (result)
                 this.InitializeBooleanSetting(Settings.IsBpmNumberChecked.ToString());
-            if (result.Success)
+            if (result)
                 this.InitializeBooleanSetting(Settings.IsTrunkedBpmChecked.ToString());
-            if (result.Success)
+            if (result)
                 this.InitializeBooleanSetting(Settings.IsTrunkedArtistChecked.ToString());
-            if (result.Success)
+            if (result)
                 this.InitializeBooleanSetting(Settings.IsTrunkedTitleChecked.ToString());
-            if (result.Success)
+            if (result)
                 this.InitializeDecimalSetting(Settings.ArtistMinimumCharacter.ToString());
-            if (result.Success)
+            if (result)
                 this.InitializeDecimalSetting(Settings.TitleMinimumCharacter.ToString());
 
             //LIVE STREAM ANIMATION
-            if (result.Success)
+            if (result)
                 this.InitializeStringSetting(Settings.LiveStreamAnimationImagePath.ToString());
-            if (result.Success)
+            if (result)
                 this.InitializeBooleanSetting(Settings.PreventMusicPlayingWhileStream.ToString());
 
-            
-            
-            
-            if (result.Success)
+            //MODEL TRAINING
+            if (result)
                 this.InitializeBooleanSetting(Settings.IsLogMessageEnabled.ToString());
-            if (result.Success)
+            if (result)
                 this.InitializeDecimalSetting(Settings.LogMessageDisplayTime.ToString());
-            if (result.Success)
+            if (result)
                 this.InitializeIntegerSetting(Settings.TrainingModelBatchCount.ToString());
            
-            if (result.Success)
+            if (result)
                 this.InitializeBooleanSetting(Settings.IsTracklistDetailsDisplayed.ToString());
 
             return result;
@@ -243,7 +260,7 @@ namespace MitoPlayer_2024.Dao
 
             if (!this.IsSettingExists(settingName, withoutProfile))
             {
-                result = this.CreateStringSetting(this.GetNextId(TableName.Setting.ToString()),settingName, stringData, withoutProfile);
+                result = this.CreateStringSetting(settingName, stringData, withoutProfile);
             }
             return result;
         }
@@ -255,7 +272,7 @@ namespace MitoPlayer_2024.Dao
 
             if (!this.IsSettingExists(settingName, withoutProfile))
             {
-                result = this.CreateIntegerSetting(this.GetNextId(TableName.Setting.ToString()),settingName, integerData, withoutProfile);
+                result = this.CreateIntegerSetting(settingName, integerData, withoutProfile);
             }
             return result;
         }
@@ -267,7 +284,7 @@ namespace MitoPlayer_2024.Dao
 
             if (!this.IsSettingExists(settingName, withoutProfile))
             {
-                result = this.CreateBooleanSetting(this.GetNextId(TableName.Setting.ToString()), settingName, boolData, withoutProfile);
+                result = this.CreateBooleanSetting(settingName, boolData, withoutProfile);
             }
             return result;
         }
@@ -279,7 +296,7 @@ namespace MitoPlayer_2024.Dao
 
             if (!this.IsSettingExists(settingName, withoutProfile))
             {
-                result = this.CreateDecimalSetting(this.GetNextId(TableName.Setting.ToString()), settingName, decimalData, withoutProfile);
+                result = this.CreateDecimalSetting(settingName, decimalData, withoutProfile);
             }
             return result;
         }
@@ -287,23 +304,23 @@ namespace MitoPlayer_2024.Dao
         {
             bool result = false;
 
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
+            using (var connection = new SQLiteConnection(connectionString))
+            using (var command = new SQLiteCommand())
             {
                 connection.Open();
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
                 command.CommandText = @"SELECT COUNT(*) 
-                                        FROM Setting 
-                                        WHERE Name = @Name 
-                                        AND ProfileId = @ProfileId";
+                                FROM Setting 
+                                WHERE Name = @Name 
+                                AND ProfileId = @ProfileId";
 
-                command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = name;
-               
+                command.Parameters.AddWithValue("@Name", name);
+
                 if (!withoutProfile)
-                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
+                    command.Parameters.AddWithValue("@ProfileId", this.profileId);
                 else
-                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = -1;
+                    command.Parameters.AddWithValue("@ProfileId", -1);
 
                 if (Convert.ToInt32(command.ExecuteScalar()) > 0)
                 {
@@ -313,480 +330,437 @@ namespace MitoPlayer_2024.Dao
 
             return result;
         }
-        public ResultOrError CreateStringSetting(int id, String name, String value, bool withoutProfile = false)
+        public ResultOrError CreateStringSetting(string name, string value, bool withoutProfile = false)
         {
-            ResultOrError result = new ResultOrError();
+            var result = new ResultOrError();
 
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
+            try
             {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"INSERT INTO Setting ( 
-                                        Id, 
-                                        Name, 
-                                        StringValue, 
-                                        ProfileId) 
-
-                                        VALUES ( 
-                                        @Id, 
-                                        @Name, 
-                                        @StringValue, 
-                                        @ProfileId)";
-
-                command.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
-                command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = name;
-                command.Parameters.Add("@StringValue", MySqlDbType.VarChar).Value = value;
-
-                if (!withoutProfile)
-                   command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
-                else
-                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = -1;
-                
-                try
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
                 {
+                    command.Connection = connection;
+                    command.CommandText = @"INSERT INTO Setting (Name,StringValue,ProfileId) 
+                                    VALUES (@Name,@StringValue,@ProfileId)";
+
+                    command.Parameters.AddWithValue("@Name", name);
+                    command.Parameters.AddWithValue("@StringValue", value);
+                    command.Parameters.AddWithValue("@ProfileId", withoutProfile ? -1 : this.profileId);
+
+                    connection.Open();
                     command.ExecuteNonQuery();
                 }
-                catch (MySqlException ex)
-                {
-                    result.AddError("Setting [" + name + "] is not inserted. \n" + ex.Message + "\n");
-                }
-                connection.Close();
             }
+            catch (SQLiteException ex)
+            {
+                string errorMessage = $"Setting [{name}] is not inserted. \n{ex.Message}";
+                result.AddError(errorMessage);
+                Logger.Error(errorMessage, ex);
+            }
+
             return result;
         }
-        public ResultOrError CreateIntegerSetting(int id, String name, Int32 value, bool withoutProfile = false)
+        public ResultOrError CreateIntegerSetting(string name, int value, bool withoutProfile = false)
         {
-            ResultOrError result = new ResultOrError();
+            var result = new ResultOrError();
 
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
+            try
             {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"INSERT INTO Setting ( 
-                                        Id, 
-                                        Name, 
-                                        IntegerValue, 
-                                        ProfileId) 
-
-                                        VALUES ( 
-                                        @Id, 
-                                        @Name, 
-                                        @IntegerValue, 
-                                        @ProfileId)";
-
-                command.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
-                command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = name;
-                command.Parameters.Add("@IntegerValue", MySqlDbType.Int32).Value = value;
-
-                if (!withoutProfile)
-                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
-                else
-                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = -1;
-
-                try
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
                 {
+                    command.Connection = connection;
+                    command.CommandText = @"INSERT INTO Setting (Name,IntegerValue,ProfileId) 
+                                    VALUES (@Name,@IntegerValue,@ProfileId)";
+
+                    command.Parameters.AddWithValue("@Name", name);
+                    command.Parameters.AddWithValue("@IntegerValue", value);
+                    command.Parameters.AddWithValue("@ProfileId", withoutProfile ? -1 : this.profileId);
+
+                    connection.Open();
                     command.ExecuteNonQuery();
                 }
-                catch (MySqlException ex)
-                {
-                    result.AddError("Setting [" + name + "] is not inserted. \n" + ex.Message + "\n");
-                }
-                connection.Close();
+            }
+            catch (SQLiteException ex)
+            {
+                string errorMessage = $"Setting [{name}] is not inserted. \n{ex.Message}";
+                result.AddError(errorMessage);
+                Logger.Error(errorMessage, ex);
             }
 
             return result;
         }
-        public ResultOrError CreateDecimalSetting(int id, String name, Decimal value, bool withoutProfile = false)
+        public ResultOrError CreateDecimalSetting(string name, decimal value, bool withoutProfile = false)
         {
-            ResultOrError result = new ResultOrError();
+            var result = new ResultOrError();
 
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
+            try
             {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"INSERT INTO Setting ( 
-                                        Id, 
-                                        Name, 
-                                        DecimalValue, 
-                                        ProfileId) 
-
-                                        VALUES ( 
-                                        @Id, 
-                                        @Name, 
-                                        @DecimalValue, 
-                                        @ProfileId)";
-
-                command.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
-                command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = name;
-                command.Parameters.Add("@DecimalValue", MySqlDbType.Decimal).Value = value;
-
-                if (!withoutProfile)
-                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
-                else
-                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = -1;
-
-                
-                try
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
                 {
+                    command.Connection = connection;
+                    command.CommandText = @"INSERT INTO Setting (Name,DecimalValue,ProfileId) 
+                                    VALUES (@Name,@DecimalValue,@ProfileId)";
+
+                    command.Parameters.AddWithValue("@Name", name);
+                    command.Parameters.AddWithValue("@DecimalValue", value);
+                    command.Parameters.AddWithValue("@ProfileId", withoutProfile ? -1 : this.profileId);
+
+                    connection.Open();
                     command.ExecuteNonQuery();
                 }
-                catch (MySqlException ex)
-                {
-                    result.AddError("Setting [" + name + "] is not inserted. \n" + ex.Message + "\n");
-                }
-                connection.Close();
             }
+            catch (SQLiteException ex)
+            {
+                string errorMessage = $"Setting [{name}] is not inserted. \n{ex.Message}";
+                result.AddError(errorMessage);
+                Logger.Error(errorMessage, ex);
+            }
+
             return result;
         }
-        public ResultOrError CreateBooleanSetting(int id, String name, Boolean value, bool withoutProfile = false)
+        public ResultOrError CreateBooleanSetting(string name, bool value, bool withoutProfile = false)
         {
-            ResultOrError result = new ResultOrError();
+            var result = new ResultOrError();
 
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
+            try
             {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"INSERT INTO Setting ( 
-                                        Id, 
-                                        Name, 
-                                        BooleanValue, 
-                                        ProfileId) 
-
-                                        VALUES ( 
-                                        @Id, 
-                                        @Name, 
-                                        @BooleanValue, 
-                                        @ProfileId)";
-
-                command.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
-                command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = name;
-                command.Parameters.Add("@BooleanValue", MySqlDbType.Bit).Value = value;
-
-                if (!withoutProfile)
-                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
-                else
-                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = -1;
-                
-                try
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
                 {
+                    command.Connection = connection;
+                    command.CommandText = @"INSERT INTO Setting (Name,BooleanValue,ProfileId) 
+                                    VALUES (@Name,@BooleanValue,@ProfileId)";
+
+                    command.Parameters.AddWithValue("@Name", name);
+                    command.Parameters.AddWithValue("@BooleanValue", value);
+                    command.Parameters.AddWithValue("@ProfileId", withoutProfile ? -1 : this.profileId);
+
+                    connection.Open();
                     command.ExecuteNonQuery();
                 }
-                catch (MySqlException ex)
-                {
-                    result.AddError("Setting [" + name + "] is not inserted. \n" + ex.Message + "\n");
-                }
-                connection.Close();
+            }
+            catch (SQLiteException ex)
+            {
+                string errorMessage = $"Setting [{name}] is not inserted. \n{ex.Message}";
+                result.AddError(errorMessage);
+                Logger.Error(errorMessage, ex);
             }
 
             return result;
         }
 
-        public string GetStringSetting(string name, bool withoutProfile = false)
+        public ResultOrError<string> GetStringSetting(string name, bool withoutProfile = false)
         {
-            string result = null;
+            var result = new ResultOrError<string> { Value = null };
 
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
+            try
             {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT StringValue 
-                                        FROM Setting 
-                                        WHERE Name = @Name 
-                                        AND ProfileId = @ProfileId";
-
-                command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = name;
-
-                if (!withoutProfile)
-                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
-                else
-                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = -1;
-               
-                using (var reader = command.ExecuteReader())
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
                 {
-                    while (reader.Read())
+                    command.Connection = connection;
+                    command.CommandText = @"SELECT StringValue 
+                                    FROM Setting 
+                                    WHERE Name = @Name 
+                                    AND ProfileId = @ProfileId";
+
+                    command.Parameters.AddWithValue("@Name", name);
+                    command.Parameters.AddWithValue("@ProfileId", withoutProfile ? -1 : this.profileId);
+
+                    connection.Open();
+                    using (var reader = command.ExecuteReader())
                     {
-                        result = reader[0].ToString();
-                    }
-                }
-                connection.Close();
-            }
-
-            return result;
-        }
-        public int GetIntegerSetting(string name, bool withoutProfile = false)
-        {
-            int result = -1;
-
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
-            {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT IntegerValue 
-                                        FROM Setting 
-                                        WHERE Name = @Name 
-                                        AND ProfileId = @ProfileId ";
-
-                command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = name;
-
-                if (!withoutProfile)
-                   command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
-                else
-                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = -1;
-                
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        result = (int)reader[0];
-                    }
-                }
-                connection.Close();
-            }
-
-            return result;
-        }
-        public decimal GetDecimalSetting(string name, bool withoutProfile = false)
-        {
-            decimal result = -1;
-
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
-            {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT DecimalValue 
-                                        FROM Setting 
-                                        WHERE Name = @Name 
-                                        AND ProfileId = @ProfileId ";
-
-                command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = name;
-                if (!withoutProfile)
-                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
-                else
-                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = -1;
-                
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        result = (decimal)reader[0];
-                    }
-                }
-                connection.Close();
-            }
-
-            return result;
-        }
-        public bool? GetBooleanSetting(string name, bool withoutProfile = false)
-        {
-            bool? result = null;
-
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
-            {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT BooleanValue 
-                                        FROM Setting 
-                                        WHERE Name = @Name 
-                                        AND ProfileId = @ProfileId ";
-
-                command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = name;
-
-                if (!withoutProfile)
-                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
-                else
-                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = -1;
-
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        result = Convert.ToBoolean(reader[0]);
+                        if (reader.Read())
+                        {
+                            result.Value = reader.ReadString("StringValue");
+                        }
                     }
                 }
             }
+            catch (SQLiteException ex)
+            {
+                string errorMessage = $"Error occurred while fetching StringSetting with Name [{name}]. \n{ex.Message}";
+                result.AddError(errorMessage);
+                Logger.Error(errorMessage, ex);
+            }
 
             return result;
         }
-        public ResultOrError SetStringSetting(String name, String value, bool withoutProfile = false)
+        public ResultOrError<int> GetIntegerSetting(string name, bool withoutProfile = false)
         {
-            ResultOrError result = new ResultOrError();
+            var result = new ResultOrError<int> { Value = -1 };
 
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
+            try
             {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"UPDATE Setting 
-                                        SET StringValue = @StringValue 
-                                        WHERE Name = @Name 
-                                        AND ProfileId = @ProfileId ";
-
-                command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = name;
-                command.Parameters.Add("@StringValue", MySqlDbType.VarChar).Value = value;
-
-                if (!withoutProfile)
-                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
-                else
-                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = -1;
-
-                try
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
                 {
-                    command.ExecuteNonQuery();
+                    
+                    command.Connection = connection;
+                    command.CommandText = @"SELECT IntegerValue 
+                                    FROM Setting 
+                                    WHERE Name = @Name 
+                                    AND ProfileId = @ProfileId";
+
+                    command.Parameters.AddWithValue("@Name", name);
+                    command.Parameters.AddWithValue("@ProfileId", withoutProfile ? -1 : this.profileId);
+
+                    connection.Open();
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            result.Value = reader.ReadInt("IntegerValue");
+                        }
+                    }
                 }
-                catch (MySqlException ex)
-                {
-                    result.AddError("Setting [" + name + "] is not updated. \n" + ex.Message + "\n");
-                }
-                connection.Close();
             }
+            catch (SQLiteException ex)
+            {
+                string errorMessage = $"Error occurred while fetching IntegerSetting with Name [{name}]. \n{ex.Message}";
+                result.AddError(errorMessage);
+                Logger.Error(errorMessage, ex);
+            }
+
             return result;
         }
-        public ResultOrError SetIntegerSetting(String name, Int32 value, bool withoutProfile = false)
+        public ResultOrError<decimal> GetDecimalSetting(string name, bool withoutProfile = false)
         {
-            ResultOrError result = new ResultOrError();
+            var result = new ResultOrError<decimal> { Value = -1 };
 
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
+            try
             {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"UPDATE Setting 
-                                        SET IntegerValue = @IntegerValue 
-                                        WHERE Name = @Name 
-                                        AND ProfileId = @ProfileId ";
-
-                command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = name;
-                command.Parameters.Add("@IntegerValue", MySqlDbType.Int32).Value = value;
-
-                if (!withoutProfile)
-                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
-                else
-                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = -1;
-
-                try
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
                 {
-                    command.ExecuteNonQuery();
+                    
+                    command.Connection = connection;
+                    command.CommandText = @"SELECT DecimalValue 
+                                    FROM Setting 
+                                    WHERE Name = @Name 
+                                    AND ProfileId = @ProfileId";
+
+                    command.Parameters.AddWithValue("@Name", name);
+                    command.Parameters.AddWithValue("@ProfileId", withoutProfile ? -1 : this.profileId);
+
+                    connection.Open();
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            result.Value = reader.ReadDecimal("DecimalValue");
+                        }
+                    }
                 }
-                catch (MySqlException ex)
-                {
-                    result.AddError("Setting [" + name + "] is not updated. \n" + ex.Message + "\n");
-                }
-                connection.Close();
             }
+            catch (SQLiteException ex)
+            {
+                string errorMessage = $"Error occurred while fetching DecimalSetting with Name [{name}]. \n{ex.Message}";
+                result.AddError(errorMessage);
+                Logger.Error(errorMessage, ex);
+            }
+
             return result;
         }
-        public ResultOrError SetDecimalSetting(String name, Decimal value, bool withoutProfile = false)
+        public ResultOrError<bool?> GetBooleanSetting(string name, bool withoutProfile = false)
         {
-            ResultOrError result = new ResultOrError();
+            var result = new ResultOrError<bool?> { Value = null };
 
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
+            try
             {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"UPDATE Setting 
-                                        SET DecimalValue = @DecimalValue 
-                                        WHERE Name = @Name 
-                                        AND ProfileId = @ProfileId ";
-
-                command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = name;
-                command.Parameters.Add("@DecimalValue", MySqlDbType.Decimal).Value = value;
-                
-                if (!withoutProfile)
-                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
-                else
-                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = -1;
-
-                try
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
                 {
-                    command.ExecuteNonQuery();
+                    connection.Open();
+                    command.Connection = connection;
+                    command.CommandText = @"SELECT BooleanValue 
+                                    FROM Setting 
+                                    WHERE Name = @Name 
+                                    AND ProfileId = @ProfileId";
+
+                    command.Parameters.AddWithValue("@Name", name);
+                    command.Parameters.AddWithValue("@ProfileId", withoutProfile ? -1 : this.profileId);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            result.Value = reader.ReadNullableBool("BooleanValue");
+                        }
+                    }
                 }
-                catch (MySqlException ex)
-                {
-                    result.AddError("Setting [" + name + "] is not updated. \n" + ex.Message + "\n");
-                }
-                connection.Close();
             }
+            catch (SQLiteException ex)
+            {
+                string errorMessage = $"Error occurred while fetching BooleanSetting with Name [{name}]. \n{ex.Message}";
+                result.AddError(errorMessage);
+                Logger.Error(errorMessage, ex);
+            }
+
             return result;
         }
-        public ResultOrError SetBooleanSetting(String name, Boolean value, bool withoutProfile = false)
+        public ResultOrError SetStringSetting(string name, string value, bool withoutProfile = false)
         {
-            ResultOrError result = new ResultOrError();
+            var result = new ResultOrError();
 
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
+            try
             {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"UPDATE Setting 
-                                        SET BooleanValue = @BooleanValue 
-                                        WHERE Name = @Name 
-                                        AND ProfileId = @ProfileId ";
-
-                command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = name;
-                command.Parameters.Add("@BooleanValue", MySqlDbType.Bit).Value = value;
-
-                if (!withoutProfile)
-                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
-                else
-                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = -1;
-
-                try
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
                 {
+                    
+                    command.Connection = connection;
+                    command.CommandText = @"UPDATE Setting 
+                                    SET StringValue = @StringValue 
+                                    WHERE Name = @Name 
+                                    AND ProfileId = @ProfileId";
+
+                    command.Parameters.AddWithValue("@Name", name);
+                    command.Parameters.AddWithValue("@StringValue", value);
+                    command.Parameters.AddWithValue("@ProfileId", withoutProfile ? -1 : this.profileId);
+
+                    connection.Open();
                     command.ExecuteNonQuery();
                 }
-                catch (MySqlException ex)
-                {
-                    result.AddError("Setting [" + name + "] is not updated. \n" + ex.Message + "\n");
-                }
-                connection.Close();
             }
+            catch (SQLiteException ex)
+            {
+                string errorMessage = $"Setting [{name}] is not updated. \n{ex.Message}";
+                result.AddError(errorMessage);
+                Logger.Error(errorMessage, ex);
+            }
+
+            return result;
+        }
+        public ResultOrError SetIntegerSetting(string name, int value, bool withoutProfile = false)
+        {
+            var result = new ResultOrError();
+
+            try
+            {
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
+                {
+                    
+                    command.Connection = connection;
+                    command.CommandText = @"UPDATE Setting 
+                                    SET IntegerValue = @IntegerValue 
+                                    WHERE Name = @Name 
+                                    AND ProfileId = @ProfileId";
+
+                    command.Parameters.AddWithValue("@Name", name);
+                    command.Parameters.AddWithValue("@IntegerValue", value);
+                    command.Parameters.AddWithValue("@ProfileId", withoutProfile ? -1 : this.profileId);
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                string errorMessage = $"Setting [{name}] is not updated. \n{ex.Message}";
+                result.AddError(errorMessage);
+                Logger.Error(errorMessage, ex);
+            }
+
+            return result;
+        }
+        public ResultOrError SetDecimalSetting(string name, decimal value, bool withoutProfile = false)
+        {
+            var result = new ResultOrError();
+
+            try
+            {
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
+                {
+                    
+                    command.Connection = connection;
+                    command.CommandText = @"UPDATE Setting 
+                                    SET DecimalValue = @DecimalValue 
+                                    WHERE Name = @Name 
+                                    AND ProfileId = @ProfileId";
+
+                    command.Parameters.AddWithValue("@Name", name);
+                    command.Parameters.AddWithValue("@DecimalValue", value);
+                    command.Parameters.AddWithValue("@ProfileId", withoutProfile ? -1 : this.profileId);
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                string errorMessage = $"Setting [{name}] is not updated. \n{ex.Message}";
+                result.AddError(errorMessage);
+                Logger.Error(errorMessage, ex);
+            }
+
+            return result;
+        }
+        public ResultOrError SetBooleanSetting(string name, bool value, bool withoutProfile = false)
+        {
+            var result = new ResultOrError();
+
+            try
+            {
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
+                {
+                    
+                    command.Connection = connection;
+                    command.CommandText = @"UPDATE Setting 
+                                    SET BooleanValue = @BooleanValue 
+                                    WHERE Name = @Name 
+                                    AND ProfileId = @ProfileId";
+
+                    command.Parameters.AddWithValue("@Name", name);
+                    command.Parameters.AddWithValue("@BooleanValue", value ? 1 : 0); 
+                    command.Parameters.AddWithValue("@ProfileId", withoutProfile ? -1 : this.profileId);
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                string errorMessage = $"Setting [{name}] is not updated. \n{ex.Message}";
+                result.AddError(errorMessage);
+                Logger.Error(errorMessage, ex);
+            }
+
             return result;
         }
         public ResultOrError DeleteSettings()
         {
-            ResultOrError result = new ResultOrError();
+            var result = new ResultOrError();
 
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
+            try
             {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"DELETE FROM Setting 
-                                        WHERE ProfileId = @ProfileId  ";
-                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
-
-                try
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
                 {
+                   
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = @"DELETE FROM Setting 
+                                    WHERE ProfileId = @ProfileId";
+
+                    command.Parameters.AddWithValue("@ProfileId", this.profileId);
+
+                    connection.Open();
                     command.ExecuteNonQuery();
                 }
-                catch (MySqlException ex)
-                {
-                    result.AddError("Settings [profileId" + this.profileId + "] are not deleted. \n" + ex.Message + "\n");
-                }
-                connection.Close();
             }
+            catch (SQLiteException ex)
+            {
+                string errorMessage = $"Settings for ProfileId [{this.profileId}] are not deleted. \n{ex.Message}";
+                result.AddError(errorMessage);
+                Logger.Error(errorMessage, ex);
+            }
+
             return result;
         }
 
@@ -796,7 +770,6 @@ namespace MitoPlayer_2024.Dao
             for (int i = 0; i <= colNames.Length - 1; i++)
             {
                 TrackProperty tp = new TrackProperty();
-                tp.Id = this.GetNextId(TableName.TrackProperty.ToString());
                 tp.ColumnGroup = columnGroup;
                 tp.Name = colNames[i];
                 tp.Type = colTypes[i];
@@ -811,421 +784,380 @@ namespace MitoPlayer_2024.Dao
             }
             return result;
         }
-
-        public int GetNextTrackPropertySortingId()
+        public ResultOrError<int> GetNextTrackPropertySortingId()
         {
-            int lastId = -1;
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
+            var result = new ResultOrError<int> { Value = -1 };
+
+            try
             {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT SortingId 
-                                        FROM TrackProperty 
-                                        WHERE ProfileId = @ProfileId 
-                                        ORDER BY SortingId  
-                                        desc LIMIT 1";
-
-                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
-
-                using (var reader = command.ExecuteReader())
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
                 {
-                    while (reader.Read())
+                    command.Connection = connection;
+                    command.CommandText = @"SELECT SortingId 
+                                    FROM TrackProperty 
+                                    WHERE ProfileId = @ProfileId 
+                                    ORDER BY SortingId DESC 
+                                    LIMIT 1";
+
+                    command.Parameters.AddWithValue("@ProfileId", this.profileId);
+
+                    connection.Open();
+                    using (var reader = command.ExecuteReader())
                     {
-                        lastId = (int)reader[0];
+                        if (reader.Read())
+                        {
+                            result.Value = reader.ReadInt("SortingId") + 1;
+                        }
                     }
                 }
-                connection.Close();
             }
-            return lastId + 1;
-        }
-        public ResultOrError CreateTrackProperty(TrackProperty tp, bool withoutProfile = false)
-        {
-            ResultOrError result = new ResultOrError();
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
+            catch (SQLiteException ex)
             {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"INSERT INTO TrackProperty ( 
-                                        Id, 
-                                        ColumnGroup, 
-                                        Name, 
-                                        Type, 
-                                        IsEnabled, 
-                                        SortingId, 
-                                        ProfileId) 
-
-                                        VALUES ( 
-                                        @Id, 
-                                        @ColumnGroup, 
-                                        @Name, 
-                                        @Type, 
-                                        @IsEnabled, 
-                                        @SortingId, 
-                                        @ProfileId)";
-
-                command.Parameters.Add("@Id", MySqlDbType.Int32).Value = tp.Id;
-                command.Parameters.Add("@ColumnGroup", MySqlDbType.VarChar).Value = tp.ColumnGroup;
-                command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = tp.Name;
-                command.Parameters.Add("@Type", MySqlDbType.VarChar).Value = tp.Type;
-                command.Parameters.Add("@IsEnabled", MySqlDbType.Bit).Value = tp.IsEnabled;
-                command.Parameters.Add("@SortingId", MySqlDbType.Int32).Value = tp.SortingId;
-
-                if (!withoutProfile)
-                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
-                else
-                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = -1;
-
-                try
-                {
-                    command.ExecuteNonQuery();
-                }
-                catch (MySqlException ex)
-                {
-                    result.AddError("TrackProperty [" + tp.Name + "] is not inserted. \n" + ex.Message + "\n");
-                }
-                connection.Close();
+                string errorMessage = $"Error occurred while fetching next SortingId for TrackProperty. \n{ex.Message}";
+                result.AddError(errorMessage);
+                Logger.Error(errorMessage, ex);
             }
+
             return result;
         }
-        public TrackProperty GetTrackProperty(int id, bool withoutProfile = false)
+
+        public ResultOrError CreateTrackProperty(TrackProperty tp, bool withoutProfile = false)
         {
-            TrackProperty tp = null;
+            var result = new ResultOrError();
 
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
+            try
             {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * FROM TrackProperty 
-                                        WHERE Id = @Id AND ProfileId = @ProfileId ";
-
-                command.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
-
-                if (!withoutProfile)
-                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
-                else
-                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = -1;
-
-                using (var reader = command.ExecuteReader())
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
                 {
-                    tp = new TrackProperty();
-                    while (reader.Read())
-                    {
-                        tp.Id = (int)reader[0];
-                        tp.ColumnGroup = (string)reader[1];
-                        tp.Name = (string)reader[2];
-                        tp.Type = (string)reader[3];
-                        tp.IsEnabled = (bool)reader[4];
-                        tp.SortingId = (int)reader[5];
-                        tp.ProfileId = (int)reader[6];
-                    }
+                    
+                    command.Connection = connection;
+                    command.CommandText = @"INSERT INTO TrackProperty (ColumnGroup,Name,Type,IsEnabled,SortingId,ProfileId) 
+                                    VALUES (@ColumnGroup,@Name,@Type,@IsEnabled,@SortingId,@ProfileId)";
+
+                    command.Parameters.AddWithValue("@ColumnGroup", tp.ColumnGroup);
+                    command.Parameters.AddWithValue("@Name", tp.Name);
+                    command.Parameters.AddWithValue("@Type", tp.Type);
+                    command.Parameters.AddWithValue("@IsEnabled", tp.IsEnabled ? 1 : 0); 
+                    command.Parameters.AddWithValue("@SortingId", tp.SortingId);
+                    command.Parameters.AddWithValue("@ProfileId", withoutProfile ? -1 : this.profileId);
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
                 }
             }
-            return tp;
-        }
-        public TrackProperty GetTrackPropertyByNameAndGroup(string name, string columnGroup, bool withoutProfile = false)
-        {
-            TrackProperty tp = null;
-
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
+            catch (SQLiteException ex)
             {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * FROM TrackProperty 
-                                        WHERE Name = @Name 
-                                        AND ColumnGroup = @ColumnGroup AND ProfileId = @ProfileId ";
-
-                command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = name;
-                command.Parameters.Add("@ColumnGroup", MySqlDbType.VarChar).Value = columnGroup;
-
-                if (!withoutProfile)
-                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
-                else
-                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = -1;
-
-                using (var reader = command.ExecuteReader())
-                {
-                    tp = new TrackProperty();
-                    while (reader.Read())
-                    {
-                        tp.Id = (int)reader[0];
-                        tp.ColumnGroup = (string)reader[1];
-                        tp.Name = (string)reader[2];
-                        tp.Type = (string)reader[3];
-                        tp.IsEnabled = Convert.ToBoolean(reader[4]);
-                        tp.SortingId = (int)reader[5];
-                        tp.ProfileId = (int)reader[6];
-                    }
-                }
+                string errorMessage = $"TrackProperty [{tp.Name}] is not inserted. \n{ex.Message}";
+                result.AddError(errorMessage);
+                Logger.Error(errorMessage, ex);
             }
-            return tp;
+
+            return result;
         }
-        public List<TrackProperty> GetTrackPropertyListByColumnGroup(string columnGroup, bool withoutProfile = false, bool withAndWithoutProfile = false)
+
+        public ResultOrError<TrackProperty> GetTrackProperty(int id, bool withoutProfile = false)
         {
-            List<TrackProperty> tpList = null;
+            var result = new ResultOrError<TrackProperty> { Value = null };
 
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
+            try
             {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-
-                if (!withAndWithoutProfile)
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
                 {
+                    connection.Open();
+                    command.Connection = connection;
                     command.CommandText = @"SELECT * FROM TrackProperty 
+                                    WHERE Id = @Id AND ProfileId = @ProfileId";
+
+                    command.Parameters.AddWithValue("@Id", id);
+                    command.Parameters.AddWithValue("@ProfileId", withoutProfile ? -1 : this.profileId);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            result.Value = new TrackProperty
+                            {
+                                Id = reader.ReadInt("Id"),
+                                ColumnGroup = reader.ReadString("ColumnGroup"),
+                                Name = reader.ReadString("Name"),
+                                Type = reader.ReadString("Type"),
+                                IsEnabled = reader.ReadBool("IsEnabled"),
+                                SortingId = reader.ReadInt("SortingId"),
+                                ProfileId = reader.ReadInt("ProfileId")
+                            };
+                        }
+                    }
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                string errorMessage = $"Error occurred while fetching TrackProperty with Id [{id}]. \n{ex.Message}";
+                result.AddError(errorMessage);
+                Logger.Error(errorMessage, ex);
+            }
+
+            return result;
+        }
+
+        public ResultOrError<TrackProperty> GetTrackPropertyByNameAndGroup(string name, string columnGroup, bool withoutProfile = false)
+        {
+            var result = new ResultOrError<TrackProperty> { Value = null };
+
+            try
+            {
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
+                {
+                    command.Connection = connection;
+                    command.CommandText = @"SELECT * FROM TrackProperty 
+                                    WHERE Name = @Name 
+                                    AND ColumnGroup = @ColumnGroup 
+                                    AND ProfileId = @ProfileId";
+
+                    command.Parameters.AddWithValue("@Name", name);
+                    command.Parameters.AddWithValue("@ColumnGroup", columnGroup);
+                    command.Parameters.AddWithValue("@ProfileId", withoutProfile ? -1 : this.profileId);
+
+                    connection.Open();
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            result.Value = new TrackProperty
+                            {
+                                Id = reader.ReadInt("Id"),
+                                ColumnGroup = reader.ReadString("ColumnGroup"),
+                                Name = reader.ReadString("Name"),
+                                Type = reader.ReadString("Type"),
+                                IsEnabled = reader.ReadBool("IsEnabled"),
+                                SortingId = reader.ReadInt("SortingId"),
+                                ProfileId = reader.ReadInt("ProfileId")
+                            };
+                        }
+                    }
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                string errorMessage = $"Error occurred while fetching TrackProperty by Name [{name}] and ColumnGroup [{columnGroup}]. \n{ex.Message}";
+                result.AddError(errorMessage);
+                Logger.Error(errorMessage, ex);
+            }
+
+            return result;
+        }
+        public ResultOrError<List<TrackProperty>> GetTrackPropertyListByColumnGroup(string columnGroup, bool withoutProfile = false, bool withAndWithoutProfile = false)
+        {
+            var result = new ResultOrError<List<TrackProperty>> { Value = new List<TrackProperty>() };
+
+            try
+            {
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
+                {
+                    connection.Open();
+                    command.Connection = connection;
+
+                    if (!withAndWithoutProfile)
+                    {
+                        command.CommandText = @"SELECT * FROM TrackProperty 
                                         WHERE ColumnGroup = @ColumnGroup 
                                         AND ProfileId = @ProfileId 
-                                        ORDER BY SortingId ";
-                    command.Parameters.Add("@ColumnGroup", MySqlDbType.VarChar).Value = columnGroup;
-                    if (!withoutProfile)
-                        command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
+                                        ORDER BY SortingId";
+                        command.Parameters.AddWithValue("@ColumnGroup", columnGroup);
+                        command.Parameters.AddWithValue("@ProfileId", withoutProfile ? -1 : this.profileId);
+                    }
                     else
-                        command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = -1;
-                }
-                else
-                {
-                    command.CommandText = @"SELECT * FROM TrackProperty 
-                                        WHERE ColumnGroup = @ColumnGroup 
-                                        ORDER BY SortingId ";
-                    command.Parameters.Add("@ColumnGroup", MySqlDbType.VarChar).Value = columnGroup;
-                    if (!withoutProfile)
-                        command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
-                    else
-                        command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = -1;
-                }
-      
-
-                using (var reader = command.ExecuteReader())
-                {
-                    tpList = new List<TrackProperty>();
-                    while (reader.Read())
                     {
-                        TrackProperty tp = new TrackProperty();
-                        tp.Id = (int)reader[0];
-                        tp.ColumnGroup = (string)reader[1];
-                        tp.Name = (string)reader[2];
-                        tp.Type = (string)reader[3];
-                        tp.IsEnabled = Convert.ToBoolean(reader[4]);
-                        tp.SortingId = (int)reader[5];
-                        tp.ProfileId = (int)reader[6];
-                        tpList.Add(tp);
+                        command.CommandText = @"SELECT * FROM TrackProperty 
+                                        WHERE ColumnGroup = @ColumnGroup 
+                                        ORDER BY SortingId";
+                        command.Parameters.AddWithValue("@ColumnGroup", columnGroup);
+                        command.Parameters.AddWithValue("@ProfileId", withoutProfile ? -1 : this.profileId);
+                    }
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var tp = new TrackProperty
+                            {
+                                Id = reader.ReadInt("Id"),
+                                ColumnGroup = reader.ReadString("ColumnGroup"),
+                                Name = reader.ReadString("Name"),
+                                Type = reader.ReadString("Type"),
+                                IsEnabled = reader.ReadBool("IsEnabled"),
+                                SortingId = reader.ReadInt("SortingId"),
+                                ProfileId = reader.ReadInt("ProfileId")
+                            };
+
+                            result.Value.Add(tp);
+                        }
                     }
                 }
             }
-            return tpList;
-        }
+            catch (SQLiteException ex)
+            {
+                string errorMessage = $"Error occurred while fetching TrackProperty list by ColumnGroup [{columnGroup}]. \n{ex.Message}";
+                result.AddError(errorMessage);
+                Logger.Error(errorMessage, ex);
+            }
 
+            return result;
+        }
         public ResultOrError UpdateTrackProperty(TrackProperty tp, bool withoutProfile = false)
         {
-            ResultOrError result = new ResultOrError();
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
-            {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"UPDATE TrackProperty 
+            var result = new ResultOrError();
 
-                                        SET ColumnGroup = @ColumnGroup, 
+            try
+            {
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
+                {
+                    connection.Open();
+                    command.Connection = connection;
+                    command.CommandText = @"UPDATE TrackProperty 
+                                    SET ColumnGroup = @ColumnGroup, 
                                         Name = @Name, 
                                         Type = @Type, 
                                         IsEnabled = @IsEnabled, 
                                         SortingId = @SortingId 
+                                    WHERE Id = @Id 
+                                    AND ProfileId = @ProfileId";
 
-                                        WHERE Id = @Id 
-                                        AND ProfileId = @ProfileId ";
+                    command.Parameters.AddWithValue("@Id", tp.Id);
+                    command.Parameters.AddWithValue("@ColumnGroup", tp.ColumnGroup);
+                    command.Parameters.AddWithValue("@Name", tp.Name);
+                    command.Parameters.AddWithValue("@Type", tp.Type);
+                    command.Parameters.AddWithValue("@IsEnabled", tp.IsEnabled ? 1 : 0); 
+                    command.Parameters.AddWithValue("@SortingId", tp.SortingId);
+                    command.Parameters.AddWithValue("@ProfileId", withoutProfile ? -1 : this.profileId);
 
-                command.Parameters.Add("@Id", MySqlDbType.Int32).Value = tp.Id;
-                command.Parameters.Add("@ColumnGroup", MySqlDbType.VarChar).Value = tp.ColumnGroup;
-                command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = tp.Name;
-                command.Parameters.Add("@Type", MySqlDbType.VarChar).Value = tp.Type;
-                command.Parameters.Add("@IsEnabled", MySqlDbType.Bit).Value = tp.IsEnabled;
-                command.Parameters.Add("@SortingId", MySqlDbType.Int32).Value = tp.SortingId;
-
-                if (!withoutProfile)
-                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
-                else
-                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = -1;
-
-                try
-                {
                     command.ExecuteNonQuery();
                 }
-                catch (MySqlException ex)
-                {
-                    result.AddError("TrackProperty [" + tp.Name + "] is not updated. \n" + ex.Message + "\n");
-                }
-                connection.Close();
             }
+            catch (SQLiteException ex)
+            {
+                string errorMessage = $"TrackProperty [{tp.Name}] is not updated. \n{ex.Message}";
+                result.AddError(errorMessage);
+                Logger.Error(errorMessage, ex);
+            }
+
             return result;
         }
-
         public ResultOrError DeleteTrackProperty(int id, bool withoutProfile = false)
         {
-            ResultOrError result = new ResultOrError();
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
+            var result = new ResultOrError();
+
+            try
             {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"DELETE FROM TrackProperty 
-                                        WHERE Id = @Id 
-                                        AND ProfileId = @ProfileId  ";
-
-                command.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
-
-                if (!withoutProfile)
-                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
-                else
-                    command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = -1;
-
-                try
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
                 {
+                    
+                    command.Connection = connection;
+                    command.CommandText = @"DELETE FROM TrackProperty 
+                                    WHERE Id = @Id 
+                                    AND ProfileId = @ProfileId";
+
+                    command.Parameters.AddWithValue("@Id", id);
+                    command.Parameters.AddWithValue("@ProfileId", withoutProfile ? -1 : this.profileId);
+
+                    connection.Open();
                     command.ExecuteNonQuery();
                 }
-                catch (MySqlException ex)
-                {
-                    result.AddError("TrackProperty [" + id + "] is not deleted. \n" + ex.Message + "\n");
-                }
-                connection.Close();
             }
+            catch (SQLiteException ex)
+            {
+                string errorMessage = $"TrackProperty with ID [{id}] is not deleted. \n{ex.Message}";
+                result.AddError(errorMessage);
+                Logger.Error(errorMessage, ex);
+            }
+
             return result;
         }
         public ResultOrError DeleteAllTrackProperty()
         {
-            ResultOrError result = new ResultOrError();
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
-            {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"DELETE FROM TrackProperty 
-                                        WHERE ProfileId = @ProfileId  ";
-                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
+            var result = new ResultOrError();
 
-                try
+            try
+            {
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
                 {
+                    
+                    command.Connection = connection;
+                    command.CommandText = @"DELETE FROM TrackProperty 
+                                    WHERE ProfileId = @ProfileId";
+
+                    command.Parameters.AddWithValue("@ProfileId", this.profileId);
+
+                    connection.Open();
                     command.ExecuteNonQuery();
                 }
-                catch (MySqlException ex)
-                {
-                    result.AddError("TrackProperties are not deleted. \n" + ex.Message + "\n");
-                }
-                connection.Close();
             }
+            catch (SQLiteException ex)
+            {
+                string errorMessage = $"TrackProperties are not deleted. \n{ex.Message}";
+                result.AddError(errorMessage);
+                Logger.Error(errorMessage, ex);
+            }
+
             return result;
         }
         public ResultOrError ClearSettingTable()
         {
-            ResultOrError result = new ResultOrError();
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
-            {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = "DELETE FROM Setting ";
+            var result = new ResultOrError();
 
-                try
+            try
+            {
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
                 {
+                    command.Connection = connection;
+                    command.CommandText = "DELETE FROM Setting";
+
+                    connection.Open();
                     command.ExecuteNonQuery();
                 }
-                catch (MySqlException ex)
-                {
-                    result.AddError("Setting table has not been cleared. \n" + ex.Message + "\n");
-                }
-                connection.Close();
             }
+            catch (SQLiteException ex)
+            {
+                string errorMessage = $"Setting table has not been cleared. \n{ex.Message}";
+                result.AddError(errorMessage);
+                Logger.Error(errorMessage, ex);
+            }
+
             return result;
         }
         public ResultOrError ClearTrackPropertyTable()
         {
-            ResultOrError result = new ResultOrError();
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
-            {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = "DELETE FROM TrackProperty ";
+            var result = new ResultOrError();
 
-                try
+            try
+            {
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
                 {
+                    command.Connection = connection;
+                    command.CommandText = "DELETE FROM TrackProperty";
+
+                    connection.Open();
                     command.ExecuteNonQuery();
                 }
-                catch (MySqlException ex)
-                {
-                    result.AddError("TrackProperty table has not been cleared. \n" + ex.Message + "\n");
-                }
-                connection.Close();
             }
+            catch (SQLiteException ex)
+            {
+                string errorMessage = $"TrackProperty table has not been cleared. \n{ex.Message}";
+                result.AddError(errorMessage);
+                Logger.Error(errorMessage, ex);
+            }
+
             return result;
         }
-
-
-        /*  public int GetNextSortingIdInColumnGroup()
- {
-     int lastId = -1;
-
-     using (var connection = new MySqlConnection(connectionString))
-     using (var command = new MySqlCommand())
-     {
-         connection.Open();
-         command.Connection = connection;
-         command.CommandType = CommandType.Text;
-         command.CommandText = "SELECT SortingId FROM TrackProperty WHERE ColumnGroup = @ColumnGroup ORDER BY SortingId desc LIMIT 1";
-         command.Parameters.Add("@ColumnGroup", MySqlDbType.VarChar).Value = ColumnGroup.TracklistColumns.ToString();
-         using (var reader = command.ExecuteReader())
-         {
-             while (reader.Read())
-             {
-                 lastId = (int)reader[0];
-             }
-         }
-     }
-     return lastId + 1;
- }*/
-
-        /* public void CreateTrackProperty(String name, String type, bool isEnable, string columnGroup, bool withoutProfile = false)
-         {
-             TrackProperty tp = new TrackProperty();
-             tp.Id = this.GetNextTrackPropertyId();
-             tp.ColumnGroup = columnGroup;
-             tp.Name = name;
-             tp.Type = type;
-             tp.IsEnabled = isEnable;
-             tp.SortingId = this.GetNextSortingIdInColumnGroup();
-             if (withoutProfile)
-             {
-                 tp.ProfileId = -1;
-             }
-             else
-             {
-                 tp.ProfileId = this.profileId;
-             }
-             this.CreateTrackProperty(tp);
-         }*/
-
-
-
-
-
-
-
-
-
-
-
 
     }
 }

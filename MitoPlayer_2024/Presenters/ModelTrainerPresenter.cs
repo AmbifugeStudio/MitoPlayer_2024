@@ -104,11 +104,11 @@ namespace MitoPlayer_2024.Presenters
 
             this.view.GenerateTrainingData += GenerateTrainingDataEvent;
 
-            this.TagList = this.tagDao.GetAllTag().Where(x => !x.HasMultipleValues).ToList();
-            this.PlaylistList = this.trackDao.GetAllPlaylist().FindAll(x=>x.IsModelTrainer);
+            this.TagList = this.tagDao.GetAllTag().Value.Where(x => !x.HasMultipleValues).ToList();
+            this.PlaylistList = this.trackDao.GetAllPlaylist().Value.FindAll(x=>x.IsModelTrainer);
             this.TemplateList = this.trackDao.GetAllTrainingData().FindAll(x => x.IsTemplate);
-            this.BatchSize = this.settingDao.GetIntegerSetting(Settings.TrainingModelBatchCount.ToString());
-            this.IsTracklistDetailsDisplayed = this.settingDao.GetBooleanSetting(Settings.IsTracklistDetailsDisplayed.ToString()).Value;
+            this.BatchSize = this.settingDao.GetIntegerSetting(Settings.TrainingModelBatchCount.ToString()).Value;
+            this.IsTracklistDetailsDisplayed = this.settingDao.GetBooleanSetting(Settings.IsTracklistDetailsDisplayed.ToString()).Value.Value;
 
             this.InitializeTagsAndTagValues();
 
@@ -642,7 +642,7 @@ namespace MitoPlayer_2024.Presenters
 
         private void AnalyseTrackEvent(object sender, Messenger e)
         {
-            this.currentTrack = this.trackDao.GetTrackWithTags(e.IntegerField1, this.tagList);
+            this.currentTrack = this.trackDao.GetTrackWithTags(e.IntegerField1, this.tagList).Value;
             if (this.currentTrack != null)
             {
                 if (this.currentFeatureType != FeatureType.Empty)
@@ -1518,7 +1518,7 @@ namespace MitoPlayer_2024.Presenters
         {
             this.tagValueDictionary = new Dictionary<String, Dictionary<String, Color>>();
 
-            List<Tag> tagList = this.tagDao.GetAllTag();
+            List<Tag> tagList = this.tagDao.GetAllTag().Value;
             if (tagList != null && tagList.Count > 0)
             {
                 this.tagList = tagList;
@@ -1529,7 +1529,7 @@ namespace MitoPlayer_2024.Presenters
                 {
                     Dictionary<String, Color> tvDic = new Dictionary<String, Color>();
 
-                    tagValueList = this.tagDao.GetTagValuesByTagId(tag.Id);
+                    tagValueList = this.tagDao.GetTagValuesByTagId(tag.Id).Value;
                     if (tagValueList != null && tagValueList.Count > 0)
                     {
                         foreach (TagValue tv in tagValueList)
@@ -1558,8 +1558,8 @@ namespace MitoPlayer_2024.Presenters
         }
         private void SelectTag(object sender, Messenger e)
         {
-            this.CurrentTag = this.tagDao.GetTagByName(e.StringField1);
-            this.CurrentTrackProperty = this.settingDao.GetTrackPropertyByNameAndGroup(this.CurrentTag.Name, ColumnGroup.TracklistColumns.ToString());
+            this.CurrentTag = this.tagDao.GetTagByName(e.StringField1).Value;
+            this.CurrentTrackProperty = this.settingDao.GetTrackPropertyByNameAndGroup(this.CurrentTag.Name, ColumnGroup.TracklistColumns.ToString()).Value;
         
             if(this.CurrentPlaylist != null)
             {
@@ -1574,11 +1574,11 @@ namespace MitoPlayer_2024.Presenters
         }
         private void SelectPlaylist(object sender, Messenger e)
         {
-            this.CurrentPlaylist =this.trackDao.GetPlaylistByName(e.StringField1);
+            this.CurrentPlaylist =this.trackDao.GetPlaylistByName(e.StringField1).Value;
 
             if (this.CurrentPlaylist != null)
             {
-                this.trackList = this.trackDao.GetTracklistWithTagsByPlaylistId(this.CurrentPlaylist.Id, this.TagList);
+                this.trackList = this.trackDao.GetTracklistWithTagsByPlaylistId(this.CurrentPlaylist.Id, this.TagList).Value;
             }
 
             if (this.CurrentTag != null)
@@ -1649,10 +1649,10 @@ namespace MitoPlayer_2024.Presenters
 
             this.inputTrackTable.Clear();
 
-            List<Tag> tagList = this.tagDao.GetAllTag();
+            List<Tag> tagList = this.tagDao.GetAllTag().Value;
             if(tagList != null && tagList.Count > 0)
             {
-                this.trackList = this.trackDao.GetTracklistWithTagsByPlaylistId(this.CurrentPlaylist.Id, tagList);
+                this.trackList = this.trackDao.GetTracklistWithTagsByPlaylistId(this.CurrentPlaylist.Id, tagList).Value;
 
                 if (this.trackList != null && this.trackList.Count > 0)
                 {
@@ -1696,7 +1696,7 @@ namespace MitoPlayer_2024.Presenters
             String result = String.Empty;
             Dictionary<String, int> tagValueNumberDic = new Dictionary<String, int>();
 
-            List<TagValue> tvList = this.tagDao.GetTagValuesByTagId(this.CurrentTag.Id);
+            List<TagValue> tvList = this.tagDao.GetTagValuesByTagId(this.CurrentTag.Id).Value;
             if(tvList != null  && tvList.Count > 0)
             {
                 for (int i = 0; i <= tvList.Count - 1; i++)
@@ -1805,7 +1805,7 @@ namespace MitoPlayer_2024.Presenters
                     sampleCount = trainingDataList[i].SampleCount;
                     balance = trainingDataList[i].Balance;
 
-                    Tag tag = this.tagDao.GetTag(trainingDataList[i].TagId);
+                    Tag tag = this.tagDao.GetTag(trainingDataList[i].TagId).Value;
                     if(tag!= null)
                     {
                         tagName = tag.Name;

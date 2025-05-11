@@ -1,20 +1,12 @@
 ﻿using MitoPlayer_2024.Helpers;
-using MitoPlayer_2024.Model;
+using MitoPlayer_2024.Helpers.ErrorHandling;
 using MitoPlayer_2024.Models;
 using MySql.Data.MySqlClient;
-using Org.BouncyCastle.Ocsp;
-using Org.BouncyCastle.Utilities.Encoders;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SQLite;
 using System.Drawing;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Xml.Linq;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace MitoPlayer_2024.Dao
 {
@@ -29,619 +21,733 @@ namespace MitoPlayer_2024.Dao
         {
             this.profileId = profileId;
         }
-        public override int GetNextId(String tableName)
-        {
-            int lastId = -1;
 
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
-            {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT Id 
-                                        FROM " + tableName + " " +
-                                        "ORDER BY Id " +
-                                        "desc LIMIT 1";
-
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        lastId = (int)reader[0];
-                    }
-                }
-                connection.Close();
-            }
-            return lastId + 1;
-        }
+        #region TAG
         public ResultOrError CreateTag(Tag tag)
         {
             ResultOrError result = new ResultOrError();
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
+
+            try
             {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"INSERT INTO Tag values ( 
-                                        @Id, 
-                                        @Name, 
-                                        @TextColoring,
-                                        @HasMultipleValues,
-                                        @IsIntegrated,
-                                        @OrderInList,
-                                        @ProfileId)";
-
-                command.Parameters.Add("@Id", MySqlDbType.Int32).Value = tag.Id;
-                command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = tag.Name;
-                command.Parameters.Add("@TextColoring", MySqlDbType.Bit).Value = tag.TextColoring;
-                command.Parameters.Add("@HasMultipleValues", MySqlDbType.Bit).Value = tag.HasMultipleValues;
-                command.Parameters.Add("@IsIntegrated", MySqlDbType.Bit).Value = tag.IsIntegrated;
-                command.Parameters.Add("@OrderInList", MySqlDbType.Int32).Value = tag.OrderInList;
-                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
-
-                try
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
                 {
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = @"INSERT INTO Tag (Name, TextColoring, HasMultipleValues, IsIntegrated, OrderInList, ProfileId) 
+                                            VALUES (@Name, @TextColoring, @HasMultipleValues, @IsIntegrated, @OrderInList, @ProfileId)";
+
+                    command.Parameters.AddWithValue("@Name", tag.Name ?? "");
+                    command.Parameters.AddWithValue("@TextColoring", tag.TextColoring ? 1 : 0);
+                    command.Parameters.AddWithValue("@HasMultipleValues", tag.HasMultipleValues ? 1 : 0);
+                    command.Parameters.AddWithValue("@IsIntegrated", tag.IsIntegrated ? 1 : 0);
+                    command.Parameters.AddWithValue("@OrderInList", tag.OrderInList);
+                    command.Parameters.AddWithValue("@ProfileId", this.profileId);
+
+                    connection.Open();
                     command.ExecuteNonQuery();
                 }
-                catch (MySqlException ex)
-                {
-                    result.AddError("Tag [" + tag.Name + "] is not inserted. \n" + ex.Message);
-                }
-                connection.Close();
             }
+            catch (MySqlException ex)
+            {
+                String errorMessage = $"Tag [{tag.Name}] is not inserted. \n{ex.Message}";
+                result.AddError(errorMessage);
+                Logger.Error(errorMessage, ex);
+            }
+
             return result;
         }
-
-        public Tag GetTag(int id)
+        public ResultOrError<Tag> GetTag(int id)
         {
+            ResultOrError<Tag> result = new ResultOrError<Tag>();
             Tag tag = null;
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
+
+            try
             {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * FROM Tag 
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
+                {
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = @"SELECT * FROM Tag 
                                         WHERE Id = @Id 
                                         AND ProfileId = @ProfileId ";
 
-                command.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
-                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
+                    command.Parameters.AddWithValue("@Id", id);
+                    command.Parameters.AddWithValue("@ProfileId", this.profileId);
 
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
+                    connection.Open();
+                    using (var reader = command.ExecuteReader())
                     {
-                        tag = new Tag();
-                        tag.Id = (int)reader[0];
-                        tag.Name = (string)reader[1];
-                        tag.TextColoring = Convert.ToBoolean(reader[2]);
-                        tag.HasMultipleValues = Convert.ToBoolean(reader[3]);
-                        tag.IsIntegrated = Convert.ToBoolean(reader[4]);
-                        tag.OrderInList = Convert.ToInt32(reader[5]);
-                        tag.ProfileId = (int)reader[6];
-                        break;
+                        while (reader.Read())
+                        {
+                            tag = new Tag
+                            {
+                                Id = reader.ReadInt("Id"),
+                                Name = reader.ReadString("Name"),
+                                TextColoring = reader.ReadBool("TextColoring"),
+                                HasMultipleValues = reader.ReadBool("HasMultipleValues"),
+                                IsIntegrated = reader.ReadBool("IsIntegrated"),
+                                OrderInList = reader.ReadInt("OrderInList"),
+                                ProfileId = reader.ReadInt("ProfileId")
+                            };
+                            break;
+                        }
                     }
+                    connection.Close();
                 }
-                connection.Close();
             }
-            return tag;
-        }
-        public Tag GetTagByName(String name)
-        {
-            Tag tag = null;
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
+            catch (MySqlException ex)
             {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * FROM Tag 
+                String errorMessage = $"Tag [{id}] read error. \n{ex.Message}";
+                result.AddError(errorMessage);
+                Logger.Error(errorMessage, ex);
+            }
+
+            if (tag == null)
+                result.AddError($"Tag with ID [{id}] not found.");
+            else
+                result.Value = tag;
+
+            return result;
+        }
+        public ResultOrError<Tag> GetTagByName(String name)
+        {
+            ResultOrError<Tag> result = new ResultOrError<Tag>();
+            Tag tag = null;
+
+            try
+            {
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
+                {
+                    
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = @"SELECT * FROM Tag 
                                         WHERE Name = @Name 
                                         AND ProfileId = @ProfileId ";
-                command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = name;
-                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
 
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
+                    command.Parameters.AddWithValue("@Name", name);
+                    command.Parameters.AddWithValue("@ProfileId", this.profileId);
+
+                    connection.Open();
+                    using (var reader = command.ExecuteReader())
                     {
-                        tag = new Tag();
-                        tag.Id = (int)reader[0];
-                        tag.Name = (string)reader[1];
-                        tag.TextColoring = Convert.ToBoolean(reader[2]);
-                        tag.HasMultipleValues = Convert.ToBoolean(reader[3]);
-                        tag.IsIntegrated = Convert.ToBoolean(reader[4]);
-                        tag.OrderInList = Convert.ToInt32(reader[5]);
-                        tag.ProfileId = (int)reader[6];
-                        break;
+                        while (reader.Read())
+                        {
+                            tag = new Tag
+                            {
+                                Id = reader.ReadInt("Id"),
+                                Name = reader.ReadString("Name"),
+                                TextColoring = reader.ReadBool("TextColoring"),
+                                HasMultipleValues = reader.ReadBool("HasMultipleValues"),
+                                IsIntegrated = reader.ReadBool("IsIntegrated"),
+                                OrderInList = reader.ReadInt("OrderInList"),
+                                ProfileId = reader.ReadInt("ProfileId")
+                            };
+                            break;
+                        }
                     }
                 }
-                connection.Close();
             }
-            return tag;
-        }
-        public List<Tag> GetAllTag()
-        {
-            List<Tag> tagList = null;
-
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
+            catch (MySqlException ex)
             {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * FROM Tag 
-                                        WHERE ProfileId = @ProfileId ";
-
-                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
-
-                using (var reader = command.ExecuteReader())
-                {
-                    tagList = new List<Tag>();
-                    while (reader.Read())
-                    {
-                        Tag tag = new Tag();
-                        tag.Id = (int)reader[0];
-                        tag.Name = (string)reader[1];
-                        tag.TextColoring = Convert.ToBoolean(reader[2]);
-                        tag.HasMultipleValues = Convert.ToBoolean(reader[3]);
-                        tag.IsIntegrated = Convert.ToBoolean(reader[4]);
-                        tag.OrderInList = Convert.ToInt32(reader[5]);
-                        tag.ProfileId = (int)reader[6];
-                        tagList.Add(tag);
-                    }
-                }
-                connection.Close();
-            }
-            return tagList;
-        }
-
-        public void UpdateTag(Tag tag)
-        {
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
-            {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"UPDATE Tag 
-                                        SET Name = @Name, 
-                                        TextColoring = @TextColoring, 
-                                        HasMultipleValues = @HasMultipleValues, 
-                                        IsIntegrated = @IsIntegrated, 
-                                        OrderInList = @OrderInList 
-                                        WHERE Id = @Id 
-                                        AND ProfileId = @ProfileId";
-                
-                command.Parameters.Add("@Id", MySqlDbType.Int32).Value = tag.Id;
-                command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = tag.Name;
-                command.Parameters.Add("@TextColoring", MySqlDbType.Bit).Value = tag.TextColoring;
-                command.Parameters.Add("@HasMultipleValues", MySqlDbType.Bit).Value = tag.HasMultipleValues;
-                command.Parameters.Add("@IsIntegrated", MySqlDbType.Bit).Value = tag.IsIntegrated;
-                command.Parameters.Add("@OrderInList", MySqlDbType.Int32).Value = tag.OrderInList;
-                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
-                
-                try
-                {
-                    command.ExecuteNonQuery();
-                }
-                catch (MySqlException ex)
-                {
-                    MessageBox.Show("Tag is not updated. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                connection.Close();
-            }
-        }
-
-        public void DeleteTag(int id)
-        {
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
-            {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"DELETE FROM Tag 
-                                        WHERE Id = @Id 
-                                        AND ProfileId = @ProfileId";
-
-                command.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
-                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
-                
-                try
-                {
-                    command.ExecuteNonQuery();
-                }
-                catch (MySqlException ex)
-                {
-                    MessageBox.Show("Tag is not deleted. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                connection.Close();
-            }
-        }
-        public void DeleteAllTag()
-        {
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
-            {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"DELETE FROM Tag 
-                                        WHERE ProfileId = @ProfileId";
-                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
-
-                try
-                {
-                    command.ExecuteNonQuery();
-                }
-                catch (MySqlException ex)
-                {
-                    MessageBox.Show("Tag is not deleted. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                connection.Close();
+                String errorMessage = $"Tag [{name}] read error. \n{ex.Message}";
+                result.AddError(errorMessage);
+                Logger.Error(errorMessage, ex);
             }
 
-            this.DeleteAllTagValue();
-        }
-        public void ClearTagTable()
-        {
-            this.ClearTagValueTable();
+            if (tag == null)
+                result.AddError($"Tag with ID [{name}] not found.");
+            else
+                result.Value = tag;
 
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
-            {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = "DELETE FROM Tag ";
-
-                try
-                {
-                    command.ExecuteNonQuery();
-                }
-                catch (MySqlException ex)
-                {
-                    MessageBox.Show("Tag is not deleted. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                connection.Close();
-            }
-        }
-
-        public ResultOrError CreateTagValue(TagValue tagValue)
-        {
-            ResultOrError result = new ResultOrError();
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
-            {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"INSERT INTO TagValue VALUES ( 
-                                        @Id, 
-                                        @Name, 
-                                        @TagId, 
-                                        @Color,
-                                        @Hotkey,
-                                        @ProfileId)";
-
-                command.Parameters.Add("@Id", MySqlDbType.Int32).Value = tagValue.Id;
-                command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = tagValue.Name;
-                command.Parameters.Add("@TagId", MySqlDbType.Int32).Value = tagValue.TagId;
-                command.Parameters.Add("@Color", MySqlDbType.VarChar).Value = ColorToHex(tagValue.Color);
-                command.Parameters.Add("@Hotkey", MySqlDbType.Int32).Value = tagValue.Hotkey;
-                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
-
-                try
-                {
-                    command.ExecuteNonQuery();
-                }
-                catch (MySqlException ex)
-                {
-                    result.AddError("TagValue [" + tagValue.Name + "] is not inserted. \n" + ex.Message);
-                }
-                connection.Close();
-            }
+            
             return result;
         }
+        public ResultOrError<List<Tag>> GetAllTag()
+        {
+            ResultOrError<List<Tag>> result = new ResultOrError<List<Tag>> { Value = new List<Tag>() };
 
+            try
+            {
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
+                {
+                    
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = @"SELECT * FROM Tag WHERE ProfileId = @ProfileId ";
+
+                    command.Parameters.AddWithValue("@ProfileId", this.profileId);
+
+                    connection.Open();
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Tag tag = new Tag
+                            {
+                                Id = reader.ReadInt("Id"),
+                                Name = reader.ReadString("Name"),
+                                TextColoring = reader.ReadBool("TextColoring"),
+                                HasMultipleValues = reader.ReadBool("HasMultipleValues"),
+                                IsIntegrated = reader.ReadBool("IsIntegrated"),
+                                OrderInList = reader.ReadInt("OrderInList"),
+                                ProfileId = reader.ReadInt("ProfileId")
+                            };
+                            result.Value.Add(tag);
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+            catch (MySqlException ex)
+            {
+                String errorMessage = $"Tag read error. \n{ex.Message}";
+                result.AddError(errorMessage);
+                Logger.Error(errorMessage, ex);
+            }
+
+            return result;
+        }
+        public ResultOrError UpdateTag(Tag tag)
+        {
+            ResultOrError result = new ResultOrError();
+
+            try
+            {
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
+                {
+                    
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = @"
+                        UPDATE Tag 
+                        SET 
+                            Name = @Name, 
+                            TextColoring = @TextColoring, 
+                            HasMultipleValues = @HasMultipleValues, 
+                            IsIntegrated = @IsIntegrated, 
+                            OrderInList = @OrderInList 
+                        WHERE 
+                            Id = @Id 
+                            AND ProfileId = @ProfileId";
+
+                    command.Parameters.AddWithValue("@Id", tag.Id);
+                    command.Parameters.AddWithValue("@Name", tag.Name ?? "");
+                    command.Parameters.AddWithValue("@TextColoring", tag.TextColoring ? 1 : 0);
+                    command.Parameters.AddWithValue("@HasMultipleValues", tag.HasMultipleValues ? 1 : 0);
+                    command.Parameters.AddWithValue("@IsIntegrated", tag.IsIntegrated ? 1 : 0);
+                    command.Parameters.AddWithValue("@OrderInList", tag.OrderInList);
+                    command.Parameters.AddWithValue("@ProfileId", this.profileId);
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                }
+            }
+            catch (MySqlException ex)
+            {
+                string errorMessage = $"Error occurred while updating tag [{tag.Name}]. \n{ex.Message}";
+                result.AddError(errorMessage);
+                Logger.Error(errorMessage, ex);
+            }
+
+            return result;
+        }
+        public ResultOrError DeleteTag(int id)
+        {
+            var result = new ResultOrError();
+
+            try
+            {
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
+                {
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = @"
+                        DELETE FROM Tag 
+                        WHERE Id = @Id 
+                        AND ProfileId = @ProfileId";
+
+                    command.Parameters.AddWithValue("@Id", id);
+                    command.Parameters.AddWithValue("@ProfileId", this.profileId);
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                string errorMessage = $"Error occurred while deleting tag with ID {id}. \n{ex.Message}";
+                result.AddError(errorMessage);
+                Logger.Error(errorMessage, ex);
+            }
+
+            return result;
+        }
+        public ResultOrError DeleteAllTag()
+        {
+            var result = new ResultOrError();
+
+            try
+            {
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
+                {
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = @"DELETE FROM Tag 
+                                    WHERE ProfileId = @ProfileId";
+
+                    command.Parameters.AddWithValue("@ProfileId", this.profileId);
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                }
+
+                // Call DeleteAllTagValue after successful deletion
+                this.DeleteAllTagValue();
+            }
+            catch (SQLiteException ex)
+            {
+                string errorMessage = $"Error occurred while deleting all tags. \n{ex.Message}";
+                result.AddError(errorMessage);
+                Logger.Error(errorMessage, ex);
+            }
+
+            return result;
+        }
+        public ResultOrError ClearTagTable()
+        {
+            var result = new ResultOrError();
+
+            try
+            {
+                // Clear related table first
+                this.ClearTagValueTable();
+
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
+                {
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = "DELETE FROM Tag";
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                string errorMessage = $"Error occurred while clearing the tag table. \n{ex.Message}";
+                result.AddError(errorMessage);
+                Logger.Error(errorMessage, ex);
+            }
+
+            return result;
+        }
+        #endregion
+
+        #region TAGVALUE
+        public ResultOrError CreateTagValue(TagValue tagValue)
+        {
+            var result = new ResultOrError();
+
+            try
+            {
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
+                {
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = @"INSERT INTO TagValue (Name, TagId, Color, Hotkey, ProfileId) 
+                                            VALUES (@Name, @TagId, @Color, @Hotkey, @ProfileId)";
+
+                    command.Parameters.AddWithValue("@Name", tagValue.Name);
+                    command.Parameters.AddWithValue("@TagId", tagValue.TagId);
+                    command.Parameters.AddWithValue("@Color", ColorToHex(tagValue.Color));
+                    command.Parameters.AddWithValue("@Hotkey", tagValue.Hotkey);
+                    command.Parameters.AddWithValue("@ProfileId", this.profileId);
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                result.AddError($"TagValue [{tagValue.Name}] is not inserted. \n{ex.Message}");
+                Logger.Error($"Error occurred while inserting TagValue [{tagValue.Name}].", ex);
+            }
+
+            return result;
+        }
         public string ColorToHex(Color color)
         {
             return ColorTranslator.ToHtml(color);
         }
-
-
-        public List<TagValue> GetTagValuesByTagId(int tagId)
+        public ResultOrError<List<TagValue>> GetTagValuesByTagId(int tagId)
         {
-            List<TagValue> tagValueList = null;
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
+            var result = new ResultOrError<List<TagValue>> { Value = new List<TagValue>() };
+
+            try
             {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT
-                                        tv.Id,
-                                        tv.Name,
-                                        tv.TagId,
-                                        t.Name,
-                                        tv.Color,
-                                        tv.Hotkey,
-                                        tv.ProfileId 
-                                        FROM TagValue tv, Tag t 
-                                        WHERE tv.TagId = t.Id 
-                                        AND tv.TagId = @TagId 
-                                        AND tv.ProfileId = @ProfileId ";
-
-                command.Parameters.Add("@TagId", MySqlDbType.Int32).Value = tagId;
-                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
-
-                using (var reader = command.ExecuteReader())
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
                 {
-                    tagValueList = new List<TagValue>();
-                    while (reader.Read())
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = @"SELECT
+                                    tv.Id,
+                                    tv.Name,
+                                    tv.TagId,
+                                    t.Name,
+                                    tv.Color,
+                                    tv.Hotkey,
+                                    tv.ProfileId 
+                                    FROM TagValue tv, Tag t 
+                                    WHERE tv.TagId = t.Id 
+                                    AND tv.TagId = @TagId 
+                                    AND tv.ProfileId = @ProfileId";
+
+                    command.Parameters.AddWithValue("@TagId", tagId);
+                    command.Parameters.AddWithValue("@ProfileId", this.profileId);
+
+                    connection.Open();
+                    using (var reader = command.ExecuteReader())
                     {
-                        TagValue tagValue = new TagValue();
-                        tagValue.Id = (int)reader[0];
-                        tagValue.Name = (string)reader[1];
-                        tagValue.TagId = (int)reader[2];
-                        tagValue.TagName = (string)reader[3];
-                        tagValue.Color = HexToColor((string)reader[4]);
-                        tagValue.Hotkey = (int)reader[5];
-                        tagValue.ProfileId = (int)reader[6];
-                        tagValueList.Add(tagValue);
+                        while (reader.Read())
+                        {
+                            var tagValue = new TagValue
+                            {
+                                Id = reader.ReadInt("Id"),
+                                Name = reader.ReadString("Name"),
+                                TagId = reader.ReadInt("TagId"),
+                                TagName = reader.ReadString("TagName"),
+                                Color = HexToColor(reader.ReadString("Color")),
+                                Hotkey = reader.ReadInt("Hotkey"),
+                                ProfileId = reader.ReadInt("ProfileId")
+                            };
+
+                            result.Value.Add(tagValue);
+                        }
                     }
                 }
-                connection.Close();
             }
-            return tagValueList;
+            catch (SQLiteException ex)
+            {
+                result.AddError($"Error occurred while fetching tag values for TagId [{tagId}]. \n{ex.Message}");
+                Logger.Error($"Error occurred while fetching tag values for TagId [{tagId}].", ex);
+            }
+
+            return result;
         }
-        public TagValue GetTagValue(int id)
+        public ResultOrError<TagValue> GetTagValue(int id)
         {
-            TagValue tagValue = null;
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
+            var result = new ResultOrError<TagValue>();
+
+            try
             {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * FROM TagValue 
-                                        WHERE Id = @Id 
-                                        AND ProfileId = @ProfileId ";
-
-                command.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
-                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
-
-                using (var reader = command.ExecuteReader())
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
                 {
-                    while (reader.Read())
-                    {
-                        tagValue = new TagValue();
-                        tagValue.Id = (int)reader[0];
-                        tagValue.Name = (string)reader[1];
-                        tagValue.TagId = (int)reader[2];
-                        tagValue.Color = HexToColor((string)reader[3]);
-                        tagValue.Hotkey = (int)reader[4];
-                        tagValue.ProfileId = (int)reader[5];
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = @"SELECT * FROM TagValue 
+                                    WHERE Id = @Id 
+                                    AND ProfileId = @ProfileId";
 
-                        break;
+                    command.Parameters.AddWithValue("@Id", id);
+                    command.Parameters.AddWithValue("@ProfileId", this.profileId);
+
+                    connection.Open();
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            result.Value = new TagValue
+                            {
+                                Id = reader.ReadInt("Id"),
+                                Name = reader.ReadString("Name"),
+                                TagId = reader.ReadInt("TagId"),
+                                Color = HexToColor(reader.ReadString("Color")),
+                                Hotkey = reader.ReadInt("Hotkey"),
+                                ProfileId = reader.ReadInt("ProfileId")
+                            };
+                        }
+                        else
+                        {
+                            result.AddError($"TagValue with ID [{id}] not found.");
+                        }
                     }
                 }
-                connection.Close();
             }
-            return tagValue;
+            catch (SQLiteException ex)
+            {
+                result.AddError($"Error occurred while fetching TagValue with ID [{id}]. \n{ex.Message}");
+                Logger.Error($"Error occurred while fetching TagValue with ID [{id}].", ex);
+            }
+
+            return result;
         }
         private Color HexToColor(string hexValue)
         {
             return System.Drawing.ColorTranslator.FromHtml(hexValue);
         }
-
-        public TagValue GetTagValueByTagId(int id, int tagId)
+        public ResultOrError<TagValue> GetTagValueByTagId(int id, int tagId)
         {
-            TagValue tagValue = null;
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
+            var result = new ResultOrError<TagValue>();
+
+            try
             {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * FROM TagValue 
-                                        WHERE Id = @Id 
-                                        AND TagId = @TagId 
-                                        AND ProfileId = @ProfileId ";
-
-                command.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
-                command.Parameters.Add("@TagId", MySqlDbType.Int32).Value = tagId;
-                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
-
-                using (var reader = command.ExecuteReader())
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
                 {
-                    while (reader.Read())
+                   
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = @"SELECT * FROM TagValue 
+                                    WHERE Id = @Id 
+                                    AND TagId = @TagId 
+                                    AND ProfileId = @ProfileId";
+
+                    command.Parameters.AddWithValue("@Id", id);
+                    command.Parameters.AddWithValue("@TagId", tagId);
+                    command.Parameters.AddWithValue("@ProfileId", this.profileId);
+
+                    connection.Open();
+                    using (var reader = command.ExecuteReader())
                     {
-                        tagValue = new TagValue();
-                        tagValue.Id = (int)reader[0];
-                        tagValue.Name = (string)reader[1];
-                        tagValue.TagId = (int)reader[2];
-                        tagValue.Color = HexToColor((string)reader[3]);
-                        tagValue.Hotkey = (int)reader[4];
-                        tagValue.ProfileId = (int)reader[5];
-                        
-                        break;
+                        if (reader.Read())
+                        {
+                            result.Value = new TagValue
+                            {
+                                Id = reader.ReadInt("Id"),
+                                Name = reader.ReadString("Name"),
+                                TagId = reader.ReadInt("TagId"),
+                                Color = HexToColor(reader.ReadString("Color")),
+                                Hotkey = reader.ReadInt("Hotkey"),
+                                ProfileId = reader.ReadInt("ProfileId")
+                            };
+                        }
+                        else
+                        {
+                            result.AddError($"TagValue with Id [{id}] and TagId [{tagId}] not found.");
+                        }
                     }
                 }
-                connection.Close();
             }
-            return tagValue;
-        }
-        public TagValue GetTagValueByName(int tagId, String name)
-        {
-            TagValue tagValue = null;
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
+            catch (SQLiteException ex)
             {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * FROM TagValue 
-                                        WHERE Name = @Name 
-                                        AND TagId = @TagId 
-                                        AND ProfileId = @ProfileId ";
+                result.AddError($"Error occurred while fetching TagValue with Id [{id}] and TagId [{tagId}]. \n{ex.Message}");
+                Logger.Error($"Error occurred while fetching TagValue with Id [{id}] and TagId [{tagId}].", ex);
+            }
 
-                command.Parameters.Add("@TagId", MySqlDbType.Int32).Value = tagId;
-                command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = name;
-                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
+            return result;
+        }
+        public ResultOrError<TagValue> GetTagValueByName(int tagId, string name)
+        {
+            var result = new ResultOrError<TagValue>();
 
-                using (var reader = command.ExecuteReader())
+            try
+            {
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
                 {
-                    while (reader.Read())
+
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = @"SELECT * FROM TagValue 
+                                    WHERE TagId = @TagId 
+                                    AND Name = @Name 
+                                    AND ProfileId = @ProfileId";
+
+                    command.Parameters.AddWithValue("@TagId", tagId);
+                    command.Parameters.AddWithValue("@Name", name);
+                    command.Parameters.AddWithValue("@ProfileId", this.profileId);
+
+                    connection.Open();
+                    using (var reader = command.ExecuteReader())
                     {
-                        tagValue = new TagValue();
-                        tagValue.Id = (int)reader[0];
-                        tagValue.Name = (string)reader[1];
-                        tagValue.TagId = (int)reader[2];
-                        tagValue.Color = HexToColor((string)reader[3]);
-                        tagValue.Hotkey = (int)reader[4];
-                        tagValue.ProfileId = (int)reader[5];
-                        
-                        break;
+                        if (reader.Read())
+                        {
+                            result.Value = new TagValue
+                            {
+                                Id = reader.ReadInt("Id"),
+                                Name = reader.ReadString("Name"),
+                                TagId = reader.ReadInt("TagId"),
+                                Color = HexToColor(reader.ReadString("Color")),
+                                Hotkey = reader.ReadInt("Hotkey"),
+                                ProfileId = reader.ReadInt("ProfileId")
+                            };
+                        }
+                        else
+                        {
+                            result.AddError($"TagValue with Name [{name}] and TagId [{tagId}] not found.");
+                        }
                     }
                 }
-                connection.Close();
             }
-            return tagValue;
-        }
-
-        public void UpdateTagValue(TagValue tagValue)
-        {
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
+            catch (SQLiteException ex)
             {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"UPDATE TagValue 
-                                        SET Name = @Name,
+                result.AddError($"Error occurred while fetching TagValue with Name [{name}] and TagId [{tagId}]. \n{ex.Message}");
+                Logger.Error($"Error occurred while fetching TagValue with Name [{name}] and TagId [{tagId}].", ex);
+            }
+
+            return result;
+        }
+        public ResultOrError UpdateTagValue(TagValue tagValue)
+        {
+            var result = new ResultOrError();
+
+            try
+            {
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
+                {
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = @"UPDATE TagValue 
+                                    SET Name = @Name,
                                         Color = @Color, 
-                                        Hotkey = @Hotkey 
+                                        Hotkey = @Hotkey
+                                    WHERE Id = @Id 
+                                    AND ProfileId = @ProfileId";
 
-                                        WHERE Id = @Id 
-                                        AND ProfileId = @ProfileId";
+                    command.Parameters.AddWithValue("@Id", tagValue.Id);
+                    command.Parameters.AddWithValue("@Name", tagValue.Name ?? "");
+                    command.Parameters.AddWithValue("@Color", ColorToHex(tagValue.Color) ?? "");
+                    command.Parameters.AddWithValue("@Hotkey", tagValue.Hotkey);
+                    command.Parameters.AddWithValue("@ProfileId", this.profileId);
 
-                command.Parameters.Add("@Id", MySqlDbType.Int32).Value = tagValue.Id;
-                command.Parameters.Add("@Name", MySqlDbType.VarChar).Value = tagValue.Name;
-                command.Parameters.Add("@Color", MySqlDbType.VarChar).Value = ColorToHex(tagValue.Color);
-                command.Parameters.Add("@Hotkey", MySqlDbType.Int32).Value = tagValue.Hotkey;
-                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
-                
-                try
-                {
+                    connection.Open();
                     command.ExecuteNonQuery();
                 }
-                catch (MySqlException ex)
-                {
-                    MessageBox.Show("TagValue is not updated. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                connection.Close();
             }
-        }
-        public void DeleteTagValue(int id)
-        {
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
+            catch (SQLiteException ex)
             {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"DELETE FROM TagValue 
-                                        WHERE Id = @Id 
-                                        AND ProfileId = @ProfileId";
-
-                command.Parameters.Add("@Id", MySqlDbType.Int32).Value = id;
-                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
-                
-                try
-                {
-                    command.ExecuteNonQuery();
-                }
-                catch (MySqlException ex)
-                {
-                    MessageBox.Show("TagValue is not deleted. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                connection.Close();
+                result.AddError($"Error occurred while updating TagValue [{tagValue.Name}]. \n{ex.Message}");
+                Logger.Error($"Error occurred while updating TagValue [{tagValue.Name}].", ex);
             }
+
+            return result;
         }
-        public void DeleteTagValuesByTagId(int tagId)
+        public ResultOrError DeleteTagValue(int id)
         {
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
+            var result = new ResultOrError();
+
+            try
             {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"DELETE FROM TagValue 
-                                        WHERE TagId = @TagId 
-                                        AND ProfileId = @ProfileId";
-
-                command.Parameters.Add("@TagId", MySqlDbType.Int32).Value = tagId;
-                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
-
-                try
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
                 {
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = @"DELETE FROM TagValue 
+                                    WHERE Id = @Id 
+                                    AND ProfileId = @ProfileId";
+
+                    command.Parameters.AddWithValue("@Id", id);
+                    command.Parameters.AddWithValue("@ProfileId", this.profileId);
+
+                    connection.Open();
                     command.ExecuteNonQuery();
                 }
-                catch (MySqlException ex)
-                {
-                    MessageBox.Show("TagValue is not deleted. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                connection.Close();
             }
+            catch (SQLiteException ex)
+            {
+                result.AddError($"Error occurred while deleting TagValue with ID [{id}]. \n{ex.Message}");
+                Logger.Error($"Error occurred while deleting TagValue with ID [{id}].", ex);
+            }
+
+            return result;
         }
-        public void DeleteAllTagValue()
+        public ResultOrError DeleteTagValuesByTagId(int tagId)
         {
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
-            {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"DELETE FROM TagValue 
-                                        WHERE ProfileId = @ProfileId";
-                command.Parameters.Add("@ProfileId", MySqlDbType.Int32).Value = this.profileId;
+            var result = new ResultOrError();
 
-                try
+            try
+            {
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
                 {
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = @"DELETE FROM TagValue 
+                                    WHERE TagId = @TagId 
+                                    AND ProfileId = @ProfileId";
+
+                    command.Parameters.AddWithValue("@TagId", tagId);
+                    command.Parameters.AddWithValue("@ProfileId", this.profileId);
+
+                    connection.Open();
                     command.ExecuteNonQuery();
                 }
-                catch (MySqlException ex)
-                {
-                    MessageBox.Show("TagValue is not deleted. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                connection.Close();
             }
+            catch (SQLiteException ex)
+            {
+                result.AddError($"Error occurred while deleting TagValues for TagId [{tagId}]. \n{ex.Message}");
+                Logger.Error($"Error occurred while deleting TagValues for TagId [{tagId}].", ex);
+            }
+
+            return result;
         }
-        public void ClearTagValueTable()
+        public ResultOrError DeleteAllTagValue()
         {
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
-            {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = "DELETE FROM TagValue ";
+            var result = new ResultOrError();
 
-                try
+            try
+            {
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
                 {
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = @"DELETE FROM TagValue 
+                                    WHERE ProfileId = @ProfileId";
+
+                    command.Parameters.AddWithValue("@ProfileId", this.profileId);
+
+                    connection.Open();
                     command.ExecuteNonQuery();
                 }
-                catch (MySqlException ex)
-                {
-                    MessageBox.Show("TagValue is not deleted. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                connection.Close();
             }
+            catch (SQLiteException ex)
+            {
+                result.AddError($"Error occurred while deleting all TagValues. \n{ex.Message}");
+                Logger.Error($"Error occurred while deleting all TagValues.", ex);
+            }
+
+            return result;
         }
+        public ResultOrError ClearTagValueTable()
+        {
+            var result = new ResultOrError();
+
+            try
+            {
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand())
+                {
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = "DELETE FROM TagValue";
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                result.AddError($"Error occurred while clearing the TagValue table. \n{ex.Message}");
+                Logger.Error($"Error occurred while clearing the TagValue table.", ex);
+            }
+
+            return result;
+        }
+        #endregion
     }
 }

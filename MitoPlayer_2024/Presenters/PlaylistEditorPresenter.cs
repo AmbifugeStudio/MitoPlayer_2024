@@ -32,7 +32,7 @@ namespace MitoPlayer_2024.Presenters
             this.trackDao = trackDao;
             this.settingDao = settingDao;
 
-            this.playlistName = "New Playlist " + this.settingDao.GetNextId(TableName.Playlist.ToString());
+            this.playlistName = "New Playlist ";
             this.playlistHotkey = 0;
             ((PlaylistEditorView)this.view).SetPlaylistName(this.playlistName);
             ((PlaylistEditorView)this.view).SetHotkey(this.playlistHotkey);
@@ -89,7 +89,7 @@ namespace MitoPlayer_2024.Presenters
         {
             bool result = true;
 
-            List<Playlist> playlistList = this.trackDao.GetAllPlaylist();
+            List<Playlist> playlistList = this.trackDao.GetAllPlaylist().Value;
             if (playlistList != null && playlistList.Count > 0 && this.newPlaylist != null)
             {
                 playlistList.Remove(this.newPlaylist);
@@ -139,7 +139,7 @@ namespace MitoPlayer_2024.Presenters
                 if (this.newPlaylist == null)
                 {
                     Playlist playlist = new Playlist();
-                    playlist.Id = this.trackDao.GetNextId(TableName.Playlist.ToString());
+                    playlist.Id = this.settingDao.GetNextId(TableName.Playlist.ToString());
                     playlist.Name = this.playlistName;
                     playlist.OrderInList = playlistList.Count;
                     playlist.QuickListGroup = 0;

@@ -45,7 +45,7 @@ namespace MitoPlayer_2024.Presenters
 
         private void InitializeDataTable()
         {
-            this.activeProfile = this.profileDao.GetActiveProfile();
+            this.activeProfile = this.profileDao.GetActiveProfile().Value;
 
             this.profileListBindingSource = new BindingSource();
             this.profileListTable = new DataTable();
@@ -53,7 +53,7 @@ namespace MitoPlayer_2024.Presenters
             this.profileListTable.Columns.Add("Active", typeof(bool));
             this.profileListTable.Columns.Add("Name", typeof(String));
 
-            List<Profile> profileList = this.profileDao.GetAllProfile();
+            List<Profile> profileList = this.profileDao.GetAllProfile().Value;
             if(profileList != null && profileList.Count > 0)
             {
                 foreach(Profile profile in profileList)
@@ -98,7 +98,7 @@ namespace MitoPlayer_2024.Presenters
                         this.profileListTable.Rows[i]["Active"] = false;
                     }
 
-                    Profile profile = this.profileDao.GetProfile((int)profileRow["Id"]);
+                    Profile profile = this.profileDao.GetProfile((int)profileRow["Id"]).Value;
                     profile.IsActive = true;
                     this.profileDao.UpdateProfile(profile);
 
@@ -124,7 +124,7 @@ namespace MitoPlayer_2024.Presenters
                 }
                 else
                 {
-                    Profile profile = this.profileDao.GetProfile((int)profileRow["Id"]);
+                    Profile profile = this.profileDao.GetProfile((int)profileRow["Id"]).Value;
                     int profileIndex = this.profileListTable.Rows.IndexOf(profileRow);
 
                     ProfileEditorView profileEditorView = new ProfileEditorView();

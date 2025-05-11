@@ -32,7 +32,7 @@ namespace MitoPlayer_2024.Presenters
             _view.ChangeHasMultipleValues += ChangeHasMultipleValues;
             _view.ChangeTextColoring += ChangeTextColoring;
 
-            int lastGeneratedTagId = _settingDao.GetIntegerSetting(Settings.LastGeneratedTagId.ToString(), true);
+            int lastGeneratedTagId = _settingDao.GetIntegerSetting(Settings.LastGeneratedTagId.ToString(), true).Value;
             lastGeneratedTagId = lastGeneratedTagId + 1;
 
             _settingDao.SetIntegerSetting(Settings.LastGeneratedTagId.ToString(), lastGeneratedTagId, true);
@@ -84,7 +84,7 @@ namespace MitoPlayer_2024.Presenters
                     }
                     else
                     {
-                        Tag tag = this._tagDao.GetTagByName(e.StringField1);
+                        Tag tag = this._tagDao.GetTagByName(e.StringField1).Value;
                         if (tag != null)
                         {
                             MessageBox.Show("Tag name already exists!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -107,7 +107,7 @@ namespace MitoPlayer_2024.Presenters
             {
                 if (!String.IsNullOrEmpty(e.StringField1))
                 {
-                    List<Tag> tagList = this._tagDao.GetAllTag();
+                    List<Tag> tagList = this._tagDao.GetAllTag().Value;
                     if (tagList != null && tagList.Count > 0)
                     {
                         if (tagList.Exists(x => x.Name.Equals(e.StringField1)))
@@ -117,7 +117,7 @@ namespace MitoPlayer_2024.Presenters
                         else
                         {
                             Tag tag = new Tag();
-                            tag.Id = this._tagDao.GetNextId(TableName.Tag.ToString());
+                            tag.Id = this._settingDao.GetNextId(TableName.Tag.ToString());
                             tag.Name = e.StringField1;
                             tag.TextColoring = this._textColoring;
                             tag.HasMultipleValues = this._hasMultipleValues;
@@ -128,7 +128,7 @@ namespace MitoPlayer_2024.Presenters
                     else
                     {
                         Tag tag = new Tag();
-                        tag.Id = this._tagDao.GetNextId(TableName.Tag.ToString());
+                        tag.Id = this._settingDao.GetNextId(TableName.Tag.ToString());
                         tag.Name = e.StringField1;
                         tag.TextColoring = this._textColoring;
                         tag.HasMultipleValues = this._hasMultipleValues;

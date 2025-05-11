@@ -20,6 +20,7 @@ using System.Diagnostics;
 using System.Collections.Concurrent;
 using System.Threading;
 using Accord.Math.Distances;
+using MitoPlayer_2024.Helpers.ErrorHandling;
 
 namespace MitoPlayer_2024.Helpers
 {
@@ -35,7 +36,7 @@ namespace MitoPlayer_2024.Helpers
         private static VirtualDJReader instance = null;
         private VirtualDJReader()
         {
-            //this.InitializeAvailableDatabaseFiles();
+
         }
         public static VirtualDJReader Instance
         {
@@ -51,9 +52,6 @@ namespace MitoPlayer_2024.Helpers
 
         public List<String> VdjDatabasePathList { get; set; }
 
-
-
-        
         public String[] KeyCodesArray { get; set; }
         public String[] KeysArray { get; set; }
         public String[] KeysAlterArray { get; set; }

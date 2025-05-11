@@ -67,7 +67,7 @@ namespace MitoPlayer_2024.Presenters
         {
             bool result = false;
 
-            String imageDirectoryPath = this.settingDao.GetStringSetting(Settings.LiveStreamAnimationImagePath.ToString());
+            String imageDirectoryPath = this.settingDao.GetStringSetting(Settings.LiveStreamAnimationImagePath.ToString()).Value;
             if (!Directory.Exists(imageDirectoryPath))
             {
                 MessageBox.Show("Image directory does not exist. Please set it in the Live Stream Animation Setting menu!\n", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);

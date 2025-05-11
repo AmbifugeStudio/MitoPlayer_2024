@@ -67,7 +67,7 @@ namespace MitoPlayer_2024.Presenters
             List<TagValue> tagValues = new List<TagValue>();
             String comma = ",";
 
-            tags = _tagDao.GetAllTag();
+            tags = _tagDao.GetAllTag().Value;
 
             if(tags != null && tags.Count > 0)
             {
@@ -91,7 +91,7 @@ namespace MitoPlayer_2024.Presenters
                         script += ",NoMultipleValues):";
                     }
 
-                    tagValues = _tagDao.GetTagValuesByTagId(tag.Id);
+                    tagValues = _tagDao.GetTagValuesByTagId(tag.Id).Value;
 
                     if (tagValues != null && tagValues.Count > 0)
                     {
