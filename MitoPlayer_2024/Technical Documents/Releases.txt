@@ -1,10 +1,4 @@
 ﻿
-OK - FEATURE: playlist list - right click should also select the row
-OK - FEATURE: playlist list - load list with one click
-OK - BUG: scan key and bpm button does not working well
-OK - BUG: missing tracks are not displayed in red
-OK - BUG: no scroll on the playlist list
-OK - BUG: scan key/bpm button - mixedinkey key import does not work
 
 - BUG: bpb and key export - bpm export does not work sometimes
 
@@ -111,6 +105,17 @@ a filtered lista elemeit írja ki a playlist tack coujnt - ki kéne írni, hogy 
 - FEATURE: tag editor - display according to tag/tagvalue order
 - FEATURE: load tracklist or navigate away: check save status and show dialog window is there are unsaved progress
 
+======================
+v0.16.0.8
+======================
+OK - FEATURE: playlist list - right click should also select the row
+OK - FEATURE: playlist list - load list with one click
+OK - BUG: scan key and bpm button does not working well
+OK - BUG: missing tracks are not displayed in red
+OK - BUG: no scroll on the playlist list
+OK - BUG: scan key/bpm button - mixedinkey key import does not work
+OK - REFACTOR: source code cleaning
+OK - FEATURE: selector view development start
 ======================
 v0.16.0.0
 ======================

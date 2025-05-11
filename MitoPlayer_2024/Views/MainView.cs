@@ -23,6 +23,7 @@ namespace MitoPlayer_2024
         public event EventHandler ShowProfileEditorView;
         public event EventHandler ShowPlaylistView;
         public event EventHandler ShowTagValueEditorView;
+        public event EventHandler ShowSelectorView;
         public event EventHandler ShowRuleEditorView;
         public event EventHandler ShowTrackEditorView;
         public event EventHandler ShowTemplateEditorView;
@@ -121,15 +122,6 @@ namespace MitoPlayer_2024
             this.btnTracks.BackColor = this.ButtonColor;
             this.btnTracks.ForeColor = this.FontColor;
             this.btnTracks.FlatAppearance.BorderColor = this.ButtonBorderColor;
-            this.btnRules.BackColor = this.ButtonColor;
-            this.btnRules.ForeColor = this.FontColor;
-            this.btnRules.FlatAppearance.BorderColor = this.ButtonBorderColor;
-            this.btnTemplates.BackColor = this.ButtonColor;
-            this.btnTemplates.ForeColor = this.FontColor;
-            this.btnTemplates.FlatAppearance.BorderColor = this.ButtonBorderColor;
-            this.btnHarmonizer.BackColor = this.ButtonColor;
-            this.btnHarmonizer.ForeColor = this.FontColor;
-            this.btnHarmonizer.FlatAppearance.BorderColor = this.ButtonBorderColor;
 
             this.pnlMediaPlayer.BackColor = this.BackgroundColor;
             this.pnlMediaPlayer.ForeColor = this.FontColor;
@@ -192,9 +184,13 @@ namespace MitoPlayer_2024
         {
             this.ShowTagValueEditorView?.Invoke(this, EventArgs.Empty);
         }
+        private void btnSelector_Click(object sender, EventArgs e)
+        {
+            this.ShowSelectorView?.Invoke(this, EventArgs.Empty);
+        }
         private void btnTracks_Click(object sender, EventArgs e)
         {
-            this.ShowTrackEditorView?.Invoke(this, EventArgs.Empty);
+
         }
         private void btnRules_Click(object sender, EventArgs e)
         {
@@ -846,6 +842,8 @@ namespace MitoPlayer_2024
             this.pnlFrequency.Controls.Clear();
             this.pnlFrequency.Controls.Add(plot);
         }
+
+        
     }
 
 }

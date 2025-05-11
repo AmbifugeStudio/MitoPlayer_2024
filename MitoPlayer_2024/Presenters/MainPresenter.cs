@@ -2,6 +2,7 @@
 using MitoPlayer_2024.Dao;
 using MitoPlayer_2024.Helpers;
 using MitoPlayer_2024.Helpers.ErrorHandling;
+using MitoPlayer_2024.IViews;
 using MitoPlayer_2024.Model;
 using MitoPlayer_2024.Models;
 using MitoPlayer_2024.Views;
@@ -31,8 +32,7 @@ namespace MitoPlayer_2024.Presenters
         private IProfileEditorView profileEditorView { get; set; }
         private IPlaylistView playlistView { get; set; }
         private ITagValueView tagValueView { get; set; }
-
-        //private ISelectorView selectorView { get; set; }
+        private ISelectorView selectorView { get; set; }
         private IRuleEditorView ruleEditorView { get; set; }
         private ITrackEditorView trackEditorView { get; set; }
         private ITemplateEditorView templateEditorView { get; set; }
@@ -43,6 +43,7 @@ namespace MitoPlayer_2024.Presenters
         private ProfileEditorPresenter profileEditorPresenter { get; set; }
         private PlaylistPresenter playlistPresenter { get; set; }
         private TagValuePresenter tagValueEditorPresenter { get; set; }
+        private SelectorPresenter selectorPresenter { get; set; }
         private RuleEditorPresenter ruleEditorPresenter { get; set; }
         private TrackEditorPresenter trackEditorPresenter { get; set; }
         private TemplateEditorPresenter templateEditorPresenter { get; set; }
@@ -61,6 +62,7 @@ namespace MitoPlayer_2024.Presenters
             this.mainView.ShowProfileEditorView += ShowProfileEditorView;
             this.mainView.ShowPlaylistView += ShowPlaylistView;
             this.mainView.ShowTagValueEditorView += ShowTagValueEditorView;
+            this.mainView.ShowSelectorView += ShowSelectorView;
             this.mainView.ShowRuleEditorView += ShowRuleEditorView;
             this.mainView.ShowTrackEditorView += ShowTrackEditorView;
             this.mainView.ShowTemplateEditorView += ShowTemplateEditorView;
@@ -213,8 +215,8 @@ namespace MitoPlayer_2024.Presenters
             this.tagValueView = TagValueView.GetInstance((MainView)this.mainView);
             this.tagValueEditorPresenter = new TagValuePresenter(this.tagValueView, this.tagDao, this.trackDao, this.settingDao);
 
-            //this.selectorView = SelectorView.GetInstance((MainView)this.mainView);
-           // this.playlistPresenter = new PlaylistPresenter(this.playlistView, this.trackDao, this.tagDao, this.settingDao);
+            this.selectorView = SelectorView.GetInstance((MainView)this.mainView);
+            this.selectorPresenter = new SelectorPresenter(this.selectorView, this.trackDao, this.tagDao, this.settingDao);
 
             this.ShowPlaylistView(this, new EventArgs());
         }
@@ -450,10 +452,7 @@ namespace MitoPlayer_2024.Presenters
         {
             ((PlaylistView)this.playlistView).Hide();
             ((TagValueView)this.tagValueView).Hide();
-           /* ((TrackEditorView)this.trackEditorView).Hide();
-            ((RuleEditorView)this.ruleEditorView).Hide();
-            ((TemplateEditorView)this.templateEditorView).Hide();
-            ((HarmonizerView)this.harmonizerView).Hide();*/
+            ((SelectorView)this.selectorView).Hide();
         }
         private void ShowPlaylistView(object sender, EventArgs e)
         {
@@ -469,8 +468,6 @@ namespace MitoPlayer_2024.Presenters
             ((MainView)mainView).SetMenuStripAccessibility(this.actualView);
         }
 
-
-
         private void ShowTagValueEditorView(object sender, EventArgs e)
         {
             this.HideAllForm();
@@ -481,6 +478,16 @@ namespace MitoPlayer_2024.Presenters
             this.tagValueEditorPresenter.ReloadData();
 
             this.actualView = this.tagValueView;
+            ((MainView)mainView).SetMenuStripAccessibility(this.actualView);
+        }
+        private void ShowSelectorView(object sender, EventArgs e)
+        {
+            this.HideAllForm();
+
+            this.selectorPresenter.Initialize(this.mediaPlayerComponent);
+            ((SelectorView)this.selectorView).Show();
+
+            this.actualView = this.selectorView;
             ((MainView)mainView).SetMenuStripAccessibility(this.actualView);
         }
         private void ShowTrackEditorView(object sender, EventArgs e)

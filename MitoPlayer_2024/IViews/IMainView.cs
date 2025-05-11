@@ -13,6 +13,7 @@ namespace MitoPlayer_2024.Views
         event EventHandler ShowProfileEditorView;
         event EventHandler ShowPlaylistView;
         event EventHandler ShowTagValueEditorView;
+        event EventHandler ShowSelectorView;
         event EventHandler ShowRuleEditorView;
         event EventHandler ShowTrackEditorView;
         event EventHandler ShowTemplateEditorView;

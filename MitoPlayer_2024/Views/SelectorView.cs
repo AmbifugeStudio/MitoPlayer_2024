@@ -117,10 +117,6 @@ namespace MitoPlayer_2024.Views
             this.BackColor = CustomColor.BackColor;
             this.ForeColor = CustomColor.ForeColor;
 
-            this.btnPlaylistListPanelToggle.BackColor = CustomColor.ButtonBackColor;
-            this.btnPlaylistListPanelToggle.ForeColor = CustomColor.ForeColor;
-            this.btnPlaylistListPanelToggle.FlatAppearance.BorderColor = CustomColor.ButtonBorderColor;
-
             this.dgvPlaylistList.BackgroundColor = CustomColor.ButtonBackColor;
             this.dgvPlaylistList.ColumnHeadersDefaultCellStyle.BackColor = CustomColor.ButtonBackColor;
             this.dgvPlaylistList.ColumnHeadersDefaultCellStyle.ForeColor = CustomColor.ForeColor;
@@ -265,11 +261,8 @@ namespace MitoPlayer_2024.Views
                     this.dgvTrackList.Columns[i].Visible = model.ColumnVisibilityArray[i];
                 }
             }
-
             this.trackListBindingSource.ResetBindings(false);
-
             this.UpdateTracklistColor(model.CurrentTrackIdInPlaylist);
-
         }
         private void dgvTrackList_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
         {
@@ -279,16 +272,13 @@ namespace MitoPlayer_2024.Views
         {
             this.UpdateTracklistColor(model.CurrentTrackIdInPlaylist);
         }
-
         private bool isShortTrackColouringEnabled { get; set; }
         private TimeSpan shortTrackColouringThreshold { get; set; }
-
         internal void InitializeShortTrackColouring(bool isColouringEnabled, TimeSpan shortTrackColouringThreshold)
         {
             this.isShortTrackColouringEnabled = isColouringEnabled;
             this.shortTrackColouringThreshold = shortTrackColouringThreshold;
         }
-
         TimeSpan songLength = new TimeSpan();
         TimeSpan threshold = new TimeSpan();
         public void UpdateTracklistColor(int currentTrackIdInPlaylist = -1)
@@ -384,7 +374,6 @@ namespace MitoPlayer_2024.Views
             }
         }
 
-
         // SELECTOR TRACKLIST DATA BINDING
         public void InitializeSelectorTrackList(DataTableModel model)
         {
@@ -396,16 +385,13 @@ namespace MitoPlayer_2024.Views
 
             if (model.ColumnVisibilityArray != null && model.ColumnVisibilityArray.Length > 0)
             {
-                for (int i = 0; i <= this.dgvTrackList.Columns.Count - 1; i++)
+                for (int i = 0; i <= this.dgvSelectorTrackList.Columns.Count - 1; i++)
                 {
-                    this.dgvTrackList.Columns[i].Visible = model.ColumnVisibilityArray[i];
+                    this.dgvSelectorTrackList.Columns[i].Visible = model.ColumnVisibilityArray[i];
                 }
             }
-
             this.selectorTrackListBindingSource.ResetBindings(false);
-
             this.UpdateSelectorTracklistColor(model.CurrentTrackIdInPlaylist);
-
         }
         private void dgvSelectorTrackList_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
         {
@@ -415,16 +401,13 @@ namespace MitoPlayer_2024.Views
         {
             this.UpdateSelectorTracklistColor(model.CurrentTrackIdInPlaylist);
         }
-
         private bool isShortTrackColouringEnabledInSelectorTrackList { get; set; }
         private TimeSpan shortTrackColouringThresholdInSelectorTrackList { get; set; }
-
-        internal void InitializeShortTrackColouringInSelectorTrackList(bool isColouringEnabled, TimeSpan shortTrackColouringThreshold)
+        internal void InitializeShortTrackColouringInSelector(bool isColouringEnabled, TimeSpan shortTrackColouringThreshold)
         {
             this.isShortTrackColouringEnabledInSelectorTrackList = isColouringEnabled;
             this.shortTrackColouringThresholdInSelectorTrackList = shortTrackColouringThreshold;
         }
-
         TimeSpan songLengthInSelectorTrackList = new TimeSpan();
         TimeSpan thresholdInSelectorTrackList = new TimeSpan();
         public void UpdateSelectorTracklistColor(int currentTrackIdInPlaylist = -1)
@@ -519,6 +502,7 @@ namespace MitoPlayer_2024.Views
                 }
             }
         }
+
         #endregion
 
         private bool controlKey = false;
@@ -800,48 +784,15 @@ namespace MitoPlayer_2024.Views
                 lblTrackCount.Hide();
                 lblTrackSumLength.Hide();
             }
-
-
-
         }
 
         public void InitializeDisplayPlaylistList(bool isPlaylistListDisplayed)
         {
-            if (isPlaylistListDisplayed)
-            {
-                this.btnPlaylistListPanelToggle.Image = Resources.Arrow_Left_20_20;
-            }
-            else
-            {
-                this.btnPlaylistListPanelToggle.Image = Resources.Arrow_Right_20_20;
-                this.pnlPlaylistList.Hide();
 
-                if (this.dgvTrackList.Left > 9)
-                {
-                    this.dgvTrackList.Left -= this.trackListLeftOffset;
-                    this.dgvTrackList.Width += this.trackListLeftOffset;
-                }
-
-            }
         }
         public void UpdateDisplayPlaylistList(bool isPlaylistListDisplayed)
         {
-            if (isPlaylistListDisplayed)
-            {
-                this.btnPlaylistListPanelToggle.Image = Resources.Arrow_Left_20_20;
-                this.pnlPlaylistList.Show();
 
-                this.dgvTrackList.Left += this.trackListLeftOffset;
-                this.dgvTrackList.Width -= this.trackListLeftOffset;
-            }
-            else
-            {
-                this.btnPlaylistListPanelToggle.Image = Resources.Arrow_Right_20_20;
-                this.pnlPlaylistList.Hide();
-
-                this.dgvTrackList.Left -= this.trackListLeftOffset;
-                this.dgvTrackList.Width += this.trackListLeftOffset;
-            }
         }
 
         //UPDATE MAINVIEW VIEW
@@ -1550,11 +1501,10 @@ namespace MitoPlayer_2024.Views
             this.ChangeFilterParametersEvent?.Invoke(this, new Messenger() { StringField1 = this.txtbFilter.Text });
 
             int rowIndex = 0;
-            if (this.dgvTrackList != null && this.dgvTrackList.SelectedCells.Count > 0)
+            if (this.dgvSelectorTrackList != null && this.dgvSelectorTrackList.SelectedCells.Count > 0)
             {
-                rowIndex = this.dgvTrackList.SelectedCells[0].RowIndex;
+                rowIndex = this.dgvSelectorTrackList.SelectedCells[0].RowIndex;
             }
-            this.LoadCoversEvent?.Invoke(this, new Messenger() { IntegerField1 = rowIndex });
         }
 
         private void btnClearTagValueFilter_Click(object sender, EventArgs e)
@@ -1664,7 +1614,7 @@ namespace MitoPlayer_2024.Views
 
             if (dgvTrackList.SelectedRows.Count > 0)
             {
-                this.lblSelectedItemsCount.Text = $"{this.dgvTrackList.SelectedRows.Count} item{(this.dgvTrackList.SelectedRows.Count > 1 ? "s" : "")} selected";
+                this.lblSelectedItemsCountInSelector.Text = $"{this.dgvTrackList.SelectedRows.Count} item{(this.dgvTrackList.SelectedRows.Count > 1 ? "s" : "")} selected";
 
                 int totalSeconds = 0;
 
@@ -1710,7 +1660,7 @@ namespace MitoPlayer_2024.Views
                     length = $"{0:D2}:{totalTime.Seconds:D2}";
                 }
 
-                this.lblSelectedItemsLength.Text = $"Length: {length}";
+                this.lblSelectedItemsLengthInSelector.Text = $"Length: {length}";
             }
         }
         // Event handler for double-clicks in the DataGridView
@@ -2480,7 +2430,7 @@ namespace MitoPlayer_2024.Views
 
             if (dgvSelectorTrackList.SelectedRows.Count > 0)
             {
-                this.lblSelectedItemsCount.Text = $"{dgvSelectorTrackList.SelectedRows.Count} item{(dgvSelectorTrackList.SelectedRows.Count > 1 ? "s" : "")} selected";
+                this.lblSelectedItemsCountInSelector.Text = $"{dgvSelectorTrackList.SelectedRows.Count} item{(dgvSelectorTrackList.SelectedRows.Count > 1 ? "s" : "")} selected";
 
                 int totalSeconds = 0;
                 foreach (DataGridViewRow row in dgvSelectorTrackList.SelectedRows)
@@ -2497,7 +2447,7 @@ namespace MitoPlayer_2024.Views
                                 totalTime.Minutes > 0 ? $"{totalTime.Minutes:D2}:{totalTime.Seconds:D2}" :
                                 $"00:{totalTime.Seconds:D2}";
 
-                this.lblSelectedItemsLength.Text = $"Length: {length}";
+                this.lblSelectedItemsLengthInSelector.Text = $"Length: {length}";
             }
         }
         private void dgvSelectorTrackList_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -2877,7 +2827,5 @@ namespace MitoPlayer_2024.Views
         {
             this.ToggleSelectorTracklistSelection(true);
         }
-
- 
     }
 }

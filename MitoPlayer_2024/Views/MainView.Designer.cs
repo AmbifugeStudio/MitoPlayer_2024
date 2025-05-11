@@ -80,20 +80,20 @@ namespace MitoPlayer_2024
             this.label1 = new System.Windows.Forms.Label();
             this.pcbMasterPeakRightColoured = new System.Windows.Forms.PictureBox();
             this.pcbMasterPeakLeftBackground = new System.Windows.Forms.PictureBox();
-            this.btnHarmonizer = new System.Windows.Forms.Button();
-            this.btnTemplates = new System.Windows.Forms.Button();
-            this.btnRules = new System.Windows.Forms.Button();
             this.pcbMasterPeakLeftColoured = new System.Windows.Forms.PictureBox();
             this.btnTracks = new System.Windows.Forms.Button();
             this.btnTagValues = new System.Windows.Forms.Button();
             this.btnPlaylist = new System.Windows.Forms.Button();
             this.mediaPlayer = new AxWMPLib.AxWindowsMediaPlayer();
             this.pnlMediaPlayer = new System.Windows.Forms.Panel();
+            this.pnlFrequency = new System.Windows.Forms.Panel();
             this.btnPlot = new System.Windows.Forms.Button();
+            this.prbVolume = new MitoPlayer_2024.Helpers.CustomProgressBar();
             this.lblCurrentTrack = new System.Windows.Forms.Label();
             this.lblTrackEnd = new System.Windows.Forms.Label();
             this.btnOpenDirectory = new System.Windows.Forms.Button();
             this.btnOpen = new System.Windows.Forms.Button();
+            this.prbTrackProgress = new MitoPlayer_2024.Helpers.CustomProgressBar();
             this.chbMute = new System.Windows.Forms.CheckBox();
             this.chbPreview = new System.Windows.Forms.CheckBox();
             this.chbShuffle = new System.Windows.Forms.CheckBox();
@@ -108,9 +108,6 @@ namespace MitoPlayer_2024
             this.pnlMarkerBackground = new System.Windows.Forms.Panel();
             this.pcbMarkerGrey = new System.Windows.Forms.PictureBox();
             this.pcbMarkerRed = new System.Windows.Forms.PictureBox();
-            this.pnlFrequency = new System.Windows.Forms.Panel();
-            this.prbVolume = new MitoPlayer_2024.Helpers.CustomProgressBar();
-            this.prbTrackProgress = new MitoPlayer_2024.Helpers.CustomProgressBar();
             this.strMenu.SuspendLayout();
             this.pnlMainMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pcbMasterPeakRightBackground)).BeginInit();
@@ -446,9 +443,6 @@ namespace MitoPlayer_2024
             this.pnlMainMenu.Controls.Add(this.label1);
             this.pnlMainMenu.Controls.Add(this.pcbMasterPeakRightColoured);
             this.pnlMainMenu.Controls.Add(this.pcbMasterPeakLeftBackground);
-            this.pnlMainMenu.Controls.Add(this.btnHarmonizer);
-            this.pnlMainMenu.Controls.Add(this.btnTemplates);
-            this.pnlMainMenu.Controls.Add(this.btnRules);
             this.pnlMainMenu.Controls.Add(this.pcbMasterPeakLeftColoured);
             this.pnlMainMenu.Controls.Add(this.btnTracks);
             this.pnlMainMenu.Controls.Add(this.btnTagValues);
@@ -528,40 +522,6 @@ namespace MitoPlayer_2024
             this.pcbMasterPeakLeftBackground.TabIndex = 7;
             this.pcbMasterPeakLeftBackground.TabStop = false;
             // 
-            // btnHarmonizer
-            // 
-            this.btnHarmonizer.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnHarmonizer.Location = new System.Drawing.Point(0, 305);
-            this.btnHarmonizer.Name = "btnHarmonizer";
-            this.btnHarmonizer.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.btnHarmonizer.Size = new System.Drawing.Size(91, 62);
-            this.btnHarmonizer.TabIndex = 0;
-            this.btnHarmonizer.Text = "HARMONIZER";
-            this.btnHarmonizer.UseVisualStyleBackColor = false;
-            this.btnHarmonizer.Click += new System.EventHandler(this.btnHarmonizer_Click);
-            // 
-            // btnTemplates
-            // 
-            this.btnTemplates.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnTemplates.Location = new System.Drawing.Point(0, 244);
-            this.btnTemplates.Name = "btnTemplates";
-            this.btnTemplates.Size = new System.Drawing.Size(91, 62);
-            this.btnTemplates.TabIndex = 0;
-            this.btnTemplates.Text = "Templates";
-            this.btnTemplates.UseVisualStyleBackColor = false;
-            this.btnTemplates.Click += new System.EventHandler(this.btnTemplates_Click);
-            // 
-            // btnRules
-            // 
-            this.btnRules.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnRules.Location = new System.Drawing.Point(0, 183);
-            this.btnRules.Name = "btnRules";
-            this.btnRules.Size = new System.Drawing.Size(91, 62);
-            this.btnRules.TabIndex = 0;
-            this.btnRules.Text = "Rules";
-            this.btnRules.UseVisualStyleBackColor = false;
-            this.btnRules.Click += new System.EventHandler(this.btnRules_Click);
-            // 
             // pcbMasterPeakLeftColoured
             // 
             this.pcbMasterPeakLeftColoured.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -582,9 +542,9 @@ namespace MitoPlayer_2024
             this.btnTracks.Name = "btnTracks";
             this.btnTracks.Size = new System.Drawing.Size(91, 62);
             this.btnTracks.TabIndex = 0;
-            this.btnTracks.Text = "Tracks";
+            this.btnTracks.Text = "Selector";
             this.btnTracks.UseVisualStyleBackColor = false;
-            this.btnTracks.Click += new System.EventHandler(this.btnTracks_Click);
+            this.btnTracks.Click += new System.EventHandler(this.btnSelector_Click);
             // 
             // btnTagValues
             // 
@@ -642,6 +602,14 @@ namespace MitoPlayer_2024
             this.pnlMediaPlayer.Size = new System.Drawing.Size(1813, 62);
             this.pnlMediaPlayer.TabIndex = 4;
             // 
+            // pnlFrequency
+            // 
+            this.pnlFrequency.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnlFrequency.Location = new System.Drawing.Point(753, 28);
+            this.pnlFrequency.Name = "pnlFrequency";
+            this.pnlFrequency.Size = new System.Drawing.Size(917, 31);
+            this.pnlFrequency.TabIndex = 52;
+            // 
             // btnPlot
             // 
             this.btnPlot.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -655,6 +623,17 @@ namespace MitoPlayer_2024
             this.btnPlot.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             this.btnPlot.UseVisualStyleBackColor = true;
             this.btnPlot.Click += new System.EventHandler(this.btnPlot_Click);
+            // 
+            // prbVolume
+            // 
+            this.prbVolume.Location = new System.Drawing.Point(351, 10);
+            this.prbVolume.Name = "prbVolume";
+            this.prbVolume.ProgressBarBackgroundColor = System.Drawing.Color.Empty;
+            this.prbVolume.ProgressBarColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(191)))), ((int)(((byte)(128)))));
+            this.prbVolume.Size = new System.Drawing.Size(107, 23);
+            this.prbVolume.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            this.prbVolume.TabIndex = 12;
+            this.prbVolume.MouseDown += new System.Windows.Forms.MouseEventHandler(this.prbVolume_MouseDown);
             // 
             // lblCurrentTrack
             // 
@@ -705,6 +684,20 @@ namespace MitoPlayer_2024
             this.btnOpen.Text = "⏏";
             this.btnOpen.UseVisualStyleBackColor = true;
             this.btnOpen.Click += new System.EventHandler(this.btnOpen_Click);
+            // 
+            // prbTrackProgress
+            // 
+            this.prbTrackProgress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.prbTrackProgress.Location = new System.Drawing.Point(753, 4);
+            this.prbTrackProgress.Name = "prbTrackProgress";
+            this.prbTrackProgress.ProgressBarBackgroundColor = System.Drawing.Color.Empty;
+            this.prbTrackProgress.ProgressBarColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(191)))), ((int)(((byte)(128)))));
+            this.prbTrackProgress.Size = new System.Drawing.Size(917, 18);
+            this.prbTrackProgress.Step = 1;
+            this.prbTrackProgress.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            this.prbTrackProgress.TabIndex = 45;
+            this.prbTrackProgress.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pBar_MouseDown);
             // 
             // chbMute
             // 
@@ -863,39 +856,6 @@ namespace MitoPlayer_2024
             this.pcbMarkerRed.TabIndex = 14;
             this.pcbMarkerRed.TabStop = false;
             // 
-            // pnlFrequency
-            // 
-            this.pnlFrequency.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pnlFrequency.Location = new System.Drawing.Point(753, 28);
-            this.pnlFrequency.Name = "pnlFrequency";
-            this.pnlFrequency.Size = new System.Drawing.Size(917, 31);
-            this.pnlFrequency.TabIndex = 52;
-            // 
-            // prbVolume
-            // 
-            this.prbVolume.Location = new System.Drawing.Point(351, 10);
-            this.prbVolume.Name = "prbVolume";
-            this.prbVolume.ProgressBarBackgroundColor = System.Drawing.Color.Empty;
-            this.prbVolume.ProgressBarColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(191)))), ((int)(((byte)(128)))));
-            this.prbVolume.Size = new System.Drawing.Size(107, 23);
-            this.prbVolume.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
-            this.prbVolume.TabIndex = 12;
-            this.prbVolume.MouseDown += new System.Windows.Forms.MouseEventHandler(this.prbVolume_MouseDown);
-            // 
-            // prbTrackProgress
-            // 
-            this.prbTrackProgress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.prbTrackProgress.Location = new System.Drawing.Point(753, 4);
-            this.prbTrackProgress.Name = "prbTrackProgress";
-            this.prbTrackProgress.ProgressBarBackgroundColor = System.Drawing.Color.Empty;
-            this.prbTrackProgress.ProgressBarColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(191)))), ((int)(((byte)(128)))));
-            this.prbTrackProgress.Size = new System.Drawing.Size(917, 18);
-            this.prbTrackProgress.Step = 1;
-            this.prbTrackProgress.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
-            this.prbTrackProgress.TabIndex = 45;
-            this.prbTrackProgress.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pBar_MouseDown);
-            // 
             // MainView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -972,10 +932,7 @@ namespace MitoPlayer_2024
         private System.Windows.Forms.ToolStripMenuItem menuStripClear;
         private System.Windows.Forms.Button btnTagValues;
         private System.Windows.Forms.ToolStripMenuItem menuStripDeletePlaylist;
-        private System.Windows.Forms.Button btnTemplates;
-        private System.Windows.Forms.Button btnRules;
         private System.Windows.Forms.Button btnTracks;
-        private System.Windows.Forms.Button btnHarmonizer;
         public AxWMPLib.AxWindowsMediaPlayer mediaPlayer;
         private System.Windows.Forms.Panel pnlMediaPlayer;
         private System.Windows.Forms.Label lblTrackEnd;

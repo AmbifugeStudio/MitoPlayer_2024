@@ -69,6 +69,7 @@ namespace MitoPlayer_2024.IViews
         void InitializePlaylistList(DataTableModel model);
         void ReloadPlaylistList(DataTableModel model);
         void InitializeTrackList(DataTableModel model);
+        void InitializeSelectorTrackList(DataTableModel model);
         void ReloadTrackList(DataTableModel model);
         void UpdateAfterPlayTrack(int currentTrackIndex, int currentTrackId);
         void UpdateAfterPlayTrackAfterPause();

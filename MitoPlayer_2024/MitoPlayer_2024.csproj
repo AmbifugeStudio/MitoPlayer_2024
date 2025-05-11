@@ -321,9 +321,11 @@
     <Compile Include="IViews\ILiveStreamAnimationSettingView.cs" />
     <Compile Include="IViews\ILiveStreamAnimationView.cs" />
     <Compile Include="IViews\IPlaylistCreatorView.cs" />
+    <Compile Include="IViews\ISelectorView.cs" />
     <Compile Include="Presenters\LiveStreamAnimationPresenter.cs" />
     <Compile Include="Presenters\LiveStreamAnimationSettingPresenter.cs" />
     <Compile Include="Presenters\PlaylistCreatorPresenter.cs" />
+    <Compile Include="Presenters\SelectorPresenter.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -507,6 +509,12 @@
     <Compile Include="Views\LiveStreamAnimationSettingView.Designer.cs">
       <DependentUpon>LiveStreamAnimationSettingView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\SelectorView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\SelectorView.Designer.cs">
+      <DependentUpon>SelectorView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\SettingsView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -623,6 +631,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\LiveStreamAnimationSettingView.resx">
       <DependentUpon>LiveStreamAnimationSettingView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\SelectorView.resx">
+      <DependentUpon>SelectorView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\SettingsView.resx">
       <DependentUpon>SettingsView.cs</DependentUpon>
