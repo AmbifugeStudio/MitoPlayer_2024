@@ -4,7 +4,7 @@ using MitoPlayer_2024.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SQLite;
+using Microsoft.Data.Sqlite;
 
 namespace MitoPlayer_2024.Dao
 {
@@ -28,8 +28,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     connection.Open();
                     command.Connection = connection;
@@ -49,7 +49,7 @@ namespace MitoPlayer_2024.Dao
                     }
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 Logger.Error($"Error occurred while fetching the last ID from table: {tableName}", ex);
             }
@@ -174,6 +174,8 @@ namespace MitoPlayer_2024.Dao
                 this.InitializeStringSetting(Settings.TrackColumnVisibility.ToString());
             if (result)
                 this.InitializeIntegerSetting(Settings.CurrentPlaylistId.ToString());
+            if (result)
+                this.InitializeIntegerSetting(Settings.CurrentSelectorPlaylistId.ToString());
 
             //SETTING MENU
             if (result)
@@ -232,6 +234,10 @@ namespace MitoPlayer_2024.Dao
                 this.InitializeDecimalSetting(Settings.ArtistMinimumCharacter.ToString());
             if (result)
                 this.InitializeDecimalSetting(Settings.TitleMinimumCharacter.ToString());
+
+            //SELECTOR
+            if (result)
+                this.InitializeBooleanSetting(Settings.IsTrackListActive.ToString());
 
             //LIVE STREAM ANIMATION
             if (result)
@@ -304,8 +310,8 @@ namespace MitoPlayer_2024.Dao
         {
             bool result = false;
 
-            using (var connection = new SQLiteConnection(connectionString))
-            using (var command = new SQLiteCommand())
+            using (var connection = new SqliteConnection(connectionString))
+            using (var command = connection.CreateCommand())
             {
                 connection.Open();
                 command.Connection = connection;
@@ -336,22 +342,22 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandText = @"INSERT INTO Setting (Name,StringValue,ProfileId) 
                                     VALUES (@Name,@StringValue,@ProfileId)";
 
-                    command.Parameters.AddWithValue("@Name", name);
-                    command.Parameters.AddWithValue("@StringValue", value);
+                    command.Parameters.AddWithValue("@Name", name ?? "");
+                    command.Parameters.AddWithValue("@StringValue", value ?? "");
                     command.Parameters.AddWithValue("@ProfileId", withoutProfile ? -1 : this.profileId);
 
                     connection.Open();
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"Setting [{name}] is not inserted. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -366,14 +372,14 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandText = @"INSERT INTO Setting (Name,IntegerValue,ProfileId) 
                                     VALUES (@Name,@IntegerValue,@ProfileId)";
 
-                    command.Parameters.AddWithValue("@Name", name);
+                    command.Parameters.AddWithValue("@Name", name ?? "");
                     command.Parameters.AddWithValue("@IntegerValue", value);
                     command.Parameters.AddWithValue("@ProfileId", withoutProfile ? -1 : this.profileId);
 
@@ -381,7 +387,7 @@ namespace MitoPlayer_2024.Dao
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"Setting [{name}] is not inserted. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -396,14 +402,14 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandText = @"INSERT INTO Setting (Name,DecimalValue,ProfileId) 
                                     VALUES (@Name,@DecimalValue,@ProfileId)";
 
-                    command.Parameters.AddWithValue("@Name", name);
+                    command.Parameters.AddWithValue("@Name", name ?? "");
                     command.Parameters.AddWithValue("@DecimalValue", value);
                     command.Parameters.AddWithValue("@ProfileId", withoutProfile ? -1 : this.profileId);
 
@@ -411,7 +417,7 @@ namespace MitoPlayer_2024.Dao
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"Setting [{name}] is not inserted. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -426,22 +432,22 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandText = @"INSERT INTO Setting (Name,BooleanValue,ProfileId) 
                                     VALUES (@Name,@BooleanValue,@ProfileId)";
 
-                    command.Parameters.AddWithValue("@Name", name);
-                    command.Parameters.AddWithValue("@BooleanValue", value);
+                    command.Parameters.AddWithValue("@Name", name ?? "");
+                    command.Parameters.AddWithValue("@BooleanValue", value ? 1 :0);
                     command.Parameters.AddWithValue("@ProfileId", withoutProfile ? -1 : this.profileId);
 
                     connection.Open();
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"Setting [{name}] is not inserted. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -457,8 +463,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandText = @"SELECT StringValue 
@@ -479,7 +485,7 @@ namespace MitoPlayer_2024.Dao
                     }
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"Error occurred while fetching StringSetting with Name [{name}]. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -494,8 +500,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     
                     command.Connection = connection;
@@ -517,7 +523,7 @@ namespace MitoPlayer_2024.Dao
                     }
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"Error occurred while fetching IntegerSetting with Name [{name}]. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -532,8 +538,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     
                     command.Connection = connection;
@@ -555,7 +561,7 @@ namespace MitoPlayer_2024.Dao
                     }
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"Error occurred while fetching DecimalSetting with Name [{name}]. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -570,8 +576,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     connection.Open();
                     command.Connection = connection;
@@ -592,7 +598,7 @@ namespace MitoPlayer_2024.Dao
                     }
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"Error occurred while fetching BooleanSetting with Name [{name}]. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -607,8 +613,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     
                     command.Connection = connection;
@@ -625,7 +631,7 @@ namespace MitoPlayer_2024.Dao
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"Setting [{name}] is not updated. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -640,8 +646,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     
                     command.Connection = connection;
@@ -658,7 +664,7 @@ namespace MitoPlayer_2024.Dao
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"Setting [{name}] is not updated. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -673,8 +679,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     
                     command.Connection = connection;
@@ -691,7 +697,7 @@ namespace MitoPlayer_2024.Dao
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"Setting [{name}] is not updated. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -706,8 +712,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     
                     command.Connection = connection;
@@ -724,7 +730,7 @@ namespace MitoPlayer_2024.Dao
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"Setting [{name}] is not updated. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -739,8 +745,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                    
                     command.Connection = connection;
@@ -754,7 +760,7 @@ namespace MitoPlayer_2024.Dao
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"Settings for ProfileId [{this.profileId}] are not deleted. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -790,8 +796,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandText = @"SELECT SortingId 
@@ -812,7 +818,7 @@ namespace MitoPlayer_2024.Dao
                     }
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"Error occurred while fetching next SortingId for TrackProperty. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -828,17 +834,17 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     
                     command.Connection = connection;
                     command.CommandText = @"INSERT INTO TrackProperty (ColumnGroup,Name,Type,IsEnabled,SortingId,ProfileId) 
                                     VALUES (@ColumnGroup,@Name,@Type,@IsEnabled,@SortingId,@ProfileId)";
 
-                    command.Parameters.AddWithValue("@ColumnGroup", tp.ColumnGroup);
-                    command.Parameters.AddWithValue("@Name", tp.Name);
-                    command.Parameters.AddWithValue("@Type", tp.Type);
+                    command.Parameters.AddWithValue("@ColumnGroup", tp.ColumnGroup ?? "");
+                    command.Parameters.AddWithValue("@Name", tp.Name ?? "");
+                    command.Parameters.AddWithValue("@Type", tp.Type ?? "");
                     command.Parameters.AddWithValue("@IsEnabled", tp.IsEnabled ? 1 : 0); 
                     command.Parameters.AddWithValue("@SortingId", tp.SortingId);
                     command.Parameters.AddWithValue("@ProfileId", withoutProfile ? -1 : this.profileId);
@@ -847,7 +853,7 @@ namespace MitoPlayer_2024.Dao
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"TrackProperty [{tp.Name}] is not inserted. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -863,8 +869,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     connection.Open();
                     command.Connection = connection;
@@ -892,7 +898,7 @@ namespace MitoPlayer_2024.Dao
                     }
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"Error occurred while fetching TrackProperty with Id [{id}]. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -908,8 +914,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandText = @"SELECT * FROM TrackProperty 
@@ -940,7 +946,7 @@ namespace MitoPlayer_2024.Dao
                     }
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"Error occurred while fetching TrackProperty by Name [{name}] and ColumnGroup [{columnGroup}]. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -955,8 +961,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     connection.Open();
                     command.Connection = connection;
@@ -999,7 +1005,7 @@ namespace MitoPlayer_2024.Dao
                     }
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"Error occurred while fetching TrackProperty list by ColumnGroup [{columnGroup}]. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -1014,8 +1020,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     connection.Open();
                     command.Connection = connection;
@@ -1039,7 +1045,7 @@ namespace MitoPlayer_2024.Dao
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"TrackProperty [{tp.Name}] is not updated. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -1054,8 +1060,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     
                     command.Connection = connection;
@@ -1070,7 +1076,7 @@ namespace MitoPlayer_2024.Dao
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"TrackProperty with ID [{id}] is not deleted. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -1085,8 +1091,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     
                     command.Connection = connection;
@@ -1099,7 +1105,7 @@ namespace MitoPlayer_2024.Dao
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"TrackProperties are not deleted. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -1114,8 +1120,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandText = "DELETE FROM Setting";
@@ -1124,7 +1130,7 @@ namespace MitoPlayer_2024.Dao
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"Setting table has not been cleared. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -1139,8 +1145,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandText = "DELETE FROM TrackProperty";
@@ -1149,7 +1155,7 @@ namespace MitoPlayer_2024.Dao
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"TrackProperty table has not been cleared. \n{ex.Message}";
                 result.AddError(errorMessage);

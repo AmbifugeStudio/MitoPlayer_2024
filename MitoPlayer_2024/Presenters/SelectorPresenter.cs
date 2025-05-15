@@ -1,5 +1,6 @@
 ﻿using FlacLibSharp;
 using MitoPlayer_2024.Helpers;
+using MitoPlayer_2024.Helpers.ErrorHandling;
 using MitoPlayer_2024.IViews;
 using MitoPlayer_2024.Model;
 using MitoPlayer_2024.Models;
@@ -27,7 +28,8 @@ namespace MitoPlayer_2024.Presenters
         private ITagDao tagDao { get; set; }
         private ISettingDao settingDao { get; set; }
 
-        private bool isInitializing = true;
+        private bool isTrackListInitializing = true;
+        private bool isSelectorTrackListInitializing = true;
 
         public SelectorPresenter(ISelectorView view, ITrackDao trackDao, ITagDao tagValueDao, ISettingDao settingDao)
         {
@@ -44,9 +46,19 @@ namespace MitoPlayer_2024.Presenters
             this.selectorView.StopTrackEvent += StopTrackEvent;
 
             //TRACKLIST
+            this.selectorView.SetTrackListToActive += SelectorView_SetTrackListToActive;
+
+
+
+
             this.selectorView.OrderByColumnEvent += OrderByColumnEvent;
+            this.selectorView.OrderSelectorByColumnEvent += OrderSelectorByColumnEvent;
 
             //SELECTOR TRACKLIST
+            this.selectorView.SetSelectorToActive += SelectorView_SetSelectorToActive;
+
+
+
 
             this.selectorView.DeleteTracksEvent += DeleteTracksEvent;
 
@@ -64,7 +76,6 @@ namespace MitoPlayer_2024.Presenters
             this.selectorView.LoadPlaylistEvent += LoadPlaylistEvent;
             this.selectorView.MovePlaylistEvent += MovePlaylistEvent;
             this.selectorView.DeletePlaylistEvent += DeletePlaylistEvent;
-            // this.selectorView.SetQuickListEvent += SetQuickListEvent;
             this.selectorView.ExportToM3UEvent += ExportToM3UEvent;
             this.selectorView.ExportToTXTEvent += ExportToTXTEvent;
             this.selectorView.DisplayPlaylistListEvent += DisplayPlaylistListEvent;
@@ -87,11 +98,18 @@ namespace MitoPlayer_2024.Presenters
 
         }
 
+       
+
+
+       
+
 
         #region INITIALIZE
         public void Initialize(MediaPlayerComponent mediaPlayer)
         {
-            isInitializing = true;
+            isTrackListInitializing = true;
+            isSelectorTrackListInitializing = true;
+
             using (LoadingDialog loadingDialog = new LoadingDialog())
             {
                 loadingDialog.Show();
@@ -111,6 +129,7 @@ namespace MitoPlayer_2024.Presenters
                     this.InitializePlaylistList();
 
                     this.InitializeShortTrackColouring();
+                    this.InitializeActiveTracklist();
 
                     loadingDialog.SetProcessDescription("Initialize tracklist grid structure...");
                     loadingDialog.Refresh();
@@ -123,8 +142,8 @@ namespace MitoPlayer_2024.Presenters
                     loadingDialog.Refresh();
 
                     this.InitializeSelectorTracklistColumns();
-                    this.InitializeSelectorTrackListRows(this.trackListTable, null);
-                    this.InitializeSelectorTrackList(this.trackListTable);
+                    this.InitializeSelectorTrackListRows(this.selectorTrackListTable, null);
+                    this.InitializeSelectorTrackList(this.selectorTrackListTable);
 
                     loadingDialog.SetProcessDescription("Initialize tag editor and filter component...");
                     loadingDialog.Refresh();
@@ -156,7 +175,9 @@ namespace MitoPlayer_2024.Presenters
                     MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-            isInitializing = false;
+            isTrackListInitializing = false;
+            isSelectorTrackListInitializing = false;
+
         }
         #endregion
 
@@ -249,25 +270,75 @@ namespace MitoPlayer_2024.Presenters
         {
             this.playlistListBindingSource.DataSource = this.playlistListTable;
             this.currentPlaylistId = this.settingDao.GetIntegerSetting(Settings.CurrentPlaylistId.ToString()).Value;
+            this.currentSelectorPlaylistId = this.settingDao.GetIntegerSetting(Settings.CurrentSelectorPlaylistId.ToString()).Value;
 
             DataTableModel model = new DataTableModel()
             {
                 BindingSource = this.playlistListBindingSource,
                 ColumnVisibilityArray = this.playlistListColumnVisibilityArray,
-                CurrentPlaylistId = this.currentPlaylistId
+                CurrentPlaylistId = this.isTrackListActive ? this.currentPlaylistId : this.currentSelectorPlaylistId
             };
 
-            if (this.currentPlaylistId > -1)
+            if (this.isTrackListActive)
             {
-                Playlist currentPlayist = this.trackDao.GetPlaylist(this.currentPlaylistId).Value;
-                model.CurrentPlaylistName = currentPlayist.Name;
+                if (this.currentPlaylistId > -1)
+                {
+                    Playlist currentPlayist = this.trackDao.GetPlaylist(this.currentPlaylistId).Value;
+                    if (currentPlayist != null)
+                    {
+                        model.CurrentPlaylistName = currentPlayist.Name;
+                    }
+                }
             }
+            else
+            {
+                if (this.currentSelectorPlaylistId > -1)
+                {
+                    Playlist currentPlayist = this.trackDao.GetPlaylist(this.currentSelectorPlaylistId).Value;
+                    if(currentPlayist != null)
+                    {
+                        model.CurrentPlaylistName = currentPlayist.Name;
+                    }
+                    
+                }
+            }
+            
 
             this.selectorView.InitializePlaylistList(model);
         }
         private void ReloadPlaylist()
         {
             this.InitializePlaylistList();
+        }
+        #endregion
+
+        #region INITIALIZE - ACTIVE TRACKLIST
+        private bool isTrackListActive{ get; set; }
+        private void InitializeActiveTracklist()
+        {
+            ResultOrError<bool?> isActive = this.settingDao.GetBooleanSetting(Settings.IsTrackListActive.ToString());
+            if (isActive.Value == null)
+            {
+                this.isTrackListActive = true;
+                this.settingDao.SetBooleanSetting(Settings.IsTrackListActive.ToString(), this.isTrackListActive);
+            }
+            else
+            {
+                this.isTrackListActive = isActive.Value.Value;
+            }
+            ((SelectorView)this.selectorView).InitializeTracklistActiveButton(this.isTrackListActive);
+        }
+        private void SelectorView_SetTrackListToActive(object sender, Messenger e)
+        {
+            this.isTrackListActive = true;
+            this.settingDao.SetBooleanSetting(Settings.IsTrackListActive.ToString(), this.isTrackListActive);
+            LoadPlaylistEvent(sender, e);
+        }
+        private void SelectorView_SetSelectorToActive(object sender, Messenger e)
+        {
+            this.isTrackListActive = false;
+            this.settingDao.SetBooleanSetting(Settings.IsTrackListActive.ToString(), this.isTrackListActive);
+            LoadPlaylistEvent(sender, e);
         }
         #endregion
 
@@ -309,7 +380,7 @@ namespace MitoPlayer_2024.Presenters
                 this.trackColumnVisibilityArray = tpList.Select(x => x.IsEnabled).ToArray();
             }
         }
-        private void InitializeTrackListRows(DataTable tracklistTable, List<Model.Track> trackList)
+        private void InitializeTrackListRows(DataTable tracklistTable, List<Model.Track> tList)
         {
             using (LoadingDialog loadingDialog = new LoadingDialog())
             {
@@ -320,7 +391,7 @@ namespace MitoPlayer_2024.Presenters
 
                 tracklistTable.Clear();
 
-                if (trackList == null)
+                if (tList == null)
                 {
                     List<Playlist> plsList = this.trackDao.GetAllPlaylist().Value;
                     Playlist actualPlaylist = null;
@@ -328,17 +399,21 @@ namespace MitoPlayer_2024.Presenters
                     {
                         actualPlaylist = plsList.Find(x => x.Id == this.currentPlaylistId);
                     }
-                    trackList = this.trackDao.GetTracklistWithTagsByPlaylistId(actualPlaylist.Id, this.tagList).Value;
-                    this.tracklist = tracklist;
+                    if(actualPlaylist != null)
+                    {
+                        tList = this.trackDao.GetTracklistWithTagsByPlaylistId(actualPlaylist.Id, this.tagList).Value;
+                        this.tracklist = tList;
+                    }
+                    
                 }
 
-                if (trackList != null && trackList.Count > 0)
+                if (tList != null && tList.Count > 0)
                 {
                     try
                     {
                         bool isMissing = false;
 
-                        foreach (Model.Track track in trackList)
+                        foreach (Model.Track track in tList)
                         {
                             if (track.IsMissing && File.Exists(track.Path))
                             {
@@ -381,8 +456,6 @@ namespace MitoPlayer_2024.Presenters
                                 }
                             }
 
-
-
                             tracklistTable.Rows.Add(dataRow);
                         }
                     }
@@ -392,12 +465,26 @@ namespace MitoPlayer_2024.Presenters
                     }
                 }
 
-            ((SelectorView)this.selectorView).UpdateTrackCountAndLength(this.currentPlaylistId);
+                this.UpdateTrackCountAndLength();
             }
         }
+
+        private void UpdateTrackCountAndLength()
+        {
+            if (this.isTrackListActive)
+            {
+                ((SelectorView)this.selectorView).UpdateTrackCountAndLength(this.currentPlaylistId, true);
+            }
+            else
+            {
+                ((SelectorView)this.selectorView).UpdateTrackCountAndLength(this.currentSelectorPlaylistId, false);
+            }
+               
+        }
+
         private void InitializeTrackList(DataTable trackListTable, int currentTrackIdInPlaylist = -1)
         {
-            if (!isInitializing)
+            if (!isTrackListInitializing)
                 ((SelectorView)this.selectorView).ToggleTracklistSelection(false);
 
             this.trackListBindingSource.DataSource = trackListTable;
@@ -412,10 +499,10 @@ namespace MitoPlayer_2024.Presenters
 
             this.selectorView.InitializeTrackList(model);
 
-            if (!isInitializing)
+            if (!isTrackListInitializing)
                 ((SelectorView)this.selectorView).ToggleTracklistSelection(true);
 
-            ((SelectorView)this.selectorView).UpdateTrackCountAndLength(this.currentPlaylistId);
+            this.UpdateTrackCountAndLength();
 
         }
         private MediaPlayerComponent mediaPlayerComponent { get; set; }
@@ -494,7 +581,7 @@ namespace MitoPlayer_2024.Presenters
                 this.selectorTrackColumnVisibilityArray = tpList.Select(x => x.IsEnabled).ToArray();
             }
         }
-        private void InitializeSelectorTrackListRows(DataTable tracklistTable, List<Model.Track> trackList)
+        private void InitializeSelectorTrackListRows(DataTable tracklistTable, List<Model.Track> tList)
         {
             using (LoadingDialog loadingDialog = new LoadingDialog())
             {
@@ -504,7 +591,7 @@ namespace MitoPlayer_2024.Presenters
 
                 tracklistTable.Clear();
 
-                if (trackList == null)
+                if (tList == null)
                 {
                     List<Playlist> plsList = this.trackDao.GetAllPlaylist().Value;
                     Playlist actualPlaylist = null;
@@ -512,17 +599,20 @@ namespace MitoPlayer_2024.Presenters
                     {
                         actualPlaylist = plsList.Find(x => x.Id == this.currentSelectorPlaylistId);
                     }
-                    trackList = this.trackDao.GetTracklistWithTagsByPlaylistId(actualPlaylist.Id, this.tagList).Value;
-                    this.tracklist = tracklist;
+                    if(actualPlaylist!= null)
+                    {
+                        tList = this.trackDao.GetTracklistWithTagsByPlaylistId(actualPlaylist.Id, this.tagList).Value;
+                        this.selectorTracklist = tList;
+                    }
                 }
 
-                if (trackList != null && trackList.Count > 0)
+                if (tList != null && tList.Count > 0)
                 {
                     try
                     {
                         bool isMissing = false;
 
-                        foreach (Model.Track track in trackList)
+                        foreach (Model.Track track in tList)
                         {
                             if (track.IsMissing && File.Exists(track.Path))
                             {
@@ -575,11 +665,13 @@ namespace MitoPlayer_2024.Presenters
                         MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
+
+                this.UpdateTrackCountAndLength();
             }
         }
         private void InitializeSelectorTrackList(DataTable trackListTable, int currentTrackIdInPlaylist = -1)
         {
-            if (!isInitializing)
+            if (!isSelectorTrackListInitializing)
                 ((SelectorView)this.selectorView).ToggleSelectorTracklistSelection(false);
 
             this.selectorTrackListBindingSource.DataSource = trackListTable;
@@ -594,8 +686,10 @@ namespace MitoPlayer_2024.Presenters
 
             this.selectorView.InitializeSelectorTrackList(model);
 
-            if (!isInitializing)
+            if (!isSelectorTrackListInitializing)
                 ((SelectorView)this.selectorView).ToggleSelectorTracklistSelection(true);
+
+            this.UpdateTrackCountAndLength();
         }
         private void ReloadSelectorTrackList()
         {
@@ -622,16 +716,21 @@ namespace MitoPlayer_2024.Presenters
                     }
                 }
             }
-            this.InitializeSelectorTrackList(this.filteredSelectorTrackListTable, currentTrackIdInPlaylist);
+            if(this.tagValueFilterList != null && this.tagValueFilterList.Count > 0)
+            {
+                this.InitializeSelectorTrackList(this.filteredSelectorTrackListTable, currentTrackIdInPlaylist);
+            }
+            else
+            {
+                this.InitializeSelectorTrackList(this.selectorTrackListTable, currentTrackIdInPlaylist);
+            }
+            
         }
         #endregion
 
         #region INITIALIZE - TAG COMPONENT AND PLAYLIST VISIBILITY
-        private bool isTagComponentDisplayed { get; set; }
         private void InitializeTagComponent()
         {
-            this.isTagComponentDisplayed = this.settingDao.GetBooleanSetting(Settings.IsTagEditorComponentDisplayed.ToString()).Value.Value;
-
             List<List<TagValue>> tagValueListContainer = new List<List<TagValue>>();
             foreach (Tag tag in this.tagList)
             {
@@ -642,14 +741,9 @@ namespace MitoPlayer_2024.Presenters
 
             ((SelectorView)this.selectorView).InitializeTagComponent(
                 this.tagList,
-                tagValueListContainer,
-                this.isTagComponentDisplayed,
-                false,
-                true);
+                tagValueListContainer);
 
-
-
-            ((SelectorView)this.selectorView).InitializeDisplayTagComponent(this.isTagComponentDisplayed);
+            ((SelectorView)this.selectorView).InitializeDisplayTagComponent();
         }
         private bool isPlaylistListDisplayed { get; set; }
         private void InitializedPlaylistList()
@@ -899,7 +993,7 @@ namespace MitoPlayer_2024.Presenters
             this.isTrackListChanged = true;
 
             this.selectorView.ChangeSaveButtonColor(true);
-            this.mediaPlayerComponent.SetWorkingTable(trackListTable);
+            this.mediaPlayerComponent.SetWorkingTable(this.trackListTable);
         }
         private async void SaveTrackList()
         {
@@ -956,6 +1050,20 @@ namespace MitoPlayer_2024.Presenters
         }
         #endregion
 
+        #region DATATABLE SAVES - SELECTOR
+        private void SelectorTrackListChanged()
+        {
+            if(this.tagValueFilterList != null && this.tagValueFilterList.Count > 0)
+            {
+                this.mediaPlayerComponent.SetWorkingTable(this.filteredSelectorTrackListTable);
+            }
+            else
+            {
+                this.mediaPlayerComponent.SetWorkingTable(this.selectorTrackListTable);
+            }
+        }
+        #endregion
+
         #region SELECTOR TRACKLIST - ORDER
         public void OrderSelectorByArtist()
         {
@@ -979,7 +1087,7 @@ namespace MitoPlayer_2024.Presenters
                 this.selectorTrackListTable = reversedDt;
 
                 this.ReloadSelectorTrackList();
-                //this.SelectorTrackListChanged();
+                this.SelectorTrackListChanged();
             }
         }
         public void ShuffleSelector()
@@ -1003,7 +1111,7 @@ namespace MitoPlayer_2024.Presenters
                 this.selectorTrackListTable = sortedDT;
 
                 this.ReloadSelectorTrackList();
-                //this.TrackListChanged();
+                this.SelectorTrackListChanged();
             }
         }
         public void OrderSelectorByColumnEvent(object sender, Messenger e)
@@ -1015,33 +1123,55 @@ namespace MitoPlayer_2024.Presenters
             if (this.selectorTrackListTable != null && this.selectorTrackListTable.Rows != null && this.selectorTrackListTable.Rows.Count > 0 && !isSaving)
             {
                 DataView dv = new DataView();
-                dv = this.filteredSelectorTrackListTable.DefaultView;
+
+                DataTable sourceTable = new DataTable();
+                
+                if(this.tagValueFilterList != null && this.tagValueFilterList.Count > 0)
+                {
+                    sourceTable = this.filteredSelectorTrackListTable;
+                }
+                else
+                {
+                    sourceTable = this.selectorTrackListTable;
+                }
+
+                dv = sourceTable.DefaultView;
                 dv.Sort = columnName;
                 DataTable sortedDT = dv.ToTable();
 
                 if (this.selectorColumnOrderStates[columnName] == -1)
                 {
                     this.selectorColumnOrderStates[columnName] = 0;
-                    this.filteredSelectorTrackListTable = sortedDT;
+                    sourceTable = sortedDT;
                 }
                 else if (this.selectorColumnOrderStates[columnName] == 0)
                 {
                     this.selectorColumnOrderStates[columnName] = 1;
 
                     DataTable reversedDt = new DataTable();
-                    reversedDt = this.filteredSelectorTrackListTable.Clone();
-                    for (var row = this.filteredSelectorTrackListTable.Rows.Count - 1; row >= 0; row--)
-                        reversedDt.ImportRow(this.filteredSelectorTrackListTable.Rows[row]);
+                    reversedDt = sourceTable.Clone();
+                    for (var row = sourceTable.Rows.Count - 1; row >= 0; row--)
+                        reversedDt.ImportRow(sourceTable.Rows[row]);
 
-                    this.filteredSelectorTrackListTable = reversedDt;
+                    sourceTable = reversedDt;
                 }
                 else if (this.selectorColumnOrderStates[columnName] == 1)
                 {
                     this.selectorColumnOrderStates[columnName] = 0;
-                    this.filteredSelectorTrackListTable = sortedDT;
+                    sourceTable = sortedDT;
+                }
+
+                if (this.tagValueFilterList != null && this.tagValueFilterList.Count > 0)
+                {
+                    this.filteredSelectorTrackListTable = sourceTable;
+                }
+                else
+                {
+                    this.selectorTrackListTable = sourceTable;
                 }
 
                 this.ReloadSelectorTrackList();
+                this.SelectorTrackListChanged();
             }
         }
         #endregion
@@ -1676,7 +1806,7 @@ namespace MitoPlayer_2024.Presenters
                             if (this.mediaPlayerComponent.MediaPlayer.playState != WMPLib.WMPPlayState.wmppsPlaying)
                             {
                                 this.mediaPlayerComponent.SetCurrentTrackIndex(0);
-                                this.PlayTrack();
+                                this.PlayTrack(TableSourceForMediaPlayer.MainButton.ToString());
                             }
                         }
                     }
@@ -1757,17 +1887,19 @@ namespace MitoPlayer_2024.Presenters
         }
         internal void CallAddTrackToTrackListEvent(List<Model.Track> trackList, int dragIndex)
         {
-            ((SelectorView)this.selectorView).ToggleTracklistSelection(false);
+            if (!isTrackListInitializing)
+                ((SelectorView)this.selectorView).ToggleTracklistSelection(false);
+            
             this.AddTracksToPlaylist(this.currentPlaylistId, trackList, dragIndex);
-            ((SelectorView)this.selectorView).ToggleTracklistSelection(true);
+            
+            if (!isTrackListInitializing)
+                ((SelectorView)this.selectorView).ToggleTracklistSelection(true);
         }
         private void LoadTrackList(List<Model.Track> trackList, int dragIndex)
         {
-
-
             if (trackList != null && trackList.Count > 0)
             {
-                if (!isInitializing)
+                if (!isTrackListInitializing)
                     ((SelectorView)this.selectorView).ToggleTracklistSelection(false);
 
                 foreach (Model.Track track in trackList)
@@ -1860,13 +1992,14 @@ namespace MitoPlayer_2024.Presenters
                     }
                 }
 
-                if (!isInitializing)
+                if (!isTrackListInitializing)
                     ((SelectorView)this.selectorView).ToggleTracklistSelection(true);
 
 
                 this.ReloadTrackList();
                 this.TrackListChanged();
-                ((SelectorView)this.selectorView).UpdateTrackCountAndLength(this.currentPlaylistId);
+
+                this.UpdateTrackCountAndLength();
             }
         }
         #endregion
@@ -1918,7 +2051,9 @@ namespace MitoPlayer_2024.Presenters
                     // Perform UI updates after all deletions are done
                     this.ReloadTrackList();
                     this.TrackListChanged();
-                    ((SelectorView)this.selectorView).UpdateTrackCountAndLength(this.currentPlaylistId);
+
+                    this.UpdateTrackCountAndLength();
+
                     ((SelectorView)this.selectorView).ToggleTracklistSelection(true);
                 }
             }
@@ -1951,7 +2086,9 @@ namespace MitoPlayer_2024.Presenters
 
                     this.ReloadTrackList();
                     this.TrackListChanged();
-                    ((SelectorView)this.selectorView).UpdateTrackCountAndLength(this.currentPlaylistId);
+
+                    this.UpdateTrackCountAndLength();
+
                     ((SelectorView)this.selectorView).ToggleTracklistSelection(true);
                 }
             }
@@ -2011,7 +2148,9 @@ namespace MitoPlayer_2024.Presenters
 
                     this.ReloadTrackList();
                     this.TrackListChanged();
-                    ((SelectorView)this.selectorView).UpdateTrackCountAndLength(this.currentPlaylistId);
+
+                    this.UpdateTrackCountAndLength();
+
                     ((SelectorView)this.selectorView).ToggleTracklistSelection(true);
                 }
             }
@@ -2030,7 +2169,8 @@ namespace MitoPlayer_2024.Presenters
                 // Perform UI updates after clearing the track list
                 this.ReloadTrackList();
                 this.TrackListChanged();
-                ((SelectorView)this.selectorView).UpdateTrackCountAndLength(this.currentPlaylistId);
+
+                this.UpdateTrackCountAndLength();
 
                 // Re-enable tracklist selection
                 ((SelectorView)this.selectorView).ToggleTracklistSelection(true);
@@ -2056,17 +2196,64 @@ namespace MitoPlayer_2024.Presenters
         }
         public void PlayTrackEvent(object sender, Messenger e)
         {
-            this.PlayTrack();
+            this.PlayTrack(e.StringField1);
         }
-        public void PlayTrack()
+        public void PlayTrack(String source)
         {
+            DataTable sourceTable = new DataTable();
+            SourceTable sourceTableForGridUpdate = new SourceTable();
+
+            if (source == TableSourceForMediaPlayer.MainButton.ToString())
+            {
+                if (this.isTrackListActive)
+                {
+                    sourceTable= this.trackListTable;
+                    sourceTableForGridUpdate = SourceTable.Tracklist;
+                }
+                else
+                {
+                    if (this.tagValueFilterList != null && this.tagValueFilterList.Count > 0)
+                    {
+                        sourceTable = this.filteredSelectorTrackListTable;
+                        sourceTableForGridUpdate = SourceTable.Selector;
+                    }
+                    else
+                    {
+                        sourceTable = this.selectorTrackListTable;
+                        sourceTableForGridUpdate = SourceTable.Selector;
+                    }
+                }
+            }
+            else if(source == TableSourceForMediaPlayer.TracklistKeyDown.ToString() ||
+                source == TableSourceForMediaPlayer.TracklistDoubleClick.ToString())
+            {
+                sourceTable = this.trackListTable;
+                sourceTableForGridUpdate = SourceTable.Tracklist;
+            }
+            else if (source == TableSourceForMediaPlayer.SelectorButton.ToString() ||
+                source == TableSourceForMediaPlayer.SelectorDoubleClick.ToString())
+            {
+                if (this.tagValueFilterList != null && this.tagValueFilterList.Count > 0)
+                {
+                    sourceTable = this.filteredSelectorTrackListTable;
+                    sourceTableForGridUpdate = SourceTable.Selector;
+                }
+                else
+                {
+                    sourceTable = this.selectorTrackListTable;
+                    sourceTableForGridUpdate = SourceTable.Selector;
+                }
+            }
+
+            this.mediaPlayerComponent.SetWorkingTable(sourceTable, true);
+
             MediaPlayerUpdateState updateState = this.mediaPlayerComponent.PlayTrack();
 
             if (updateState == MediaPlayerUpdateState.AfterPlay)
             {
-                if (this.trackListTable != null && this.trackListTable.Rows != null && this.trackListTable.Rows.Count > 0)
+                if (sourceTable != null && sourceTable.Rows != null && sourceTable.Rows.Count > 0)
                 {
-                    this.selectorView.UpdateAfterPlayTrack(this.mediaPlayerComponent.GetCurrentTrackIndex(), this.mediaPlayerComponent.CurrentTrackIdInPlaylist);
+                    this.selectorView.UpdateAfterPlayTrack(this.mediaPlayerComponent.GetCurrentTrackIndex(), this.mediaPlayerComponent.CurrentTrackIdInPlaylist, sourceTableForGridUpdate);
                 }
             }
             else if (updateState == MediaPlayerUpdateState.AfterPlayAfterPause)
@@ -2097,7 +2284,7 @@ namespace MitoPlayer_2024.Presenters
             this.mediaPlayerComponent.StopTrack();
             this.selectorView.UpdateAfterStopTrack();
         }
-        public void PrevTrackEvent(object sender, Messenger e)
+       /* public void PrevTrackEvent(object sender, Messenger e)
         {
             if (this.trackListTable != null && this.trackListTable.Rows != null && this.trackListTable.Rows.Count > 0)
             {
@@ -2112,8 +2299,8 @@ namespace MitoPlayer_2024.Presenters
                     this.selectorView.UpdateAfterPlayTrackAfterPause();
                 }
             }
-        }
-        public void NextTrackEvent(object sender, Messenger e)
+        }*/
+       /* public void NextTrackEvent(object sender, Messenger e)
         {
             if (this.mediaPlayerComponent.IsShuffleEnabled)
             {
@@ -2147,7 +2334,7 @@ namespace MitoPlayer_2024.Presenters
 
                 }
             }
-        }
+        }*/
         private void MediaPlayer_PlayStateChange(object sender, AxWMPLib._WMPOCXEvents_PlayStateChangeEvent e)
         {
             if (e.newState == (int)WMPLib.WMPPlayState.wmppsMediaEnded)
@@ -2158,16 +2345,16 @@ namespace MitoPlayer_2024.Presenters
         private void PlayNextTrackTimer_Tick(object sender, EventArgs e)
         {
             playNextTrackTimer.Stop();
-            if (this.mediaPlayerComponent.IsShuffleEnabled)
+           /* if (this.mediaPlayerComponent.IsShuffleEnabled)
             {
                 PlayRandomTrack();
             }
             else
             {
                 PlayNextTrack();
-            }
+            }*/
         }
-        public void RandomTrackEvent(object sender, EventArgs e)
+       /* public void RandomTrackEvent(object sender, EventArgs e)
         {
             if (this.trackListTable != null && this.trackListTable.Rows != null && this.trackListTable.Rows.Count > 0)
             {
@@ -2181,8 +2368,8 @@ namespace MitoPlayer_2024.Presenters
                     this.selectorView.UpdateAfterPlayTrackAfterPause();
                 }
             }
-        }
-        private void PlayRandomTrack()
+        }*/
+        /*private void PlayRandomTrack()
         {
             if (this.trackListTable != null && this.trackListTable.Rows.Count > 0)
             {
@@ -2211,7 +2398,7 @@ namespace MitoPlayer_2024.Presenters
             {
                 this.selectorView.UpdateAfterPlayTrackAfterPause();
             }
-        }
+        }*/
         internal void CallChangeProgressEvent(int currentPosX, int width)
         {
             this.mediaPlayerComponent.ChangeProgress(currentPosX, width);
@@ -2307,15 +2494,26 @@ namespace MitoPlayer_2024.Presenters
         {
             String message = String.Empty;
 
-            if (this.isTrackListChanged)
+            if (this.isTrackListActive)
             {
-                this.SaveTrackListSync();
-                this.isTrackListChanged = false;
-                this.selectorView.ChangeSaveButtonColor(false);
+                if (this.isTrackListChanged)
+                {
+                    this.SaveTrackListSync();
+                    this.isTrackListChanged = false;
+                    this.selectorView.ChangeSaveButtonColor(false);
+                }
             }
 
-            this.currentPlaylistId = Convert.ToInt32(this.playlistListTable.Rows[e.IntegerField1]["Id"]);
-            this.settingDao.SetIntegerSetting(Settings.CurrentPlaylistId.ToString(), this.currentPlaylistId);
+            if (this.isTrackListActive)
+            {
+                this.currentPlaylistId = Convert.ToInt32(this.playlistListTable.Rows[e.IntegerField1]["Id"]);
+                this.settingDao.SetIntegerSetting(Settings.CurrentPlaylistId.ToString(), this.currentPlaylistId);
+            }
+            else
+            {
+                this.currentSelectorPlaylistId = Convert.ToInt32(this.playlistListTable.Rows[e.IntegerField1]["Id"]);
+                this.settingDao.SetIntegerSetting(Settings.CurrentSelectorPlaylistId.ToString(), this.currentSelectorPlaylistId);
+            }
 
             if (this.currentPlaylistId != -1)
             {
@@ -2330,9 +2528,32 @@ namespace MitoPlayer_2024.Presenters
             }
 
             this.ReloadPlaylist();
-            this.InitializeTrackListRows(this.trackListTable, null);
 
-            this.mediaPlayerComponent.SetWorkingTable(this.trackListTable);
+            if (this.isTrackListActive)
+            {
+                this.InitializeTrackListRows(this.trackListTable, null);
+            }
+            else
+            {
+                this.InitializeSelectorTrackListRows(this.selectorTrackListTable, null);
+
+                DataView dv = this.selectorTrackListTable.DefaultView;
+                dv.RowFilter = "";
+                DataTable filteredDT = dv.ToTable();
+                this.filteredSelectorTrackListTable = filteredDT;
+
+                if (!isSelectorTrackListInitializing)
+                    ((SelectorView)this.selectorView).ToggleSelectorTracklistSelection(false);
+
+                this.selectorTrackListBindingSource.DataSource = this.filteredSelectorTrackListTable;
+                this.InitializeSelectorTrackList(this.filteredSelectorTrackListTable, this.mediaPlayerComponent.CurrentTrackIdInPlaylist);
+
+                if (!isSelectorTrackListInitializing)
+                    ((SelectorView)this.selectorView).ToggleSelectorTracklistSelection(true);
+
+                ((SelectorView)this.selectorView).SetTagValueFilter(this.tagValueFilterList);
+
+            }
         }
         private void DeletePlaylistEvent(object sender, Messenger e)
         {
@@ -2376,7 +2597,7 @@ namespace MitoPlayer_2024.Presenters
                             this.ReloadPlaylist();
 
                             this.InitializeTrackListRows(this.trackListTable, null);
-                            this.mediaPlayerComponent.SetWorkingTable(this.trackListTable);
+                            
                         }
                         else
                         {
@@ -2510,19 +2731,19 @@ namespace MitoPlayer_2024.Presenters
                 loadingDialog.SetProcessDescription("Preparing filter mode...");
                 loadingDialog.Refresh();
 
-                DataView dv = this.trackListTable.DefaultView;
+                DataView dv = this.selectorTrackListTable.DefaultView;
                 dv.RowFilter = "";
                 DataTable filteredDT = dv.ToTable();
                 this.filteredSelectorTrackListTable = filteredDT;
 
-                ((SelectorView)this.selectorView).ToggleSelectorTracklistSelection(false);
+                if (!isSelectorTrackListInitializing)
+                    ((SelectorView)this.selectorView).ToggleSelectorTracklistSelection(false);
 
-                this.trackListBindingSource.DataSource = this.filteredSelectorTrackListTable;
-                this.InitializeTrackList(this.filteredSelectorTrackListTable, this.mediaPlayerComponent.CurrentTrackIdInPlaylist);
+                this.selectorTrackListBindingSource.DataSource = this.filteredSelectorTrackListTable;
+                this.InitializeSelectorTrackList(this.filteredSelectorTrackListTable, this.mediaPlayerComponent.CurrentTrackIdInPlaylist);
 
-                ((SelectorView)this.selectorView).ToggleSelectorTracklistSelection(true);
-
-                this.mediaPlayerComponent.SetWorkingTable(this.filteredSelectorTrackListTable);
+                if (!isSelectorTrackListInitializing)
+                    ((SelectorView)this.selectorView).ToggleSelectorTracklistSelection(true);
             }
         }
         private List<TagValueFilter> tagValueFilterList { get; set; }
@@ -2621,14 +2842,13 @@ namespace MitoPlayer_2024.Presenters
         }
         private void ChangeFilterParameters(object sender, Messenger e)
         {
-            DataView dv = this.trackListTable.DefaultView;
+            DataView dv = this.selectorTrackListTable.DefaultView;
             String filterText = e.StringField1;
             String filterQuery = String.Empty;
             String filterQuery2 = String.Empty;
             List<String> filteringColumnNames = new List<String>();
 
-            if (!String.IsNullOrEmpty(filterText))
-            {
+
                 if (!String.IsNullOrEmpty(filterText))
                 {
                     filteringColumnNames.Add("Artist");
@@ -2727,13 +2947,15 @@ namespace MitoPlayer_2024.Presenters
                 DataTable filteredDT = dv.ToTable();
                 this.filteredSelectorTrackListTable = filteredDT;
 
+            if (!isSelectorTrackListInitializing)
                 ((SelectorView)this.selectorView).ToggleSelectorTracklistSelection(false);
 
-                this.trackListBindingSource.DataSource = this.filteredSelectorTrackListTable;
+                this.selectorTrackListBindingSource.DataSource = this.filteredSelectorTrackListTable;
                 this.InitializeSelectorTrackList(this.filteredSelectorTrackListTable, this.mediaPlayerComponent.CurrentTrackIdInPlaylist);
-
+            
+            if (!isSelectorTrackListInitializing)
                 ((SelectorView)this.selectorView).ToggleSelectorTracklistSelection(true);
-            }
+
 
             this.mediaPlayerComponent.SetWorkingTable(this.filteredSelectorTrackListTable);
         }

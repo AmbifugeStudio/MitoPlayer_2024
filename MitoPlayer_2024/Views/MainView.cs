@@ -91,6 +91,8 @@ namespace MitoPlayer_2024
             }
 
             this.tmrPeak.Start();
+
+            this.btnPlaylist.FlatAppearance.BorderColor = CustomColor.ActiveButtonColor;
         }
 
 
@@ -119,9 +121,9 @@ namespace MitoPlayer_2024
             this.btnTagValues.BackColor = this.ButtonColor;
             this.btnTagValues.ForeColor = this.FontColor;
             this.btnTagValues.FlatAppearance.BorderColor = this.ButtonBorderColor;
-            this.btnTracks.BackColor = this.ButtonColor;
-            this.btnTracks.ForeColor = this.FontColor;
-            this.btnTracks.FlatAppearance.BorderColor = this.ButtonBorderColor;
+            this.btnSelector.BackColor = this.ButtonColor;
+            this.btnSelector.ForeColor = this.FontColor;
+            this.btnSelector.FlatAppearance.BorderColor = this.ButtonBorderColor;
 
             this.pnlMediaPlayer.BackColor = this.BackgroundColor;
             this.pnlMediaPlayer.ForeColor = this.FontColor;
@@ -163,6 +165,8 @@ namespace MitoPlayer_2024
 
         }
 
+
+
         private void MainView_Load(object sender, EventArgs e)
         {
             String version = "";
@@ -176,16 +180,32 @@ namespace MitoPlayer_2024
         {
             this.ShowProfileEditorView?.Invoke(this, EventArgs.Empty);
         }
+
+        private void SetSelectedButtonBorder(object sender)
+        {
+            this.btnPlaylist.FlatAppearance.BorderColor = CustomColor.ButtonBorderColor;
+            this.btnTagValues.FlatAppearance.BorderColor = CustomColor.ButtonBorderColor;
+            this.btnSelector.FlatAppearance.BorderColor = CustomColor.ButtonBorderColor;
+
+            if (sender is Button)
+            {
+                Button button = (Button)sender;
+                button.FlatAppearance.BorderColor = CustomColor.ActiveButtonColor;
+            }
+        }
         private void btnPlaylist_Click(object sender, EventArgs e)
         {
+            SetSelectedButtonBorder(sender);
             this.ShowPlaylistView?.Invoke(this, EventArgs.Empty);
         }
         private void btnTagValues_Click(object sender, EventArgs e)
         {
+            SetSelectedButtonBorder(sender);
             this.ShowTagValueEditorView?.Invoke(this, EventArgs.Empty);
         }
         private void btnSelector_Click(object sender, EventArgs e)
         {
+            SetSelectedButtonBorder(sender);
             this.ShowSelectorView?.Invoke(this, EventArgs.Empty);
         }
         private void btnTracks_Click(object sender, EventArgs e)
@@ -357,19 +377,24 @@ namespace MitoPlayer_2024
             this.btnNext.Enabled = true;
             this.btnOpen.Enabled = true;
             this.btnOpenDirectory.Enabled = true;
+            this.chbPreview.Enabled = true;
 
             if (view.GetType() == typeof(PlaylistView))
             {
                 return;
             }
-            if (view.GetType() == typeof(TrackEditorView))
+            if (view.GetType() == typeof(SelectorView))
             {
-                this.menuStripRemoveMissingTracks.Enabled = false;
-                return;
-            }
-            if (view.GetType() == typeof(HarmonizerView))
-            {
-                this.menuStripRemoveMissingTracks.Enabled = false;
+                this.menuStripOpenFiles.Enabled = false;
+                this.menuStripOpenDirectories.Enabled = false;
+                this.menuStripRandom.Enabled = false;
+                this.menuStripPrev.Enabled = false;
+                this.menuStripNext.Enabled = false;
+                this.btnPrev.Enabled = false;
+                this.btnNext.Enabled = false;
+                this.btnOpen.Enabled = false;
+                this.btnOpenDirectory.Enabled = false;
+                this.chbPreview.Enabled = false;
                 return;
             }
 
@@ -383,6 +408,7 @@ namespace MitoPlayer_2024
             this.menuStripExit.Enabled = true;
             this.menuStripRemoveMissingTracks.Enabled = false;
             this.menuStripRemoveDuplicatedTracks.Enabled = false;
+
             this.menuStripOrderByArtist.Enabled = false;
             this.menuStripOrderByTitle.Enabled = false;
             this.menuStripOrderByFileName.Enabled = false;
@@ -843,7 +869,10 @@ namespace MitoPlayer_2024
             this.pnlFrequency.Controls.Add(plot);
         }
 
-        
+        private void lblTrackStart_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 
 }

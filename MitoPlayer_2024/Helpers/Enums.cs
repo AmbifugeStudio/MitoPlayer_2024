@@ -6,6 +6,20 @@ using System.Threading.Tasks;
 
 namespace MitoPlayer_2024.Helpers
 {
+    public enum SourceTable
+    {
+        Tracklist,
+        Selector,
+        FilteredSelector
+    }
+    public enum TableSourceForMediaPlayer
+    {
+        MainButton,
+        TracklistDoubleClick,
+        TracklistKeyDown,
+        SelectorDoubleClick,
+        SelectorButton
+    }
     public enum Extension
     {
         mp3,
@@ -44,6 +58,7 @@ namespace MitoPlayer_2024.Helpers
         LastGeneratedTagId,
         LastGeneratedTagValueId,
         CurrentPlaylistId,
+        CurrentSelectorPlaylistId,
         //INNER SETTINGS
         LastOpenDirectoryPath,
         LastOpenFilesFilterIndex,
@@ -95,8 +110,10 @@ namespace MitoPlayer_2024.Helpers
         LogMessageDisplayTime,
         //VARIOUS
         TrainingModelBatchCount,
-        IsTracklistDetailsDisplayed
+        IsTracklistDetailsDisplayed,
 
+        //SELECTOR
+        IsTrackListActive
     }
 
     public enum MediaPlayerUpdateState

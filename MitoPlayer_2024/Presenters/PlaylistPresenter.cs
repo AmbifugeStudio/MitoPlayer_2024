@@ -1200,6 +1200,7 @@ namespace MitoPlayer_2024.Presenters
                                 foreach (Tag tag in tagList)
                                 {
                                     TrackTagValue ttv = new TrackTagValue();
+                                    ttv.Id = this.trackDao.GetNextId(TableName.TrackTagValue.ToString());
                                     ttv.TrackId = track.Id;
                                     ttv.TagId = tag.Id;
                                     ttv.TagName = tag.Name;

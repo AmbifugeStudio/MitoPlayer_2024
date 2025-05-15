@@ -24,7 +24,11 @@ namespace MitoPlayer_2024.IViews
         event EventHandler<Messenger> ChangeVolumeEvent;
 
         //TRACKLIST
+        event EventHandler<Messenger> SetTrackListToActive;
+
         event EventHandler<Messenger> OrderByColumnEvent;
+        event EventHandler<Messenger> OrderSelectorByColumnEvent;
+
         event EventHandler<Messenger> DeleteTracksEvent;
         event EventHandler<Messenger> InternalDragAndDropIntoTracklistEvent;
         event EventHandler<Messenger> InternalDragAndDropIntoPlaylistEvent;
@@ -36,6 +40,9 @@ namespace MitoPlayer_2024.IViews
 
         event EventHandler JumpBackwardEvent;
         event EventHandler JumpForwardEvent;
+
+        //SELECTOR
+        event EventHandler<Messenger> SetSelectorToActive;
 
         //PLAYLIST
         event EventHandler<Messenger> CreatePlaylist;
@@ -71,7 +78,7 @@ namespace MitoPlayer_2024.IViews
         void InitializeTrackList(DataTableModel model);
         void InitializeSelectorTrackList(DataTableModel model);
         void ReloadTrackList(DataTableModel model);
-        void UpdateAfterPlayTrack(int currentTrackIndex, int currentTrackId);
+        void UpdateAfterPlayTrack(int currentTrackIndex, int currentTrackId, SourceTable sourceList);
         void UpdateAfterPlayTrackAfterPause();
         void UpdateAfterStopTrack();
         void UpdateAfterPauseTrack();

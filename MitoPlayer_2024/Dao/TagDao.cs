@@ -5,7 +5,7 @@ using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SQLite;
+using Microsoft.Data.Sqlite;
 using System.Drawing;
 
 namespace MitoPlayer_2024.Dao
@@ -29,8 +29,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandType = CommandType.Text;
@@ -64,8 +64,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandType = CommandType.Text;
@@ -118,8 +118,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     
                     command.Connection = connection;
@@ -172,8 +172,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     
                     command.Connection = connection;
@@ -218,8 +218,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     
                     command.Connection = connection;
@@ -263,8 +263,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandType = CommandType.Text;
@@ -280,7 +280,7 @@ namespace MitoPlayer_2024.Dao
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"Error occurred while deleting tag with ID {id}. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -295,8 +295,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandType = CommandType.Text;
@@ -312,7 +312,7 @@ namespace MitoPlayer_2024.Dao
                 // Call DeleteAllTagValue after successful deletion
                 this.DeleteAllTagValue();
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"Error occurred while deleting all tags. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -330,8 +330,8 @@ namespace MitoPlayer_2024.Dao
                 // Clear related table first
                 this.ClearTagValueTable();
 
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandType = CommandType.Text;
@@ -341,7 +341,7 @@ namespace MitoPlayer_2024.Dao
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"Error occurred while clearing the tag table. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -359,15 +359,15 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandType = CommandType.Text;
                     command.CommandText = @"INSERT INTO TagValue (Name, TagId, Color, Hotkey, ProfileId) 
                                             VALUES (@Name, @TagId, @Color, @Hotkey, @ProfileId)";
 
-                    command.Parameters.AddWithValue("@Name", tagValue.Name);
+                    command.Parameters.AddWithValue("@Name", tagValue.Name ?? "");
                     command.Parameters.AddWithValue("@TagId", tagValue.TagId);
                     command.Parameters.AddWithValue("@Color", ColorToHex(tagValue.Color));
                     command.Parameters.AddWithValue("@Hotkey", tagValue.Hotkey);
@@ -377,7 +377,7 @@ namespace MitoPlayer_2024.Dao
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 result.AddError($"TagValue [{tagValue.Name}] is not inserted. \n{ex.Message}");
                 Logger.Error($"Error occurred while inserting TagValue [{tagValue.Name}].", ex);
@@ -395,8 +395,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandType = CommandType.Text;
@@ -404,7 +404,7 @@ namespace MitoPlayer_2024.Dao
                                     tv.Id,
                                     tv.Name,
                                     tv.TagId,
-                                    t.Name,
+                                    t.Name AS TagName,
                                     tv.Color,
                                     tv.Hotkey,
                                     tv.ProfileId 
@@ -437,7 +437,7 @@ namespace MitoPlayer_2024.Dao
                     }
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 result.AddError($"Error occurred while fetching tag values for TagId [{tagId}]. \n{ex.Message}");
                 Logger.Error($"Error occurred while fetching tag values for TagId [{tagId}].", ex);
@@ -451,8 +451,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandType = CommandType.Text;
@@ -485,7 +485,7 @@ namespace MitoPlayer_2024.Dao
                     }
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 result.AddError($"Error occurred while fetching TagValue with ID [{id}]. \n{ex.Message}");
                 Logger.Error($"Error occurred while fetching TagValue with ID [{id}].", ex);
@@ -503,8 +503,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                    
                     command.Connection = connection;
@@ -540,7 +540,7 @@ namespace MitoPlayer_2024.Dao
                     }
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 result.AddError($"Error occurred while fetching TagValue with Id [{id}] and TagId [{tagId}]. \n{ex.Message}");
                 Logger.Error($"Error occurred while fetching TagValue with Id [{id}] and TagId [{tagId}].", ex);
@@ -554,8 +554,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
 
                     command.Connection = connection;
@@ -591,7 +591,7 @@ namespace MitoPlayer_2024.Dao
                     }
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 result.AddError($"Error occurred while fetching TagValue with Name [{name}] and TagId [{tagId}]. \n{ex.Message}");
                 Logger.Error($"Error occurred while fetching TagValue with Name [{name}] and TagId [{tagId}].", ex);
@@ -605,8 +605,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandType = CommandType.Text;
@@ -627,7 +627,7 @@ namespace MitoPlayer_2024.Dao
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 result.AddError($"Error occurred while updating TagValue [{tagValue.Name}]. \n{ex.Message}");
                 Logger.Error($"Error occurred while updating TagValue [{tagValue.Name}].", ex);
@@ -641,8 +641,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandType = CommandType.Text;
@@ -657,7 +657,7 @@ namespace MitoPlayer_2024.Dao
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 result.AddError($"Error occurred while deleting TagValue with ID [{id}]. \n{ex.Message}");
                 Logger.Error($"Error occurred while deleting TagValue with ID [{id}].", ex);
@@ -671,8 +671,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandType = CommandType.Text;
@@ -687,7 +687,7 @@ namespace MitoPlayer_2024.Dao
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 result.AddError($"Error occurred while deleting TagValues for TagId [{tagId}]. \n{ex.Message}");
                 Logger.Error($"Error occurred while deleting TagValues for TagId [{tagId}].", ex);
@@ -701,8 +701,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandType = CommandType.Text;
@@ -715,7 +715,7 @@ namespace MitoPlayer_2024.Dao
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 result.AddError($"Error occurred while deleting all TagValues. \n{ex.Message}");
                 Logger.Error($"Error occurred while deleting all TagValues.", ex);
@@ -729,8 +729,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandType = CommandType.Text;
@@ -740,7 +740,7 @@ namespace MitoPlayer_2024.Dao
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 result.AddError($"Error occurred while clearing the TagValue table. \n{ex.Message}");
                 Logger.Error($"Error occurred while clearing the TagValue table.", ex);

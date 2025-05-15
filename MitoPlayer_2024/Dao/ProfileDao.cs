@@ -1,11 +1,10 @@
-﻿
+﻿using Microsoft.Data.Sqlite;
 using MitoPlayer_2024.Helpers;
 using MitoPlayer_2024.Helpers.ErrorHandling;
 using MitoPlayer_2024.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SQLite;
 
 namespace MitoPlayer_2024.Dao
 {
@@ -22,22 +21,21 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
-                    command.Connection = connection;
                     command.CommandType = CommandType.Text;
                     command.CommandText = @"INSERT INTO Profile (Name, IsActive)
                                             VALUES (@Name, @IsActive)";
 
-                    command.Parameters.Add("@Name", DbType.String).Value = profile.Name ?? "";
-                    command.Parameters.Add("@IsActive", DbType.Int32).Value = profile.IsActive ? 1 : 0;
+                    command.Parameters.AddWithValue("@Name", profile.Name ?? "");
+                    command.Parameters.AddWithValue("@IsActive", profile.IsActive ? 1 : 0);
 
                     connection.Open();
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 result.AddError($"Profile [{profile.Name}] is not inserted. \n{ex.Message}");
                 Logger.Error($"Error occurred while inserting profile [{profile.Name}].", ex);
@@ -52,8 +50,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandType = CommandType.Text;
@@ -79,7 +77,7 @@ namespace MitoPlayer_2024.Dao
                     }
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 result.AddError($"Error occurred while fetching active profile.\n{ex.Message}");
                 Logger.Error("Error occurred while fetching active profile.", ex);
@@ -94,14 +92,14 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandType = CommandType.Text;
                     command.CommandText = @"SELECT * FROM Profile WHERE Id = @Id";
 
-                    command.Parameters.Add("@Id", DbType.Int32).Value = id;
+                    command.Parameters.AddWithValue("@Id", id);
 
                     connection.Open();
                     using (var reader = command.ExecuteReader())
@@ -123,7 +121,7 @@ namespace MitoPlayer_2024.Dao
                     }
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 result.AddError($"Error occurred while fetching profile with ID [{id}].\n{ex.Message}");
                 Logger.Error($"Error occurred while fetching profile with ID [{id}].", ex);
@@ -138,14 +136,14 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandType = CommandType.Text;
                     command.CommandText = @"SELECT * FROM Profile WHERE Name = @Name";
 
-                    command.Parameters.Add("@Name", DbType.String).Value = name;
+                    command.Parameters.AddWithValue("@Name", name);
 
                     connection.Open();
                     using (var reader = command.ExecuteReader())
@@ -167,7 +165,7 @@ namespace MitoPlayer_2024.Dao
                     }
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 result.AddError($"Error occurred while fetching profile with Name [{name}].\n{ex.Message}");
                 Logger.Error($"Error occurred while fetching profile with Name [{name}].", ex);
@@ -181,8 +179,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandType = CommandType.Text;
@@ -204,7 +202,7 @@ namespace MitoPlayer_2024.Dao
                     }
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 result.AddError($"Error occurred while fetching all profiles.\n{ex.Message}");
                 Logger.Error("Error occurred while fetching all profiles.", ex);
@@ -218,8 +216,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandType = CommandType.Text;
@@ -227,15 +225,15 @@ namespace MitoPlayer_2024.Dao
                                             SET Name = @Name, IsActive = @IsActive 
                                             WHERE Id = @Id";
 
-                    command.Parameters.Add("@Id", DbType.Int32).Value = profile.Id;
-                    command.Parameters.Add("@Name", DbType.String).Value = profile.Name ?? "";
-                    command.Parameters.Add("@IsActive", DbType.Int32).Value = profile.IsActive ? 1 : 0;
+                    command.Parameters.AddWithValue("@Id", profile.Id);
+                    command.Parameters.AddWithValue("@Name", profile.Name);
+                    command.Parameters.AddWithValue("@IsActive", profile.IsActive);
 
                     connection.Open();
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 result.AddError($"Error occurred while updating profile [{profile.Name}].\n{ex.Message}");
                 Logger.Error($"Error occurred while updating profile [{profile.Name}].", ex);
@@ -250,20 +248,20 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandType = CommandType.Text;
                     command.CommandText = @"DELETE FROM Profile WHERE Id = @Id";
 
-                    command.Parameters.Add("@Id", DbType.Int32).Value = id;
+                    command.Parameters.AddWithValue("@Id", id);
 
                     connection.Open();
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 result.AddError($"Error occurred while deleting profile with ID [{id}].\n{ex.Message}");
                 Logger.Error($"Error occurred while deleting profile with ID [{id}].", ex);
@@ -277,8 +275,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandType = CommandType.Text;
@@ -288,7 +286,7 @@ namespace MitoPlayer_2024.Dao
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 result.AddError($"Error occurred while clearing the profile table.\n{ex.Message}");
                 Logger.Error("Error occurred while clearing the profile table.", ex);

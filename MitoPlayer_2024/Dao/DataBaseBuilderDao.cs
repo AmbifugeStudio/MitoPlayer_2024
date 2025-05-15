@@ -3,7 +3,7 @@ using MitoPlayer_2024.Helpers.ErrorHandling;
 using MitoPlayer_2024.Models;
 using System;
 using System.Data;
-using System.Data.SQLite;
+using Microsoft.Data.Sqlite;
 using System.IO;
 
 namespace MitoPlayer_2024.Helpers
@@ -21,8 +21,8 @@ namespace MitoPlayer_2024.Helpers
             bool result = true;
             try
             {
-                using (var connection = new SQLiteConnection(preConnectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(preConnectionString))
+                using (var command = connection.CreateCommand())
                 {
                     connection.Open();
                     connection.Close();
@@ -45,7 +45,10 @@ namespace MitoPlayer_2024.Helpers
             {
                 if (!File.Exists(databaseFilePath))
                 {
-                    SQLiteConnection.CreateFile(databaseFilePath);
+                    using (var connection = new SqliteConnection(connectionString))
+                    {
+                        connection.Open();
+                    }
                 }
             }
             catch (Exception ex)
@@ -141,8 +144,8 @@ namespace MitoPlayer_2024.Helpers
         {
             long count = 0;
 
-            using (var connection = new SQLiteConnection(connectionString))
-            using (var command = new SQLiteCommand())
+            using (var connection = new SqliteConnection(connectionString))
+            using (var command = connection.CreateCommand())
             {
                 connection.Open();
                 command.Connection = connection;
@@ -193,8 +196,8 @@ namespace MitoPlayer_2024.Helpers
         private ResultOrError BuildProfileTable()
         {
             ResultOrError result = new ResultOrError();
-            using (var connection = new SQLiteConnection(connectionString))
-            using (var command = new SQLiteCommand())
+            using (var connection = new SqliteConnection(connectionString))
+            using (var command = connection.CreateCommand())
             {
                 connection.Open();
                 command.Connection = connection;
@@ -208,7 +211,7 @@ namespace MitoPlayer_2024.Helpers
                 {
                     command.ExecuteNonQuery();
                 }
-                catch (SQLiteException ex)
+                catch (SqliteException ex)
                 {
                     result.AddError("Profile table is not created. \n" + ex.Message);
                 }
@@ -218,8 +221,8 @@ namespace MitoPlayer_2024.Helpers
         private ResultOrError BuildSettingTable()
         {
             ResultOrError result = new ResultOrError();
-            using (var connection = new SQLiteConnection(connectionString))
-            using (var command = new SQLiteCommand())
+            using (var connection = new SqliteConnection(connectionString))
+            using (var command = connection.CreateCommand())
             {
                 connection.Open();
                 command.Connection = connection;
@@ -237,7 +240,7 @@ namespace MitoPlayer_2024.Helpers
                 {
                     command.ExecuteNonQuery();
                 }
-                catch (SQLiteException ex)
+                catch (SqliteException ex)
                 {
                     result.AddError("Setting table is not created. \n" + ex.Message);
                 }
@@ -247,8 +250,8 @@ namespace MitoPlayer_2024.Helpers
         private ResultOrError BuildTrackPropertyTable()
         {
             ResultOrError result = new ResultOrError();
-            using (var connection = new SQLiteConnection(connectionString))
-            using (var command = new SQLiteCommand())
+            using (var connection = new SqliteConnection(connectionString))
+            using (var command = connection.CreateCommand())
             {
                 connection.Open();
                 command.Connection = connection;
@@ -267,7 +270,7 @@ namespace MitoPlayer_2024.Helpers
                 {
                     command.ExecuteNonQuery();
                 }
-                catch (SQLiteException ex)
+                catch (SqliteException ex)
                 {
                     result.AddError("TrackProperty table is not created. \n" + ex.Message);
                 }
@@ -277,8 +280,8 @@ namespace MitoPlayer_2024.Helpers
         private ResultOrError BuildPlaylistTable()
         {
             ResultOrError result = new ResultOrError();
-            using (var connection = new SQLiteConnection(connectionString))
-            using (var command = new SQLiteCommand())
+            using (var connection = new SqliteConnection(connectionString))
+            using (var command = connection.CreateCommand())
             {
                 connection.Open();
                 command.Connection = connection;
@@ -297,7 +300,7 @@ namespace MitoPlayer_2024.Helpers
                 {
                     command.ExecuteNonQuery();
                 }
-                catch (SQLiteException ex)
+                catch (SqliteException ex)
                 {
                     result.AddError("Playlist table is not created. \n" + ex.Message);
                 }
@@ -307,8 +310,8 @@ namespace MitoPlayer_2024.Helpers
         private ResultOrError BuildTrackTable()
         {
             ResultOrError result = new ResultOrError();
-            using (var connection = new SQLiteConnection(connectionString))
-            using (var command = new SQLiteCommand())
+            using (var connection = new SqliteConnection(connectionString))
+            using (var command = connection.CreateCommand())
             {
                 connection.Open();
                 command.Connection = connection;
@@ -330,7 +333,7 @@ namespace MitoPlayer_2024.Helpers
                 {
                     command.ExecuteNonQuery();
                 }
-                catch (SQLiteException ex)
+                catch (SqliteException ex)
                 {
                     result.AddError("Track table table is not created. \n" + ex.Message);
                 }
@@ -340,8 +343,8 @@ namespace MitoPlayer_2024.Helpers
         private ResultOrError BuildPlaylistContentTable()
         {
             ResultOrError result = new ResultOrError();
-            using (var connection = new SQLiteConnection(connectionString))
-            using (var command = new SQLiteCommand())
+            using (var connection = new SqliteConnection(connectionString))
+            using (var command = connection.CreateCommand())
             {
                 connection.Open();
                 command.Connection = connection;
@@ -361,7 +364,7 @@ namespace MitoPlayer_2024.Helpers
                 {
                     command.ExecuteNonQuery();
                 }
-                catch (SQLiteException ex)
+                catch (SqliteException ex)
                 {
                     result.AddError("PlaylistContent table is not created. \n" + ex.Message);
                 }
@@ -371,8 +374,8 @@ namespace MitoPlayer_2024.Helpers
         private ResultOrError BuildTagTable()
         {
             ResultOrError result = new ResultOrError();
-            using (var connection = new SQLiteConnection(connectionString))
-            using (var command = new SQLiteCommand())
+            using (var connection = new SqliteConnection(connectionString))
+            using (var command = connection.CreateCommand())
             {
                 connection.Open();
                 command.Connection = connection;
@@ -391,7 +394,7 @@ namespace MitoPlayer_2024.Helpers
                 {
                     command.ExecuteNonQuery();
                 }
-                catch (SQLiteException ex)
+                catch (SqliteException ex)
                 {
                     result.AddError("Tag table table is not created. \n" + ex.Message);
                 }
@@ -401,8 +404,8 @@ namespace MitoPlayer_2024.Helpers
         private ResultOrError BuildTagValueTable()
         {
             ResultOrError result = new ResultOrError();
-            using (var connection = new SQLiteConnection(connectionString))
-            using (var command = new SQLiteCommand())
+            using (var connection = new SqliteConnection(connectionString))
+            using (var command = connection.CreateCommand())
             {
                 connection.Open();
                 command.Connection = connection;
@@ -421,7 +424,7 @@ namespace MitoPlayer_2024.Helpers
                 {
                     command.ExecuteNonQuery();
                 }
-                catch (SQLiteException ex)
+                catch (SqliteException ex)
                 {
                     result.AddError("TagValue table table is not created. \n" + ex.Message);
                 }
@@ -431,8 +434,8 @@ namespace MitoPlayer_2024.Helpers
         private ResultOrError BuildTagTrackValueTable()
         {
             ResultOrError result = new ResultOrError();
-            using (var connection = new SQLiteConnection(connectionString))
-            using (var command = new SQLiteCommand())
+            using (var connection = new SqliteConnection(connectionString))
+            using (var command = connection.CreateCommand())
             {
                 connection.Open();
                 command.Connection = connection;
@@ -453,7 +456,7 @@ namespace MitoPlayer_2024.Helpers
                 {
                     command.ExecuteNonQuery();
                 }
-                catch (SQLiteException ex)
+                catch (SqliteException ex)
                 {
                     result.AddError("TrackProperty table table is not created. \n" + ex.Message);
                 }
@@ -463,8 +466,8 @@ namespace MitoPlayer_2024.Helpers
         private ResultOrError BuildTrainingModelTable()
         {
             ResultOrError result = new ResultOrError();
-            using (var connection = new SQLiteConnection(connectionString))
-            using (var command = new SQLiteCommand())
+            using (var connection = new SqliteConnection(connectionString))
+            using (var command = connection.CreateCommand())
             {
                 connection.Open();
                 command.Connection = connection;
@@ -496,7 +499,7 @@ namespace MitoPlayer_2024.Helpers
                 {
                     command.ExecuteNonQuery();
                 }
-                catch (SQLiteException ex)
+                catch (SqliteException ex)
                 {
                     result.AddError("TrainingData table table is not created. \n" + ex.Message);
                 }

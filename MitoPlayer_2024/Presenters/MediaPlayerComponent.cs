@@ -80,7 +80,7 @@ namespace MitoPlayer_2024.Presenters
         {
             return this.selectedRowIndex;
         }
-        public void SetWorkingTable(DataTable workingTable)
+        public void SetWorkingTable(DataTable workingTable, bool singleMode = false)
         {
             this.workingTable = workingTable;
 
@@ -93,7 +93,11 @@ namespace MitoPlayer_2024.Presenters
             }
             else
             {
-                this.UpdateRowIndex();
+                if (!singleMode)
+                {
+                    this.UpdateRowIndex();
+                }
+               
             }
         }
         private void UpdateRowIndex()

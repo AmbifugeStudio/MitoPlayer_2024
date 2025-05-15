@@ -366,6 +366,8 @@ namespace MitoPlayer_2024.Presenters
                         selectedIndex = e.IntegerField1;
                     }
 
+                    ((TagValueView)this._view).ToggleTagListSelection(false);
+
                     this.tagListTable.Rows.Remove(tagRow);
 
                     /* this.tagListBindingSource.DataSource = tagListTable;
@@ -375,8 +377,16 @@ namespace MitoPlayer_2024.Presenters
                     /* this.tagValueListBindingSource.DataSource = tagValueListTable;
                      this.tagValueView.SetTagValueListBindingSource(this.tagValueListBindingSource);*/
 
+                    ((TagValueView)this._view).ToggleTagListSelection(true);
+
                     if (this.tagListTable.Rows.Count > 0)
-                        this.SetCurrentTagId(selectedIndex);
+                    {
+                        if(selectedIndex < this.tagListTable.Rows.Count)
+                        {
+                            this.SetCurrentTagId(selectedIndex);
+                        }
+                    }
+                        
                 }
             }
 
@@ -495,6 +505,7 @@ namespace MitoPlayer_2024.Presenters
                     Tag tag = new Tag();
                     String tagName = tagNames[i];
                     String[] tagNameParts = tagName.Split('(');
+                    tag.Id = this.settingDao.GetNextId(TableName.Tag.ToString());
                     tag.Name = tagNameParts[0].Trim();
                     String tagProperties = tagNameParts.Length > 1 ? tagNameParts[1].Trim(')') : "";
 
@@ -509,6 +520,7 @@ namespace MitoPlayer_2024.Presenters
                         for (int j = 0; j <= tagValueNames[i].Count - 1; j++)
                         {
                             TagValue tagValue = new TagValue();
+                            tagValue.Id = this.settingDao.GetNextId(TableName.TagValue.ToString());
                             tagValue.Name = tagValueNames[i][j];
                             tagValue.TagId = tag.Id;
                             tagValue.TagName = tag.Name;
@@ -553,6 +565,7 @@ namespace MitoPlayer_2024.Presenters
                         if (!this.trackDao.IsTrackTagValueAlreadyExists(trackId, tag.Id))
                         {
                             TrackTagValue ttv = new TrackTagValue();
+                            ttv.Id = this.settingDao.GetNextId(TableName.TrackTagValue.ToString());
                             ttv.TrackId = trackId;
                             ttv.TagId = tag.Id;
                             ttv.TagName = tag.Name;

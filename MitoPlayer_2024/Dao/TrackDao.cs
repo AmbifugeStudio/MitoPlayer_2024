@@ -6,7 +6,7 @@ using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SQLite;
+using Microsoft.Data.Sqlite;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -35,8 +35,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     connection.Open();
                     command.Connection = connection;
@@ -56,7 +56,7 @@ namespace MitoPlayer_2024.Dao
                     }
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 Logger.Error($"Error occurred while fetching the last ID from table: {tableName}", ex);
             }
@@ -81,8 +81,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandType = CommandType.Text;
@@ -103,7 +103,7 @@ namespace MitoPlayer_2024.Dao
                     }
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"Error occurred while checking if playlist name exists: {name}. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -118,8 +118,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandType = CommandType.Text;
@@ -137,7 +137,7 @@ namespace MitoPlayer_2024.Dao
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"Error occurred while creating playlist [{playlist.Name}]. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -153,8 +153,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandType = CommandType.Text;
@@ -193,7 +193,7 @@ namespace MitoPlayer_2024.Dao
                     result.Value = playlist;
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"Error occurred while fetching playlist with ID [{id}]. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -209,8 +209,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandType = CommandType.Text;
@@ -249,7 +249,7 @@ namespace MitoPlayer_2024.Dao
                     result.Value = playlist;
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"Error occurred while fetching playlist with name [{name}]. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -265,8 +265,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandType = CommandType.Text;
@@ -304,7 +304,7 @@ namespace MitoPlayer_2024.Dao
                     result.Value = playlist;
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"Error occurred while fetching active playlist. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -319,8 +319,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandType = CommandType.Text;
@@ -351,7 +351,7 @@ namespace MitoPlayer_2024.Dao
                     }
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = "Error occurred while fetching all playlists. \n" + ex.Message;
                 result.AddError(errorMessage);
@@ -369,8 +369,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandType = CommandType.Text;
@@ -386,7 +386,7 @@ namespace MitoPlayer_2024.Dao
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"Error occurred while updating playlist with ID [{id}]. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -401,8 +401,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandType = CommandType.Text;
@@ -416,7 +416,7 @@ namespace MitoPlayer_2024.Dao
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"Error occurred while updating playlists for ProfileId [{this.profileId}]. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -431,8 +431,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandType = CommandType.Text;
@@ -457,7 +457,7 @@ namespace MitoPlayer_2024.Dao
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"Error occurred while updating playlist with ID [{playlist.Id}]. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -475,8 +475,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandType = CommandType.Text;
@@ -491,7 +491,7 @@ namespace MitoPlayer_2024.Dao
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"Error occurred while deleting playlist with ID [{id}]. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -506,8 +506,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandType = CommandType.Text;
@@ -520,7 +520,7 @@ namespace MitoPlayer_2024.Dao
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"Error occurred while deleting all playlists for ProfileId [{this.profileId}]. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -535,8 +535,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandType = CommandType.Text;
@@ -546,7 +546,7 @@ namespace MitoPlayer_2024.Dao
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = "Error occurred while clearing the Playlist table. \n" + ex.Message;
                 result.AddError(errorMessage);
@@ -564,28 +564,28 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandText = @"INSERT INTO Track (Path,FileName,Artist,Title,Album,Year,Length,Comment,ProfileId) 
                                     VALUES (@Path,@FileName,@Artist,@Title,@Album,@Year,@Length,@Comment,@ProfileId)";
 
-                    command.Parameters.AddWithValue("@Path", track.Path);
-                    command.Parameters.AddWithValue("@FileName", track.FileName);
-                    command.Parameters.AddWithValue("@Artist", track.Artist);
-                    command.Parameters.AddWithValue("@Title", track.Title);
-                    command.Parameters.AddWithValue("@Album", track.Album);
+                    command.Parameters.AddWithValue("@Path", track.Path ?? "");
+                    command.Parameters.AddWithValue("@FileName", track.FileName ?? "");
+                    command.Parameters.AddWithValue("@Artist", track.Artist ?? "");
+                    command.Parameters.AddWithValue("@Title", track.Title ?? "");
+                    command.Parameters.AddWithValue("@Album", track.Album ?? "");
                     command.Parameters.AddWithValue("@Year", track.Year);
                     command.Parameters.AddWithValue("@Length", track.Length);
-                    command.Parameters.AddWithValue("@Comment", track.Comment);
+                    command.Parameters.AddWithValue("@Comment", track.Comment ?? "");
                     command.Parameters.AddWithValue("@ProfileId", this.profileId);
 
                     connection.Open();
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"Error occurred while inserting track with Title [{track.Title}]. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -601,8 +601,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     connection.Open();
                     command.Connection = connection;
@@ -683,7 +683,7 @@ namespace MitoPlayer_2024.Dao
                     }
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"Error occurred while fetching track with ID [{id}]. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -704,8 +704,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     connection.Open();
                     command.Connection = connection;
@@ -786,7 +786,7 @@ namespace MitoPlayer_2024.Dao
                     }
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"Error occurred while fetching track by path [{path}]. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -807,8 +807,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     connection.Open();
                     command.Connection = connection;
@@ -902,7 +902,7 @@ namespace MitoPlayer_2024.Dao
                     }
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"Error occurred while fetching tracks for playlist with ID [{playlistId}]. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -917,8 +917,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     connection.Open();
                     command.Connection = connection;
@@ -938,7 +938,7 @@ namespace MitoPlayer_2024.Dao
                     }
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"Error occurred while fetching track IDs for ProfileId [{this.profileId}]. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -953,8 +953,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     connection.Open();
                     command.Connection = connection;
@@ -984,7 +984,7 @@ namespace MitoPlayer_2024.Dao
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"Error occurred while updating track with ID [{track.Id}]. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -999,8 +999,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     connection.Open();
                     command.Connection = connection;
@@ -1013,7 +1013,7 @@ namespace MitoPlayer_2024.Dao
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"Error occurred while deleting tracks for ProfileId [{this.profileId}]. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -1032,8 +1032,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     connection.Open();
                     command.Connection = connection;
@@ -1043,7 +1043,7 @@ namespace MitoPlayer_2024.Dao
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = "Error occurred while clearing the Track table. \n" + ex.Message;
                 result.AddError(errorMessage);
@@ -1063,8 +1063,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     connection.Open();
                     command.Connection = connection;
@@ -1098,7 +1098,7 @@ namespace MitoPlayer_2024.Dao
 
                 result.Value = trackIds.Count;
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 result.AddError($"Error occurred while fetching the next smallest TrackId from PlaylistContent. \n{ex.Message}");
                 Logger.Error("Error occurred while fetching the next smallest TrackId from PlaylistContent.", ex);
@@ -1113,8 +1113,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     
                     command.Connection = connection;
@@ -1132,7 +1132,7 @@ namespace MitoPlayer_2024.Dao
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"Error occurred while inserting playlistcontent with ID [{plc.Id}]. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -1147,16 +1147,19 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
+                using (var connection = new SqliteConnection(connectionString))
                 {
                     connection.Open();
                     using (var transaction = connection.BeginTransaction())
                     {
                         foreach (var plc in playlistContents)
                         {
-                            using (var command = new SQLiteCommand("INSERT INTO PlaylistContent (Id, PlaylistId, TrackId, OrderInList, TrackIdInPlaylist) " +
-                                "                       VALUES (@Id, @PlaylistId, @TrackId, @OrderInList, @TrackIdInPlaylist)", connection, transaction))
+                            using (var command = connection.CreateCommand())
                             {
+                                command.CommandText = "INSERT INTO PlaylistContent (Id, PlaylistId, TrackId, OrderInList, TrackIdInPlaylist) " +
+                                                            " VALUES (@Id, @PlaylistId, @TrackId, @OrderInList, @TrackIdInPlaylist)";
+                                command.Transaction = transaction;
+
                                 command.Parameters.AddWithValue("@Id", plc.Id);
                                 command.Parameters.AddWithValue("@PlaylistId", plc.PlaylistId);
                                 command.Parameters.AddWithValue("@TrackId", plc.TrackId);
@@ -1170,7 +1173,7 @@ namespace MitoPlayer_2024.Dao
                     }
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"Error occurred while inserting PlaylistContent batch. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -1186,8 +1189,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     connection.Open();
                     command.Connection = connection;
@@ -1224,7 +1227,7 @@ namespace MitoPlayer_2024.Dao
                     result.Value = playlistContent;
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"Error occurred while fetching PlaylistContent by TrackIdInPlaylist [{trackIdInPlaylist}]. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -1239,8 +1242,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandText = @"UPDATE PlaylistContent SET 
@@ -1261,7 +1264,7 @@ namespace MitoPlayer_2024.Dao
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"PlaylistContent is not updated. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -1277,8 +1280,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     
                     command.Connection = connection;
@@ -1294,7 +1297,7 @@ namespace MitoPlayer_2024.Dao
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"PlaylistContent is not deleted. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -1309,8 +1312,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandType = CommandType.Text;
@@ -1323,7 +1326,7 @@ namespace MitoPlayer_2024.Dao
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"PlaylistContent is not deleted. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -1338,8 +1341,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     
                     command.Connection = connection;
@@ -1350,7 +1353,7 @@ namespace MitoPlayer_2024.Dao
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"PlaylistContent is not deleted. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -1368,8 +1371,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     connection.Open();
                     command.Connection = connection;
@@ -1391,7 +1394,7 @@ namespace MitoPlayer_2024.Dao
                     }
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"Error occurred while checking if TrackTagValue already exists for TrackId: {trackId} and TagId: {tagId}. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -1407,8 +1410,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandText = @"INSERT INTO TrackTagValue (TrackId,TagId,TagValueId,HasValue,Value,ProfileId) 
@@ -1425,7 +1428,7 @@ namespace MitoPlayer_2024.Dao
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"TrackTagValue is not inserted. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -1440,8 +1443,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     
                     command.Connection = connection;
@@ -1493,7 +1496,7 @@ namespace MitoPlayer_2024.Dao
                     }
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"Error occurred while loading TrackTagValues by TrackIds. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -1508,8 +1511,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandText = @"UPDATE TrackTagValue 
@@ -1531,7 +1534,7 @@ namespace MitoPlayer_2024.Dao
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"Error occurred while updating TrackTagValue with ID [{ttv.Id}]. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -1546,8 +1549,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     
                     foreach (TrackTagValue ttv in trackTagValueList)
@@ -1574,7 +1577,7 @@ namespace MitoPlayer_2024.Dao
                     }
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = "Error occurred while updating TrackTagValues. \n" + ex.Message;
                 result.AddError(errorMessage);
@@ -1589,8 +1592,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandType = CommandType.Text;
@@ -1606,7 +1609,7 @@ namespace MitoPlayer_2024.Dao
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"TrackTagValue with TagValueId [{tagValueId}] is not updated. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -1621,8 +1624,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandType = CommandType.Text;
@@ -1637,7 +1640,7 @@ namespace MitoPlayer_2024.Dao
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"TrackTagValue with TagId [{tagId}] is not deleted. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -1652,8 +1655,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandType = CommandType.Text;
@@ -1668,7 +1671,7 @@ namespace MitoPlayer_2024.Dao
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"TrackTagValue with TrackId [{trackId}] is not deleted. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -1683,8 +1686,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandType = CommandType.Text;
@@ -1697,7 +1700,7 @@ namespace MitoPlayer_2024.Dao
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"TrackTagValue with ProfileId [{this.profileId}] is not deleted. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -1712,8 +1715,8 @@ namespace MitoPlayer_2024.Dao
 
             try
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                using (var command = new SQLiteCommand())
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
                 {
                     command.Connection = connection;
                     command.CommandType = CommandType.Text;
@@ -1723,7 +1726,7 @@ namespace MitoPlayer_2024.Dao
                     command.ExecuteNonQuery();
                 }
             }
-            catch (SQLiteException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = "TrackTagValue is not deleted. \n" + ex.Message;
                 result.AddError(errorMessage);

@@ -35,8 +35,13 @@ namespace MitoPlayer_2024.Views
         public event EventHandler JumpForwardEvent;
         public event EventHandler<Messenger> ChangeVolumeEvent;
         public event EventHandler<Messenger> ChangeProgressEvent;
+
         //TRACKLIST
+        public event EventHandler<Messenger> SetTrackListToActive;
+
         public event EventHandler<Messenger> OrderByColumnEvent;
+        public event EventHandler<Messenger> OrderSelectorByColumnEvent;
+
         public event EventHandler<Messenger> DeleteTracksEvent;
         public event EventHandler<Messenger> InternalDragAndDropIntoTracklistEvent;
         public event EventHandler<Messenger> InternalDragAndDropIntoPlaylistEvent;
@@ -44,7 +49,10 @@ namespace MitoPlayer_2024.Views
         public event EventHandler<Messenger> ExternalDragAndDropIntoPlaylistEvent;
         public event EventHandler ShowColumnVisibilityEditorEvent;
         public event EventHandler<Messenger> MoveTracklistRowsEvent;
+
         //SELECTOR TRACKLIST
+        public event EventHandler<Messenger> SetSelectorToActive;
+
         public event EventHandler<Messenger> DeleteTracksFromSelectorEvent;
         //PLAYLIST
         public event EventHandler<Messenger> CreatePlaylist;
@@ -75,7 +83,8 @@ namespace MitoPlayer_2024.Views
         public event EventHandler SaveSelectorTrackListEvent;
 
         private bool isFilterEnabled = true;
-        private bool isInitializing = true;
+        private bool isTrackListSelectionBlocked = true;
+        private bool isSelectorTrackListSelectionBlocked = true;
 
         private bool isPlaylistDragging = false;
         public SelectorView()
@@ -109,7 +118,8 @@ namespace MitoPlayer_2024.Views
             selectorAutoScrollTimer.Interval = 100;
             selectorAutoScrollTimer.Tick += SelectorAutoScrollTimer_Tick;
 
-            isInitializing = true;
+            isTrackListSelectionBlocked = true;
+            isSelectorTrackListSelectionBlocked = true;
         }
 
         private void SetControlColors()
@@ -144,6 +154,10 @@ namespace MitoPlayer_2024.Views
             this.btnSave.BackColor = CustomColor.ButtonBackColor;
             this.btnSave.ForeColor = CustomColor.ForeColor;
             this.btnSave.FlatAppearance.BorderColor = CustomColor.ButtonBorderColor;
+
+            this.btnClearTagValueFilter.BackColor = CustomColor.ButtonBackColor;
+            this.btnClearTagValueFilter.ForeColor = CustomColor.ForeColor;
+            this.btnClearTagValueFilter.FlatAppearance.BorderColor = CustomColor.ButtonBorderColor;
 
             this.lblMessage.ForeColor = CustomColor.ActiveButtonColor;;
         }
@@ -503,6 +517,61 @@ namespace MitoPlayer_2024.Views
             }
         }
 
+        //ACTIVE TRACKLIST SETTING
+
+        public void InitializeTracklistActiveButton(bool isTrackListActive)
+        {
+            if (isTrackListActive)
+            {
+                this.btnSetTracklistToActive.BackColor = CustomColor.ActiveButtonColor;
+                this.btnSetTracklistToActive.ForeColor = CustomColor.ButtonBackColor;
+                this.btnSetTracklistToActive.FlatAppearance.BorderColor = CustomColor.ButtonBorderColor;
+                this.btnSetSelectorToActive.BackColor = CustomColor.ButtonBackColor;
+                this.btnSetSelectorToActive.ForeColor = CustomColor.ForeColor;
+                this.btnSetSelectorToActive.FlatAppearance.BorderColor = CustomColor.ButtonBorderColor;
+            }
+            else
+            {
+                this.btnSetTracklistToActive.BackColor = CustomColor.ButtonBackColor;
+                this.btnSetTracklistToActive.ForeColor = CustomColor.ForeColor;
+                this.btnSetTracklistToActive.FlatAppearance.BorderColor = CustomColor.ButtonBorderColor;
+                this.btnSetSelectorToActive.BackColor = CustomColor.ActiveButtonColor;
+                this.btnSetSelectorToActive.ForeColor = CustomColor.ButtonBackColor;
+                this.btnSetSelectorToActive.FlatAppearance.BorderColor = CustomColor.ButtonBorderColor;
+            }
+        }
+        private void btnSetTrackListToActive_Click(object sender, EventArgs e)
+        {
+            this.btnSetTracklistToActive.BackColor = CustomColor.ActiveButtonColor;
+            this.btnSetTracklistToActive.ForeColor = CustomColor.ButtonBackColor;
+            this.btnSetTracklistToActive.FlatAppearance.BorderColor = CustomColor.ButtonBorderColor;
+            this.btnSetSelectorToActive.BackColor = CustomColor.ButtonBackColor;
+            this.btnSetSelectorToActive.ForeColor = CustomColor.ForeColor;
+            this.btnSetSelectorToActive.FlatAppearance.BorderColor = CustomColor.ButtonBorderColor;
+
+            if (this.dgvPlaylistList.SelectedRows.Count > 0)
+            {
+                int rowIndex = this.dgvPlaylistList.SelectedRows[0].Index;
+                this.SetTrackListToActive?.Invoke(this, new Messenger() { IntegerField1 = rowIndex });
+            }
+        }
+
+        private void btnSetSelectorToActive_Click(object sender, EventArgs e)
+        {
+            this.btnSetTracklistToActive.BackColor = CustomColor.ButtonBackColor;
+            this.btnSetTracklistToActive.ForeColor = CustomColor.ForeColor;
+            this.btnSetTracklistToActive.FlatAppearance.BorderColor = CustomColor.ButtonBorderColor;
+            this.btnSetSelectorToActive.BackColor = CustomColor.ActiveButtonColor;
+            this.btnSetSelectorToActive.ForeColor = CustomColor.ButtonBackColor;
+            this.btnSetSelectorToActive.FlatAppearance.BorderColor = CustomColor.ButtonBorderColor;
+
+            if (this.dgvPlaylistList.SelectedRows.Count > 0)
+            {
+                int rowIndex = this.dgvPlaylistList.SelectedRows[0].Index;
+                this.SetSelectorToActive?.Invoke(this, new Messenger() { IntegerField1 = rowIndex });
+            }
+        }
+
         #endregion
 
         private bool controlKey = false;
@@ -533,9 +602,9 @@ namespace MitoPlayer_2024.Views
         {
             this.SetCurrentTrackEvent?.Invoke(this, new Messenger() { IntegerField1 = rowIndex });
         }
-        public void CallPlayTrackEvent()
+        public void CallPlayTrackEvent(TableSourceForMediaPlayer source)
         {
-            this.PlayTrackEvent?.Invoke(this, new Messenger() { });
+            this.PlayTrackEvent?.Invoke(this, new Messenger() { StringField1 = source.ToString() });
         }
         public void CallPauseTrackEvent()
         {
@@ -568,18 +637,30 @@ namespace MitoPlayer_2024.Views
 
 
         //UPDATE PLAYLIST VIEW
-        public void UpdateAfterPlayTrack(int currentTrackIndex, int currentTrackIdInPlaylist)
+        public void UpdateAfterPlayTrack(int currentTrackIndex, int currentTrackIdInPlaylist, SourceTable sourceTableForGridUpdate)
         {
             String artist = "Playing: ";
             String title = String.Empty;
             String path = String.Empty;
 
-            if (dgvTrackList.Rows[currentTrackIndex].Cells["Title"].Value != null)
-                artist += (string)dgvTrackList.Rows[currentTrackIndex].Cells["Artist"].Value;
-            if (dgvTrackList.Rows[currentTrackIndex].Cells["Title"].Value != null)
-                title = (string)dgvTrackList.Rows[currentTrackIndex].Cells["Title"].Value;
-            if (dgvTrackList.Rows[currentTrackIndex].Cells["Path"].Value != null)
-                path = (string)dgvTrackList.Rows[currentTrackIndex].Cells["Path"].Value;
+            if (sourceTableForGridUpdate == SourceTable.Tracklist)
+            {
+                if (dgvTrackList.Rows[currentTrackIndex].Cells["Title"].Value != null)
+                    artist += (string)dgvTrackList.Rows[currentTrackIndex].Cells["Artist"].Value;
+                if (dgvTrackList.Rows[currentTrackIndex].Cells["Title"].Value != null)
+                    title = (string)dgvTrackList.Rows[currentTrackIndex].Cells["Title"].Value;
+                if (dgvTrackList.Rows[currentTrackIndex].Cells["Path"].Value != null)
+                    path = (string)dgvTrackList.Rows[currentTrackIndex].Cells["Path"].Value;
+            }
+            else if (sourceTableForGridUpdate == SourceTable.Selector)
+            {
+                if (dgvSelectorTrackList.Rows[currentTrackIndex].Cells["Title"].Value != null)
+                    artist += (string)dgvSelectorTrackList.Rows[currentTrackIndex].Cells["Artist"].Value;
+                if (dgvSelectorTrackList.Rows[currentTrackIndex].Cells["Title"].Value != null)
+                    title = (string)dgvSelectorTrackList.Rows[currentTrackIndex].Cells["Title"].Value;
+                if (dgvSelectorTrackList.Rows[currentTrackIndex].Cells["Path"].Value != null)
+                    path = (string)dgvSelectorTrackList.Rows[currentTrackIndex].Cells["Path"].Value;
+            }
 
             if (!String.IsNullOrEmpty(title))
             {
@@ -588,7 +669,18 @@ namespace MitoPlayer_2024.Views
 
             ((MainView)this.parentView).UpdateAfterPlayTrack(artist);
             ((MainView)this.parentView).InitializeSoundWavesAndPlot(path);
-            this.UpdateTracklistColor(currentTrackIdInPlaylist);
+
+            if (sourceTableForGridUpdate == SourceTable.Tracklist)
+            {
+                this.UpdateSelectorTracklistColor();
+                this.UpdateTracklistColor(currentTrackIdInPlaylist);
+            }
+            else if (sourceTableForGridUpdate == SourceTable.Selector)
+            {
+                this.UpdateTracklistColor();
+                this.UpdateSelectorTracklistColor(currentTrackIdInPlaylist);
+            }
+                
         }
         public void UpdateAfterPlayTrackAfterPause()
         {
@@ -698,7 +790,7 @@ namespace MitoPlayer_2024.Views
             }
         }
 
-        public void UpdateTrackCountAndLength(int currentPlaylistId)
+        public void UpdateTrackCountAndLength(int currentPlaylistId, bool isTrackListOrSelector)
         {
             int trackCount = 0;
             String playlistName = "";
@@ -713,17 +805,27 @@ namespace MitoPlayer_2024.Views
                     .Cells["Name"].Value.ToString();
             }
 
-            if (this.dgvTrackList.Rows != null && this.dgvTrackList.Rows.Count > 0)
+            CustomDataGridView trackList = new CustomDataGridView();
+            if (isTrackListOrSelector)
+            {
+                trackList = this.dgvTrackList;
+            }
+            else
+            {
+                trackList = this.dgvSelectorTrackList;
+            }
+
+            if (trackList.Rows != null && trackList.Rows.Count > 0)
             {
                 //ROW COUNT
-                trackCount = this.dgvTrackList.Rows.Count;
+                trackCount = trackList.Rows.Count;
 
                 String[] parts = null;
                 int seconds = 0;
 
-                for (int i = 0; i < this.dgvTrackList.Rows.Count; i++)
+                for (int i = 0; i < trackList.Rows.Count; i++)
                 {
-                    parts = this.dgvTrackList.Rows[i].Cells["Length"].Value.ToString().Split(':');
+                    parts = trackList.Rows[i].Cells["Length"].Value.ToString().Split(':');
 
                     if (parts.Length == 3)
                     {
@@ -764,7 +866,7 @@ namespace MitoPlayer_2024.Views
                 trackSumLenght = length.ToString();
             }
 
-            if (this.dgvTrackList.Rows.Count > 0)
+            if (trackList.Rows.Count > 0)
             {
                 lblTrackCount.Show();
                 lblTrackSumLength.Show();
@@ -826,7 +928,7 @@ namespace MitoPlayer_2024.Views
                 this.dgvTrackList.SelectedRows.Count > 0 && e.KeyCode == Keys.Enter)
             {
                 this.CallStopTrackEvent();
-                this.CallPlayTrackEvent();
+                this.CallPlayTrackEvent(TableSourceForMediaPlayer.TracklistKeyDown);
             }
 
             //CTRL+S - SAve playlist
@@ -864,7 +966,7 @@ namespace MitoPlayer_2024.Views
                 this.dgvSelectorTrackList.SelectedRows.Count > 0 && e.KeyCode == Keys.Enter)
             {
                 this.CallStopTrackEvent();
-                this.CallPlayTrackEvent();
+                this.CallPlayTrackEvent(TableSourceForMediaPlayer.TracklistKeyDown);
             }
 
             //CTRL+S - Save playlist
@@ -1017,37 +1119,18 @@ namespace MitoPlayer_2024.Views
 
         #region TAG EDITOR
 
-        public void InitializeTagComponent(List<Tag> tagList, List<List<TagValue>> tagValueListContainer, bool isTagEditorDisplayed, bool isOnlyPlayingRowModeEnabled, bool isFilterModeEnabled)
+        public void InitializeTagComponent(List<Tag> tagList, List<List<TagValue>> tagValueListContainer)
         {
             this.tagValueEditorPanel.Controls.Clear();
 
-            if (isFilterModeEnabled)
-            {
-                this.lblFilter.Show();
-                this.txtbFilter.Show();
-                this.btnFilter.Show();
-                this.btnFilterIsPressed = false;
-                this.txtbFilter.Text = string.Empty;
-                this.isFilterEnabled = true;
-            }
-            else
-            {
-                this.lblFilter.Hide();
-                this.txtbFilter.Hide();
-                this.btnFilter.Hide();
-                this.btnFilterIsPressed = false;
-                this.txtbFilter.Text = string.Empty;
-                this.isFilterEnabled = false;
-            }
+            this.lblFilter.Show();
+            this.txtbFilter.Show();
+            this.btnFilter.Show();
+            this.btnFilterIsPressed = false;
+            this.txtbFilter.Text = string.Empty;
+            this.isFilterEnabled = true;
 
-            if (isFilterModeEnabled && isTagEditorDisplayed)
-            {
-                this.btnClearTagValueFilter.Show();
-            }
-            else
-            {
-                this.btnClearTagValueFilter.Hide();
-            }
+            this.btnClearTagValueFilter.Show();
 
             int sumHeight = 0;
             int height = 0;
@@ -1190,20 +1273,43 @@ namespace MitoPlayer_2024.Views
             }
 
         }
-        private int originalTagValueEditorPanelHeight;
-        public void InitializeDisplayTagComponent(bool isTagComponentDisplayed)
+
+        public void InitializeDisplayTagComponent()
         {
-            this.isFilterEnabled = false;
+            foreach (Control groupBox in this.tagValueEditorPanel.Controls)
+            {
+                if (groupBox.GetType() == typeof(GroupBox))
+                {
+                    foreach (Control buttonOrTextBox in groupBox.Controls)
+                    {
+                        if (buttonOrTextBox.GetType() == typeof(TagValueButton))
+                        {
+                            if (((TagValueButton)buttonOrTextBox).TextBox != null)
+                            {
+                                ((TagValueButton)buttonOrTextBox).Text = "Filter";
+                            }
+                        }
+                    }
+                }
+            }
+
+            this.isFilterEnabled = true;
 
             this.btnFilter.BackColor = CustomColor.ButtonBackColor;
             this.btnFilter.ForeColor = CustomColor.ForeColor;
             this.btnFilter.FlatAppearance.BorderColor = CustomColor.ButtonBorderColor;
 
-            this.btnClearTagValueFilter.Hide();
-            this.lblFilter.Hide();
-            this.txtbFilter.Hide();
-            this.btnFilter.Hide();
+            this.btnClearTagValueFilter.Show();
+            this.lblFilter.Show();
+            this.txtbFilter.Show();
+            this.btnFilter.Show();
+            this.btnFilterIsPressed = false;
             this.txtbFilter.Text = string.Empty;
+
+            this.SetFocusToDataGridView();
+
+           // this.EnableFilterModeEvent?.Invoke(this, new EventArgs());
+
         }
         private void btnFilterModeToggle_Click(object sender, EventArgs e)
         {
@@ -1560,6 +1666,7 @@ namespace MitoPlayer_2024.Views
         private void btnSave_Click(object sender, EventArgs e)
         {
             this.SaveTrackListEvent?.Invoke(this, new EventArgs());
+            
         }
         private void btnSaveSelector_Click(object sender, EventArgs e)
         {
@@ -1593,28 +1700,24 @@ namespace MitoPlayer_2024.Views
 
         public void ToggleTracklistSelection(bool enabled)
         {
-            isInitializing = !enabled;
+            isTrackListSelectionBlocked = !enabled;
         }
         // Event handler for selection changes in the DataGridView
         private void dgvTrackList_SelectionChanged(object sender, EventArgs e)
         {
-            if (isInitializing || !isCoverBrowserUpdateEnabled || isDragAndDropInProgress)
-            {
+            if (isTrackListSelectionBlocked || isDragAndDropInProgress)
+                return;
 
-            }
-            else
+            if (dgvTrackList.SelectedRows.Count > 0)
             {
-                if (dgvTrackList.SelectedRows.Count > 0)
-                {
-                    int selectedIndex = dgvTrackList.SelectedRows[dgvTrackList.SelectedRows.Count - 1].Index;
-                    firstSelectedRowIndex = selectedIndex;
-                    this.CallSetCurrentTrackEvent(selectedIndex);
-                }
+                int selectedIndex = dgvTrackList.SelectedRows[dgvTrackList.SelectedRows.Count - 1].Index;
+                firstSelectedRowIndex = selectedIndex;
+                this.CallSetCurrentTrackEvent(selectedIndex);
             }
 
             if (dgvTrackList.SelectedRows.Count > 0)
             {
-                this.lblSelectedItemsCountInSelector.Text = $"{this.dgvTrackList.SelectedRows.Count} item{(this.dgvTrackList.SelectedRows.Count > 1 ? "s" : "")} selected";
+                this.lblSelectedItemsCount.Text = $"{this.dgvTrackList.SelectedRows.Count} item{(this.dgvTrackList.SelectedRows.Count > 1 ? "s" : "")} selected";
 
                 int totalSeconds = 0;
 
@@ -1660,7 +1763,7 @@ namespace MitoPlayer_2024.Views
                     length = $"{0:D2}:{totalTime.Seconds:D2}";
                 }
 
-                this.lblSelectedItemsLengthInSelector.Text = $"Length: {length}";
+                this.lblSelectedItemsLength.Text = $"Length: {length}";
             }
         }
         // Event handler for double-clicks in the DataGridView
@@ -1668,10 +1771,10 @@ namespace MitoPlayer_2024.Views
         {
             if (!isDragging)
             {
-                var hitTestInfo = dgvTrackList.HitTest(e.X, e.Y);
+                var hitTestInfo = this.dgvTrackList.HitTest(e.X, e.Y);
                 if (hitTestInfo.RowIndex >= 0)
                 {
-                    this.PlayTrackEvent?.Invoke(this, new Messenger() { });
+                    this.PlayTrackEvent?.Invoke(this, new Messenger() { StringField1 = TableSourceForMediaPlayer.TracklistDoubleClick.ToString() });
                 }
             }
         }
@@ -1774,7 +1877,7 @@ namespace MitoPlayer_2024.Views
                 var hitTestInfo = dgvTrackList.HitTest(dragStartPoint.X, dragStartPoint.Y);
                 if (hitTestInfo.RowIndex >= 0)
                 {
-                    this.PlayTrackEvent?.Invoke(this, new Messenger() { });
+                    this.PlayTrackEvent?.Invoke(this, new Messenger() { StringField1 = TableSourceForMediaPlayer.TracklistDoubleClick.ToString() });
                 }
             }
         }
@@ -2414,11 +2517,11 @@ namespace MitoPlayer_2024.Views
 
         public void ToggleSelectorTracklistSelection(bool enabled)
         {
-            isInitializing = !enabled;
+            isSelectorTrackListSelectionBlocked = !enabled;
         }
         private void dgvSelectorTrackList_SelectionChanged(object sender, EventArgs e)
         {
-            if (isInitializing || !selectorCoverBrowserUpdateEnabled || selectorDragAndDropInProgress)
+            if (isSelectorTrackListSelectionBlocked || selectorDragAndDropInProgress)
                 return;
 
             if (dgvSelectorTrackList.SelectedRows.Count > 0)
@@ -2454,10 +2557,10 @@ namespace MitoPlayer_2024.Views
         {
             if (!selectorIsDragging)
             {
-                var hitTestInfo = dgvSelectorTrackList.HitTest(e.X, e.Y);
+                var hitTestInfo = this.dgvSelectorTrackList.HitTest(e.X, e.Y);
                 if (hitTestInfo.RowIndex >= 0)
                 {
-                    this.PlayTrackEvent?.Invoke(this, new Messenger() { });
+                    this.PlayTrackEvent?.Invoke(this, new Messenger() { StringField1 = TableSourceForMediaPlayer.SelectorDoubleClick.ToString() });
                 }
             }
         }
@@ -2542,7 +2645,7 @@ namespace MitoPlayer_2024.Views
                 var hitTestInfo = dgvSelectorTrackList.HitTest(selectorDragStartPoint.X, selectorDragStartPoint.Y);
                 if (hitTestInfo.RowIndex >= 0)
                 {
-                    this.PlayTrackEvent?.Invoke(this, new Messenger() { });
+                    this.PlayTrackEvent?.Invoke(this, new Messenger() { StringField1 = TableSourceForMediaPlayer.SelectorDoubleClick.ToString() });
                 }
             }
         }
@@ -2819,13 +2922,16 @@ namespace MitoPlayer_2024.Views
 
         #endregion
 
-        private void PlaylistView_Shown(object sender, EventArgs e)
+ 
+        private void SelectorView_Shown(object sender, EventArgs e)
         {
             this.ToggleTracklistSelection(true);
-        }
-        private void SelectorPlaylistView_Shown(object sender, EventArgs e)
-        {
             this.ToggleSelectorTracklistSelection(true);
+        }
+
+        private void dgvSelectorTrackList_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            this.OrderSelectorByColumnEvent?.Invoke(this, new Messenger() { StringField1 = dgvTrackList.Columns[e.ColumnIndex].Name });
         }
     }
 }

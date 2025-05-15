@@ -1,5 +1,12 @@
 ﻿
 
+
+
+- BUG: selector - new playlist list drag and drop error (?)
+- BUG: selector - when shift between selector and playlist(?), selected playlist is different and the playlist did not load automatically
+- BUG: selector - save buttons save fix (+repositioning needed)
+
+
 - BUG: bpb and key export - bpm export does not work sometimes
 
 - FEATURE: export to m3u - playlistname into name text field
@@ -105,6 +112,26 @@ a filtered lista elemeit írja ki a playlist tack coujnt - ki kéne írni, hogy 
 - FEATURE: tag editor - display according to tag/tagvalue order
 - FEATURE: load tracklist or navigate away: check save status and show dialog window is there are unsaved progress
 
+======================
+v0.16.0.25
+======================
+OK - BUG: TagValue editor - import tags and values: wrong ids
+OK - BUG: Playlist - missing tracktagvalues
+OK - BUG: selector - playlist selection fills tracks into the tracklist and selector (only the selector must be fill)
+OK - FEATURE: selector - set active tracklist
+OK - BUG: selector - load selected button and playlist mode group color
+OK - BUG: selector - tracklist and selector ordering conflit with each other
+OK - BUG: selector - tracklist columns are wrong (eg.: id column is visible) (after some ordering, the two tracklist will be restored)
+OK - BUG: set full length on active tracklist
+OK - BUG: selector - tracklist selected info did not load
+OK - BUG: selector - selector selected info did not load
+OK - BUG: selector - review menu
+OK - BUG: selector - tagvalue text filter and button missing
+OK - BUG: selector - media player button fix
+OK - FEATURE: selector - media player with tracklist
+OK - FEATURE: selector - media player with selector
+OK - FEATURE: selector - tagvalue filter to the selector
+OK - BUG: selector - tracklist and ordering fix
 ======================
 v0.16.0.8
 ======================

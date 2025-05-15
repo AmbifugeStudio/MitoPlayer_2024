@@ -34,7 +34,6 @@
             this.dgvPlaylistList = new System.Windows.Forms.DataGridView();
             this.lblActualPlaylistName = new System.Windows.Forms.Label();
             this.btnSave = new System.Windows.Forms.Button();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.rdbShowBestFitFromDatabase = new System.Windows.Forms.RadioButton();
             this.rdbShowBestFitFromSelected = new System.Windows.Forms.RadioButton();
             this.rdbShowSelected = new System.Windows.Forms.RadioButton();
@@ -52,20 +51,19 @@
             this.renameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.exportToM3UToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.exportToTxtToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportToDirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.lblMessage = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
             this.lblSelectedItemsLength = new System.Windows.Forms.Label();
             this.lblSelectedItemsCount = new System.Windows.Forms.Label();
+            this.btnSetTracklistToActive = new System.Windows.Forms.Button();
+            this.btnSetSelectorToActive = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
             this.dgvSelectorTrackList = new MitoPlayer_2024.Helpers.CustomDataGridView();
             this.dgvTrackList = new MitoPlayer_2024.Helpers.CustomDataGridView();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPlaylistList)).BeginInit();
-            this.groupBox1.SuspendLayout();
             this.pnlTagComponent.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSelectorTrackList)).BeginInit();
@@ -138,29 +136,17 @@
             // btnSave
             // 
             this.btnSave.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSave.Location = new System.Drawing.Point(201, 340);
+            this.btnSave.Location = new System.Drawing.Point(282, 12);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(32, 23);
             this.btnSave.TabIndex = 57;
             this.btnSave.Text = "💾";
             this.btnSave.UseVisualStyleBackColor = true;
             // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.rdbShowBestFitFromDatabase);
-            this.groupBox1.Controls.Add(this.rdbShowBestFitFromSelected);
-            this.groupBox1.Controls.Add(this.rdbShowSelected);
-            this.groupBox1.Location = new System.Drawing.Point(239, 327);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(400, 42);
-            this.groupBox1.TabIndex = 64;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Playlist Mode";
-            // 
             // rdbShowBestFitFromDatabase
             // 
             this.rdbShowBestFitFromDatabase.AutoSize = true;
-            this.rdbShowBestFitFromDatabase.Location = new System.Drawing.Point(246, 19);
+            this.rdbShowBestFitFromDatabase.Location = new System.Drawing.Point(635, 330);
             this.rdbShowBestFitFromDatabase.Name = "rdbShowBestFitFromDatabase";
             this.rdbShowBestFitFromDatabase.Size = new System.Drawing.Size(135, 17);
             this.rdbShowBestFitFromDatabase.TabIndex = 2;
@@ -171,7 +157,7 @@
             // rdbShowBestFitFromSelected
             // 
             this.rdbShowBestFitFromSelected.AutoSize = true;
-            this.rdbShowBestFitFromSelected.Location = new System.Drawing.Point(109, 19);
+            this.rdbShowBestFitFromSelected.Location = new System.Drawing.Point(498, 330);
             this.rdbShowBestFitFromSelected.Name = "rdbShowBestFitFromSelected";
             this.rdbShowBestFitFromSelected.Size = new System.Drawing.Size(131, 17);
             this.rdbShowBestFitFromSelected.TabIndex = 1;
@@ -182,7 +168,7 @@
             // rdbShowSelected
             // 
             this.rdbShowSelected.AutoSize = true;
-            this.rdbShowSelected.Location = new System.Drawing.Point(6, 19);
+            this.rdbShowSelected.Location = new System.Drawing.Point(395, 330);
             this.rdbShowSelected.Name = "rdbShowSelected";
             this.rdbShowSelected.Size = new System.Drawing.Size(97, 17);
             this.rdbShowSelected.TabIndex = 0;
@@ -222,6 +208,7 @@
             this.btnFilter.TabIndex = 46;
             this.btnFilter.Text = "Filter";
             this.btnFilter.UseVisualStyleBackColor = true;
+            this.btnFilter.Click += new System.EventHandler(this.btnFilter_Click);
             // 
             // tagValueEditorPanel
             // 
@@ -243,6 +230,7 @@
             this.btnClearTagValueFilter.TabIndex = 45;
             this.btnClearTagValueFilter.Text = "Clear Filter";
             this.btnClearTagValueFilter.UseVisualStyleBackColor = true;
+            this.btnClearTagValueFilter.Click += new System.EventHandler(this.btnClearTagValueFilter_Click);
             // 
             // txtbFilter
             // 
@@ -252,10 +240,11 @@
             this.txtbFilter.Name = "txtbFilter";
             this.txtbFilter.Size = new System.Drawing.Size(148, 20);
             this.txtbFilter.TabIndex = 42;
+            this.txtbFilter.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtbFilter_KeyUp);
             // 
             // lblSelectedItemsLengthInSelector
             // 
-            this.lblSelectedItemsLengthInSelector.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblSelectedItemsLengthInSelector.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lblSelectedItemsLengthInSelector.Location = new System.Drawing.Point(866, 659);
             this.lblSelectedItemsLengthInSelector.Name = "lblSelectedItemsLengthInSelector";
             this.lblSelectedItemsLengthInSelector.Size = new System.Drawing.Size(106, 13);
@@ -264,7 +253,7 @@
             // 
             // lblSelectedItemsCountInSelector
             // 
-            this.lblSelectedItemsCountInSelector.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblSelectedItemsCountInSelector.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lblSelectedItemsCountInSelector.Location = new System.Drawing.Point(866, 646);
             this.lblSelectedItemsCountInSelector.Name = "lblSelectedItemsCountInSelector";
             this.lblSelectedItemsCountInSelector.Size = new System.Drawing.Size(106, 13);
@@ -279,72 +268,66 @@
             this.renameToolStripMenuItem,
             this.deleteToolStripMenuItem,
             this.toolStripSeparator3,
-            this.toolStripMenuItem1,
-            this.toolStripSeparator4,
             this.exportToM3UToolStripMenuItem1,
             this.exportToTxtToolStripMenuItem,
             this.exportToDirToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.ShowImageMargin = false;
-            this.contextMenuStrip1.Size = new System.Drawing.Size(148, 192);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(148, 164);
             // 
             // createPlaylistToolStripMenuItem
             // 
             this.createPlaylistToolStripMenuItem.Name = "createPlaylistToolStripMenuItem";
             this.createPlaylistToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
             this.createPlaylistToolStripMenuItem.Text = "New";
+            this.createPlaylistToolStripMenuItem.Click += new System.EventHandler(this.menuStripCreatePlaylist_Click);
             // 
             // loadToolStripMenuItem
             // 
             this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
             this.loadToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
             this.loadToolStripMenuItem.Text = "Load";
+            this.loadToolStripMenuItem.Click += new System.EventHandler(this.menuStripLoadPlaylist_Click);
             // 
             // renameToolStripMenuItem
             // 
             this.renameToolStripMenuItem.Name = "renameToolStripMenuItem";
             this.renameToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
             this.renameToolStripMenuItem.Text = "Edit";
+            this.renameToolStripMenuItem.Click += new System.EventHandler(this.menuStripRenamePlaylist_Click);
             // 
             // deleteToolStripMenuItem
             // 
             this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
             this.deleteToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
             this.deleteToolStripMenuItem.Text = "Remove";
+            this.deleteToolStripMenuItem.Click += new System.EventHandler(this.menuStripDeletePlaylist_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
             this.toolStripSeparator3.Size = new System.Drawing.Size(144, 6);
             // 
-            // toolStripMenuItem1
-            // 
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(147, 22);
-            this.toolStripMenuItem1.Text = "Train Model";
-            // 
-            // toolStripSeparator4
-            // 
-            this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(144, 6);
-            // 
             // exportToM3UToolStripMenuItem1
             // 
             this.exportToM3UToolStripMenuItem1.Name = "exportToM3UToolStripMenuItem1";
             this.exportToM3UToolStripMenuItem1.Size = new System.Drawing.Size(147, 22);
             this.exportToM3UToolStripMenuItem1.Text = "Export to m3u";
+            this.exportToM3UToolStripMenuItem1.Click += new System.EventHandler(this.menuStripExportToM3uToolStripMenuItem_Click);
             // 
             // exportToTxtToolStripMenuItem
             // 
             this.exportToTxtToolStripMenuItem.Name = "exportToTxtToolStripMenuItem";
             this.exportToTxtToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
             this.exportToTxtToolStripMenuItem.Text = "Export to txt";
+            this.exportToTxtToolStripMenuItem.Click += new System.EventHandler(this.menuStripExportToTxtToolStripMenuItem_Click);
             // 
             // exportToDirToolStripMenuItem
             // 
             this.exportToDirToolStripMenuItem.Name = "exportToDirToolStripMenuItem";
             this.exportToDirToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
             this.exportToDirToolStripMenuItem.Text = "Export to directory";
+            this.exportToDirToolStripMenuItem.Click += new System.EventHandler(this.exportToDirectoryToolStripMenuItem_Click);
             // 
             // lblMessage
             // 
@@ -354,19 +337,10 @@
             this.lblMessage.Size = new System.Drawing.Size(274, 26);
             this.lblMessage.TabIndex = 69;
             // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(201, 12);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(103, 23);
-            this.button1.TabIndex = 3;
-            this.button1.Text = "Load Selected";
-            this.button1.UseVisualStyleBackColor = true;
-            // 
             // lblSelectedItemsLength
             // 
             this.lblSelectedItemsLength.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSelectedItemsLength.Location = new System.Drawing.Point(866, 350);
+            this.lblSelectedItemsLength.Location = new System.Drawing.Point(866, 340);
             this.lblSelectedItemsLength.Name = "lblSelectedItemsLength";
             this.lblSelectedItemsLength.Size = new System.Drawing.Size(106, 13);
             this.lblSelectedItemsLength.TabIndex = 70;
@@ -375,11 +349,42 @@
             // lblSelectedItemsCount
             // 
             this.lblSelectedItemsCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSelectedItemsCount.Location = new System.Drawing.Point(866, 337);
+            this.lblSelectedItemsCount.Location = new System.Drawing.Point(866, 327);
             this.lblSelectedItemsCount.Name = "lblSelectedItemsCount";
             this.lblSelectedItemsCount.Size = new System.Drawing.Size(106, 13);
             this.lblSelectedItemsCount.TabIndex = 71;
             this.lblSelectedItemsCount.Text = "0 item selected";
+            // 
+            // btnSetTracklistToActive
+            // 
+            this.btnSetTracklistToActive.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnSetTracklistToActive.Location = new System.Drawing.Point(201, 12);
+            this.btnSetTracklistToActive.Name = "btnSetTracklistToActive";
+            this.btnSetTracklistToActive.Size = new System.Drawing.Size(75, 23);
+            this.btnSetTracklistToActive.TabIndex = 72;
+            this.btnSetTracklistToActive.Text = "Set Active";
+            this.btnSetTracklistToActive.UseVisualStyleBackColor = true;
+            this.btnSetTracklistToActive.Click += new System.EventHandler(this.btnSetTrackListToActive_Click);
+            // 
+            // btnSetSelectorToActive
+            // 
+            this.btnSetSelectorToActive.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnSetSelectorToActive.Location = new System.Drawing.Point(201, 327);
+            this.btnSetSelectorToActive.Name = "btnSetSelectorToActive";
+            this.btnSetSelectorToActive.Size = new System.Drawing.Size(75, 23);
+            this.btnSetSelectorToActive.TabIndex = 73;
+            this.btnSetSelectorToActive.Text = "Set Active";
+            this.btnSetSelectorToActive.UseVisualStyleBackColor = true;
+            this.btnSetSelectorToActive.Click += new System.EventHandler(this.btnSetSelectorToActive_Click);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(320, 332);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(69, 13);
+            this.label1.TabIndex = 75;
+            this.label1.Text = "Playlist Mode";
             // 
             // dgvSelectorTrackList
             // 
@@ -394,13 +399,14 @@
             this.dgvSelectorTrackList.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
             this.dgvSelectorTrackList.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
             this.dgvSelectorTrackList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            this.dgvSelectorTrackList.Location = new System.Drawing.Point(201, 375);
+            this.dgvSelectorTrackList.Location = new System.Drawing.Point(201, 356);
             this.dgvSelectorTrackList.Name = "dgvSelectorTrackList";
             this.dgvSelectorTrackList.ReadOnly = true;
             this.dgvSelectorTrackList.RowHeadersVisible = false;
             this.dgvSelectorTrackList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvSelectorTrackList.Size = new System.Drawing.Size(771, 268);
+            this.dgvSelectorTrackList.Size = new System.Drawing.Size(771, 287);
             this.dgvSelectorTrackList.TabIndex = 60;
+            this.dgvSelectorTrackList.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvSelectorTrackList_ColumnHeaderMouseClick);
             this.dgvSelectorTrackList.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this.dgvSelectorTrackList_DataBindingComplete);
             this.dgvSelectorTrackList.SelectionChanged += new System.EventHandler(this.dgvSelectorTrackList_SelectionChanged);
             this.dgvSelectorTrackList.DragDrop += new System.Windows.Forms.DragEventHandler(this.dgvSelectorTrackList_DragDrop);
@@ -454,15 +460,19 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1264, 681);
+            this.Controls.Add(this.rdbShowBestFitFromDatabase);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.rdbShowBestFitFromSelected);
+            this.Controls.Add(this.rdbShowSelected);
+            this.Controls.Add(this.btnSetSelectorToActive);
+            this.Controls.Add(this.btnSetTracklistToActive);
             this.Controls.Add(this.lblSelectedItemsLength);
             this.Controls.Add(this.lblSelectedItemsCount);
             this.Controls.Add(this.btnSave);
-            this.Controls.Add(this.button1);
             this.Controls.Add(this.lblMessage);
             this.Controls.Add(this.lblSelectedItemsLengthInSelector);
             this.Controls.Add(this.lblSelectedItemsCountInSelector);
             this.Controls.Add(this.pnlTagComponent);
-            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.dgvSelectorTrackList);
             this.Controls.Add(this.dgvTrackList);
             this.Controls.Add(this.lblActualPlaylistName);
@@ -471,9 +481,8 @@
             this.Controls.Add(this.dgvPlaylistList);
             this.Name = "SelectorView";
             this.Text = "SelectorView";
+            this.Shown += new System.EventHandler(this.SelectorView_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.dgvPlaylistList)).EndInit();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             this.pnlTagComponent.ResumeLayout(false);
             this.pnlTagComponent.PerformLayout();
             this.contextMenuStrip1.ResumeLayout(false);
@@ -493,7 +502,6 @@
         private System.Windows.Forms.Button btnSave;
         private Helpers.CustomDataGridView dgvTrackList;
         private Helpers.CustomDataGridView dgvSelectorTrackList;
-        private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.RadioButton rdbShowBestFitFromDatabase;
         private System.Windows.Forms.RadioButton rdbShowBestFitFromSelected;
         private System.Windows.Forms.RadioButton rdbShowSelected;
@@ -511,15 +519,15 @@
         private System.Windows.Forms.ToolStripMenuItem renameToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripMenuItem exportToM3UToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem exportToTxtToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exportToDirToolStripMenuItem;
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Label lblMessage;
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label lblSelectedItemsLength;
         private System.Windows.Forms.Label lblSelectedItemsCount;
+        private System.Windows.Forms.Button btnSetTracklistToActive;
+        private System.Windows.Forms.Button btnSetSelectorToActive;
+        private System.Windows.Forms.Label label1;
     }
 }

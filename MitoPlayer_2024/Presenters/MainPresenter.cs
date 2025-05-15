@@ -220,9 +220,6 @@ namespace MitoPlayer_2024.Presenters
 
             this.ShowPlaylistView(this, new EventArgs());
         }
-
-       
-
         private ResultOrError CreateTestData(int profileId)
         {
             ResultOrError result = new ResultOrError();
@@ -740,103 +737,68 @@ namespace MitoPlayer_2024.Presenters
         {
             if (this.actualView != null && this.actualView.GetType() == typeof(PlaylistView))
                 ((PlaylistView)this.actualView).CallPlayTrackEvent();
-            else if (this.actualView != null && this.actualView.GetType() == typeof(TrackEditorView))
-                ((TrackEditorView)this.actualView).CallPlayTrackEvent();
-            else if (this.actualView != null && this.actualView.GetType() == typeof(HarmonizerView))
-                ((HarmonizerView)this.actualView).CallPlayTrackEvent();
+            else if (this.actualView != null && this.actualView.GetType() == typeof(SelectorView))
+                ((SelectorView)this.actualView).CallPlayTrackEvent(TableSourceForMediaPlayer.MainButton);
         }
         private void PauseTrack(object sender, EventArgs e)
         {
             if (this.actualView != null && this.actualView.GetType() == typeof(PlaylistView))
                 ((PlaylistView)this.actualView).CallPauseTrackEvent();
-            else if (this.actualView != null && this.actualView.GetType() == typeof(TrackEditorView))
-                ((TrackEditorView)this.actualView).CallPauseTrackEvent();
-            else if (this.actualView != null && this.actualView.GetType() == typeof(HarmonizerView))
-                ((HarmonizerView)this.actualView).CallPauseTrackEvent();
+            else if (this.actualView != null && this.actualView.GetType() == typeof(SelectorView))
+                ((SelectorView)this.actualView).CallPauseTrackEvent();
         }
         private void StopTrack(object sender, EventArgs e)
         {
             if (this.actualView != null && this.actualView.GetType() == typeof(PlaylistView))
                 ((PlaylistView)this.actualView).CallStopTrackEvent();
-            else if (this.actualView != null && this.actualView.GetType() == typeof(TrackEditorView))
-                ((TrackEditorView)this.actualView).CallStopTrackEvent();
-            else if (this.actualView != null && this.actualView.GetType() == typeof(HarmonizerView))
-                ((HarmonizerView)this.actualView).CallStopTrackEvent();
+            else if (this.actualView != null && this.actualView.GetType() == typeof(SelectorView))
+                ((SelectorView)this.actualView).CallStopTrackEvent();
         }
         private void PrevTrack(object sender, EventArgs e)
         {
             if (this.actualView != null && this.actualView.GetType() == typeof(PlaylistView))
                 ((PlaylistView)this.actualView).CallPrevTrackEvent();
-            else if (this.actualView != null && this.actualView.GetType() == typeof(TrackEditorView))
-                ((TrackEditorView)this.actualView).CallPrevTrackEvent();
-            else if (this.actualView != null && this.actualView.GetType() == typeof(HarmonizerView))
-                ((HarmonizerView)this.actualView).CallPrevTrackEvent();
         }
         private void NextTrack(object sender, EventArgs e)
         {
             if (this.actualView != null && this.actualView.GetType() == typeof(PlaylistView))
                 ((PlaylistView)this.actualView).CallNextTrackEvent();
-            else if (this.actualView != null && this.actualView.GetType() == typeof(TrackEditorView))
-                ((TrackEditorView)this.actualView).CallNextTrackEvent();
-            else if (this.actualView != null && this.actualView.GetType() == typeof(HarmonizerView))
-                ((HarmonizerView)this.actualView).CallNextTrackEvent();
         }
         private void RandomTrack(object sender, EventArgs e)
         {
             if (this.actualView != null && this.actualView.GetType() == typeof(PlaylistView))
                 ((PlaylistView)this.actualView).CallRandomTrackEvent();
-            else if (this.actualView != null && this.actualView.GetType() == typeof(TrackEditorView))
-                ((TrackEditorView)this.actualView).CallRandomTrackEvent();
-            else if (this.actualView != null && this.actualView.GetType() == typeof(HarmonizerView))
-                ((HarmonizerView)this.actualView).CallRandomTrackEvent();
         }
         private void ChangeProgress(object sender, Messenger e)
         {
             if (this.actualView != null && this.actualView.GetType() == typeof(PlaylistView))
                 this.playlistPresenter.CallChangeProgressEvent(e.IntegerField1, e.IntegerField2);
-            else if (this.actualView != null && this.actualView.GetType() == typeof(TrackEditorView))
-                this.trackEditorPresenter.CallChangeProgressEvent(e.IntegerField1, e.IntegerField2);
-            else if (this.actualView != null && this.actualView.GetType() == typeof(HarmonizerView))
-                this.harmonizerPresenter.CallChangeProgressEvent(e.IntegerField1, e.IntegerField2);
+            else if (this.actualView != null && this.actualView.GetType() == typeof(SelectorView))
+                this.selectorPresenter.CallChangeProgressEvent(e.IntegerField1, e.IntegerField2);
         }
         private void ChangeVolume(object sender, Messenger e)
         {
             if (this.actualView != null && this.actualView.GetType() == typeof(PlaylistView))
                 this.playlistPresenter.CallChangeVolumeEvent(e.IntegerField1);
-            else if (this.actualView != null && this.actualView.GetType() == typeof(TrackEditorView))
-                this.trackEditorPresenter.CallChangeVolumeEvent(e.IntegerField1);
-            else if (this.actualView != null && this.actualView.GetType() == typeof(HarmonizerView))
-                this.harmonizerPresenter.CallChangeVolumeEvent(e.IntegerField1);
+            else if (this.actualView != null && this.actualView.GetType() == typeof(SelectorView))
+                this.selectorPresenter.CallChangeVolumeEvent(e.IntegerField1);
         }
         private void ChangeMute(object sender, Messenger e)
         {
-
-
-
             if (this.actualView != null && this.actualView.GetType() == typeof(PlaylistView))
                 this.playlistPresenter.CallChangeMuteEvent(e.BooleanField1);
-            else if (this.actualView != null && this.actualView.GetType() == typeof(TrackEditorView))
-                this.trackEditorPresenter.CallChangeMuteEvent(e.BooleanField1);
-            else if (this.actualView != null && this.actualView.GetType() == typeof(HarmonizerView))
-                this.harmonizerPresenter.CallChangeMuteEvent(e.BooleanField1);
+            else if (this.actualView != null && this.actualView.GetType() == typeof(SelectorView))
+                this.selectorPresenter.CallChangeMuteEvent(e.BooleanField1);
         }
         private void ChangeShuffle(object sender, Messenger e)
         {
             if (this.actualView != null && this.actualView.GetType() == typeof(PlaylistView))
                 this.playlistPresenter.CallChangeShuffleEvent(e.BooleanField1);
-            else if (this.actualView != null && this.actualView.GetType() == typeof(TrackEditorView))
-                this.trackEditorPresenter.CallChangeShuffleEvent(e.BooleanField1);
-            else if (this.actualView != null && this.actualView.GetType() == typeof(HarmonizerView))
-                this.harmonizerPresenter.CallChangeShuffleEvent(e.BooleanField1);
         }
         private void ChangePreview(object sender, Messenger e)
         {
             if (this.actualView != null && this.actualView.GetType() == typeof(PlaylistView))
                 this.playlistPresenter.CallChangePreviewEvent(e.BooleanField1);
-            else if (this.actualView != null && this.actualView.GetType() == typeof(TrackEditorView))
-                this.trackEditorPresenter.CallChangePreviewEvent(e.BooleanField1);
-            else if (this.actualView != null && this.actualView.GetType() == typeof(HarmonizerView))
-                this.harmonizerPresenter.CallChangePreviewEvent(e.BooleanField1);
         }
 
         //HELP
@@ -998,6 +960,7 @@ namespace MitoPlayer_2024.Presenters
                                 foreach (Tag tag in tagList)
                                 {
                                     TrackTagValue ttv = new TrackTagValue();
+                                    ttv.Id = this.trackDao.GetNextId(TableName.TrackTagValue.ToString());
                                     ttv.TrackId = track.Id;
                                     ttv.TagId = tag.Id;
                                     ttv.TagName = tag.Name;
@@ -1025,7 +988,6 @@ namespace MitoPlayer_2024.Presenters
                 return trackList;
             }
         }
-
         private void ImportKeysAndBpmsFromExternalSource(ref List<Model.Track> trackList,List<Tag> tagList)
         {
             bool automaticKeyImport = this.settingDao.GetBooleanSetting(Settings.AutomaticKeyImport.ToString()).Value.Value;
@@ -1124,7 +1086,6 @@ namespace MitoPlayer_2024.Presenters
 
             }
         }
-
         private bool HasVirtualDj()
         {
             bool result = false;

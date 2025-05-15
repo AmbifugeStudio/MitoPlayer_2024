@@ -425,14 +425,23 @@ namespace MitoPlayer_2024.Views
         
         private void dgvTagList_SelectionChanged(object sender, EventArgs e)
         {
-            if (dgvTagList.SelectedRows.Count > 0)
+            if (!isInitializing)
             {
-                int selectedIndex = dgvTagList.SelectedRows[0].Index;
-                firstSelectedTagRowIndex = selectedIndex;
+                if (dgvTagList.SelectedRows.Count > 0)
+                {
+                    int selectedIndex = dgvTagList.SelectedRows[0].Index;
+                    firstSelectedTagRowIndex = selectedIndex;
 
-                if (!isTagDragging)
-                    this.SetCurrentTagId?.Invoke(this, new Messenger() { IntegerField1 = Convert.ToInt32(this.dgvTagList.SelectedRows[0].Index) });
+                    if (!isTagDragging)
+                        this.SetCurrentTagId?.Invoke(this, new Messenger() { IntegerField1 = Convert.ToInt32(this.dgvTagList.SelectedRows[0].Index) });
+                }
             }
+            
+        }
+        private bool isInitializing = true;
+        public void ToggleTagListSelection(bool enabled)
+        {
+            isInitializing = !enabled;
         }
         private void dgvTagList_MouseDoubleClick(object sender, MouseEventArgs e)
         {
@@ -629,5 +638,6 @@ namespace MitoPlayer_2024.Views
                 e.Effect = DragDropEffects.None;
             }
         }
+
     }
 }

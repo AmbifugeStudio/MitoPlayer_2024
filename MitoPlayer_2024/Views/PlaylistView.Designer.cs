@@ -95,7 +95,7 @@ namespace MitoPlayer_2024.Views
             // exportToTxtToolStripMenuItem
             // 
             this.exportToTxtToolStripMenuItem.Name = "exportToTxtToolStripMenuItem";
-            this.exportToTxtToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.exportToTxtToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
             this.exportToTxtToolStripMenuItem.Text = "Export to txt";
             this.exportToTxtToolStripMenuItem.Click += new System.EventHandler(this.menuStripExportToTxtToolStripMenuItem_Click);
             // 
@@ -114,64 +114,65 @@ namespace MitoPlayer_2024.Views
             this.exportToDirToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.ShowImageMargin = false;
-            this.contextMenuStrip1.Size = new System.Drawing.Size(148, 192);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(156, 214);
             // 
             // createPlaylistToolStripMenuItem
             // 
             this.createPlaylistToolStripMenuItem.Name = "createPlaylistToolStripMenuItem";
-            this.createPlaylistToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.createPlaylistToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
             this.createPlaylistToolStripMenuItem.Text = "New";
             this.createPlaylistToolStripMenuItem.Click += new System.EventHandler(this.menuStripCreatePlaylist_Click);
             // 
             // loadToolStripMenuItem
             // 
             this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-            this.loadToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.loadToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
             this.loadToolStripMenuItem.Text = "Load";
             this.loadToolStripMenuItem.Click += new System.EventHandler(this.menuStripLoadPlaylist_Click);
             // 
             // renameToolStripMenuItem
             // 
             this.renameToolStripMenuItem.Name = "renameToolStripMenuItem";
-            this.renameToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.renameToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
             this.renameToolStripMenuItem.Text = "Edit";
             this.renameToolStripMenuItem.Click += new System.EventHandler(this.menuStripRenamePlaylist_Click);
             // 
             // deleteToolStripMenuItem
             // 
             this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
             this.deleteToolStripMenuItem.Text = "Remove";
             this.deleteToolStripMenuItem.Click += new System.EventHandler(this.menuStripDeletePlaylist_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(144, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(152, 6);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(147, 22);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(155, 22);
             this.toolStripMenuItem1.Text = "Train Model";
+            this.toolStripMenuItem1.Visible = false;
             this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(144, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(152, 6);
             // 
             // exportToM3UToolStripMenuItem1
             // 
             this.exportToM3UToolStripMenuItem1.Name = "exportToM3UToolStripMenuItem1";
-            this.exportToM3UToolStripMenuItem1.Size = new System.Drawing.Size(147, 22);
+            this.exportToM3UToolStripMenuItem1.Size = new System.Drawing.Size(155, 22);
             this.exportToM3UToolStripMenuItem1.Text = "Export to m3u";
             this.exportToM3UToolStripMenuItem1.Click += new System.EventHandler(this.menuStripExportToM3uToolStripMenuItem_Click);
             // 
             // exportToDirToolStripMenuItem
             // 
             this.exportToDirToolStripMenuItem.Name = "exportToDirToolStripMenuItem";
-            this.exportToDirToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.exportToDirToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
             this.exportToDirToolStripMenuItem.Text = "Export to directory";
             this.exportToDirToolStripMenuItem.Click += new System.EventHandler(this.exportToDirectoryToolStripMenuItem_Click);
             // 
@@ -532,6 +533,7 @@ namespace MitoPlayer_2024.Views
             this.btnGenerateTrainingSet.TabIndex = 52;
             this.btnGenerateTrainingSet.Text = "Generate Training Set";
             this.btnGenerateTrainingSet.UseVisualStyleBackColor = true;
+            this.btnGenerateTrainingSet.Visible = false;
             this.btnGenerateTrainingSet.Click += new System.EventHandler(this.btnGenerateTrainingSet_Click);
             // 
             // btnLiveStreamAnimation
@@ -544,6 +546,7 @@ namespace MitoPlayer_2024.Views
             this.btnLiveStreamAnimation.TabIndex = 53;
             this.btnLiveStreamAnimation.Text = "Live Stream Animation";
             this.btnLiveStreamAnimation.UseVisualStyleBackColor = true;
+            this.btnLiveStreamAnimation.Visible = false;
             this.btnLiveStreamAnimation.Click += new System.EventHandler(this.btnLiveStreamAnimation_Click);
             // 
             // btnLiveStreamAnimationSetting
@@ -556,6 +559,7 @@ namespace MitoPlayer_2024.Views
             this.btnLiveStreamAnimationSetting.Size = new System.Drawing.Size(23, 23);
             this.btnLiveStreamAnimationSetting.TabIndex = 54;
             this.btnLiveStreamAnimationSetting.UseVisualStyleBackColor = true;
+            this.btnLiveStreamAnimationSetting.Visible = false;
             this.btnLiveStreamAnimationSetting.Click += new System.EventHandler(this.btnLiveStreamAnimationSetting_Click);
             // 
             // btnDisplayCoverImageToggle

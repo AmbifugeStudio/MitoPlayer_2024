@@ -3,7 +3,7 @@ using MitoPlayer_2024.Helpers.ErrorHandling;
 using MitoPlayer_2024.Presenters;
 using MitoPlayer_2024.Views;
 using System;
-using System.Data.SQLite;
+using Microsoft.Data.Sqlite;
 using System.IO;
 using System.Windows.Forms;
 
@@ -22,6 +22,10 @@ namespace MitoPlayer_2024
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            SQLitePCL.Batteries_V2.Init();
+
+
+            File.AppendAllText("startup.log", $"App indult: {DateTime.Now}\n");
 
             SettingDao = new SettingDao();
 
@@ -49,13 +53,16 @@ namespace MitoPlayer_2024
             ResultOrError result = new ResultOrError();
 
             String dbPath = "mitoplayer12dev.db";
-            String connectionString = $"Data Source={dbPath};Version=3";
+            String connectionString = $"Data Source={dbPath};";
 
             try
             {
                 if (!File.Exists(dbPath))
                 {
-                    SQLiteConnection.CreateFile(dbPath);
+                    using (var connection = new SqliteConnection(connectionString))
+                    {
+                        connection.Open();
+                    }
 
                     if (!File.Exists(dbPath))
                     {
@@ -106,7 +113,7 @@ namespace MitoPlayer_2024
             if (!File.Exists(dbPath))
                 return false;
 
-            using (var conn = new SQLiteConnection($"Data Source={dbPath};Version=3;"))
+            using (var conn = new SqliteConnection($"Data Source={dbPath};"))
             {
                 conn.Open();
 

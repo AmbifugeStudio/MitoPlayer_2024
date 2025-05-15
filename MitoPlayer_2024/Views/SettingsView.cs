@@ -294,7 +294,7 @@ namespace MitoPlayer_2024.Views
 
         private void nmdLogMessageDisplayTime_ValueChanged(object sender, EventArgs e)
         {
-            this.SetLogMessageDisplayTimeEvent?.Invoke(this, new Messenger { DecimalField1 = this.nmdPreviewPercentage.Value });
+            this.SetLogMessageDisplayTimeEvent?.Invoke(this, new Messenger { DecimalField1 = this.nmdLogMessageDisplayTime.Value });
         }
         private void chbLogMessageEnabled_CheckedChanged(object sender, EventArgs e)
         {
