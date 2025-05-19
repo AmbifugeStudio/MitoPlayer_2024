@@ -1,4 +1,16 @@
 ======================
+CHANGELOG
+======================
+
+======================
+v0.16.1.26
+======================
+OK - REFACTOR - changelog change
+======================
+v0.16.1.25
+======================
+OK - REFACTOR - remove machine learning packages
+======================
 v0.16.1.24
 ======================
 OK - BUG: TagValue editor - import tags and values: wrong ids
@@ -318,3 +330,138 @@ OK - REFACTOR: Change to MySQL 8.0.39
 OK - REFACTOR: SettingDao error handling
 OK - REFACTOR: MySQL connection view
 OK - REFACTOR: Database initialization
+======================
+v0.11.6.2
+======================
+OK - BUG: Played track was not highlighted
+======================
+v0.11.6.1
+======================
+OK - FEATURE: Complete file export to directory  
+OK - FEATURE: Full VirtualDJ BPM and key export  
+OK - BUG: Key values seem to be missing for some tracks, even though they are analyzed
+======================
+v0.11.5.4
+======================
+OK - FEATURE: BPM column and manual input  
+OK - BUG: Proper column display after profile change  
+OK - BUG: Column sorting broken  
+OK - BUG: Tracklist coloring fixed  
+OK - BUG: Double-click on TagValue table didn’t trigger edit
+======================
+v0.11.4.2
+======================
+OK - FEATURE: Pressing Enter closes TagValue creation/edit window  
+OK - FEATURE: Row or cell coloring  
+OK - FEATURE: TagValue coloring in tracklist  
+OK - FEATURE: TagValue coloring in TagValue list  
+OK - BUG: TagValue not always colored properly after creation  
+OK - BUG: Colored row turns white after drag and drop
+======================
+v0.11.3.6
+======================
+OK - FEATURE: Playlist drag and drop  
+OK - FEATURE: Active playlist should be highlighted in green  
+OK - BUG: Conflict between playlist double-click and drag-and-drop  
+OK - BUG: Crashed after repeated deletions from the end  
+OK - BUG: Drag and drop may not add tracks to the database  
+OK - BUG: Drag and drop should use copy, not delete  
+OK - BUG: Error when dragging a single item  
+OK - BUG: Crash due to index error when dragging the last item
+======================
+v0.11.2.6
+======================
+OK - BUG: Crash when pressing unassigned hotkey  
+OK - BUG: Quicklist deletion  
+OK - BUG: No feedback on Quicklist copy  
+OK - BUG: Playlist sorting should be disabled from UI  
+OK - BUG: Playlist selection breaks after external drag-and-drop  
+OK - BUG: Drag-and-drop selection remains after drop
+======================
+v0.11.2.1
+======================
+OK - FEATURE: Drag-and-drop overhaul  
+OK - FEATURE: Drag-and-drop to playlist  
+OK - BUG: Playing track not colored after drag-and-drop
+======================
+v0.11.2.0
+======================
+OK - Refactor: drag and drop refactor
+======================
+v0.11.1.1
+======================
+OK - FEATURE: Export playlist to *.m3u or *.txt  
+OK - BUG: Player controls must be disabled in tag values panel  
+OK - BUG: Tag editor UI not showing correctly on empty DB  
+OK - BUG: Tag editor buttons must be disabled on empty list  
+OK - BUG: Crash when adding track with duplicate TagValue on empty list
+======================
+v0.11.1.0
+======================
+OK - FEATURE: TagValue editor
+======================
+v0.11.0.0
+======================
+OK - FEATURE: TagValue Editor
+======================
+v0.11.0.10
+======================
+OK - BUG: Crash after tag deletion due to index error  
+OK - BUG: TagValue column not cleared on delete  
+OK - BUG: TagValue list did not load if tag already existed  
+OK - BUG: Adding new TagValue filled wrong column  
+OK - BUG: Tag order incorrect after creating and switching to player  
+OK - BUG: Quicklist not set -> crash on quickkey  
+OK - BUG: Duplicate setting keys (LastOpenFilesFilterIndex, Volume)  
+OK - BUG: Played track coloring lost after changing column visibility  
+OK - BUG: Column not reordered immediately after rearranging  
+OK - BUG: New playlist crashed due to foreign key
+======================
+v0.11.0.0
+======================
+OK - REFACTOR: Dao refactor
+======================
+v0.10.1.7
+======================
+OK - BUG: Copy track info incomplete  
+OK - BUG: Track starts after directory scan but not displayed  
+OK - BUG: Track does not auto-start after file scan  
+OK - BUG: Playlist add validation should be info, not error  
+OK - BUG: Selected index shows 1000 on empty list  
+OK - BUG: Track count and total duration in bottom-right  
+OK - BUG: Played track not highlighted after removing duplicates/missing  
+OK - BUG: Random not working  
+OK - BUG: Random should walk through list  
+OK - BUG: No feedback after copying to tracklist  
+OK - BUG: Quickkey not working or adds multiple rows  
+OK - BUG: New ID must be generated when adding to list  
+OK - BUG: Played track not highlighted after sort  
+OK - BUG: Same group cannot be set for multiple playlists  
+OK - BUG: Wrong action triggered on Enter/Space  
+OK - BUG: Check next track after one ends  
+OK - BUG: Drag and drop highlights wrong current track  
+OK - BUG: Duplicate selection plays first, not clicked  
+OK - BUG: Cannot restart playback after clearing all and stopping  
+OK - BUG: No coloring after returning from other view  
+OK - BUG: Error on delete all  
+OK - BUG: Crash on next/prev buttons  
+OK - BUG: Column height must not be adjustable  
+OK - BUG: Random button not working  
+OK - BUG: Should play track on selection via Space/Enter  
+OK - BUG: Bind 1-4 group buttons  
+OK - BUG: Time and progress bar disappear on pause  
+OK - BUG: ESC should exit playlist name editor  
+OK - BUG: Crash on header click spam  
+OK - BUG: List not refreshed after Add File  
+OK - BUG: Player not starting after Add File  
+OK - BUG: Crash on directory scan due to setting save  
+OK - BUG: Crash on new playlist  
+OK - BUG: Set playlist table column height  
+OK - BUG: Dock main menu buttons to the left  
+OK - BUG: Main menu sections not visible after button click  
+OK - BUG: Volume button doesn't update label  
+OK - BUG: Volume slider does not affect volume  
+OK - BUG: Progress bar event not wired
+
+v0.				12.									4.								1
+Main Release	Large Feature or Refactor			Small Features or Refactor		Small Bugs
