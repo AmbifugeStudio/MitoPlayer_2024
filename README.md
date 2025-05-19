@@ -16,8 +16,7 @@
 
 As a DJ, I needed a tool that helps me manage my music with custom properties like tone, BPM, vocal presence, and more. MitoPlayer lets me filter, organize, and preview tracks in a clean interface — with full control over playlist generation.
 
-Originally built in Java/Swing, the app was rewritten in 2024 using **C# (WinForms)** and **MySQL** for better performance and extensibility.
-
+Originally built in Java/Swing without a database, the app was fully rewritten in 2024 using C# (WinForms) — first with MySQL, and later transitioned to SQLite to enable simpler deployment and zero external dependencies.
 ---
 
 ## ✨ Features
@@ -55,7 +54,7 @@ Originally built in Java/Swing, the app was rewritten in 2024 using **C# (WinFor
 
 - C# (.NET 6)
 - WinForms UI
-- MySQL backend
+- SQLite backend
 - VirtualDJ / MixedInKey integration
 
 ---
