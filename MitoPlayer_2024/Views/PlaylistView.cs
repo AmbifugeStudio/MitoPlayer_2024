@@ -5,7 +5,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -16,8 +15,6 @@ namespace MitoPlayer_2024.Views
     {
         private Form parentView { get; set; }
 
-        private System.Windows.Forms.Panel pnlProgress;
-        private System.Windows.Forms.ProgressBar progressBar;
 
         //DATATABLES
         private BindingSource playlistListBindingSource { get; set; }
@@ -150,26 +147,6 @@ namespace MitoPlayer_2024.Views
         {
             this.BackColor = this.BackgroundColor;
             this.ForeColor = this.FontColor;
-
-            //this.groupBoxPlaylist.ForeColor = this.FontColor;
-          /*  this.groupBox4.ForeColor = this.FontColor;
-            this.groupBox3.ForeColor = this.FontColor;*/
-
-          /*  this.btnNewPlaylist.BackColor = this.ButtonColor;
-            this.btnNewPlaylist.ForeColor = this.FontColor;
-            this.btnNewPlaylist.FlatAppearance.BorderColor = this.ButtonBorderColor;
-
-            this.btnLoadPlaylist.BackColor = this.ButtonColor;
-            this.btnLoadPlaylist.ForeColor = this.FontColor;
-            this.btnLoadPlaylist.FlatAppearance.BorderColor = this.ButtonBorderColor;
-
-            this.btnRenamePlaylist.BackColor = this.ButtonColor;
-            this.btnRenamePlaylist.ForeColor = this.FontColor;
-            this.btnRenamePlaylist.FlatAppearance.BorderColor = this.ButtonBorderColor;
-
-            this.btnDeletePlaylist.BackColor = this.ButtonColor;
-            this.btnDeletePlaylist.ForeColor = this.FontColor;
-            this.btnDeletePlaylist.FlatAppearance.BorderColor = this.ButtonBorderColor;*/
 
             this.btnPlaylistListPanelToggle.BackColor = this.ButtonColor;
             this.btnPlaylistListPanelToggle.ForeColor = this.FontColor;
@@ -550,25 +527,6 @@ namespace MitoPlayer_2024.Views
                 controlKey = false;
             }   
         }
-
-        /* private BackgroundWorker backgroundWorker;
-         private void InitializeBackgroundWorker()
-         {
-             backgroundWorker = new BackgroundWorker();
-             backgroundWorker.DoWork += new DoWorkEventHandler(backgroundWorker_DoWork);
-             backgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(backgroundWorker_RunWorkerCompleted);
-         }
-         private void backgroundWorker_DoWork(object sender, DoWorkEventArgs e)
-         {
-             if (e.Argument is Action action)
-             {
-                 action();
-             }
-         }
-         private void backgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-         {
-             TurnOffProgressBar();
-         }*/
 
         private  void btnScanBpm_Click(object sender, EventArgs e)
         {
@@ -1123,8 +1081,6 @@ namespace MitoPlayer_2024.Views
 
                         txtBox.KeyDown += new KeyEventHandler(
                              (sender, e) => this.txtbSetTagValue_KeyDown(sender, e, btn));
-                      /*  btn.Click += new System.EventHandler(
-                             (sender, e) => this.btnSetTagValue_Click(sender, e));*/
                         btn.MouseDown += new MouseEventHandler(
                                (sender, e) => this.btnSetTagValue_Click(sender, e));
 
@@ -1143,9 +1099,6 @@ namespace MitoPlayer_2024.Views
                         btn.Size = new Size(buttonLengthX, buttonLengthY);
 
                         btn.TagName = gp.Text;
-
-                       /* btn.Click += new System.EventHandler(
-                                (sender, e) => this.btnClearTagValue_Click(sender, e));*/
                         btn.Location = new Point(buttonsIntervalX, buttonsIntervalY);
 
                         btn.MouseDown += new MouseEventHandler(
@@ -1172,8 +1125,6 @@ namespace MitoPlayer_2024.Views
                             btn.TagValueName = btn.Text;
                             btn.TagValueId = tagValueListContainer[i][j - 1].Id;
 
-                           /* btn.Click += new System.EventHandler(
-                                    (sender, e) => this.btnSetTagValue_Click(sender, e));*/
                             btn.MouseDown += new MouseEventHandler(
                                (sender, e) => this.btnSetTagValue_Click(sender, e));
 

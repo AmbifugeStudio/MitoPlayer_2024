@@ -236,6 +236,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Tag Values ";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.Shown += new System.EventHandler(this.TagValueView_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.dgvTagList)).EndInit();
             this.grbTags.ResumeLayout(false);
             this.grbTagValues.ResumeLayout(false);

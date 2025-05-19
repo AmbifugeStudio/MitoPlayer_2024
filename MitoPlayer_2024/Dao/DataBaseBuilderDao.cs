@@ -28,7 +28,7 @@ namespace MitoPlayer_2024.Helpers
                     connection.Close();
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 result = false;
             }
@@ -163,35 +163,6 @@ namespace MitoPlayer_2024.Helpers
                 }
             }
             return count > 0;
-
-           /* long count = 0;
-
-            MySqlConnectionStringBuilder builder = new MySqlConnectionStringBuilder(connectionString);
-            string database = builder.Database;
-
-            using (var connection = new MySqlConnection(connectionString))
-            using (var command = new MySqlCommand())
-            {
-                connection.Open();
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT count(*) FROM information_schema.tables WHERE table_schema = @Database AND table_name = @TableName ";
-                command.Parameters.Add("@TableName", MySqlDbType.VarChar).Value = tableName;
-                command.Parameters.Add("@Database", MySqlDbType.VarChar).Value = database;
-
-                using (var reader = command.ExecuteReader())
-                {
-                    
-                    while (reader.Read())
-                    {
-                        count = (long)reader[0];
-                        break;
-                    }
-                }
-
-                connection.Close();
-            }
-            return count > 0;*/
         }
         private ResultOrError BuildProfileTable()
         {

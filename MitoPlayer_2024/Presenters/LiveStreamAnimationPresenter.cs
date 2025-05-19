@@ -1,5 +1,4 @@
 ﻿using FlacLibSharp;
-using Google.Protobuf;
 using MitoPlayer_2024.Helpers;
 using MitoPlayer_2024.IViews;
 using MitoPlayer_2024.Model;
@@ -11,9 +10,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Numerics;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace MitoPlayer_2024.Presenters

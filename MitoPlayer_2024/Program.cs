@@ -25,7 +25,7 @@ namespace MitoPlayer_2024
             SQLitePCL.Batteries_V2.Init();
 
 
-            File.AppendAllText("startup.log", $"App indult: {DateTime.Now}\n");
+            File.AppendAllText("startup.log", $"Start Application: {DateTime.Now}\n");
 
             SettingDao = new SettingDao();
 
@@ -125,7 +125,7 @@ namespace MitoPlayer_2024
             }
         }
 
-        private static ResultOrError IsDatabasePrepared()
+       /* private static ResultOrError IsDatabasePrepared()
         {
             ResultOrError result = new ResultOrError();
             String dbPath = "mitoplayer12dev";
@@ -240,7 +240,7 @@ namespace MitoPlayer_2024
 
             result = presenter.IsDatabaseConnectionReady;
             return result;
-        }
+        }*/
         private static void ClearDatabaseSettings()
         {
             Properties.Settings.Default.Host = String.Empty;

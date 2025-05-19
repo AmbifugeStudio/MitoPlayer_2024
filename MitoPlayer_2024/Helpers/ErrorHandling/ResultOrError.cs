@@ -31,7 +31,7 @@ namespace MitoPlayer_2024.Helpers.ErrorHandling
             return new ResultOrError<T> { Value = value };
         }
 
-        public static new ResultOrError<T> CreateFailure(string message)
+        public static ResultOrError<T> CreateFailure(string message)
         {
             var result = new ResultOrError<T>();
             result.AddError(message);

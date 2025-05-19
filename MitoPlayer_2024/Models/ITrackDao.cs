@@ -1,7 +1,9 @@
-﻿using MitoPlayer_2024.Helpers.ErrorHandling;
+﻿using MitoPlayer_2024.Helpers;
+using MitoPlayer_2024.Helpers.ErrorHandling;
 using MitoPlayer_2024.Models;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace MitoPlayer_2024.Model
 {
@@ -30,6 +32,7 @@ namespace MitoPlayer_2024.Model
         ResultOrError<Track> GetTrackWithTags(int id, List<Tag> tagList);
         ResultOrError<Track> GetTrackWithTagsByPath(string path, List<Tag> tagList);
         ResultOrError<List<Track>> GetTracklistWithTagsByPlaylistId(int playlistId, List<Tag> tagList);
+        ResultOrError<List<Track>> GetTracklistWithTagsFromDatabaseByParameters(String textFilter, List<TagValueFilter> tagValueFilterList, List<Tag> tagList, int resultSize);
         ResultOrError<List<int>> GetAllTrackIdInList();
         ResultOrError UpdateTrack(Track track);
         ResultOrError DeleteAllTrack();
@@ -61,10 +64,10 @@ namespace MitoPlayer_2024.Model
         ResultOrError ClearTrackTagValueTable();
         #endregion
 
-        List<TrainingData> GetAllTrainingData();
+       /* List<TrainingData> GetAllTrainingData();
         ResultOrError CreateTrainingData(TrainingData trainingData);
         TrainingData GetTrainingData(int id);
-        void DeleteTrainingData(int id);
+        void DeleteTrainingData(int id);*/
 
     }
 }

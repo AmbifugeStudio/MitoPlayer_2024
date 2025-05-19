@@ -1,11 +1,10 @@
-﻿using MitoPlayer_2024.Helpers;
+﻿using Microsoft.Data.Sqlite;
+using MitoPlayer_2024.Helpers;
 using MitoPlayer_2024.Helpers.ErrorHandling;
 using MitoPlayer_2024.Models;
-using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using Microsoft.Data.Sqlite;
 using System.Drawing;
 
 namespace MitoPlayer_2024.Dao
@@ -48,7 +47,7 @@ namespace MitoPlayer_2024.Dao
                     command.ExecuteNonQuery();
                 }
             }
-            catch (MySqlException ex)
+            catch (SqliteException ex)
             {
                 String errorMessage = $"Tag [{tag.Name}] is not inserted. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -97,7 +96,7 @@ namespace MitoPlayer_2024.Dao
                     connection.Close();
                 }
             }
-            catch (MySqlException ex)
+            catch (SqliteException ex)
             {
                 String errorMessage = $"Tag [{id}] read error. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -151,7 +150,7 @@ namespace MitoPlayer_2024.Dao
                     }
                 }
             }
-            catch (MySqlException ex)
+            catch (SqliteException ex)
             {
                 String errorMessage = $"Tag [{name}] read error. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -203,7 +202,7 @@ namespace MitoPlayer_2024.Dao
                     connection.Close();
                 }
             }
-            catch (MySqlException ex)
+            catch (SqliteException ex)
             {
                 String errorMessage = $"Tag read error. \n{ex.Message}";
                 result.AddError(errorMessage);
@@ -248,7 +247,7 @@ namespace MitoPlayer_2024.Dao
                     command.ExecuteNonQuery();
                 }
             }
-            catch (MySqlException ex)
+            catch (SqliteException ex)
             {
                 string errorMessage = $"Error occurred while updating tag [{tag.Name}]. \n{ex.Message}";
                 result.AddError(errorMessage);

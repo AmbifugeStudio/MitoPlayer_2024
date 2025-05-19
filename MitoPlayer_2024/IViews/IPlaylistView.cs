@@ -1,17 +1,9 @@
-﻿using Google.Protobuf.WellKnownTypes;
-using MitoPlayer_2024.Helpers;
-using MitoPlayer_2024.Model;
+﻿using MitoPlayer_2024.Helpers;
 using MitoPlayer_2024.Models;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Data;
-using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace MitoPlayer_2024.Views
 {
@@ -27,7 +19,6 @@ namespace MitoPlayer_2024.Views
         event EventHandler<Messenger> NextTrackEvent;
         event EventHandler RandomTrackEvent;
         event EventHandler<Messenger> ChangeVolumeEvent;
-     //   event EventHandler GetMediaPlayerProgressStatusEvent;
 
         //TRACKLIST
         event EventHandler<Messenger> OrderByColumnEvent;
@@ -36,7 +27,6 @@ namespace MitoPlayer_2024.Views
         event EventHandler<Messenger> InternalDragAndDropIntoPlaylistEvent;
         event EventHandler<Messenger> ExternalDragAndDropIntoTracklistEvent;
         event EventHandler<Messenger> ExternalDragAndDropIntoPlaylistEvent;
-       // event EventHandler<ListEventArgs> ChangeTracklistColorEvent;
         event EventHandler ShowColumnVisibilityEditorEvent;
         event EventHandler ScanKeyAndBpmEvent;
 
@@ -98,9 +88,6 @@ namespace MitoPlayer_2024.Views
         
         void UpdateAfterStopTrack();
         void UpdateAfterPauseTrack();
-       // void UpdateMediaPlayerProgressStatus(double duration, String durationString, double currentPosition, String currentPositionString);
-
-
 
         void SetCurrentTrackColor(int trackIdInPlaylist);
         void UpdateTracklistColor(int trackIdInPlaylist);

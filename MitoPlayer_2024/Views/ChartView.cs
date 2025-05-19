@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using static MitoPlayer_2024.Presenters.ModelTrainerPresenter;
 
 namespace MitoPlayer_2024.Views
 {

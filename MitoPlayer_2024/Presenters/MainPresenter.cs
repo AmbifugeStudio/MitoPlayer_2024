@@ -352,7 +352,7 @@ namespace MitoPlayer_2024.Presenters
                 result = this.tagDao.CreateTagValue(tv);
             }
 
-            if (result)
+           /* if (result)
             {
                 TrainingData trainingData = new TrainingData()
                 {
@@ -373,8 +373,8 @@ namespace MitoPlayer_2024.Presenters
 
                 };
 
-                //this.trackDao.CreateTrainingData(trainingData);
-            }
+                this.trackDao.CreateTrainingData(trainingData);
+            }*/
 
             return result;    
 
@@ -489,9 +489,7 @@ namespace MitoPlayer_2024.Presenters
         }
         private void ShowTrackEditorView(object sender, EventArgs e)
         {
-            this.actualView = TrackEditorView.GetInstance((MainView)mainView);
-            ((MainView)mainView).SetMenuStripAccessibility(this.actualView);
-            this.trackEditorPresenter = new TrackEditorPresenter((ITrackEditorView)this.actualView, this.mediaPlayerComponent, this.trackDao, this.settingDao);
+
         }
         private void ShowRuleEditorView(object sender, EventArgs e)
         {
@@ -501,15 +499,11 @@ namespace MitoPlayer_2024.Presenters
         }
         private void ShowTemplateEditorView(object sender, EventArgs e)
         {
-            this.actualView = TemplateEditorView.GetInstance((MainView)mainView);
-            ((MainView)mainView).SetMenuStripAccessibility(this.actualView);
-            this.templateEditorPresenter = new TemplateEditorPresenter((ITemplateEditorView)this.actualView, this.trackDao, this.settingDao);
+
         }
         private void ShowHarmonizerView(object sender, EventArgs e)
         {
-            this.actualView = HarmonizerView.GetInstance((MainView)mainView);
-            ((MainView)mainView).SetMenuStripAccessibility(this.actualView);
-            this.harmonizerPresenter = new HarmonizerPresenter((IHarmonizerView)this.actualView, this.mediaPlayerComponent, this.trackDao, this.settingDao);
+
         }
         private void ShowSettingsView(object sender, EventArgs e)
         {
@@ -590,64 +584,43 @@ namespace MitoPlayer_2024.Presenters
         {
             if (this.actualView != null && this.actualView.GetType() == typeof(PlaylistView))
                 ((PlaylistView)this.actualView).CallCreatePlaylistEvent();
-            else if (this.actualView != null && this.actualView.GetType() == typeof(TrackEditorView))
-                ((TrackEditorView)this.actualView).CallCreatePlaylistEvent();
-            else if (this.actualView != null && this.actualView.GetType() == typeof(HarmonizerView))
-                ((HarmonizerView)this.actualView).CallCreatePlaylistEvent();
+
         }
         private void LoadPlaylist(object sender, EventArgs e)
         {
             if (this.actualView != null && this.actualView.GetType() == typeof(PlaylistView))
                 ((PlaylistView)this.actualView).CallLoadPlaylistEvent();
-            else if (this.actualView != null && this.actualView.GetType() == typeof(TrackEditorView))
-                ((TrackEditorView)this.actualView).CallLoadPlaylistEvent();
-            else if (this.actualView != null && this.actualView.GetType() == typeof(HarmonizerView))
-                ((HarmonizerView)this.actualView).CallLoadPlaylistEvent();
+
         }
         private void RenamePlaylist(object sender, EventArgs e)
         {
             if (this.actualView != null && this.actualView.GetType() == typeof(PlaylistView))
                 ((PlaylistView)this.actualView).CallRenamePlaylistEvent();
-            else if (this.actualView != null && this.actualView.GetType() == typeof(TrackEditorView))
-                ((TrackEditorView)this.actualView).CallRenamePlaylistEvent();
-            else if (this.actualView != null && this.actualView.GetType() == typeof(HarmonizerView))
-                ((HarmonizerView)this.actualView).CallRenamePlaylistEvent();
+
         }
         private void DeletePlaylist(object sender, EventArgs e)
         {
             if (this.actualView != null && this.actualView.GetType() == typeof(PlaylistView))
                 ((PlaylistView)this.actualView).CallDeletePlaylistEvent();
-            else if (this.actualView != null && this.actualView.GetType() == typeof(TrackEditorView))
-                ((TrackEditorView)this.actualView).CallDeletePlaylistEvent();
-            else if (this.actualView != null && this.actualView.GetType() == typeof(HarmonizerView))
-                ((HarmonizerView)this.actualView).CallDeletePlaylistEvent();
+
         }
         private void ExportToM3U(object sender, EventArgs e)
         {
             if (this.actualView != null && this.actualView.GetType() == typeof(PlaylistView))
                 ((PlaylistView)this.actualView).CallExportToM3UEvent();
-            else if (this.actualView != null && this.actualView.GetType() == typeof(TrackEditorView))
-                ((TrackEditorView)this.actualView).CallExportToM3UEvent();
-            else if (this.actualView != null && this.actualView.GetType() == typeof(HarmonizerView))
-                ((HarmonizerView)this.actualView).CallExportToM3UEvent();
+
         }
         private void ExportToTXT(object sender, EventArgs e)
         {
             if (this.actualView != null && this.actualView.GetType() == typeof(PlaylistView))
                 ((PlaylistView)this.actualView).CallExportToTXTEvent();
-            else if (this.actualView != null && this.actualView.GetType() == typeof(TrackEditorView))
-                ((TrackEditorView)this.actualView).CallExportToTXTEvent();
-            else if (this.actualView != null && this.actualView.GetType() == typeof(HarmonizerView))
-                ((HarmonizerView)this.actualView).CallExportToTXTEvent();
+
         }
         private void ExportToDirectory(object sender, EventArgs e)
         {
             if (this.actualView != null && this.actualView.GetType() == typeof(PlaylistView))
                 ((PlaylistView)this.actualView).CallExportToDirectoryEvent();
-            else if (this.actualView != null && this.actualView.GetType() == typeof(TrackEditorView))
-                ((TrackEditorView)this.actualView).CallExportToDirectoryEvent();
-            else if (this.actualView != null && this.actualView.GetType() == typeof(HarmonizerView))
-                ((HarmonizerView)this.actualView).CallExportToDirectoryEvent();
+
         }
         private void Preferences(object sender, EventArgs e)
         {
@@ -663,73 +636,49 @@ namespace MitoPlayer_2024.Presenters
         {
             if (this.actualView != null && this.actualView.GetType() == typeof(PlaylistView))
                 this.playlistPresenter.RemoveMissingTracks();
-            else if (this.actualView != null && this.actualView.GetType() == typeof(TrackEditorView))
-                this.trackEditorPresenter.RemoveMissingTracks();
-            else if (this.actualView != null && this.actualView.GetType() == typeof(HarmonizerView))
-                this.harmonizerPresenter.RemoveMissingTracks();
+
         }
         private void RemoveDuplicatedTracks(object sender, EventArgs e)
         {
             if (this.actualView != null && this.actualView.GetType() == typeof(PlaylistView))
                 this.playlistPresenter.RemoveDuplicatedTracks();
-            else if (this.actualView != null && this.actualView.GetType() == typeof(TrackEditorView))
-                this.trackEditorPresenter.RemoveDuplicatedTracks();
-            else if (this.actualView != null && this.actualView.GetType() == typeof(HarmonizerView))
-                this.harmonizerPresenter.RemoveDuplicatedTracks();
+
         }
         private void OrderByTitle(object sender, EventArgs e)
         {
             if (this.actualView != null && this.actualView.GetType() == typeof(PlaylistView))
                 this.playlistPresenter.OrderByTitle();
-            else if (this.actualView != null && this.actualView.GetType() == typeof(TrackEditorView))
-                this.trackEditorPresenter.OrderByTitle();
-            else if (this.actualView != null && this.actualView.GetType() == typeof(HarmonizerView))
-                this.harmonizerPresenter.OrderByTitle();
+
         }
         private void OrderByArtist(object sender, EventArgs e)
         {
             if (this.actualView != null && this.actualView.GetType() == typeof(PlaylistView))
                 this.playlistPresenter.OrderByArtist();
-            else if (this.actualView != null && this.actualView.GetType() == typeof(TrackEditorView))
-                this.trackEditorPresenter.OrderByArtist();
-            else if (this.actualView != null && this.actualView.GetType() == typeof(HarmonizerView))
-                this.harmonizerPresenter.OrderByArtist();
+
         }
         private void OrderByFileName(object sender, EventArgs e)
         {
             if (this.actualView != null && this.actualView.GetType() == typeof(PlaylistView))
                 this.playlistPresenter.OrderByFileName();
-            else if (this.actualView != null && this.actualView.GetType() == typeof(TrackEditorView))
-                this.trackEditorPresenter.OrderByFileName();
-            else if (this.actualView != null && this.actualView.GetType() == typeof(HarmonizerView))
-                this.harmonizerPresenter.OrderByFileName();
+
         }
         private void Shuffle(object sender, EventArgs e)
         {
             if (this.actualView != null && this.actualView.GetType() == typeof(PlaylistView))
                 this.playlistPresenter.Shuffle();
-            else if (this.actualView != null && this.actualView.GetType() == typeof(TrackEditorView))
-                this.trackEditorPresenter.Shuffle();
-            else if (this.actualView != null && this.actualView.GetType() == typeof(HarmonizerView))
-                this.harmonizerPresenter.Shuffle();
+
         }
         private void Reverse(object sender, EventArgs e)
         {
             if (this.actualView != null && this.actualView.GetType() == typeof(PlaylistView))
                 this.playlistPresenter.Reverse();
-            else if (this.actualView != null && this.actualView.GetType() == typeof(TrackEditorView))
-                this.trackEditorPresenter.Reverse();
-            else if (this.actualView != null && this.actualView.GetType() == typeof(HarmonizerView))
-                this.harmonizerPresenter.Reverse();
+
         }
         private void Clear(object sender, EventArgs e)
         {
             if (this.actualView != null && this.actualView.GetType() == typeof(PlaylistView))
                 this.playlistPresenter.Clear();
-            else if (this.actualView != null && this.actualView.GetType() == typeof(TrackEditorView))
-                this.trackEditorPresenter.Clear();
-            else if (this.actualView != null && this.actualView.GetType() == typeof(HarmonizerView))
-                this.harmonizerPresenter.Clear();
+
         }
 
         //PLAYBACK
@@ -814,10 +763,7 @@ namespace MitoPlayer_2024.Presenters
             {
                 this.playlistPresenter.CallAddTrackToTrackListEvent(trackList, dragIndex);
             }
-            else if (this.actualView != null && this.actualView.GetType() == typeof(TrackEditorView))
-                this.trackEditorPresenter.CallAddTrackToTrackListEvent(trackList, dragIndex);
-            else if (this.actualView != null && this.actualView.GetType() == typeof(HarmonizerView))
-                this.harmonizerPresenter.CallAddTrackToTrackListEvent(trackList, dragIndex);
+
         }
         private void ScanDirectory(string path)
         {
@@ -862,7 +808,6 @@ namespace MitoPlayer_2024.Presenters
                         else if (path.Contains(".m3u"))
                         {
                             const Int32 BufferSize = 128;
-                            char[] firstThreeCharacter;
                             using (var fileStream = System.IO.File.OpenRead(path))
                             using (var streamReader = new StreamReader(fileStream, Encoding.UTF8, true, BufferSize))
                             {
@@ -1112,7 +1057,6 @@ namespace MitoPlayer_2024.Presenters
             return result;
         }
 
-        private String[] scannedFiles;
         private List<Model.Track> trackList = new List<Model.Track>();
         private void ScanFiles(object sender, Messenger e)
         {

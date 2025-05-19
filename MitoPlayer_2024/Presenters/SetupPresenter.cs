@@ -1,10 +1,5 @@
-﻿
-using MitoPlayer_2024.Helpers;
-using MitoPlayer_2024.Models;
-using MitoPlayer_2024.Views;
-using MySql.Data.MySqlClient;
+﻿using MitoPlayer_2024.Views;
 using System;
-using System.Data;
 using System.IO;
 using System.Windows.Forms;
 
@@ -83,12 +78,12 @@ namespace MitoPlayer_2024.Presenters
 
                 try
                 {
-                    using (var connection = new MySqlConnection(connectionString))
+                   /* using (var connection = new MySqlConnection(connectionString))
                     using (var command = new MySqlCommand())
                     {
                         connection.Open();
                         connection.Close();
-                    }
+                    }*/
                 }
                 catch (Exception ex)
                 {

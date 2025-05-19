@@ -1,20 +1,12 @@
-﻿using Google.Protobuf.WellKnownTypes;
-using MitoPlayer_2024.Helpers;
+﻿using MitoPlayer_2024.Helpers;
 using MitoPlayer_2024.Views;
 using NAudio.CoreAudioApi;
 using NAudio.Wave;
-using OxyPlot.Annotations;
-using OxyPlot.Axes;
-using OxyPlot.Series;
-using OxyPlot;
-using OxyPlot.WindowsForms;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Reflection;
 using System.Windows.Forms;
-using TagLib.Riff;
 
 namespace MitoPlayer_2024
 {
@@ -102,11 +94,11 @@ namespace MitoPlayer_2024
         Color ButtonColor = System.Drawing.ColorTranslator.FromHtml("#292a2d");
         Color ButtonBorderColor = System.Drawing.ColorTranslator.FromHtml("#1b1b1b");
         Color WarningColor = System.Drawing.ColorTranslator.FromHtml("#ff8088");
-        OxyColor OxyBackgroundColor = OxyColor.Parse("#363639");
+       /* OxyColor OxyBackgroundColor = OxyColor.Parse("#363639");
         OxyColor OxyFontColor = OxyColor.Parse("#c6c6c6");
         OxyColor OxyButtonColor = OxyColor.Parse("#292a2d");
         OxyColor OxyButtonBorderColor = OxyColor.Parse("#1b1b1b");
-        OxyColor OxyActiveColor = OxyColor.Parse("#FFBF80");
+        OxyColor OxyActiveColor = OxyColor.Parse("#FFBF80");*/
         private void SetControlColors()
         {
             this.strMenu.BackColor = this.BackgroundColor;
@@ -554,7 +546,7 @@ namespace MitoPlayer_2024
             }
             return result;
         }
-
+        /*
         private void PlotSoundWaves(float[] soundwave, double totalDurationInMinutes, int downsampledSampleRate)
         {
             var plotView = new PlotView
@@ -598,7 +590,7 @@ namespace MitoPlayer_2024
 
             this.UpdateSoundWavePlot(plotView);
         }
-
+        */
 
         public void UpdateAfterPlayTrackAfterPause()
         {
@@ -779,7 +771,7 @@ namespace MitoPlayer_2024
                     leftPeak = (int)(Math.Round(this.mmDevice.AudioMeterInformation.PeakValues[0] * 100));
                     rightPeak = (int)(Math.Round(this.mmDevice.AudioMeterInformation.PeakValues[1] * 100));
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     leftPeak = 0;
                     rightPeak = 0;
@@ -863,11 +855,11 @@ namespace MitoPlayer_2024
             this.OpenChartEvent?.Invoke(this, new EventArgs());
         }
 
-        public void UpdateSoundWavePlot(PlotView plot)
+      /*  public void UpdateSoundWavePlot(PlotView plot)
         {
             this.pnlFrequency.Controls.Clear();
             this.pnlFrequency.Controls.Add(plot);
-        }
+        }*/
 
         private void lblTrackStart_Click(object sender, EventArgs e)
         {

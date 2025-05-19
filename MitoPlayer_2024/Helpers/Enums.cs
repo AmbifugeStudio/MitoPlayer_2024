@@ -58,6 +58,7 @@ namespace MitoPlayer_2024.Helpers
         LastGeneratedTagId,
         LastGeneratedTagValueId,
         CurrentPlaylistId,
+        CurrentPlaylistIdInSelector,
         CurrentSelectorPlaylistId,
         //INNER SETTINGS
         LastOpenDirectoryPath,

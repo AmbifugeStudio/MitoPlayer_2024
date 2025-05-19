@@ -351,7 +351,6 @@ namespace MitoPlayer_2024.Presenters
                 {
                     try
                     {
-                        bool isMissing = false;
 
                         foreach (Model.Track track in trackList)
                         {
@@ -1101,7 +1100,6 @@ namespace MitoPlayer_2024.Presenters
                         else if (path.Contains(".m3u"))
                         {
                             const Int32 BufferSize = 128;
-                            char[] firstThreeCharacter;
                             using (var fileStream = System.IO.File.OpenRead(path))
                             using (var streamReader = new StreamReader(fileStream, Encoding.UTF8, true, BufferSize))
                             {
@@ -3413,13 +3411,13 @@ namespace MitoPlayer_2024.Presenters
         }
         private void OpenModelTrainerEvent(object sender, EventArgs e)
         {
-            ModelTrainerView modelTrainerView = new ModelTrainerView();
+           /* ModelTrainerView modelTrainerView = new ModelTrainerView();
             ModelTrainerPresenter presenter = new ModelTrainerPresenter(modelTrainerView, this.tagDao, this.trackDao, this.settingDao);
 
             if (modelTrainerView.ShowDialog((PlaylistView)this.playlistView) == DialogResult.OK)
             {
 
-            }
+            }*/
         }
         #endregion
     }

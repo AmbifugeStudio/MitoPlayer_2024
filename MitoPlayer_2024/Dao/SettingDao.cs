@@ -174,8 +174,6 @@ namespace MitoPlayer_2024.Dao
                 this.InitializeStringSetting(Settings.TrackColumnVisibility.ToString());
             if (result)
                 this.InitializeIntegerSetting(Settings.CurrentPlaylistId.ToString());
-            if (result)
-                this.InitializeIntegerSetting(Settings.CurrentSelectorPlaylistId.ToString());
 
             //SETTING MENU
             if (result)
@@ -238,6 +236,10 @@ namespace MitoPlayer_2024.Dao
             //SELECTOR
             if (result)
                 this.InitializeBooleanSetting(Settings.IsTrackListActive.ToString());
+            if (result)
+                this.InitializeIntegerSetting(Settings.CurrentPlaylistIdInSelector.ToString());
+            if (result)
+                this.InitializeIntegerSetting(Settings.CurrentSelectorPlaylistId.ToString());
 
             //LIVE STREAM ANIMATION
             if (result)

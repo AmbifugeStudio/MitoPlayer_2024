@@ -1,64 +1,41 @@
 ﻿
-
-
-
+- FEATURE: quick tag and tagvalue import (write list into textfield)
+- FEATURE: Tag colouring dropdown value from setting
+- BUG: window resize-ra a tracklist a ki/bekapcsoló gombokra elmászik
+- REFACTOR: Playlist view panel refactor
 - BUG: selector - new playlist list drag and drop error (?)
 - BUG: selector - when shift between selector and playlist(?), selected playlist is different and the playlist did not load automatically
 - BUG: selector - save buttons save fix (+repositioning needed)
-
-
 - BUG: bpb and key export - bpm export does not work sometimes
-
 - FEATURE: export to m3u - playlistname into name text field
-
 - FEATURE: toggle button to display/hide key and bpm tag editor panel
-
 - BUG: tag value mateadata editor - delete tag - index error
 - BUG: drag and drop track into list - in reverse order
-
-
 - FEATURE: next song - scroll should move down, if the selection of the playing song moves down (and same to up)
-
 - FEATURE: preview end setting
-
 - FEATURE: cover browser - one click on cover, select the list element
 - FEATURE: cover browser - one click on cover, scroll should not be changed, if the selected is visible in the tracklist
-
 - BUG: long playlist name does not fit in the log at the top of playlist list
-
 - BUG: 2024 directory scan - missing bpms
-
 - FEATURE: export to directory - enter and excape key function
 - BUG: tracklist column ordering does not work sometimes
-
-
 - FEATURE: playlist list - load list content to another tracklist (tracklist2)
 - FEATURE: tracklist 2 and splitter
 - REFACTOR: splitter size change instead of tracklist size change
-
 - FEATURE: no need to restart application after cahnge settings
-
 
 - fájl exportnál original fájlnév megőrzés
 - feature: vdj és mixedinkey import szétszedése
 - fájl exportnál progress bar
 
-
 - BUG: file drop into the empty part of tracklist - in the case of same track, the previous track will be selected instead of dropped ones
-
-
-
-
 - üres listán nem tudom contorl s-t nomyni
-
 - BUG: drag and drop from tracklist to tha same playlist: duplicated elements has been added
-
 - FEATURE: export to txt - keep original file name option
 - FEATURE: export to txt - progress bar
 - FEATURE: paused music should continue with from the position where mouse button is pressed on the progress bar, while the song is paused
 - FEATURE: soundwave instead of progress bar
 - FEATURE: paused music should continue with from the position where mouse button is pressed on the soundwave, while the song is paused
-
 
 - hiba 2024-es mappa szekenneélesok 
 _ a progress bar delay-e lassú
@@ -113,7 +90,11 @@ a filtered lista elemeit írja ki a playlist tack coujnt - ki kéne írni, hogy 
 - FEATURE: load tracklist or navigate away: check save status and show dialog window is there are unsaved progress
 
 ======================
-v0.16.0.25
+v0.16.1.25
+======================
+OK - REFACTOR - remove machine learning packages
+======================
+v0.16.1.24
 ======================
 OK - BUG: TagValue editor - import tags and values: wrong ids
 OK - BUG: Playlist - missing tracktagvalues
@@ -133,7 +114,7 @@ OK - FEATURE: selector - media player with selector
 OK - FEATURE: selector - tagvalue filter to the selector
 OK - BUG: selector - tracklist and ordering fix
 ======================
-v0.16.0.8
+v0.16.1.7
 ======================
 OK - FEATURE: playlist list - right click should also select the row
 OK - FEATURE: playlist list - load list with one click

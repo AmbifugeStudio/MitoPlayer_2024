@@ -17,32 +17,25 @@ namespace MitoPlayer_2024.IViews
         event EventHandler<Messenger> PlayTrackEvent;
         event EventHandler PauseTrackEvent;
         event EventHandler StopTrackEvent;
-        event EventHandler CopyCurrentPlayingTrackToDefaultPlaylistEvent;
-        event EventHandler<Messenger> PrevTrackEvent;
-        event EventHandler<Messenger> NextTrackEvent;
-        event EventHandler RandomTrackEvent;
-        event EventHandler<Messenger> ChangeVolumeEvent;
 
         //TRACKLIST
         event EventHandler<Messenger> SetTrackListToActive;
-
         event EventHandler<Messenger> OrderByColumnEvent;
-        event EventHandler<Messenger> OrderSelectorByColumnEvent;
-
         event EventHandler<Messenger> DeleteTracksEvent;
         event EventHandler<Messenger> InternalDragAndDropIntoTracklistEvent;
-        event EventHandler<Messenger> InternalDragAndDropIntoPlaylistEvent;
         event EventHandler<Messenger> ExternalDragAndDropIntoTracklistEvent;
-        event EventHandler<Messenger> ExternalDragAndDropIntoPlaylistEvent;
-        event EventHandler ShowColumnVisibilityEditorEvent;
-
         event EventHandler<Messenger> MoveTracklistRowsEvent;
-
-        event EventHandler JumpBackwardEvent;
-        event EventHandler JumpForwardEvent;
+        event EventHandler SaveTrackListEvent;
 
         //SELECTOR
         event EventHandler<Messenger> SetSelectorToActive;
+        event EventHandler<Messenger> OrderSelectorByColumnEvent;
+        event EventHandler<Messenger> InternalDragAndDropIntoSelectorTracklistEvent;
+        event EventHandler<Messenger> ExternalDragAndDropIntoSelectorTracklistEvent;
+        event EventHandler<Messenger> MoveSelectorTracklistRowsEvent;
+        event EventHandler<Messenger> ChangePlaylistSource;
+        event EventHandler<Messenger> ChangeBestFit;
+        event EventHandler<Messenger> ChangeResultSize;
 
         //PLAYLIST
         event EventHandler<Messenger> CreatePlaylist;
@@ -55,22 +48,15 @@ namespace MitoPlayer_2024.IViews
         event EventHandler<Messenger> ExportToDirectoryEvent;
         event EventHandler<Messenger> MovePlaylistRowEvent;
         event EventHandler DisplayPlaylistListEvent;
+        event EventHandler<Messenger> InternalDragAndDropIntoPlaylistEvent;
+        event EventHandler<Messenger> ExternalDragAndDropIntoPlaylistEvent;
 
         //TAG EDITOR
-        event EventHandler<Messenger> SelectTagEvent;
         event EventHandler<Messenger> SetTagValueEvent;
         event EventHandler<Messenger> ClearTagValueEvent;
-
-        event EventHandler<Messenger> ChangeFilterModeEnabled;
         event EventHandler EnableFilterModeEvent;
-        event EventHandler EnableSetterModeEvent;
-        event EventHandler<Messenger> LoadCoversEvent;
-        event EventHandler<Messenger> ChangeOnlyPlayingRowModeEnabled;
         event EventHandler<Messenger> ChangeFilterParametersEvent;
         event EventHandler RemoveTagValueFilter;
-
-        event EventHandler SaveTrackListEvent;
-        event EventHandler SaveSelectorTrackListEvent;
 
         void InitializeTagsAndTagValues(List<Tag> tagList, Dictionary<String, Dictionary<String, Color>> tagValueListList);
         void InitializePlaylistList(DataTableModel model);

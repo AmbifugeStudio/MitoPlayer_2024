@@ -1,6 +1,0 @@
-﻿=========================
-MEDIAPLAYER
-=========================
-Condition:
-- Open Player Application
-- Exist tracks in playlist

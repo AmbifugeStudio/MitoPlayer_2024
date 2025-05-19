@@ -1,19 +1,6 @@
-﻿using MitoPlayer_2024.Dao;
-using MitoPlayer_2024.Helpers;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Configuration;
-using System.Data;
-using System.Deployment.Application;
+﻿using System;
 using System.Drawing;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml;
-using System.Xml.Linq;
 
 namespace MitoPlayer_2024.Views
 {

@@ -1,14 +1,7 @@
 ﻿using MitoPlayer_2024.Helpers;
 using MitoPlayer_2024.IViews;
-using Mysqlx;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace MitoPlayer_2024.Views

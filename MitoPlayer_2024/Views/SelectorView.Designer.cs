@@ -34,9 +34,6 @@
             this.dgvPlaylistList = new System.Windows.Forms.DataGridView();
             this.lblActualPlaylistName = new System.Windows.Forms.Label();
             this.btnSave = new System.Windows.Forms.Button();
-            this.rdbShowBestFitFromDatabase = new System.Windows.Forms.RadioButton();
-            this.rdbShowBestFitFromSelected = new System.Windows.Forms.RadioButton();
-            this.rdbShowSelected = new System.Windows.Forms.RadioButton();
             this.pnlTagComponent = new System.Windows.Forms.Panel();
             this.lblFilter = new System.Windows.Forms.Label();
             this.btnFilter = new System.Windows.Forms.Button();
@@ -61,8 +58,14 @@
             this.btnSetTracklistToActive = new System.Windows.Forms.Button();
             this.btnSetSelectorToActive = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.chbBestFit = new System.Windows.Forms.CheckBox();
+            this.chbMove = new System.Windows.Forms.CheckBox();
+            this.rdbPlaylist = new System.Windows.Forms.RadioButton();
+            this.rdbDatabase = new System.Windows.Forms.RadioButton();
+            this.cbbResultSize = new System.Windows.Forms.ComboBox();
             this.dgvSelectorTrackList = new MitoPlayer_2024.Helpers.CustomDataGridView();
             this.dgvTrackList = new MitoPlayer_2024.Helpers.CustomDataGridView();
+            this.label2 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPlaylistList)).BeginInit();
             this.pnlTagComponent.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
@@ -142,39 +145,7 @@
             this.btnSave.TabIndex = 57;
             this.btnSave.Text = "💾";
             this.btnSave.UseVisualStyleBackColor = true;
-            // 
-            // rdbShowBestFitFromDatabase
-            // 
-            this.rdbShowBestFitFromDatabase.AutoSize = true;
-            this.rdbShowBestFitFromDatabase.Location = new System.Drawing.Point(635, 330);
-            this.rdbShowBestFitFromDatabase.Name = "rdbShowBestFitFromDatabase";
-            this.rdbShowBestFitFromDatabase.Size = new System.Drawing.Size(135, 17);
-            this.rdbShowBestFitFromDatabase.TabIndex = 2;
-            this.rdbShowBestFitFromDatabase.TabStop = true;
-            this.rdbShowBestFitFromDatabase.Text = "Best Fit From Database";
-            this.rdbShowBestFitFromDatabase.UseVisualStyleBackColor = true;
-            // 
-            // rdbShowBestFitFromSelected
-            // 
-            this.rdbShowBestFitFromSelected.AutoSize = true;
-            this.rdbShowBestFitFromSelected.Location = new System.Drawing.Point(498, 330);
-            this.rdbShowBestFitFromSelected.Name = "rdbShowBestFitFromSelected";
-            this.rdbShowBestFitFromSelected.Size = new System.Drawing.Size(131, 17);
-            this.rdbShowBestFitFromSelected.TabIndex = 1;
-            this.rdbShowBestFitFromSelected.TabStop = true;
-            this.rdbShowBestFitFromSelected.Text = "Best Fit From Selected";
-            this.rdbShowBestFitFromSelected.UseVisualStyleBackColor = true;
-            // 
-            // rdbShowSelected
-            // 
-            this.rdbShowSelected.AutoSize = true;
-            this.rdbShowSelected.Location = new System.Drawing.Point(395, 330);
-            this.rdbShowSelected.Name = "rdbShowSelected";
-            this.rdbShowSelected.Size = new System.Drawing.Size(97, 17);
-            this.rdbShowSelected.TabIndex = 0;
-            this.rdbShowSelected.TabStop = true;
-            this.rdbShowSelected.Text = "Show Selected";
-            this.rdbShowSelected.UseVisualStyleBackColor = true;
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // pnlTagComponent
             // 
@@ -380,11 +351,76 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(320, 332);
+            this.label1.Location = new System.Drawing.Point(282, 332);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(69, 13);
+            this.label1.Size = new System.Drawing.Size(79, 13);
             this.label1.TabIndex = 75;
-            this.label1.Text = "Playlist Mode";
+            this.label1.Text = "Playlist Source:";
+            // 
+            // chbBestFit
+            // 
+            this.chbBestFit.AutoSize = true;
+            this.chbBestFit.Location = new System.Drawing.Point(633, 331);
+            this.chbBestFit.Name = "chbBestFit";
+            this.chbBestFit.Size = new System.Drawing.Size(61, 17);
+            this.chbBestFit.TabIndex = 76;
+            this.chbBestFit.Text = "Best Fit";
+            this.chbBestFit.UseVisualStyleBackColor = true;
+            this.chbBestFit.CheckedChanged += new System.EventHandler(this.chbBestFit_CheckedChanged);
+            // 
+            // chbMove
+            // 
+            this.chbMove.AutoSize = true;
+            this.chbMove.Location = new System.Drawing.Point(700, 331);
+            this.chbMove.Name = "chbMove";
+            this.chbMove.Size = new System.Drawing.Size(53, 17);
+            this.chbMove.TabIndex = 76;
+            this.chbMove.Text = "Move";
+            this.chbMove.UseVisualStyleBackColor = true;
+            this.chbMove.CheckedChanged += new System.EventHandler(this.chbMove_CheckedChanged);
+            // 
+            // rdbPlaylist
+            // 
+            this.rdbPlaylist.AutoSize = true;
+            this.rdbPlaylist.Checked = true;
+            this.rdbPlaylist.Location = new System.Drawing.Point(368, 331);
+            this.rdbPlaylist.Name = "rdbPlaylist";
+            this.rdbPlaylist.Size = new System.Drawing.Size(57, 17);
+            this.rdbPlaylist.TabIndex = 77;
+            this.rdbPlaylist.TabStop = true;
+            this.rdbPlaylist.Text = "Playlist";
+            this.rdbPlaylist.UseVisualStyleBackColor = true;
+            this.rdbPlaylist.CheckedChanged += new System.EventHandler(this.rdbPlaylist_CheckedChanged);
+            // 
+            // rdbDatabase
+            // 
+            this.rdbDatabase.AutoSize = true;
+            this.rdbDatabase.Location = new System.Drawing.Point(431, 331);
+            this.rdbDatabase.Name = "rdbDatabase";
+            this.rdbDatabase.Size = new System.Drawing.Size(71, 17);
+            this.rdbDatabase.TabIndex = 77;
+            this.rdbDatabase.Text = "Database";
+            this.rdbDatabase.UseVisualStyleBackColor = true;
+            this.rdbDatabase.CheckedChanged += new System.EventHandler(this.rdbDatabase_CheckedChanged);
+            // 
+            // cbbResultSize
+            // 
+            this.cbbResultSize.FormattingEnabled = true;
+            this.cbbResultSize.Items.AddRange(new object[] {
+            "50",
+            "100",
+            "150",
+            "200",
+            "500",
+            "750",
+            "1000",
+            "1500"});
+            this.cbbResultSize.Location = new System.Drawing.Point(577, 329);
+            this.cbbResultSize.Name = "cbbResultSize";
+            this.cbbResultSize.Size = new System.Drawing.Size(50, 21);
+            this.cbbResultSize.TabIndex = 78;
+            this.cbbResultSize.Text = "50";
+            this.cbbResultSize.SelectedIndexChanged += new System.EventHandler(this.cbbResultSize_SelectedIndexChanged);
             // 
             // dgvSelectorTrackList
             // 
@@ -445,7 +481,7 @@
             this.dgvTrackList.SelectionChanged += new System.EventHandler(this.dgvTrackList_SelectionChanged);
             this.dgvTrackList.DragDrop += new System.Windows.Forms.DragEventHandler(this.dgvTrackList_DragDrop);
             this.dgvTrackList.DragEnter += new System.Windows.Forms.DragEventHandler(this.dgvTrackList_DragEnter);
-            this.dgvTrackList.DragOver += new System.Windows.Forms.DragEventHandler(this.dgvPlaylistList_DragOver);
+            this.dgvTrackList.DragOver += new System.Windows.Forms.DragEventHandler(this.dgvTrackList_DragOver);
             this.dgvTrackList.DragLeave += new System.EventHandler(this.dgvTrackList_DragLeave);
             this.dgvTrackList.Paint += new System.Windows.Forms.PaintEventHandler(this.dgvTrackList_Paint);
             this.dgvTrackList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvTrackList_KeyDown);
@@ -455,15 +491,27 @@
             this.dgvTrackList.MouseMove += new System.Windows.Forms.MouseEventHandler(this.dgvTrackList_MouseMove);
             this.dgvTrackList.MouseUp += new System.Windows.Forms.MouseEventHandler(this.dgvTrackList_MouseUp);
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(508, 333);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(63, 13);
+            this.label2.TabIndex = 79;
+            this.label2.Text = "Result Size:";
+            // 
             // SelectorView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1264, 681);
-            this.Controls.Add(this.rdbShowBestFitFromDatabase);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.cbbResultSize);
+            this.Controls.Add(this.rdbDatabase);
+            this.Controls.Add(this.rdbPlaylist);
+            this.Controls.Add(this.chbMove);
+            this.Controls.Add(this.chbBestFit);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.rdbShowBestFitFromSelected);
-            this.Controls.Add(this.rdbShowSelected);
             this.Controls.Add(this.btnSetSelectorToActive);
             this.Controls.Add(this.btnSetTracklistToActive);
             this.Controls.Add(this.lblSelectedItemsLength);
@@ -502,9 +550,6 @@
         private System.Windows.Forms.Button btnSave;
         private Helpers.CustomDataGridView dgvTrackList;
         private Helpers.CustomDataGridView dgvSelectorTrackList;
-        private System.Windows.Forms.RadioButton rdbShowBestFitFromDatabase;
-        private System.Windows.Forms.RadioButton rdbShowBestFitFromSelected;
-        private System.Windows.Forms.RadioButton rdbShowSelected;
         private System.Windows.Forms.Panel pnlTagComponent;
         private System.Windows.Forms.Label lblFilter;
         private System.Windows.Forms.Button btnFilter;
@@ -529,5 +574,11 @@
         private System.Windows.Forms.Button btnSetTracklistToActive;
         private System.Windows.Forms.Button btnSetSelectorToActive;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.CheckBox chbBestFit;
+        private System.Windows.Forms.CheckBox chbMove;
+        private System.Windows.Forms.RadioButton rdbPlaylist;
+        private System.Windows.Forms.RadioButton rdbDatabase;
+        private System.Windows.Forms.ComboBox cbbResultSize;
+        private System.Windows.Forms.Label label2;
     }
 }

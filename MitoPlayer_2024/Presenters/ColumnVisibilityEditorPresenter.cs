@@ -15,7 +15,6 @@ namespace MitoPlayer_2024.Presenters
         private IColumnVisibilityEditorView view;
         private ITrackDao trackDao;
         private ISettingDao settingDao;
-        private List<String> allColumnList;
         private List<String> visibleColumnList;
 
         private DataTable trackPropertyTable { get; set; }

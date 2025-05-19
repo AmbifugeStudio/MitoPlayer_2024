@@ -1,14 +1,12 @@
-﻿using MitoPlayer_2024.Helpers;
+﻿using Microsoft.Data.Sqlite;
+using MitoPlayer_2024.Helpers;
 using MitoPlayer_2024.Helpers.ErrorHandling;
 using MitoPlayer_2024.Model;
 using MitoPlayer_2024.Models;
-using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using Microsoft.Data.Sqlite;
 using System.Linq;
-using System.Windows.Forms;
 
 namespace MitoPlayer_2024.Dao
 {
@@ -364,7 +362,6 @@ namespace MitoPlayer_2024.Dao
         {
             var result = new ResultOrError();
 
-            // Deaktiváljuk az összes playlist-et, mielőtt az aktívat beállítjuk
             this.InactiveAllPlaylist();
 
             try
@@ -620,7 +617,7 @@ namespace MitoPlayer_2024.Dao
                         tra.Length, 
                         tra.Comment, 
                         tra.ProfileId AS TrackProfileId,
-                        ttv.Id AS TagValueId, 
+                        ttv.Id AS TrackTagValueId, 
                         ttv.TagId, 
                         ttv.TagValueId, 
                         ttv.HasValue, 
@@ -666,7 +663,7 @@ namespace MitoPlayer_2024.Dao
                             {
                                 var tagValue = new TrackTagValue
                                 {
-                                    Id = reader.ReadInt("TagValueId"),
+                                    Id = reader.ReadInt("TrackTagValueId"),
                                     TrackId = reader.ReadInt("TrackId"),
                                     TagId = reader.ReadInt("TagId"),
                                     TagValueId = reader.ReadNullableInt("TagValueId"),
@@ -723,7 +720,7 @@ namespace MitoPlayer_2024.Dao
                         tra.Length, 
                         tra.Comment, 
                         tra.ProfileId AS TrackProfileId,
-                        ttv.Id AS TagValueId, 
+                        ttv.Id AS TrackTagValueId, 
                         ttv.TagId, 
                         ttv.TagValueId, 
                         ttv.HasValue, 
@@ -769,7 +766,7 @@ namespace MitoPlayer_2024.Dao
                             {
                                 var tagValue = new TrackTagValue
                                 {
-                                    Id = reader.ReadInt("TagValueId"),
+                                    Id = reader.ReadInt("TrackTagValueId"),
                                     TrackId = reader.ReadInt("TrackId"),
                                     TagId = reader.ReadInt("TagId"),
                                     TagValueId = reader.ReadNullableInt("TagValueId"),
@@ -828,7 +825,7 @@ namespace MitoPlayer_2024.Dao
                                     plc.OrderInList, 
                                     plc.TrackIdInPlaylist, 
                                     plc.ProfileId AS TrackProfileId,
-                                    ttv.Id AS TagValueId, 
+                                    ttv.Id AS TrackTagValueId, 
                                     ttv.TagId, 
                                     ttv.TagValueId, 
                                     ttv.HasValue, 
@@ -886,7 +883,7 @@ namespace MitoPlayer_2024.Dao
                             {
                                 var tagValue = new TrackTagValue
                                 {
-                                    Id = reader.ReadInt("TagValueId"),
+                                    Id = reader.ReadInt("TrackTagValueId"),
                                     TrackId = trackId,
                                     TagId = reader.ReadInt("TagId"),
                                     TagValueId = reader.ReadNullableInt("TagValueId"),
@@ -911,6 +908,559 @@ namespace MitoPlayer_2024.Dao
 
             return result;
         }
+
+        public ResultOrError<List<Model.Track>> GetTracklistWithTagsFromDatabaseByParameters(string textFilter, List<TagValueFilter> tagValueFilterList, List<Tag> tagList, int resultSize)
+        {
+            var result = new ResultOrError<List<Model.Track>> { Value = new List<Model.Track>() };
+            var trackDictionary = new Dictionary<int, Model.Track>();
+            List<TrackTagValue> ttvList = new List<TrackTagValue>();
+
+            string tagIdsParameter = string.Join(",", tagList.Select(tag => tag.Id));
+            string textFilterQuery = String.Empty;
+            String tagFilterQuery = String.Empty;
+
+            if (!string.IsNullOrWhiteSpace(textFilter))
+            {
+                var escaped = textFilter.Replace("'", "''");
+                textFilterQuery = $@"(
+                    UPPER(tra2.Artist) LIKE UPPER('%{escaped}%')
+                    OR UPPER(tra2.Title) LIKE UPPER('%{escaped}%')
+                    OR UPPER(tra2.Path) LIKE UPPER('%{escaped}%')
+                )";
+            }
+
+            
+
+            if (tagValueFilterList != null && tagValueFilterList.Count > 0)
+            {
+                var grouped = tagValueFilterList.GroupBy(f => f.TagName);
+
+                var tagIdsUsed = tagValueFilterList
+                .Select(f => tagList.First(t => t.Name == f.TagName).Id)
+                .Distinct();
+
+                string whereClause = $"ttv2.TagId IN ({string.Join(",", tagIdsUsed)})";
+
+                var havingConditions = new List<string>();
+
+                foreach (var group in tagValueFilterList.GroupBy(f => f.TagName))
+                {
+                    int tagId = tagList.First(t => t.Name == group.Key).Id;
+
+                    var valueConditions = group.Select(f =>
+                    {
+                        if (f.TagValueValue != "-1")
+                            return $"ttv2.Value = '{f.TagValueValue.Replace("'", "''")}'";
+                        else
+                            return $"ttv2.TagValueId = {f.TagValueId}";
+                    });
+
+                    string orBlock = string.Join(" OR ", valueConditions);
+
+                    havingConditions.Add(
+                        $"SUM(CASE WHEN tg2.Id = {tagId} AND ({orBlock}) THEN 1 ELSE 0 END) > 0"
+                    );
+                }
+
+                tagFilterQuery = $@" tra.Id IN (
+                    SELECT ttv2.TrackId
+                    FROM TrackTagValue ttv2
+                    JOIN Tag tg2 ON tg2.Id = ttv2.TagId
+                    WHERE {whereClause}
+                    GROUP BY ttv2.TrackId
+                    HAVING {string.Join(" AND ", havingConditions)}
+                )";
+            }
+
+            try
+            {
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
+                {
+                    connection.Open();
+                    command.Connection = connection;
+                    command.CommandText = $@"
+                                    SELECT 
+                                    tra.Id AS TrackId, 
+                                    tra.Path, 
+                                    tra.FileName, 
+                                    tra.Artist, 
+                                    tra.Title, 
+                                    tra.Album, 
+                                    tra.Year, 
+                                    tra.Length, 
+                                    tra.Comment, 
+                                    tra.ProfileId AS TrackProfileId,
+                                    ttv.Id AS TrackTagValueId, 
+                                    ttv.TagId, 
+                                    ttv.TagValueId, 
+                                    ttv.HasValue, 
+                                    ttv.Value, 
+                                    tg.Name AS TagName, 
+                                    tv.Name AS TagValueName, 
+                                    ttv.ProfileId AS TagProfileId
+                                    FROM 
+                                    Track tra
+                                    INNER JOIN TrackTagValue ttv ON tra.Id = ttv.TrackId 
+                                    LEFT JOIN Tag tg ON ttv.TagId = tg.Id 
+                                    LEFT JOIN TagValue tv ON ttv.TagValueId = tv.Id 
+                                    WHERE 
+                                    tra.ProfileId = @ProfileId  
+                                    AND ttv.ProfileId = @ProfileId  
+                                    AND tg.ProfileId = @ProfileId 
+                                    AND ttv.TagId IN ({tagIdsParameter}) ";
+
+                    if (!string.IsNullOrWhiteSpace(textFilter))
+                    {
+                        command.CommandText += $"AND {textFilterQuery} ";
+                    }
+
+                    if (tagValueFilterList != null && tagValueFilterList.Count > 0)
+                    {
+                        command.CommandText += $"AND {tagFilterQuery} ";
+                    }
+
+                    command.CommandText += $@"ORDER BY tra.Id ";
+
+                    command.Parameters.AddWithValue("@ProfileId", this.profileId);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        int row = 1;
+
+                        while (reader.Read())
+                        {
+                            int trackId = reader.ReadInt("TrackId");
+
+                            if (!trackDictionary.TryGetValue(trackId, out var track))
+                            {
+                                if (row > resultSize)
+                                {
+                                    break;
+                                }
+
+                                track = new Model.Track
+                                {
+                                    Id = trackId,
+                                    Path = reader.ReadString("Path"),
+                                    FileName = reader.ReadString("FileName"),
+                                    Artist = reader.ReadString("Artist"),
+                                    Title = reader.ReadString("Title"),
+                                    Album = reader.ReadString("Album"),
+                                    Year = reader.ReadInt("Year"),
+                                    Length = reader.ReadInt("Length"),
+                                    Comment = reader.ReadString("Comment"),
+                                    ProfileId = reader.ReadInt("TrackProfileId"),
+                                    TrackTagValues = new List<TrackTagValue>()
+                                };
+                                result.Value.Add(track);
+                                trackDictionary[trackId] = track;
+                                row++;
+                            }
+
+                            if (!reader.IsDBNull(reader.GetOrdinal("TagValueId")))
+                            {
+                                var tagValue = new TrackTagValue
+                                {
+                                    Id = reader.ReadInt("TrackTagValueId"),
+                                    TrackId = trackId,
+                                    TagId = reader.ReadInt("TagId"),
+                                    TagValueId = reader.ReadNullableInt("TagValueId"),
+                                    HasMultipleValues = reader.ReadBool("HasValue"),
+                                    Value = reader.ReadString("Value"),
+                                    TagName = reader.ReadString("TagName"),
+                                    TagValueName = reader.ReadString("TagValueName"),
+                                    ProfileId = reader.ReadInt("TagProfileId")
+                                };
+                                track.TrackTagValues.Add(tagValue);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (SqliteException ex)
+            {
+                string errorMessage = $"Error occurred while fetching tracks by parameters]. \n{ex.Message}";
+                result.AddError(errorMessage);
+                Logger.Error(errorMessage, ex);
+            }
+
+            return result;
+        }
+        public ResultOrError<List<Model.Track>> GetTracklistWithTagsFromDatabaseByParameters2(String textFilter, List<TagValueFilter> tagValueFilterList, List<Tag> tagList, int resultSize)
+        {
+            var result = new ResultOrError<List<Model.Track>> { Value = new List<Model.Track>() };
+            var trackDictionary = new Dictionary<int, Model.Track>();
+
+            try
+            {
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
+                {
+                    connection.Open();
+                    command.Connection = connection;
+
+                    var tagIdsParameter = string.Join(",", tagList.Select(tag => tag.Id));
+                    command.CommandText = $@"
+                                    SELECT 
+                                    tra.Id AS TrackId, 
+                                    tra.Path, 
+                                    tra.FileName, 
+                                    tra.Artist, 
+                                    tra.Title, 
+                                    tra.Album, 
+                                    tra.Year, 
+                                    tra.Length, 
+                                    tra.Comment, 
+                                    tra.ProfileId AS TrackProfileId, 
+                                    ttv.Id AS TrackTagValueId, 
+                                    ttv.TagId, 
+                                    ttv.TagValueId, 
+                                    ttv.HasValue, 
+                                    ttv.Value, 
+                                    t.Name AS TagName, 
+                                    tv.Name AS TagValueName, 
+                                    ttv.ProfileId AS TagProfileId
+                                    FROM 
+                                    Track tra
+                                    INNER JOIN TrackTagValue ttv ON tra.Id = ttv.TrackId 
+                                    LEFT JOIN Tag t ON ttv.TagId = t.Id 
+                                    LEFT JOIN TagValue tv ON ttv.TagValueId = tv.Id 
+                                    WHERE 
+                                    tra.ProfileId = @ProfileId 
+                                    AND ttv.TagId IN ({tagIdsParameter}) ";
+
+                    if (!String.IsNullOrEmpty(textFilter))
+                    {
+                        command.CommandText += $@" AND UPPER(Artist) like UPPER('%{textFilter}%') OR 
+                                                UPPER(Title) like UPPER('%{textFilter}%') OR 
+                                                UPPER(Path) like UPPER('%{textFilter}%') ";
+                    }
+
+                    String filterQuery2 = String.Empty;
+
+                    if (tagValueFilterList != null && tagValueFilterList.Count > 0)
+                    {
+                        String lastTagName = " AND ";
+
+                        for (int i = 0; i < tagValueFilterList.Count; i++)
+                        {
+                            if (String.IsNullOrEmpty(filterQuery2))
+                            {
+                                if (tagValueFilterList[i].TagValueValue != "-1")
+                                {
+                                    lastTagName = tagValueFilterList[i].TagName;
+                                    filterQuery2 += "(" + lastTagName + " = " + tagValueFilterList[i].TagValueValue + " ";
+                                }
+                                else
+                                {
+                                    lastTagName = tagValueFilterList[i].TagName;
+                                    filterQuery2 += "(" + lastTagName + "TagValueId=" + tagValueFilterList[i].TagValueId;
+                                }
+
+                            }
+                            else
+                            {
+                                if (tagValueFilterList[i].TagValueValue != "-1")
+                                {
+                                    if (lastTagName != tagValueFilterList[i].TagName)
+                                    {
+                                        lastTagName = tagValueFilterList[i].TagName;
+                                        filterQuery2 += ") AND (";
+                                    }
+                                    filterQuery2 += lastTagName + " = " + tagValueFilterList[i].TagValueValue + " ";
+                                }
+                                else
+                                {
+                                    if (lastTagName != tagValueFilterList[i].TagName)
+                                    {
+                                        lastTagName = tagValueFilterList[i].TagName;
+                                        filterQuery2 += ") AND (";
+                                    }
+                                    else
+                                    {
+                                        filterQuery2 += " OR ";
+                                    }
+                                    filterQuery2 += lastTagName + "TagValueId=" + tagValueFilterList[i].TagValueId;
+                                }
+
+                            }
+
+                        }
+                        filterQuery2 = "(" + filterQuery2 + ")) ";
+
+                        if (!String.IsNullOrEmpty(filterQuery2))
+                        {
+                            command.CommandText += filterQuery2;
+                        }
+                    }
+
+                    command.CommandText += $@" LIMIT {resultSize} ";
+
+                    command.Parameters.AddWithValue("@ProfileId", this.profileId);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int trackId = reader.ReadInt("TrackId");
+
+                            if (!trackDictionary.TryGetValue(trackId, out var track))
+                            {
+                                track = new Model.Track
+                                {
+                                    Id = trackId,
+                                    Path = reader.ReadString("Path"),
+                                    FileName = reader.ReadString("FileName"),
+                                    Artist = reader.ReadString("Artist"),
+                                    Title = reader.ReadString("Title"),
+                                    Album = reader.ReadString("Album"),
+                                    Year = reader.ReadInt("Year"),
+                                    Length = reader.ReadInt("Length"),
+                                    Comment = reader.ReadString("Comment"),
+                                    ProfileId = reader.ReadInt("TrackProfileId"),
+                                    TrackTagValues = new List<TrackTagValue>()
+                                };
+                                result.Value.Add(track);
+                                trackDictionary[trackId] = track;
+                            }
+
+                            if (!reader.IsDBNull(reader.GetOrdinal("TagValueId")))
+                            {
+                                var tagValue = new TrackTagValue
+                                {
+                                    Id = reader.ReadInt("TrackTagValueId"),
+                                    TrackId = trackId,
+                                    TagId = reader.ReadInt("TagId"),
+                                    TagValueId = reader.ReadNullableInt("TagValueId"),
+                                    HasMultipleValues = reader.ReadBool("HasValue"),
+                                    Value = reader.ReadString("Value"),
+                                    TagName = reader.ReadString("TagName"),
+                                    TagValueName = reader.ReadString("TagValueName"),
+                                    ProfileId = reader.ReadInt("TagProfileId")
+                                };
+                                track.TrackTagValues.Add(tagValue);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (SqliteException ex)
+            {
+                string errorMessage = $"Error occurred while fetching tracks by parameters. \n{ex.Message}";
+                result.AddError(errorMessage);
+                Logger.Error(errorMessage, ex);
+            }
+
+            return result;
+        }
+
+        public ResultOrError<List<Model.Track>> GetTracklistWithTagsFromDatabaseByParameters3(string textFilter, List<TagValueFilter> tagValueFilterList, List<Tag> tagList, int resultSize)
+        {
+            var result = new ResultOrError<List<Model.Track>> { Value = new List<Model.Track>() };
+            var trackDictionary = new Dictionary<int, Model.Track>();
+
+            try
+            {
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
+                {
+                    connection.Open();
+
+                    if (tagList == null || tagList.Count == 0)
+                    {
+                        result.AddError("Tag list is empty.");
+                        return result;
+                    }
+
+                    var tagIdsParameter = string.Join(",", tagList.Select(tag => tag.Id));
+
+                    // --- Inner WHERE ---
+                    var innerWhere = new List<string>
+            {
+                "tra2.ProfileId = @ProfileId",
+                $"ttv2.TagId IN ({tagIdsParameter})"
+            };
+
+                    if (!string.IsNullOrWhiteSpace(textFilter))
+                    {
+                        var escaped = textFilter.Replace("'", "''");
+                        innerWhere.Add($@"(
+                    UPPER(tra2.Artist) LIKE UPPER('%{escaped}%')
+                    OR UPPER(tra2.Title) LIKE UPPER('%{escaped}%')
+                    OR UPPER(tra2.Path) LIKE UPPER('%{escaped}%')
+                )");
+                    }
+
+                   string innerWhereClause = string.Join(" AND ", innerWhere);
+
+                  
+
+                    String filterQuery = String.Empty;
+                    if (tagValueFilterList != null && tagValueFilterList.Count > 0)
+                    {
+                        var groupedConditions = tagValueFilterList
+                        .GroupBy(f => f.TagName)
+                        .Select(group =>
+                        {
+                            string tagName = group.Key;
+
+                            var orConditions = group.Select(f =>
+                            {
+                                if (f.TagValueValue != "-1")
+                                {
+                                    // konkrét érték alapján
+                                    return $"ttv.Value = '{f.TagValueValue.Replace("'", "''")}'";
+                                }
+                                else
+                                {
+                                    // csak TagValueId alapján
+                                    return $"ttv.TagValueId = {f.TagValueId}";
+                                }
+                            });
+
+                            return $"(t.Name = '{tagName}' AND ({string.Join(" OR ", orConditions)}))";
+                        });
+
+                        filterQuery = "(" + string.Join(" AND ", groupedConditions) + ")";
+
+                    }
+
+                    string tagFilterSql = "";
+                    if (!String.IsNullOrEmpty(filterQuery))
+                    {
+                        tagFilterSql = " AND " + filterQuery;
+                    }
+
+                    command.CommandText = $@"
+                SELECT 
+                    tra.Id AS TrackId, 
+                    tra.Path, 
+                    tra.FileName, 
+                    tra.Artist, 
+                    tra.Title, 
+                    tra.Album, 
+                    tra.Year, 
+                    tra.Length, 
+                    tra.Comment, 
+                    tra.ProfileId AS TrackProfileId, 
+                    ttv.Id AS TrackTagValueId, 
+                    ttv.TagId, 
+                    ttv.TagValueId, 
+                    ttv.HasValue, 
+                    ttv.Value, 
+                    t.Name AS TagName, 
+                    tv.Name AS TagValueName, 
+                    ttv.ProfileId AS TagProfileId
+                FROM Track tra
+                INNER JOIN TrackTagValue ttv ON tra.Id = ttv.TrackId
+                LEFT JOIN Tag t ON ttv.TagId = t.Id
+                LEFT JOIN TagValue tv ON ttv.TagValueId = tv.Id
+                WHERE 
+                    tra.Id IN (
+                        SELECT DISTINCT tra2.Id
+                        FROM Track tra2
+                        INNER JOIN TrackTagValue ttv2 ON tra2.Id = ttv2.TrackId
+                        WHERE {innerWhereClause}
+                        GROUP BY tra2.Id
+                        LIMIT {resultSize}
+                    )
+                    AND ttv.TagId IN ({tagIdsParameter})
+                    {tagFilterSql}
+                ORDER BY tra.Id, ttv.TagId;
+            ";
+
+                    command.Parameters.AddWithValue("@ProfileId", this.profileId);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int trackId = reader.ReadInt("TrackId");
+
+                            if (!trackDictionary.TryGetValue(trackId, out var track))
+                            {
+                                track = new Model.Track
+                                {
+                                    Id = trackId,
+                                    Path = reader.ReadString("Path"),
+                                    FileName = reader.ReadString("FileName"),
+                                    Artist = reader.ReadString("Artist"),
+                                    Title = reader.ReadString("Title"),
+                                    Album = reader.ReadString("Album"),
+                                    Year = reader.ReadInt("Year"),
+                                    Length = reader.ReadInt("Length"),
+                                    Comment = reader.ReadString("Comment"),
+                                    ProfileId = reader.ReadInt("TrackProfileId"),
+                                    TrackTagValues = new List<TrackTagValue>()
+                                };
+                                result.Value.Add(track);
+                                trackDictionary[trackId] = track;
+                            }
+
+                            if (!reader.IsDBNull(reader.GetOrdinal("TagValueId")))
+                            {
+                                var tagValue = new TrackTagValue
+                                {
+                                    Id = reader.ReadInt("TrackTagValueId"),
+                                    TrackId = trackId,
+                                    TagId = reader.ReadInt("TagId"),
+                                    TagValueId = reader.ReadNullableInt("TagValueId"),
+                                    HasMultipleValues = reader.ReadBool("HasValue"),
+                                    Value = reader.ReadString("Value"),
+                                    TagName = reader.ReadString("TagName"),
+                                    TagValueName = reader.ReadString("TagValueName"),
+                                    ProfileId = reader.ReadInt("TagProfileId")
+                                };
+                                track.TrackTagValues.Add(tagValue);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (SqliteException ex)
+            {
+                string errorMessage = $"Error occurred while fetching tracks by parameters. \n{ex.Message}";
+                result.AddError(errorMessage);
+                Logger.Error(errorMessage, ex);
+            }
+
+            return result;
+        }
+
+        // --- tagValueFilterList SQL ---
+        /*    var tagFilterConditions = new List<string>();
+            var distinctTagNames = tagValueFilterList?
+                .Select(f => f.TagName)
+                .Distinct()
+                .ToList() ?? new List<string>();
+
+            if (tagValueFilterList != null && tagValueFilterList.)
+            {
+                foreach (var tagName in distinctTagNames)
+                {
+                    var group = tagValueFilterList.Where(f => f.TagName == tagName).ToList();
+                    var subConditions = new List<string>();
+
+                    foreach (var filter in group)
+                    {
+                        if (filter.TagValueValue != "-1")
+                        {
+                            subConditions.Add($"(ttv.TagId = '{filter.TagName}' AND ttv.Value = '{filter.TagValueValue.Replace("'", "''")}')");
+                        }
+                        else
+                        {
+                            subConditions.Add($"(ttv.TagId = '{filter.TagName}' AND ttv.TagValueId = {filter.TagValueId})");
+                        }
+                    }
+
+                    if (subConditions.Count > 0)
+                        tagFilterConditions.Add("(" + string.Join(" OR ", subConditions) + ")");
+                }
+            }*/
+
+        // this.tagValueDictionary[tagName][tagValueName];
+
         public ResultOrError<List<int>> GetAllTrackIdInList()
         {
             var result = new ResultOrError<List<int>> { Value = new List<int>() };
@@ -1057,7 +1607,7 @@ namespace MitoPlayer_2024.Dao
         #region PLAYLISTCONTENT
         public ResultOrError<int> GetNextSmallestTrackIdInPlaylist()
         {
-            var result = new ResultOrError<int> { Value = 0 }; // Alapértelmezett érték
+            var result = new ResultOrError<int> { Value = 0 }; 
 
             List<int> trackIds = null;
 
@@ -1367,7 +1917,7 @@ namespace MitoPlayer_2024.Dao
         #region TRACKTAGVALUE
         public ResultOrError<bool> IsTrackTagValueAlreadyExists(int trackId, int tagId)
         {
-            var result = new ResultOrError<bool> { Value = false }; // Alapértelmezett érték
+            var result = new ResultOrError<bool> { Value = false };
 
             try
             {
@@ -1387,10 +1937,9 @@ namespace MitoPlayer_2024.Dao
                     command.Parameters.AddWithValue("@TagId", tagId);
                     command.Parameters.AddWithValue("@ProfileId", this.profileId);
 
-                    // Az ExecuteScalar() nem tér vissza null értékkel, ha nincs találat, ezért ellenőrizzük, hogy > 0
                     if (Convert.ToInt32(command.ExecuteScalar()) > 0)
                     {
-                        result.Value = true; // Ha van találat, igazra állítjuk
+                        result.Value = true;
                     }
                 }
             }
@@ -1736,7 +2285,7 @@ namespace MitoPlayer_2024.Dao
             return result;
         }
         #endregion
-
+        /*
         public List<TrainingData> GetAllTrainingData()
         {
             List<TrainingData> trainingDataList = new List<TrainingData>();
@@ -1925,47 +2474,6 @@ namespace MitoPlayer_2024.Dao
                 connection.Close();
             }
         }
-
-        /*
-       public int GetNextLastSmallestTrackIdInPlaylist()
-       {
-           int result = 0;
-           List<int> trackIds = null;
-
-           using (var connection = new MySqlConnection(connectionString))
-           using (var command = new MySqlCommand())
-           {
-               connection.Open();
-               command.Connection = connection;
-               command.CommandType = CommandType.Text;
-               command.CommandText = "SELECT TrackIdInPlaylist FROM PlaylistContent ORDER BY TrackIdInPlaylist ";
-               using (var reader = command.ExecuteReader())
-               {
-                   trackIds = new List<int>();
-                   while (reader.Read())
-                   {
-                       trackIds.Add((int)reader[0]);
-                   }
-               }
-           }
-           if (trackIds == null || trackIds.Count == 0)
-           {
-               return result;
-           }
-           else
-           {
-               for (int i = 0; i <= trackIds.Count - 1; i++)
-               {
-                   if (i != trackIds[i])
-                   {
-                       return i;
-                   }
-               }
-               result = trackIds.Count;
-           }
-
-           return result;
-       }
-       */
+        */
     }
 }

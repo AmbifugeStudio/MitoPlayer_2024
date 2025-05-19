@@ -1,10 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" />
-  <Import Project="..\packages\Microsoft.ML.FastTree.3.0.1\build\netstandard2.0\Microsoft.ML.FastTree.props" Condition="Exists('..\packages\Microsoft.ML.FastTree.3.0.1\build\netstandard2.0\Microsoft.ML.FastTree.props')" />
-  <Import Project="..\packages\LightGBM.3.3.5\build\LightGBM.props" Condition="Exists('..\packages\LightGBM.3.3.5\build\LightGBM.props')" />
-  <Import Project="..\packages\Microsoft.ML.3.0.1\build\netstandard2.0\Microsoft.ML.props" Condition="Exists('..\packages\Microsoft.ML.3.0.1\build\netstandard2.0\Microsoft.ML.props')" />
-  <Import Project="..\packages\Microsoft.ML.CpuMath.3.0.1\build\netstandard2.0\Microsoft.ML.CpuMath.props" Condition="Exists('..\packages\Microsoft.ML.CpuMath.3.0.1\build\netstandard2.0\Microsoft.ML.CpuMath.props')" />
+  <Import Project="..\packages\EntityFramework.6.5.1\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.5.1\build\EntityFramework.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -98,110 +94,23 @@
     <None Include="runtimes\win-x64\native\e_sqlite3.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <Reference Include="Accord, Version=3.8.0.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
-      <HintPath>..\packages\Accord.3.8.0\lib\net462\Accord.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.Audio, Version=3.8.0.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
-      <HintPath>..\packages\Accord.Audio.3.8.0\lib\net462\Accord.Audio.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.MachineLearning, Version=3.8.0.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
-      <HintPath>..\packages\Accord.MachineLearning.3.8.0\lib\net462\Accord.MachineLearning.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.Math, Version=3.8.0.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
-      <HintPath>..\packages\Accord.Math.3.8.0\lib\net462\Accord.Math.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.Math.Core, Version=3.8.0.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
-      <HintPath>..\packages\Accord.Math.3.8.0\lib\net462\Accord.Math.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.Statistics, Version=3.8.0.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
-      <HintPath>..\packages\Accord.Statistics.3.8.0\lib\net462\Accord.Statistics.dll</HintPath>
-    </Reference>
-    <Reference Include="BouncyCastle.Cryptography, Version=2.0.0.0, Culture=neutral, PublicKeyToken=072edcf4a5328938, processorArchitecture=MSIL">
-      <HintPath>..\packages\BouncyCastle.Cryptography.2.3.1\lib\net461\BouncyCastle.Cryptography.dll</HintPath>
-    </Reference>
-    <Reference Include="cs-hidden-markov-models, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\cs-hidden-markov-models.1.0.1\lib\net452\Release\cs-hidden-markov-models.dll</HintPath>
-    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.5.1\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.5.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="FlacLibSharp, Version=3.2.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\FlacLibSharp.3.2.1\lib\net20\FlacLibSharp.dll</HintPath>
     </Reference>
-    <Reference Include="Google.Protobuf, Version=3.25.1.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Protobuf.3.25.1\lib\net45\Google.Protobuf.dll</HintPath>
-    </Reference>
-    <Reference Include="HDF.PInvoke.1.10, Version=1.10.612.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\HDF.PInvoke.1.10.1.10.612\lib\netstandard2.0\HDF.PInvoke.1.10.dll</HintPath>
-    </Reference>
-    <Reference Include="K4os.Compression.LZ4, Version=1.3.5.0, Culture=neutral, PublicKeyToken=2186fa9121ef231d, processorArchitecture=MSIL">
-      <HintPath>..\packages\K4os.Compression.LZ4.1.3.5\lib\net462\K4os.Compression.LZ4.dll</HintPath>
-    </Reference>
-    <Reference Include="K4os.Compression.LZ4.Streams, Version=1.3.5.0, Culture=neutral, PublicKeyToken=2186fa9121ef231d, processorArchitecture=MSIL">
-      <HintPath>..\packages\K4os.Compression.LZ4.Streams.1.3.5\lib\net462\K4os.Compression.LZ4.Streams.dll</HintPath>
-    </Reference>
-    <Reference Include="K4os.Hash.xxHash, Version=1.0.8.0, Culture=neutral, PublicKeyToken=32cd54395057cec3, processorArchitecture=MSIL">
-      <HintPath>..\packages\K4os.Hash.xxHash.1.0.8\lib\net462\K4os.Hash.xxHash.dll</HintPath>
-    </Reference>
-    <Reference Include="KeyFinder, Version=1.0.0.1, Culture=neutral, PublicKeyToken=ec018ea5023d0362, processorArchitecture=MSIL">
-      <HintPath>..\packages\KeyFinder.1.0.1\lib\net452\KeyFinder.dll</HintPath>
-    </Reference>
     <Reference Include="log4net, Version=3.0.4.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.3.0.4\lib\net462\log4net.dll</HintPath>
-    </Reference>
-    <Reference Include="MathNet.Numerics, Version=5.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MathNet.Numerics.5.0.0\lib\net461\MathNet.Numerics.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.5.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Bcl.Numerics, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Bcl.Numerics.8.0.0\lib\net462\Microsoft.Bcl.Numerics.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Data.Sqlite, Version=9.0.4.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Data.Sqlite.Core.9.0.4\lib\netstandard2.0\Microsoft.Data.Sqlite.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.ML, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.ML.3.0.1\lib\netstandard2.0\Microsoft.ML.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.ML.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.ML.3.0.1\lib\netstandard2.0\Microsoft.ML.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.ML.CpuMath, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.ML.CpuMath.3.0.1\lib\netstandard2.0\Microsoft.ML.CpuMath.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.ML.Data, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.ML.3.0.1\lib\netstandard2.0\Microsoft.ML.Data.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.ML.DataView, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.ML.DataView.3.0.1\lib\netstandard2.0\Microsoft.ML.DataView.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.ML.FastTree, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.ML.FastTree.3.0.1\lib\netstandard2.0\Microsoft.ML.FastTree.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.ML.KMeansClustering, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.ML.3.0.1\lib\netstandard2.0\Microsoft.ML.KMeansClustering.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.ML.LightGbm, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.ML.LightGbm.3.0.1\lib\netstandard2.0\Microsoft.ML.LightGbm.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.ML.PCA, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.ML.3.0.1\lib\netstandard2.0\Microsoft.ML.PCA.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.ML.StandardTrainers, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.ML.3.0.1\lib\netstandard2.0\Microsoft.ML.StandardTrainers.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.ML.Transforms, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.ML.3.0.1\lib\netstandard2.0\Microsoft.ML.Transforms.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Win32.Registry, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Win32.Registry.4.7.0\lib\net461\Microsoft.Win32.Registry.dll</HintPath>
-    </Reference>
-    <Reference Include="MySql.Data, Version=8.4.0.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
-      <HintPath>..\packages\MySql.Data.8.4.0\lib\net462\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="NAudio, Version=2.2.1.0, Culture=neutral, PublicKeyToken=e279aa5131008a41, processorArchitecture=MSIL">
       <HintPath>..\packages\NAudio.2.2.1\lib\net472\NAudio.dll</HintPath>
@@ -226,15 +135,6 @@
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="NWaves, Version=0.9.6.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\NWaves.0.9.6\lib\netstandard2.0\NWaves.dll</HintPath>
-    </Reference>
-    <Reference Include="OxyPlot, Version=2.2.0.0, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
-      <HintPath>..\packages\OxyPlot.Core.2.2.0\lib\net462\OxyPlot.dll</HintPath>
-    </Reference>
-    <Reference Include="OxyPlot.WindowsForms, Version=2.2.0.0, Culture=neutral, PublicKeyToken=245eacd6b5d2d338, processorArchitecture=MSIL">
-      <HintPath>..\packages\OxyPlot.WindowsForms.2.2.0\lib\net462\OxyPlot.WindowsForms.dll</HintPath>
     </Reference>
     <Reference Include="SQLitePCLRaw.batteries_v2, Version=2.1.11.2622, Culture=neutral, PublicKeyToken=8226ea5df37bcae9, processorArchitecture=MSIL">
       <HintPath>..\packages\SQLitePCLRaw.bundle_e_sqlite3.2.1.11\lib\net461\SQLitePCLRaw.batteries_v2.dll</HintPath>
@@ -272,9 +172,6 @@
       <HintPath>..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
     </Reference>
     <Reference Include="System.Numerics" />
-    <Reference Include="System.Numerics.Tensors, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Numerics.Tensors.8.0.0\lib\net462\System.Numerics.Tensors.dll</HintPath>
-    </Reference>
     <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
     </Reference>
@@ -311,9 +208,6 @@
     <Reference Include="TagLibSharp, Version=2.3.0.0, Culture=neutral, PublicKeyToken=db62eba44689b5b0, processorArchitecture=MSIL">
       <HintPath>..\packages\TagLibSharp.2.3.0\lib\net462\TagLibSharp.dll</HintPath>
     </Reference>
-    <Reference Include="ZstdSharp, Version=0.7.1.0, Culture=neutral, PublicKeyToken=8d151af33a4ad5cf, processorArchitecture=MSIL">
-      <HintPath>..\packages\ZstdSharp.Port.0.7.1\lib\net461\ZstdSharp.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Dao\ProfileDao.cs" />
@@ -327,45 +221,32 @@
     <Compile Include="IViews\ILiveStreamAnimationSettingView.cs" />
     <Compile Include="IViews\ILiveStreamAnimationView.cs" />
     <Compile Include="IViews\IPlaylistCreatorView.cs" />
+    <Compile Include="IViews\IRulesView.cs" />
     <Compile Include="IViews\ISelectorView.cs" />
+    <Compile Include="Models\Rule.cs" />
     <Compile Include="Presenters\LiveStreamAnimationPresenter.cs" />
     <Compile Include="Presenters\LiveStreamAnimationSettingPresenter.cs" />
     <Compile Include="Presenters\PlaylistCreatorPresenter.cs" />
+    <Compile Include="Presenters\RulesEditorPresenter.cs" />
     <Compile Include="Presenters\SelectorPresenter.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Tmp\AsyncProgressMessage.cs" />
     <Compile Include="Helpers\FormElements\ButtonExtension.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Tmp\Class1.cs" />
     <Compile Include="Helpers\FormElements\CustomDataGridView.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Tmp\CustomHScrollBar.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Helpers\FormElements\CustomProgressBar.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Helpers\Messengers\DataTableModel.cs" />
-    <Compile Include="Tmp\DimensionalityReducer.cs" />
-    <Compile Include="Tmp\DynamicFeatureLoader.cs" />
     <Compile Include="Helpers\Enums.cs" />
-    <Compile Include="Tmp\CustomVScrollBar.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Tmp\FeatureType.cs" />
     <Compile Include="Models\ViewModel.cs" />
-    <Compile Include="Tmp\Trainer\DimensionalityReducer.cs" />
-    <Compile Include="Tmp\Trainer\FeatureSelector.cs" />
     <Compile Include="Helpers\FormElements\ImageExtension.cs" />
-    <Compile Include="Tmp\KeyDetector.cs" />
-    <Compile Include="Tmp\KeyPrediction.cs" />
-    <Compile Include="Tmp\KeyToStringMapping.cs" />
     <Compile Include="Helpers\LabelTimer.cs" />
     <Compile Include="Helpers\Messengers\Messenger.cs" />
     <Compile Include="Helpers\ObservableConcurrentBag.cs" />
@@ -387,10 +268,7 @@
     <Compile Include="Models\TagValue.cs" />
     <Compile Include="Models\TrackProperty.cs" />
     <Compile Include="Models\TrackTagValue.cs" />
-    <Compile Include="Models\TrainingData.cs" />
     <Compile Include="Presenters\AboutPresenter.cs" />
-    <Compile Include="Presenters\ModelTrainerPresenter.cs" />
-    <Compile Include="Presenters\SetupPresenter.cs" />
     <Compile Include="Presenters\ExportToDirectoryPresenter.cs" />
     <Compile Include="Presenters\HarmonizerPresenter.cs" />
     <Compile Include="Presenters\MediaPlayerComponent.cs" />
@@ -407,20 +285,11 @@
     <Compile Include="Presenters\TagValuePresenter.cs" />
     <Compile Include="Presenters\TemplateEditorPresenter.cs" />
     <Compile Include="Presenters\TrackEditorPresenter.cs" />
-    <Compile Include="Tmp\Trainer\FeatureAggregator.cs" />
-    <Compile Include="Tmp\Trainer\FeatureExtractor.cs" />
-    <Compile Include="Tmp\Trainer\TrainingDataCreator.cs" />
     <Compile Include="Views\AboutView.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Views\AboutView.Designer.cs">
       <DependentUpon>AboutView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ChartView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\ChartView.Designer.cs">
-      <DependentUpon>ChartView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\ColumnVisibilityEditorView.cs">
       <SubType>Form</SubType>
@@ -434,15 +303,8 @@
     <Compile Include="Views\ExportToDirectoryView.Designer.cs">
       <DependentUpon>ExportToDirectoryView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\HarmonizerView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\HarmonizerView.Designer.cs">
-      <DependentUpon>HarmonizerView.cs</DependentUpon>
-    </Compile>
     <Compile Include="IViews\IAboutView.cs" />
     <Compile Include="IViews\IChartView.cs" />
-    <Compile Include="IViews\IModelTrainerView.cs" />
     <Compile Include="IViews\ISetupView.cs" />
     <Compile Include="IViews\IExportToDirectoryView.cs" />
     <Compile Include="IViews\IHarmonizerView.cs" />
@@ -483,18 +345,6 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IViews\IMainView.cs" />
-    <Compile Include="Views\ModelTrainerView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\ModelTrainerView.Designer.cs">
-      <DependentUpon>ModelTrainerView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Views\PlaylistCreatorView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\PlaylistCreatorView.Designer.cs">
-      <DependentUpon>PlaylistCreatorView.cs</DependentUpon>
-    </Compile>
     <Compile Include="Views\PlaylistEditorView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -545,12 +395,6 @@
     <Compile Include="Views\RuleEditorView.Designer.cs">
       <DependentUpon>RuleEditorView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\SetupView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\SetupView.Designer.cs">
-      <DependentUpon>SetupView.cs</DependentUpon>
-    </Compile>
     <Compile Include="Views\TagEditorView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -575,38 +419,14 @@
     <Compile Include="Views\TagValueView.Designer.cs">
       <DependentUpon>TagValueView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\TemplateEditorView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\TemplateEditorView.Designer.cs">
-      <DependentUpon>TemplateEditorView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Views\TrackEditorView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\TrackEditorView.Designer.cs">
-      <DependentUpon>TrackEditorView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Views\TrainingDataGenerator.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\TrainingDataGenerator.Designer.cs">
-      <DependentUpon>TrainingDataGenerator.cs</DependentUpon>
-    </Compile>
     <EmbeddedResource Include="Views\AboutView.resx">
       <DependentUpon>AboutView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\ChartView.resx">
-      <DependentUpon>ChartView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\ColumnVisibilityEditorView.resx">
       <DependentUpon>ColumnVisibilityEditorView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\ExportToDirectoryView.resx">
       <DependentUpon>ExportToDirectoryView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\HarmonizerView.resx">
-      <DependentUpon>HarmonizerView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\LiveStreamAnimationView.resx">
       <DependentUpon>LiveStreamAnimationView.cs</DependentUpon>
@@ -621,12 +441,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\ModelTrainerView.resx">
-      <DependentUpon>ModelTrainerView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\PlaylistCreatorView.resx">
-      <DependentUpon>PlaylistCreatorView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\PlaylistEditorView.resx">
       <DependentUpon>PlaylistEditorView.cs</DependentUpon>
@@ -653,9 +467,6 @@
     <EmbeddedResource Include="Views\RuleEditorView.resx">
       <DependentUpon>RuleEditorView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\SetupView.resx">
-      <DependentUpon>SetupView.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Views\TagEditorView.resx">
       <DependentUpon>TagEditorView.cs</DependentUpon>
     </EmbeddedResource>
@@ -667,15 +478,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\TagValueView.resx">
       <DependentUpon>TagValueView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\TemplateEditorView.resx">
-      <DependentUpon>TemplateEditorView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\TrackEditorView.resx">
-      <DependentUpon>TrackEditorView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\TrainingDataGenerator.resx">
-      <DependentUpon>TrainingDataGenerator.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -757,31 +559,21 @@
     <None Include="Resources\UpArrow_20_20.png" />
     <None Include="Resources\TagValueScript.txt" />
     <None Include="Resources\DotRed_20_20.png" />
+    <Content Include="Resources\TagValueScriptTutorial.txt" />
     <Content Include="Technical Documents\Releases.txt" />
-    <Content Include="Technical Documents\DevProcess.txt" />
-    <Content Include="Technical Documents\TestCases.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Tmp\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.ML.CpuMath.3.0.1\build\netstandard2.0\Microsoft.ML.CpuMath.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ML.CpuMath.3.0.1\build\netstandard2.0\Microsoft.ML.CpuMath.props'))" />
-    <Error Condition="!Exists('..\packages\Microsoft.ML.3.0.1\build\netstandard2.0\Microsoft.ML.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ML.3.0.1\build\netstandard2.0\Microsoft.ML.props'))" />
-    <Error Condition="!Exists('..\packages\Microsoft.ML.3.0.1\build\netstandard2.0\Microsoft.ML.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ML.3.0.1\build\netstandard2.0\Microsoft.ML.targets'))" />
-    <Error Condition="!Exists('..\packages\LightGBM.3.3.5\build\LightGBM.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\LightGBM.3.3.5\build\LightGBM.props'))" />
-    <Error Condition="!Exists('..\packages\LightGBM.3.3.5\build\LightGBM.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\LightGBM.3.3.5\build\LightGBM.targets'))" />
-    <Error Condition="!Exists('..\packages\Microsoft.ML.FastTree.3.0.1\build\netstandard2.0\Microsoft.ML.FastTree.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ML.FastTree.3.0.1\build\netstandard2.0\Microsoft.ML.FastTree.props'))" />
-    <Error Condition="!Exists('..\packages\HDF.PInvoke.1.10.1.10.612\build\net461\HDF.PInvoke.1.10.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\HDF.PInvoke.1.10.1.10.612\build\net461\HDF.PInvoke.1.10.targets'))" />
-    <Error Condition="!Exists('..\packages\Accord.3.8.0\build\Accord.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Accord.3.8.0\build\Accord.targets'))" />
     <Error Condition="!Exists('..\packages\Microsoft.NETFramework.ReferenceAssemblies.net472.1.0.2\build\Microsoft.NETFramework.ReferenceAssemblies.net472.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.NETFramework.ReferenceAssemblies.net472.1.0.2\build\Microsoft.NETFramework.ReferenceAssemblies.net472.targets'))" />
-    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.props'))" />
-    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.targets'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.5.1\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.5.1\build\EntityFramework.props'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.5.1\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.5.1\build\EntityFramework.targets'))" />
   </Target>
-  <Import Project="..\packages\Microsoft.ML.3.0.1\build\netstandard2.0\Microsoft.ML.targets" Condition="Exists('..\packages\Microsoft.ML.3.0.1\build\netstandard2.0\Microsoft.ML.targets')" />
-  <Import Project="..\packages\LightGBM.3.3.5\build\LightGBM.targets" Condition="Exists('..\packages\LightGBM.3.3.5\build\LightGBM.targets')" />
-  <Import Project="..\packages\HDF.PInvoke.1.10.1.10.612\build\net461\HDF.PInvoke.1.10.targets" Condition="Exists('..\packages\HDF.PInvoke.1.10.1.10.612\build\net461\HDF.PInvoke.1.10.targets')" />
-  <Import Project="..\packages\Accord.3.8.0\build\Accord.targets" Condition="Exists('..\packages\Accord.3.8.0\build\Accord.targets')" />
   <Import Project="..\packages\Microsoft.NETFramework.ReferenceAssemblies.net472.1.0.2\build\Microsoft.NETFramework.ReferenceAssemblies.net472.targets" Condition="Exists('..\packages\Microsoft.NETFramework.ReferenceAssemblies.net472.1.0.2\build\Microsoft.NETFramework.ReferenceAssemblies.net472.targets')" />
-  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
+  <Import Project="..\packages\EntityFramework.6.5.1\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.5.1\build\EntityFramework.targets')" />
 </Project>

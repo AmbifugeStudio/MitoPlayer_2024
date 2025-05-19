@@ -1,15 +1,7 @@
-﻿using MitoPlayer_2024.Dao;
-using MitoPlayer_2024.Helpers;
+﻿using MitoPlayer_2024.Helpers;
 using MitoPlayer_2024.Models;
-using MitoPlayer_2024.Presenters;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace MitoPlayer_2024.Views
@@ -263,35 +255,6 @@ namespace MitoPlayer_2024.Views
         }
 
 
-        /*
-        public void SetTagValueListBindingSource(BindingSource tagValueList,bool hasMultipleValues = true)
-        {
-            this.tagValueListBindingSource = new BindingSource();
-            this.tagValueListBindingSource.DataSource = tagValueList;
-            this.dgvTagValueList.DataSource = this.tagValueListBindingSource.DataSource;
-           
-
-            this.BeginInvoke(new Action(() =>
-            {
-                for (int i = 0; i < this.dgvTagValueList.Rows.Count; i++)
-                {
-                    Color bgColor = HexToColor(this.dgvTagValueList.Rows[i].Cells["Color"].Value.ToString());
-                    this.dgvTagValueList.Rows[i].DefaultCellStyle.BackColor = bgColor;
-
-                    if ((bgColor.R < 100 && bgColor.G < 100) || (bgColor.R < 100 && bgColor.B < 100) || (bgColor.B < 100 && bgColor.G < 100))
-                    {
-                        this.dgvTagValueList.Rows[i].DefaultCellStyle.ForeColor = Color.White;
-                    }
-                    else
-                    {
-                        this.dgvTagValueList.Rows[i].DefaultCellStyle.ForeColor = Color.Black;
-                    }
-                }
-            }));
-        }
-        
-        */
-
         private void btnAddTag_Click(object sender, EventArgs e)
         {
             this.CreateTag?.Invoke(this, EventArgs.Empty);
@@ -403,15 +366,6 @@ namespace MitoPlayer_2024.Views
                 this.EditTagValue?.Invoke(this, new Messenger() { IntegerField1 = Convert.ToInt32(this.dgvTagValueList.SelectedRows[0].Index) });
             }
         }
-
-        /*private void dgvTagList_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (this.dgvTagList.SelectedRows.Count > 0)
-            {
-                this.EditTag?.Invoke(this, new Messenger() { IntegerField1 = Convert.ToInt32(this.dgvTagList.SelectedRows[0].Index) });
-            }
-        }*/
-
 
 
         private int firstSelectedTagRowIndex = -1;
@@ -639,5 +593,9 @@ namespace MitoPlayer_2024.Views
             }
         }
 
+        private void TagValueView_Shown(object sender, EventArgs e)
+        {
+            isInitializing = false;
+        }
     }
 }

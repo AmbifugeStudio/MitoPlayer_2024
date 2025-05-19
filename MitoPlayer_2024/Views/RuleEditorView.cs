@@ -38,5 +38,15 @@ namespace MitoPlayer_2024.Views
             return instance;
         }
         #endregion
+
+        private void btnOk_Click(object sender, EventArgs e)
+        {
+
+        }
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+
+        }
+
     }
 }
