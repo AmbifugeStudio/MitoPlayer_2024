@@ -84,3 +84,34 @@ FEATURE: Tag editor - Import/export key, BPM, and custom tag values
 FEATURE: Reorder tags and tag values
 FEATURE: Tag editor - Display ordering based on tag/tagvalue order
 FEATURE: On loading or leaving tracklist, check for unsaved changes and show confirmation dialog
+FEATURE: Add a button for VirtualDJ export
+FEATURE: Option to hide the playlist section
+FEATURE: Detect VirtualDJ database automatically on first launch
+FEATURE: Handle mixed-quality filenames during directory export
+FEATURE: Add database purge functionality
+FEATURE: On load, auto-play should be controlled by setting
+FEATURE: Key coloring should affect only the letters
+FEATURE: Add dark theme support
+FEATURE: Handle FLAC/OGG filename truncation during directory export
+FEATURE: Show loading screen during directory export
+FEATURE: Add length support for FLAC files
+FEATURE: In quicklist setup, don’t switch playlist selection
+FEATURE: When a track is started, stopped, and something else is clicked, next/prev should count from cursor position
+FEATURE: During playlist add/edit, don’t jump selection to current
+FEATURE: Support partial deletion instead of full clear on add/remove
+BUG: After scanning, key and BPM are not reloaded after navigating away and back
+BUG: Adding a new tag clears current playing track selection
+BUG: Key and BPM tags don’t appear after column is toggled off
+BUG: Keycode is written incorrectly (reversed)
+BUG: Column reorder is not working
+BUG: Crash when a song ends
+BUG: Tag edit - When multiple flag is toggled, create TagValue if missing and delete if exists
+BUG: Player controls should work on TagValue view
+BUG: Tracklist drag and drop vs. double-click conflict
+BUG: In TagValue creation, setting white color results in white text too
+BUG: Active playlist not colored properly on load
+BUG: On load: playlist play, delete all, add new and next/prev not working as expected
+BUG: Disable filename-based sorting during directory export
+BUG: Playlist clear should refresh selected item label
+BUG: Test remove missing track behavior
+BUG: Key and BPM not detected for tracks read from USB drive
