@@ -78,3 +78,19 @@ Feel free to reach out or open an issue if you're interested in using or contrib
 ## 🛡️ License
 
 Proprietary – all rights reserved.
+This software is distributed as proprietary and may not be copied, modified, or redistributed without explicit permission from the author.
+
+However, the application makes use of several open-source components, which are included under their respective licenses. These third-party libraries are used in compliance with their license terms.
+
+✅ Third-party components used:
+Library	License	Source
+NAudio (Core, Midi, Wasapi, WinForms, WinMM)	MIT	https://github.com/naudio/NAudio
+Newtonsoft.Json	MIT	https://github.com/JamesNK/Newtonsoft.Json
+SQLitePCLRaw (bundle_e_sqlite3, core, lib, provider)	MIT	https://github.com/ericsink/SQLitePCL.raw
+System. (.NET runtime libraries)*	MIT	https://github.com/dotnet/runtime
+TagLibSharp	LGPL-2.1-or-later	https://github.com/mono/taglib-sharp
+
+All MIT-licensed components permit commercial use, modification, and redistribution, provided that the original license notice is retained.
+The LGPL-licensed TagLibSharp is used in a manner compliant with dynamic linking rules.
+
+📄 You can find a full list of licenses and attributions in the THIRD-PARTY-NOTICES.md file.
