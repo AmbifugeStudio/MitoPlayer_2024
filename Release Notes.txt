@@ -1,5 +1,320 @@
-
-2024.08.18. - 
-OK - Workflow test: playlist rename-re create plalyist jön fel
- - Workflow test: külső winyón nem találta meg a vdj database fájlt, akkor sem, amikor a preference-s be átállítottam. Teljesen úgy megnyitást követően állt át csak.
- 
+======================
+v0.16.1.24
+======================
+OK - BUG: TagValue editor - import tags and values: wrong ids
+OK - BUG: Playlist - missing tracktagvalues
+OK - BUG: selector - playlist selection fills tracks into the tracklist and selector (only the selector must be fill)
+OK - FEATURE: selector - set active tracklist
+OK - BUG: selector - load selected button and playlist mode group color
+OK - BUG: selector - tracklist and selector ordering conflit with each other
+OK - BUG: selector - tracklist columns are wrong (eg.: id column is visible) (after some ordering, the two tracklist will be restored)
+OK - BUG: set full length on active tracklist
+OK - BUG: selector - tracklist selected info did not load
+OK - BUG: selector - selector selected info did not load
+OK - BUG: selector - review menu
+OK - BUG: selector - tagvalue text filter and button missing
+OK - BUG: selector - media player button fix
+OK - FEATURE: selector - media player with tracklist
+OK - FEATURE: selector - media player with selector
+OK - FEATURE: selector - tagvalue filter to the selector
+OK - BUG: selector - tracklist and ordering fix
+======================
+v0.16.1.7
+======================
+OK - FEATURE: playlist list - right click should also select the row
+OK - FEATURE: playlist list - load list with one click
+OK - BUG: scan key and bpm button does not working well
+OK - BUG: missing tracks are not displayed in red
+OK - BUG: no scroll on the playlist list
+OK - BUG: scan key/bpm button - mixedinkey key import does not work
+OK - REFACTOR: source code cleaning
+OK - FEATURE: selector view development start
+======================
+v0.16.0.0
+======================
+OK - REFACTOR: SqLite integration
+======================
+v0.15.2.32
+======================
+OK - BUG: Live Stream animation - flac artist and title displayed wrong way (duplicated title)
+OK - BUG: settings - initialize view missing
+OK - FEATURE: Separate VirtualDj and MixedInKey exports
+OK - BUG: tracklist drag and drop outside of the application and back - cursor image stucked on drag and drop
+OK - FEATURE: key and bpm export from virtualdj or mixedinkey option
+OK - BUG: large number of tracks: length is wrong (2777 tracks)
+OK - BUG: large number of tracks: selected length is wrong 
+======================
+v0.15.2.25
+======================
+OK - BUG: If tracklist was empty (after delete all track/clear), the list cannot be saved
+OK - FEATURE: display actual playlist and load playlist
+OK - BUG: drag and drop from tracklist to playlist does not work
+OK - BUG: drag and drop activates in the tracklist, when the cursor is not on selected element
+OK - FEATURE: dropped files must be selected after drop
+OK - BUG: focus on tracklist after press preview button
+OK - BUG: peak meter freezes sometimes
+OK - BUG: file drop into empty list
+OK - BUG: file drop into the empty part of tracklist
+OK - BUG: i can't add tracks to the default playlist
+======================
+v0.15.2.15
+======================
+OK - BUG: error at playlist initilialization after tag name change
+OK - FEATURE: cover browser turn on and off
+OK - FEATURE: set the color of the length to red, if the track is short
+OK - BUG: preview does not working
+OK - REFACTOR: settings and profile requires restart (workaround)
+OK - BUG: filter textbox - filter turnes on and off after mutliple filter (text and enter into the textbox)
+OK - BUG: pause button restart the music, when the song is already paused
+OK - BUG: playing does not stop after the last song in the list
+OK - FEATURE: tag value import - generate button generate the script about the current tags and tagvalues into the script textfields
+OK - FEATURE: tag values import - save button saves your last script
+OK - FEATURE: tag value import - automatic loads the last used/saved script
+OK - BUG: add tag - textcolouring does not update in the list (it is false)
+OK - BUG: too much tag - panel hides clear filter button in the filter mode and panel does not display every tag - after tag adding!
+OK - BUG: initial volume should not be 100% after setup
+OK - FEATURE: automatikus key beolvasás Comment-ből
+OK - FEATURE: utolagos key beolvasás Comment-ből
+======================
+v0.15.1.1
+======================
+- REFACTOR: Small refactors
+======================
+v0.15.1.0
+======================
+- FEATURE: Chart view prepare
+======================
+v0.15.0.9
+======================
+OK - BIG FEATURE: modeltrainer - complete modell trainer view
+OK - FEATURE: modeltrainer - tagvalue should be coloured in the input tracklist
+OK - BUG: modeltrainer - cancel should be stop the progress bar and clear the processed, eta and size labels
+OK - FEATURE: modeltrainer tracklist result dialog enable/disable in setting
+OK - FEATURE: modeltrainer tracklist result button
+OK - BUG: there is an additional button on the screen
+OK - BUG: tageditor can't edit a tag, which has index of prevously deleted tag
+OK - BUG: after delete tag, playlist gets error because of wrong display index
+OK - BUG: tageditor does not display the last tag
+======================
+v0.14.3.8
+======================
+OK - FEATURE: preview and preview setting
+OK - BUG: after tagvalue setting, the colouring of the row stay grey
+OK - BUG: after directory scan, cover browser load only the first element
+OK - BUG: selected items label not working
+======================
+v0.14.3.4
+======================
+OK - REFACTOR: complete drag and drop refactor (in progress)
+OK - BUG: drag and drop vs. cover browser
+OK - FEATURE: cover browser drag and drop outside of the application
+OK - FEATURE: tracklist drag and drop outside of the application
+OK - BUG: cover browser vs track delete
+======================
+v0.14.2.7
+======================
+OK - REFACTOR: complete drag and drop refactor (in progress)
+OK - REFACTOR: playlistpresenter add file/directory refactor
+OK - FEATURE: loading screen in the case of slow processes
+OK - BUG: too long filename database fix
+OK - BUG: bpm HasValue fix
+OK - BUG: drag and drop disable in filter mode
+OK - BUG: tracktagvalue parallel mode reverse / get id fix
+OK - REFACTOR: tracklist grid scrolling 
+OK - BUG: tracklist insertion line fix
+======================
+v0.14.0.0
+======================
+OK - REFACTOR: complete drag and drop refactor (in progress)
+OK - FEATURE: key detector model training and key detecting (in progress)
+======================
+v0.12.15.8
+======================
+OK - BUG: automatic next track stops - after list reorder and the current playing track was at the end of the original list (list has not been updated in the player?) - or not. Objectiv - Fighting Chance stops at the end
+======================
+v0.12.15.7
+======================
+OK - BUG: play next song after the previous one ended
+OK - BUG: track progress bar displays less value and it does not working well, when the track is ended
+OK - BUG: filter does not filter because of the saving
+OK - BUG: cover browser changing after load playlist, set setter and set filter and filter
+OK - BUG: current selected cover stays after cover browser change
+OK - FEATURE: cover browser drag and drop outside of the app
+OK - FEATURE: cover browser click -> select track
+======================
+v0.12.15.0
+======================
+OK - REFACTOR: tracklist colouring optimalization
+OK - REFACTOR: tracklist selection optimalization
+OK - REFACTOR: cover browser load optimalization
+OK - REFACTOR: mainpresenter file add optimalization
+OK - REFACTOR: vdj import optimalization
+OK - REFACTOR: track load sql optimalization
+======================
+v0.12.14.8
+======================
+OK - REFACTOR: volume progress bar
+OK - FEATURE: playlist save message
+OK - FEATURE: tagvalue editor right button also should work as turn off filter
+OK - BUG: sorting does not work in filter mode
+OK - FEATURE: cover browser (in progress)
+======================
+v0.12.14.3
+======================
+OK - FEATURE: decibel peak meter
+OK - REFACTOR: playlist view preparing for album covers
+OK - REFACTOR: media player view refactor
+OK - REFACTOR: media player timer refactor
+======================
+v0.12.13.42
+======================
+OK - BUG: bpm column ordering: order as double not as string
+OK - BUG: disable filter, when load another playlist
+OK - BUG: save playlist, when load another playlist
+OK - FEATURE: bpm filter 
+OK - REFACTOR: filter by text
+OK - BUG: when turn off filter, filter richtextbox does not appear
+OK - BUG: save button should not change when filter mode is turned on
+OK - FEATURE: load playlist -> autosave
+OK - BUG: tagvalue coloring is wrong at the playing track
+OK - BUG: trac count and sum time fix
+======================
+v0.12.13.32
+======================
+OK - REFACTOR: turn off filter mode - slow playlist load
+OK - BUG: turn off tag editor button border when filter is turned off
+OK - BUG: when remove tag value with field coloring, value will be deleted, but the coloring won't change
+OK - BUG: at tag value delete, tagvalueid column must be also deleted
+OK - FEATURE: better setter and filter button color
+OK - BUG: save playlist, when turn filtering on 
+======================
+v0.12.13.26
+======================
+OK - BUG: tracklist size changing in lower resolution after navigate to tag editor and back
+OK - FEATURE: tag setter and filter difference should be more obvious
+OK - FEATURE: tag setter should be default
+OK - BUG: tag editor panel turn off and on again - tracklist size does not reset
+======================
+v0.12.13.22
+======================
+OK - BUG: tag filter does not work when there is no selected row in the playlist list
+======================
+v0.12.13.21
+======================
+OK - REFACTOR: playlist load refactor
+OK - BUG: save function at the load of another playlist
+======================
+v0.12.13.19
+======================
+OK - REFACTOR: manual save button and save async process
+OK - REFACTOR: tracklist load process change (larger)
+OK - REFACTOR: tagvalue editor - tagvalue change speed optimization
+======================
+v0.12.13.16
+======================
+OK - BUG: filter rich text box is visible at program start
+OK - FEATURE: filter mode button relocate to the filter textbox
+OK - BUG: at every plalyist open, the tracklist become longer and longer
+======================
+v0.12.13.13
+======================
+OK - BUG: track start, load another playlist, load the original playlist, current playing track will be different in the tracklist
+OK - BUG: tag value editor - clear tag value removes values from selected track also in the only playing mode
+======================
+v0.12.13.11
+======================
+OK - FEATURE: tag value editor as filter
+OK - BUG: scan/bpm button does not scan (after i change a value - bpm)
+OK - REFACTOR: export to directory tracklist color
+OK - BUG: bpm and key should not be deleted
+OK - FEATURE: preferences dark theme
+OK - BUG: playlistView crashes, when a tag does not contain tagvalue - system adds one default tag value at tag creation and the last tag value should not be deleted
+OK - FEATURE: tag value filter - filter textbox displays only when the filter checkbox is active
+OK - BUG: playing tracks + order = playing order became completely wrong
+OK - BUG: tag value filter - setter not working after using the filter
+OK - BUG: playing order changes after filter+reordering
+OK - BUG: filter mode: turn off playlist change (or turn off filter at playlist change)
+OK - BUG: in the filter mode: turn off any tracklist ordering/saving 
+OK - BUG: reload list after turn off filter
+======================
+v0.12.12.5
+======================
+OK - FEATURE: tagvalue editor - set color mode and color in tracklist
+OK - FEATURE: tag import - color definition in script
+OK - REFACTOR: tag editor load refactor 
+OK - FEATURE: tag value editor - "tagvalue change of current playing track or selected track" option
+OK - BUG: focus back to tracklist after change/clear tagvalue
+OK - FEATURE: dark theme
+======================
+v0.12.11.9
+======================
+OK - FEATURE: check virtual dj files and set the automatic scan in the mysql dialog (and in the setting, if user wants to enable it)
+OK - FEATURE: scan key and bpm button (post)
+OK - REFACTOR: pages reload refactor and source code purifying (in progress)
+OK - FEATURE: dark theme (in progress)
+OK - BUG: delete playlist fix
+======================
+v0.12.11.4
+======================
+OK - REFACTOR: pages reload refactor and source code purifying (in progress)
+OK - FEATURE: dark theme (in progress)
+OK - BUG: Play a track, navigate to tag values view, create tag and tag value, navigate back to playlist, no actual playing colouring
+OK - BUG: navigate to tag values view, add color to tagvalue, navigate back to playlist, select tag color - tagvalues has not been updated
+OK - FEATURE: pause button play music after pause
+======================
+v0.12.10.15
+======================
+OK - FEATURE: shuffle enable/disable
+OK - FEATURE: mute button
+OK - FEATURE: tag editor - keys: 01A,01B,02A,02B + color fix
+======================
+v0.12.10.12
+======================
+OK - BUG: tag editor - only the last button works
+OK - FEATURE: dark theme (in progress)
+OK - BUG: tag editor changes the wrong line (after navigate to tagvalue view and back)
+OK - REFACTOR: view and controller refactor start (in progress)
+OK - BUG: navigate to tag values view, create tag and tag value, navigate back to playlist, select tag - taglist has not been updated
+OK - FEATURE: tag value editor - empty value/reset
+OK - BUG: playlist and tag editor toggle buttton vs. tracklist grid length fix
+OK - BUG: Tag Value editor: add/rename tagvalue - the dialog opens twice
+OK - BUG: selected item section does not update after track selection 
+OK - BUG: volume button fix
+======================
+v0.12.10.2
+======================
+OK - FEATURE: dark theme (in progress)
+======================
+v0.12.10.1
+======================
+OK - FEATURE: metadata from flac
+OK - FEATURE: tag editor - custom tags button + scrollbar with tags and tagvalue buttons in a list
+======================
+v0.12.9.0
+======================
+OK - REFACTOR - VirtualDJ data read optimalization (only automatic)
+======================
+v0.12.8.2
+======================
+OK - FEATURE: TagEditor - Enter key set value on the bpm textbox
+OK - FEATURE: TagEditor - Import tag and tagvalue by script
+OK - BUG: TagEditor - After add file, bpm textbox doesn't disappear, when change between key/bpm
+OK - BUG: TagEditor - after reordering, key/bpm changes the value sof the wrong line from the tracklist (when more track is the same)
+OK - REFACTOR: Playlist view panel refactor (except drag and drop)
+======================
+v0.12.5.6
+======================
+OK - BUG: profile related settings unnecessary added to the setting table
+OK - BUG: Preferences - virtualdj database path missing
+OK - FEATURE: Playlist selector on/off from setting
+OK - FEATURE: TagValue selector on/off from setting
+OK - FEATURE: Playlist and Tagvalue on/off buttons change place
+OK - FEATURE: Play track after directory scan feature on/off from setting + preferences setting
+======================
+v0.12.4.1
+======================
+OK - BUG: Playlist View: TabControl slides up 
+OK - REFACTOR: Change to MySQL 8.0.39
+OK - REFACTOR: SettingDao error handling
+OK - REFACTOR: MySQL connection view
+OK - REFACTOR: Database initialization
