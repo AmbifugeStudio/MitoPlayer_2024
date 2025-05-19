@@ -560,7 +560,8 @@
     <None Include="Resources\TagValueScript.txt" />
     <None Include="Resources\DotRed_20_20.png" />
     <Content Include="Resources\TagValueScriptTutorial.txt" />
-    <Content Include="Technical Documents\Releases.txt" />
+    <Content Include="Technical Documents\Roadmap.txt" />
+    <Content Include="Technical Documents\Changelog.txt" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Tmp\" />

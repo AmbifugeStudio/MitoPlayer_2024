@@ -1,0 +1,86 @@
+﻿======================
+ROADMAP
+======================
+
+FEATURE: Quick tag and tagvalue import (write list into textfield)
+FEATURE: Tag coloring dropdown reads value from setting
+BUG: On window resize, tracklist misaligns with toggle buttons
+REFACTOR: Playlist view panel refactor
+BUG: Selector - New playlist drag and drop error
+BUG: Selector - Switching between selector and playlist results in wrong playlist and does not auto-load
+BUG: Selector - Save button logic fix and repositioning
+BUG: BPM and key export - BPM export occasionally fails
+FEATURE: Export to M3U - playlist name auto-fills into name text field
+FEATURE: Toggle button to show/hide key and BPM tag editor panel
+BUG: Tag metadata editor - Deleting tag causes index error
+BUG: Drag and drop tracks into list inserts in reverse order
+FEATURE: Next track scrolls into view if it moves out (up/down)
+FEATURE: Preview end setting
+FEATURE: Cover browser - single click selects corresponding track in list
+FEATURE: Cover browser - scroll does not jump if selected is already in view
+BUG: Long playlist names overflow in playlist list log header
+BUG: 2024 directory scan - Missing BPMs
+FEATURE: Export to directory - Support for Enter and Escape keys
+BUG: Tracklist column ordering sometimes fails
+FEATURE: Load playlist into secondary tracklist (Tracklist2)
+FEATURE: Add secondary tracklist and splitter panel
+REFACTOR: Resize splitter instead of tracklist itself
+FEATURE: No app restart needed after changing settings
+FEATURE: Export file - Keep original filename
+FEATURE: Separate VDJ and MixedInKey import
+FEATURE: Export file - Show progress bar
+BUG: File dropped on empty tracklist selects previous duplicate track instead of new one
+BUG: CTRL+S does not work on empty list
+BUG: Drag and drop from tracklist to same playlist causes duplicates
+FEATURE: Export to TXT - Option to retain original filenames
+FEATURE: Export to TXT - Show progress bar
+FEATURE: When paused, resume playback from clicked position on progress bar
+FEATURE: Show waveform instead of progress bar
+FEATURE: When paused, resume from clicked waveform position
+BUG: 2024 folder scan error
+BUG: Progress bar update is delayed
+BUG: Preview setting default should not be zero
+BUG: Clicking progress bar causes progress shift
+BUG: After clicking preview, control should return focus to grid
+BUG: Drag and drop to last playlist crashes with index error
+FEATURE: Limit drag and drop for large sets (performance)
+FEATURE: Add button to restore \"Last Saved Version\"
+BUG: Filtered list breaks media player playlist
+BUG: Column sorting fires twice on click
+BUG: ModelTrainer - 125/124 samples causes 100% display bug that does not disappear
+FEATURE: ModelTrainer - Overwrite .hdf5 does not work
+FEATURE: External drag and drop - Show \"already played today\"
+FEATURE: External drag and drop - Track count
+FEATURE: Short tracks shown in red
+REFACTOR: .hdf5 file created only when Save dialog confirmed
+FEATURE: Export option to pad filenames with underscores for alignment
+BUG: Missing special track tag values
+BUG: Warning not functional, required deletion and recreation
+BUG: Sorting shows new item by ID, not at the end
+BUG: After drag and drop, must click before shift+click selection works
+BUG: Tracklist display index - Fix sorting ID
+BUG: Progress bar slow to appear after pressing Play
+BUG: Playlist commands should target clicked list, not just selected one; also support right-click selection
+FEATURE: TagEditor - Disable column sorting
+BUG: Directory scan does not reload key/BPM/style if track was deleted and re-scanned
+REFACTOR: Remove \"always save tracklist\" behavior
+BUG: TagEditor - TagValue change applies only to selected duplicate, not all
+BUG: Exporter should detect existing files
+FEATURE: VirtualDJ open vs. BPM scan dialog distinction
+BUG: Cover browser not updating after key import
+BUG: Returning from TagEditor while a track is playing does not restore color
+FEATURE: TagValue editor view - Reorder tag values by drag and drop
+FEATURE: Playlist track count shows filtered state — display like \"32 of 500 filtered\"
+FEATURE: Option to configure debug message display time
+BUG: Column visibility - IsDisplayed flag resets after sorting
+REFACTOR: Column visibility - Dark mode adjustments
+FEATURE: Toggle column visibility via tracklist column header context menu
+BUG: Column visibility reordering affects the wrong column
+FEATURE: Autosave when navigating away from playlist view
+FEATURE: Preview setting - Start next song at configured timestamp
+FEATURE: Visualizer
+FEATURE: Column visibility system
+FEATURE: Tag editor - Import/export key, BPM, and custom tag values
+FEATURE: Reorder tags and tag values
+FEATURE: Tag editor - Display ordering based on tag/tagvalue order
+FEATURE: On loading or leaving tracklist, check for unsaved changes and show confirmation dialog

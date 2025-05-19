@@ -1,94 +1,11 @@
-﻿
-- FEATURE: quick tag and tagvalue import (write list into textfield)
-- FEATURE: Tag colouring dropdown value from setting
-- BUG: window resize-ra a tracklist a ki/bekapcsoló gombokra elmászik
-- REFACTOR: Playlist view panel refactor
-- BUG: selector - new playlist list drag and drop error (?)
-- BUG: selector - when shift between selector and playlist(?), selected playlist is different and the playlist did not load automatically
-- BUG: selector - save buttons save fix (+repositioning needed)
-- BUG: bpb and key export - bpm export does not work sometimes
-- FEATURE: export to m3u - playlistname into name text field
-- FEATURE: toggle button to display/hide key and bpm tag editor panel
-- BUG: tag value mateadata editor - delete tag - index error
-- BUG: drag and drop track into list - in reverse order
-- FEATURE: next song - scroll should move down, if the selection of the playing song moves down (and same to up)
-- FEATURE: preview end setting
-- FEATURE: cover browser - one click on cover, select the list element
-- FEATURE: cover browser - one click on cover, scroll should not be changed, if the selected is visible in the tracklist
-- BUG: long playlist name does not fit in the log at the top of playlist list
-- BUG: 2024 directory scan - missing bpms
-- FEATURE: export to directory - enter and excape key function
-- BUG: tracklist column ordering does not work sometimes
-- FEATURE: playlist list - load list content to another tracklist (tracklist2)
-- FEATURE: tracklist 2 and splitter
-- REFACTOR: splitter size change instead of tracklist size change
-- FEATURE: no need to restart application after cahnge settings
+﻿======================
+CHANGELOG
+======================
 
-- fájl exportnál original fájlnév megőrzés
-- feature: vdj és mixedinkey import szétszedése
-- fájl exportnál progress bar
-
-- BUG: file drop into the empty part of tracklist - in the case of same track, the previous track will be selected instead of dropped ones
-- üres listán nem tudom contorl s-t nomyni
-- BUG: drag and drop from tracklist to tha same playlist: duplicated elements has been added
-- FEATURE: export to txt - keep original file name option
-- FEATURE: export to txt - progress bar
-- FEATURE: paused music should continue with from the position where mouse button is pressed on the progress bar, while the song is paused
-- FEATURE: soundwave instead of progress bar
-- FEATURE: paused music should continue with from the position where mouse button is pressed on the soundwave, while the song is paused
-
-- hiba 2024-es mappa szekenneélesok 
-_ a progress bar delay-e lassú
-- preview setting defulkt ne leghyen nulla
-- a proggress bar-ra nyomva eltolódik a progbress
-- preview gomb megnyomása után augrojon vissza  avezérlés agridre
-- utolsó utáni playlistra drag and droppolok számot, index hibával elszáll
-- nagyok sok elem drag and drop-ja ínkeserves, le kellene korlátoznib
-- kéne eg ylast saved version visszaállítás gmbb
-- ha szűrök, elbaszódik a mediaplayer playlist-je
-- oszlop rendező kétszer fut meg, ha rákattintok
-- BUG: modeltrainer - samples 125/124 100% display does not disappear error
-- FEATURE: modeltrainer - owerwrite mhd5 does not work
-- FEATURE: already played today - external drag and drop
-- FEATURE: track count - external drag and drop
-- FEATURE: length of short tracks display in red
-- REFACTOR: hdm5 file create, when save dialog press ok
-- exportnál opció, hogy kiegészítse _ karakterekkel, hogy egy sorban legyenek már a számok
-- ninc sspecial tracktagvalue-ja a számoknak??
-- warning se jó, törölni meg újralétrehozni kellett
-- és a sorting id alapján jelenik meg, nem a legváégán, ha újra létrehozom
-- drag and dropuátn kattintanom kell ahhoz, hgy shift kattal kijelöljek többet (nem működik a shift+egér)
-- BUG: tracklist display index - sorting id fix
-- progress bar nem jelenik meg eléág gyorsan, ha csak play-re noymunk 
-- playlist-nél arra érvéányesöljenek a parancsok, ahova az egérrel kattintok, he ami ki van jelölve
-SŐT jelöld már ki jobb kattra is!
-
-- file exporter ismerje már fel, hogy ha már létezik a knyvtárban a fájl
-
-- FEATURE: virtual dj open vs. scan bpm dialog windows
-
-- BUG: cover browser update bug after key import
-elmegyek a tageditorra, miközben szól egy zene, visszajövök, nem állítódik be a szine
-
-- FEATURE: tagvalue editor view - reorder tag values by drag and drop
-
-a filtered lista elemeit írja ki a playlist tack coujnt - ki kéne írni, hogy ez szűrt,pl 500 számból 32
-
-
-- FEATURE: set debug message timer time in options
-- BUG: column visibility - isdisplayed will be turned off after sorting
-- REFACTOR: column visibility dark mode
-- FEATURE: column visibility changes from context menu of the tracklist column header
-- BUG: column visibility reorder orders the wrong column
-- FEATURE: navigate away from playlist view -> autosave
-- FEATURE: preview setting (music start at certain point on the next track button)
-- FEATURE: visualizer
-- FEATURE: column visibility
-- FEATURE: tag editor - export/import key/bpm and custom tag values
-- FEATURE: reorder tags and tagvalues
-- FEATURE: tag editor - display according to tag/tagvalue order
-- FEATURE: load tracklist or navigate away: check save status and show dialog window is there are unsaved progress
-
+======================
+v0.16.1.26
+======================
+OK - REFACTOR - changelog change
 ======================
 v0.16.1.25
 ======================
@@ -413,18 +330,138 @@ OK - REFACTOR: Change to MySQL 8.0.39
 OK - REFACTOR: SettingDao error handling
 OK - REFACTOR: MySQL connection view
 OK - REFACTOR: Database initialization
-
-
-v0.				12.									4.								1
-Main Release	Very Large Feature or Refactor		Large Feature, Refactor or Bug	Small Feature, Refactor or Bug
+======================
+v0.11.6.2
+======================
+OK - BUG: Played track was not highlighted
+======================
+v0.11.6.1
+======================
+OK - FEATURE: Complete file export to directory  
+OK - FEATURE: Full VirtualDJ BPM and key export  
+OK - BUG: Key values seem to be missing for some tracks, even though they are analyzed
+======================
+v0.11.5.4
+======================
+OK - FEATURE: BPM column and manual input  
+OK - BUG: Proper column display after profile change  
+OK - BUG: Column sorting broken  
+OK - BUG: Tracklist coloring fixed  
+OK - BUG: Double-click on TagValue table didn’t trigger edit
+======================
+v0.11.4.2
+======================
+OK - FEATURE: Pressing Enter closes TagValue creation/edit window  
+OK - FEATURE: Row or cell coloring  
+OK - FEATURE: TagValue coloring in tracklist  
+OK - FEATURE: TagValue coloring in TagValue list  
+OK - BUG: TagValue not always colored properly after creation  
+OK - BUG: Colored row turns white after drag and drop
+======================
+v0.11.3.6
+======================
+OK - FEATURE: Playlist drag and drop  
+OK - FEATURE: Active playlist should be highlighted in green  
+OK - BUG: Conflict between playlist double-click and drag-and-drop  
+OK - BUG: Crashed after repeated deletions from the end  
+OK - BUG: Drag and drop may not add tracks to the database  
+OK - BUG: Drag and drop should use copy, not delete  
+OK - BUG: Error when dragging a single item  
+OK - BUG: Crash due to index error when dragging the last item
+======================
+v0.11.2.6
+======================
+OK - BUG: Crash when pressing unassigned hotkey  
+OK - BUG: Quicklist deletion  
+OK - BUG: No feedback on Quicklist copy  
+OK - BUG: Playlist sorting should be disabled from UI  
+OK - BUG: Playlist selection breaks after external drag-and-drop  
+OK - BUG: Drag-and-drop selection remains after drop
+======================
+v0.11.2.1
+======================
+OK - FEATURE: Drag-and-drop overhaul  
+OK - FEATURE: Drag-and-drop to playlist  
+OK - BUG: Playing track not colored after drag-and-drop
+======================
+v0.11.2.0
+======================
+OK - Refactor: drag and drop refactor
+======================
+v0.11.1.1
+======================
+OK - FEATURE: Export playlist to *.m3u or *.txt  
+OK - BUG: Player controls must be disabled in tag values panel  
+OK - BUG: Tag editor UI not showing correctly on empty DB  
+OK - BUG: Tag editor buttons must be disabled on empty list  
+OK - BUG: Crash when adding track with duplicate TagValue on empty list
+======================
+v0.11.1.0
+======================
+OK - FEATURE: TagValue editor
+======================
+v0.11.0.0
+======================
+OK - FEATURE: TagValue Editor
+======================
+v0.11.0.10
+======================
+OK - BUG: Crash after tag deletion due to index error  
+OK - BUG: TagValue column not cleared on delete  
+OK - BUG: TagValue list did not load if tag already existed  
+OK - BUG: Adding new TagValue filled wrong column  
+OK - BUG: Tag order incorrect after creating and switching to player  
+OK - BUG: Quicklist not set -> crash on quickkey  
+OK - BUG: Duplicate setting keys (LastOpenFilesFilterIndex, Volume)  
+OK - BUG: Played track coloring lost after changing column visibility  
+OK - BUG: Column not reordered immediately after rearranging  
+OK - BUG: New playlist crashed due to foreign key
+======================
+v0.11.0.0
+======================
+OK - REFACTOR: Dao refactor
+======================
+v0.10.1.7
+======================
+OK - BUG: Copy track info incomplete  
+OK - BUG: Track starts after directory scan but not displayed  
+OK - BUG: Track does not auto-start after file scan  
+OK - BUG: Playlist add validation should be info, not error  
+OK - BUG: Selected index shows 1000 on empty list  
+OK - BUG: Track count and total duration in bottom-right  
+OK - BUG: Played track not highlighted after removing duplicates/missing  
+OK - BUG: Random not working  
+OK - BUG: Random should walk through list  
+OK - BUG: No feedback after copying to tracklist  
+OK - BUG: Quickkey not working or adds multiple rows  
+OK - BUG: New ID must be generated when adding to list  
+OK - BUG: Played track not highlighted after sort  
+OK - BUG: Same group cannot be set for multiple playlists  
+OK - BUG: Wrong action triggered on Enter/Space  
+OK - BUG: Check next track after one ends  
+OK - BUG: Drag and drop highlights wrong current track  
+OK - BUG: Duplicate selection plays first, not clicked  
+OK - BUG: Cannot restart playback after clearing all and stopping  
+OK - BUG: No coloring after returning from other view  
+OK - BUG: Error on delete all  
+OK - BUG: Crash on next/prev buttons  
+OK - BUG: Column height must not be adjustable  
+OK - BUG: Random button not working  
+OK - BUG: Should play track on selection via Space/Enter  
+OK - BUG: Bind 1-4 group buttons  
+OK - BUG: Time and progress bar disappear on pause  
+OK - BUG: ESC should exit playlist name editor  
+OK - BUG: Crash on header click spam  
+OK - BUG: List not refreshed after Add File  
+OK - BUG: Player not starting after Add File  
+OK - BUG: Crash on directory scan due to setting save  
+OK - BUG: Crash on new playlist  
+OK - BUG: Set playlist table column height  
+OK - BUG: Dock main menu buttons to the left  
+OK - BUG: Main menu sections not visible after button click  
+OK - BUG: Volume button doesn't update label  
+OK - BUG: Volume slider does not affect volume  
+OK - BUG: Progress bar event not wired
 
 v0.				12.									4.								1
 Main Release	Large Feature or Refactor			Small Features or Refactor		Small Bugs
-
-
-BUGS
-
-- TagEditor: disable order by columns
-- Directory Scan: ha már állítottam be key-t meg bpm-et meg style-t, akkor nem tölti be, ha ugyanazt a számot törlöm majd beszkennelem.
-- REFACTOR - Remove tracklist always saving feature
-- BUG - TagEditor - If list contained the same track twice or more and i change the tag value,  only the selected track tag value ha been changed
