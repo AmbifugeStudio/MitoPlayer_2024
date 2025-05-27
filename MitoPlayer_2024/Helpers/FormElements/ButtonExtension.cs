@@ -9,6 +9,7 @@ namespace MitoPlayer_2024.Helpers
 {
     public  class TagValueButton : Button
     {
+        public int TagId { get; set; }
         public String TagName { get; set; }
         public String TagValueName { get; set; }
         public int TagValueId { get; set; }

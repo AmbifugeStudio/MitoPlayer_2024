@@ -262,7 +262,7 @@ namespace MitoPlayer_2024.Presenters
             {
                 BindingSource = this.playlistListBindingSource,
                 ColumnVisibilityArray = this.playlistListColumnVisibilityArray,
-                CurrentPlaylistId = this.currentPlaylistId
+                CurrentObjectId = this.currentPlaylistId
             };
 
             if(this.currentPlaylistId > -1)
@@ -321,7 +321,7 @@ namespace MitoPlayer_2024.Presenters
                     this.filteredTrackListTable.Columns.Add(tpList[i].Name, Type.GetType(tpList[i].Type));
                 }
 
-                this.trackColumnVisibilityArray = tpList.Select(x => x.IsEnabled).ToArray();
+                this.trackColumnVisibilityArray = tpList.Select(x =>  x.IsEnabled).ToArray();
             }
         }
         private void InitializeTrackListRows(DataTable tracklistTable, List<Model.Track> trackList)
@@ -1004,6 +1004,7 @@ namespace MitoPlayer_2024.Presenters
                 targetIndex -= rowsToMove.Count;
             }
 
+            rowsToMove.Reverse();
             // Insert the rows at the target index
             foreach (DataRow row in rowsToMove)
             {

@@ -14,6 +14,7 @@ namespace MitoPlayer_2024.Models
         public bool HasMultipleValues { get; set; }
         public bool IsIntegrated { get; set; }
         public int OrderInList { get; set; }
+        public int Percent { get; set; }
         public int ProfileId { get; set; }
 
         public Tag(){

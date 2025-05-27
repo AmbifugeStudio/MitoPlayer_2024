@@ -12,7 +12,7 @@ namespace MitoPlayer_2024.Helpers
         public BindingSource BindingSource {  get; set; }
         public bool[] ColumnVisibilityArray {  get; set; }
         public int[] ColumnDisplayIndexArray {  get; set; }
-        public int CurrentPlaylistId {  get; set; }
+        public int CurrentObjectId {  get; set; }
         public int CurrentTrackIdInPlaylist {  get; set; }
         public String CurrentPlaylistName {  get; set; }
 

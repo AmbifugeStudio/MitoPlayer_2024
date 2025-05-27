@@ -14,69 +14,60 @@ using System.Windows.Forms;
 
 namespace MitoPlayer_2024.Presenters
 {
-    public class RulesPresenter
+    public class RulePresenter
     {
-        private IRulesView rulesView { get; set; }
+        private IRuleView ruleView { get; set; }
         private ITagDao tagDao { get; set; }
         private ITrackDao trackDao { get; set; }
         private ISettingDao settingDao { get; set; }
 
-        private bool isTagListInitializing = true;
         private bool isRuleListInitializing = true;
-
-        
         private BindingSource ruleListBindingSource { get; set; }
-        
         private DataTable ruleListTable { get; set; }
-        
-        private TagValue currentRule { get; set; }
         public int CloseWitOk { get; private set; }
         public int CloseWitCancel { get; }
 
-        public RulesPresenter(IRulesView ruleView, ITagDao tagDao, ITrackDao trackDao, ISettingDao settingDao)
+        public RulePresenter(IRuleView ruleView, ITagDao tagDao, ITrackDao trackDao, ISettingDao settingDao)
         {
-            rulesView = ruleView;
+            this.ruleView = ruleView;
             this.tagDao = tagDao;
             this.trackDao = trackDao;
             this.settingDao = settingDao;
 
-            rulesView.AddTag += AddTag;
-            rulesView.RemoveTag += RemoveTag;
+            this.ruleView.CreateRule += CreateRule;
+            this.ruleView.EditRule += RuleView_EditRule; ;
+            this.ruleView.DeleteRule += RuleView_DeleteRule; ;
 
-            rulesView.CreateRule += CreateRule;
-            rulesView.EditRule += EditRule;
-            rulesView.RemoveRule += RemoveRule;
-            rulesView.SetCurrentTagId += SetCurrentTagId;
-            rulesView.SetCurrentRuleId += SetCurrentRuleId;
+            this.ruleView.SetTagEvent += RuleView_SetTagEvent; ;
+            this.ruleView.SetTagPercentEvent += RuleView_SetTagPercentEvent; ;
 
-            rulesView.CloseWithOk += CloseWitOk;
-            rulesView.CloseWithCancel += CloseWitCancel;
+            this.ruleView.CloseWithOk += CloseWithOk;
+            this.ruleView.CloseWithCancel += CloseWithCancel;
         }
 
         public void Initialize()
         {
-            isTagListInitializing = true;
+
             isRuleListInitializing = true;
 
             try
             {
                 this.InitializeTagsAndTagValues();
 
-                this.InitializeTagListColumns();
-                this.InitializeTagListRows();
-                this.InitializeTagList();
-
-                this.InitializeRuleListColumns();
+               /* this.InitializeRuleListColumns();
                 this.InitializeRuleListRows();
-                this.InitializeRuleList();
+                this.InitializeRuleList();*/
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
-            isTagListInitializing = false;
             isRuleListInitializing = false;
+        }
+        public void ReloadData()
+        {
+
         }
 
         #region INITALIZE - TAGS AND TAGVALUES
@@ -108,12 +99,13 @@ namespace MitoPlayer_2024.Presenters
                     }
                 }
             }
-            this.rulesView.InitializeTagsAndTagValues(this.tagList, this.tagValueDictionary);
+            this.ruleView.InitializeTagsAndTagValues(this.tagList, this.tagValueDictionary);
+            this.ruleView.InitializeTagPanel(this.tagList);
         }
         #endregion
 
         #region INITIALIZE - TAGLIST
-        private BindingSource tagListBindingSource { get; set; }
+      /*  private BindingSource tagListBindingSource { get; set; }
         private DataTable tagListTable { get; set; }
         private bool[] tagListColumnVisibilityArray { get; set; }
         private Tag currentTag { get; set; }
@@ -147,47 +139,41 @@ namespace MitoPlayer_2024.Presenters
 
             this.rulesView.ReloadTagListBindingSource(this.currentTag);
         }
+        */
         #endregion
 
-        private void AddTag(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-        private void RemoveTag(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-
-        private void EditRule(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-        private void RemoveRule(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-       
 
         private void CreateRule(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+
+        }
+        private void RuleView_EditRule(object sender, Helpers.Messenger e)
+        {
+
+        }
+        private void RuleView_DeleteRule(object sender, Helpers.Messenger e)
+        {
+
+        }
+        private void RuleView_SetTagPercentEvent(object sender, Helpers.Messenger e)
+        {
+
         }
 
-        
-
-        
-
-        private void CloseWitOk(object sender, EventArgs e)
+        private void RuleView_SetTagEvent(object sender, Helpers.Messenger e)
         {
-            ((RuleView)this._view).DialogResult = DialogResult.OK;
-            ((RuleView)this._view).Close();
+
         }
-        private void CloseWitCancel(object sender, EventArgs e)
+
+        private void CloseWithOk(object sender, EventArgs e)
         {
-            ((RuleView)this._view).DialogResult = DialogResult.Cancel;
-            ((RuleView)this._view).Close();
+            ((RuleView)this.ruleView).DialogResult = DialogResult.OK;
+            ((RuleView)this.ruleView).Close();
+        }
+        private void CloseWithCancel(object sender, EventArgs e)
+        {
+            ((RuleView)this.ruleView).DialogResult = DialogResult.Cancel;
+            ((RuleView)this.ruleView).Close();
         }
     }
 }

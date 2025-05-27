@@ -32,8 +32,9 @@ namespace MitoPlayer_2024.Presenters
         private IProfileEditorView profileEditorView { get; set; }
         private IPlaylistView playlistView { get; set; }
         private ITagValueView tagValueView { get; set; }
+        private IRuleView ruleView { get; set; }
         private ISelectorView selectorView { get; set; }
-        private IRuleEditorView ruleEditorView { get; set; }
+       
         private ITrackEditorView trackEditorView { get; set; }
         private ITemplateEditorView templateEditorView { get; set; }
         private IHarmonizerView harmonizerView { get; set; }
@@ -44,7 +45,7 @@ namespace MitoPlayer_2024.Presenters
         private PlaylistPresenter playlistPresenter { get; set; }
         private TagValuePresenter tagValueEditorPresenter { get; set; }
         private SelectorPresenter selectorPresenter { get; set; }
-        private RuleEditorPresenter ruleEditorPresenter { get; set; }
+        private RulePresenter ruleEditorPresenter { get; set; }
         private TrackEditorPresenter trackEditorPresenter { get; set; }
         private TemplateEditorPresenter templateEditorPresenter { get; set; }
         private HarmonizerPresenter harmonizerPresenter { get; set; }
@@ -62,8 +63,8 @@ namespace MitoPlayer_2024.Presenters
             this.mainView.ShowProfileEditorView += ShowProfileEditorView;
             this.mainView.ShowPlaylistView += ShowPlaylistView;
             this.mainView.ShowTagValueEditorView += ShowTagValueEditorView;
-            this.mainView.ShowSelectorView += ShowSelectorView;
             this.mainView.ShowRuleEditorView += ShowRuleEditorView;
+            this.mainView.ShowSelectorView += ShowSelectorView;
             this.mainView.ShowTrackEditorView += ShowTrackEditorView;
             this.mainView.ShowTemplateEditorView += ShowTemplateEditorView;
             this.mainView.ShowHarmonizerView += ShowHarmonizerView;
@@ -215,6 +216,9 @@ namespace MitoPlayer_2024.Presenters
             this.tagValueView = TagValueView.GetInstance((MainView)this.mainView);
             this.tagValueEditorPresenter = new TagValuePresenter(this.tagValueView, this.tagDao, this.trackDao, this.settingDao);
 
+            this.ruleView = RuleView.GetInstance((MainView)this.mainView);
+            this.ruleEditorPresenter = new RulePresenter(this.ruleView, this.tagDao, this.trackDao, this.settingDao);
+
             this.selectorView = SelectorView.GetInstance((MainView)this.mainView);
             this.selectorPresenter = new SelectorPresenter(this.selectorView, this.trackDao, this.tagDao, this.settingDao);
 
@@ -345,7 +349,7 @@ namespace MitoPlayer_2024.Presenters
                     TagId = tag.Id,
                     TagName = tag.Name,
                     Name = "Bpm",
-                    Color = Color.White,
+                    Color =  HexToColor("#FFFFFF"),
                     ProfileId = profileId
                 };
 
@@ -449,6 +453,7 @@ namespace MitoPlayer_2024.Presenters
         {
             ((PlaylistView)this.playlistView).Hide();
             ((TagValueView)this.tagValueView).Hide();
+            ((RuleView)this.ruleView).Hide();
             ((SelectorView)this.selectorView).Hide();
         }
         private void ShowPlaylistView(object sender, EventArgs e)
@@ -477,6 +482,18 @@ namespace MitoPlayer_2024.Presenters
             this.actualView = this.tagValueView;
             ((MainView)mainView).SetMenuStripAccessibility(this.actualView);
         }
+        private void ShowRuleEditorView(object sender, EventArgs e)
+        {
+            this.HideAllForm();
+
+            this.ruleEditorPresenter.Initialize();
+            ((RuleView)this.ruleView).Show();
+
+            this.ruleEditorPresenter.ReloadData();
+
+            this.actualView = this.ruleView;
+            ((MainView)mainView).SetMenuStripAccessibility(this.actualView);
+        }
         private void ShowSelectorView(object sender, EventArgs e)
         {
             this.HideAllForm();
@@ -491,12 +508,7 @@ namespace MitoPlayer_2024.Presenters
         {
 
         }
-        private void ShowRuleEditorView(object sender, EventArgs e)
-        {
-            this.actualView = RuleEditorView.GetInstance((MainView)mainView);
-            ((MainView)mainView).SetMenuStripAccessibility(this.actualView);
-            this.ruleEditorPresenter = new RuleEditorPresenter((IRuleEditorView)this.actualView, this.trackDao, this.settingDao);
-        }
+
         private void ShowTemplateEditorView(object sender, EventArgs e)
         {
 
@@ -687,7 +699,7 @@ namespace MitoPlayer_2024.Presenters
             if (this.actualView != null && this.actualView.GetType() == typeof(PlaylistView))
                 ((PlaylistView)this.actualView).CallPlayTrackEvent();
             else if (this.actualView != null && this.actualView.GetType() == typeof(SelectorView))
-                ((SelectorView)this.actualView).CallPlayTrackEvent(TableSourceForMediaPlayer.MainButton);
+                ((SelectorView)this.actualView).CallPlayTrackEvent(TableSourceForMediaPlayer.MainButton, -1);
         }
         private void PauseTrack(object sender, EventArgs e)
         {

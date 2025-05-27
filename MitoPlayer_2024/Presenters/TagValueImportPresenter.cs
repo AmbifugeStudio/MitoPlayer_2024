@@ -204,10 +204,14 @@ namespace MitoPlayer_2024.Presenters
         }
         private void SaveScript(string script)
         {
-            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TagValueScript.txt");
-            File.WriteAllText(filePath, script);
+           // string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TagValueScript.txt");
 
-            string savedScript = File.ReadAllText(filePath);
+            string projectDirectory = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.Parent.Parent.FullName;
+            string resourcesPath = Path.Combine(projectDirectory, "Resources", "TagValueScript.txt");
+
+            File.WriteAllText(resourcesPath, script);
+
+            string savedScript = File.ReadAllText(resourcesPath);
             if (script.Equals(savedScript))
             {
                 MessageBox.Show($"Script saved successfuly!", "Siker", MessageBoxButtons.OK, MessageBoxIcon.Information);

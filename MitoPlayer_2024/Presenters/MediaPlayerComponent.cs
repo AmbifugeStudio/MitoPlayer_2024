@@ -159,6 +159,7 @@ namespace MitoPlayer_2024.Presenters
                 {
                     if (this.selectedRowIndex != -1)
                     {
+
                         this.CurrentTrackIdInPlaylist = Convert.ToInt32(this.workingTable.Rows[this.selectedRowIndex]["TrackIdInPlaylist"]);
 
                         String path = this.workingTable.Rows[this.selectedRowIndex]["Path"].ToString();

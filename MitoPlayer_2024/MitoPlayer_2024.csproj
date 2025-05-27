@@ -221,13 +221,14 @@
     <Compile Include="IViews\ILiveStreamAnimationSettingView.cs" />
     <Compile Include="IViews\ILiveStreamAnimationView.cs" />
     <Compile Include="IViews\IPlaylistCreatorView.cs" />
-    <Compile Include="IViews\IRulesView.cs" />
+    <Compile Include="IViews\IRuleView.cs" />
     <Compile Include="IViews\ISelectorView.cs" />
     <Compile Include="Models\Rule.cs" />
     <Compile Include="Presenters\LiveStreamAnimationPresenter.cs" />
     <Compile Include="Presenters\LiveStreamAnimationSettingPresenter.cs" />
     <Compile Include="Presenters\PlaylistCreatorPresenter.cs" />
     <Compile Include="Presenters\RulesEditorPresenter.cs" />
+    <Compile Include="Presenters\RulePresenter.cs" />
     <Compile Include="Presenters\SelectorPresenter.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -278,7 +279,6 @@
     <Compile Include="Presenters\ColumnVisibilityEditorPresenter.cs" />
     <Compile Include="Presenters\ProfileEditorPresenter.cs" />
     <Compile Include="Presenters\ProfilePresenter.cs" />
-    <Compile Include="Presenters\RuleEditorPresenter.cs" />
     <Compile Include="Presenters\TagValueEditorPresenter.cs" />
     <Compile Include="Presenters\TagEditorPresenter.cs" />
     <Compile Include="Presenters\TagValueImportPresenter.cs" />
@@ -364,6 +364,12 @@
     </Compile>
     <Compile Include="Views\LiveStreamAnimationSettingView.Designer.cs">
       <DependentUpon>LiveStreamAnimationSettingView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\RuleView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\RuleView.Designer.cs">
+      <DependentUpon>RuleView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\SelectorView.cs">
       <SubType>Form</SubType>
@@ -451,6 +457,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\LiveStreamAnimationSettingView.resx">
       <DependentUpon>LiveStreamAnimationSettingView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\RuleView.resx">
+      <DependentUpon>RuleView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\SelectorView.resx">
       <DependentUpon>SelectorView.cs</DependentUpon>
@@ -559,6 +568,7 @@
     <None Include="Resources\UpArrow_20_20.png" />
     <None Include="Resources\TagValueScript.txt" />
     <None Include="Resources\DotRed_20_20.png" />
+    <None Include="Resources\TagValueScriptOriginal.txt" />
     <Content Include="Resources\TagValueScriptTutorial.txt" />
     <Content Include="Technical Documents\Roadmap.txt" />
     <Content Include="Technical Documents\Changelog.txt" />

@@ -2,6 +2,18 @@
 CHANGELOG
 ======================
 
+
+
+======================
+v0.16.1.34
+======================
+OK - FEATURE: selector - split container
+OK - FEATURE: selector - subtract button
+OK - REFACTOR: selector - load buttons
+OK - BUG: selector - filter fix
+OK - BUG: selector - player seletion fix
+OK - BUG: playlist drag and drop multiple tracks - reverse order
+OK - BUG: selector tracklist drag and drop multiple tracks - reverse order
 ======================
 v0.16.1.27
 ======================

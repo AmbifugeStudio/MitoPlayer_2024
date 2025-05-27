@@ -46,6 +46,8 @@ namespace MitoPlayer_2024.Model
         ResultOrError<PlaylistContent> GetPlaylistContentByTrackIdInPlaylist(int trackIdInPlaylist);
         ResultOrError UpdatePlaylistContent(PlaylistContent plc);
         ResultOrError DeletePlaylistContentByPlaylistId(int playlistId);
+        ResultOrError DeletePlaylistContentByPlaylistIdAndTrackInPlaylist(int playlistId, int trackIdInPlaylist);
+        ResultOrError DeletePlaylistContentByPlaylistIdAndTrackId(int playlistId, int trackId);
         ResultOrError DeleteAllPlaylistContent();
         ResultOrError ClearPlaylistContentTable();
         #endregion

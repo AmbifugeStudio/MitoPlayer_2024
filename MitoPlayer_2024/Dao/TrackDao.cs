@@ -1607,12 +1607,14 @@ namespace MitoPlayer_2024.Dao
         #region PLAYLISTCONTENT
         public ResultOrError<int> GetNextSmallestTrackIdInPlaylist()
         {
-            var result = new ResultOrError<int> { Value = 0 }; 
+            var result = new ResultOrError<int> { Value = 0 };
 
-            List<int> trackIds = null;
+            HashSet<int> usedIds = new HashSet<int>();
 
             try
             {
+                
+
                 using (var connection = new SqliteConnection(connectionString))
                 using (var command = connection.CreateCommand())
                 {
@@ -1625,28 +1627,24 @@ namespace MitoPlayer_2024.Dao
 
                     using (var reader = command.ExecuteReader())
                     {
-                        trackIds = new List<int>();
                         while (reader.Read())
                         {
-                            trackIds.Add(reader.ReadInt("TrackIdInPlaylist"));
+                            usedIds.Add(reader.ReadInt("TrackIdInPlaylist"));
                         }
                     }
                 }
 
-                if (trackIds == null || trackIds.Count == 0)
+                if (usedIds == null || usedIds.Count == 0)
                 {
                     return result;
                 }
 
-                for (int i = 0; i <= trackIds.Count - 1; i++)
+                int candidate = 0;
+                while (usedIds.Contains(candidate))
                 {
-                    if (i != trackIds[i])
-                    {
-                        return new ResultOrError<int> { Value = i }; 
-                    }
+                    candidate++;
                 }
-
-                result.Value = trackIds.Count;
+                result.Value = candidate;
             }
             catch (SqliteException ex)
             {
@@ -1841,6 +1839,74 @@ namespace MitoPlayer_2024.Dao
                                     AND ProfileId = @ProfileId";
 
                     command.Parameters.AddWithValue("@PlaylistId", playlistId);
+                    command.Parameters.AddWithValue("@ProfileId", this.profileId);
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                }
+            }
+            catch (SqliteException ex)
+            {
+                string errorMessage = $"PlaylistContent is not deleted. \n{ex.Message}";
+                result.AddError(errorMessage);
+                Logger.Error(errorMessage, ex);
+            }
+
+            return result;
+        }
+        public ResultOrError DeletePlaylistContentByPlaylistIdAndTrackInPlaylist(int playlistId, int trackIdInPlaylist)
+        {
+            var result = new ResultOrError();
+
+            try
+            {
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
+                {
+
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = @"DELETE FROM PlaylistContent 
+                                    WHERE PlaylistId = @PlaylistId 
+                                    AND TrackIdInPlaylist = @TrackIdInPlaylist
+                                    AND ProfileId = @ProfileId";
+
+                    command.Parameters.AddWithValue("@PlaylistId", playlistId);
+                    command.Parameters.AddWithValue("@TrackIdInPlaylist", trackIdInPlaylist);
+                    command.Parameters.AddWithValue("@ProfileId", this.profileId);
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                }
+            }
+            catch (SqliteException ex)
+            {
+                string errorMessage = $"PlaylistContent is not deleted. \n{ex.Message}";
+                result.AddError(errorMessage);
+                Logger.Error(errorMessage, ex);
+            }
+
+            return result;
+        }
+        public ResultOrError DeletePlaylistContentByPlaylistIdAndTrackId(int playlistId, int trackId)
+        {
+            var result = new ResultOrError();
+
+            try
+            {
+                using (var connection = new SqliteConnection(connectionString))
+                using (var command = connection.CreateCommand())
+                {
+
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = @"DELETE FROM PlaylistContent 
+                                    WHERE PlaylistId = @PlaylistId 
+                                    AND TrackId = @TrackId
+                                    AND ProfileId = @ProfileId";
+
+                    command.Parameters.AddWithValue("@PlaylistId", playlistId);
+                    command.Parameters.AddWithValue("@TrackId", trackId);
                     command.Parameters.AddWithValue("@ProfileId", this.profileId);
 
                     connection.Open();

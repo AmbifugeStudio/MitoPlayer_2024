@@ -36,11 +36,15 @@ namespace MitoPlayer_2024.IViews
         event EventHandler<Messenger> ChangePlaylistSource;
         event EventHandler<Messenger> ChangeBestFit;
         event EventHandler<Messenger> ChangeResultSize;
+        event EventHandler<Messenger> ChangeTrackMoveMode;
+        event EventHandler SubtractTracksFromPlaylist;
 
         //PLAYLIST
         event EventHandler<Messenger> CreatePlaylist;
         event EventHandler<Messenger> EditPlaylist;
         event EventHandler<Messenger> LoadPlaylistEvent;
+        event EventHandler<Messenger> LoadPlaylistIntoTracklistEvent;
+        event EventHandler<Messenger> LoadPlaylistIntoSelectorEvent;
         event EventHandler<Messenger> MovePlaylistEvent;
         event EventHandler<Messenger> DeletePlaylistEvent;
         event EventHandler<Messenger> ExportToM3UEvent;

@@ -113,6 +113,9 @@ namespace MitoPlayer_2024
             this.btnTagValues.BackColor = this.ButtonColor;
             this.btnTagValues.ForeColor = this.FontColor;
             this.btnTagValues.FlatAppearance.BorderColor = this.ButtonBorderColor;
+            this.btnRules.BackColor = this.ButtonColor;
+            this.btnRules.ForeColor = this.FontColor;
+            this.btnRules.FlatAppearance.BorderColor = this.ButtonBorderColor;
             this.btnSelector.BackColor = this.ButtonColor;
             this.btnSelector.ForeColor = this.FontColor;
             this.btnSelector.FlatAppearance.BorderColor = this.ButtonBorderColor;
@@ -153,8 +156,6 @@ namespace MitoPlayer_2024
             this.btnPlot.ForeColor = this.FontColor;
             this.btnPlot.FlatAppearance.BorderColor = this.ButtonBorderColor;
 
-
-
         }
 
 
@@ -177,6 +178,7 @@ namespace MitoPlayer_2024
         {
             this.btnPlaylist.FlatAppearance.BorderColor = CustomColor.ButtonBorderColor;
             this.btnTagValues.FlatAppearance.BorderColor = CustomColor.ButtonBorderColor;
+            this.btnRules.FlatAppearance.BorderColor = CustomColor.ButtonBorderColor;
             this.btnSelector.FlatAppearance.BorderColor = CustomColor.ButtonBorderColor;
 
             if (sender is Button)
@@ -195,6 +197,11 @@ namespace MitoPlayer_2024
             SetSelectedButtonBorder(sender);
             this.ShowTagValueEditorView?.Invoke(this, EventArgs.Empty);
         }
+        private void btnRules_Click(object sender, EventArgs e)
+        {
+            SetSelectedButtonBorder(sender);
+            this.ShowRuleEditorView?.Invoke(this, EventArgs.Empty);
+        }
         private void btnSelector_Click(object sender, EventArgs e)
         {
             SetSelectedButtonBorder(sender);
@@ -204,10 +211,7 @@ namespace MitoPlayer_2024
         {
 
         }
-        private void btnRules_Click(object sender, EventArgs e)
-        {
-            this.ShowRuleEditorView?.Invoke(this, EventArgs.Empty);
-        }
+        
         private void btnTemplates_Click(object sender, EventArgs e)
         {
 
@@ -723,9 +727,6 @@ namespace MitoPlayer_2024
             this.GetMediaPlayerProgressStatusEvent?.Invoke(this, EventArgs.Empty);
         }
 
-
-
-
         private DateTime? lastCurrentTime = null;
         private DateTime? lastCurrentTimeForPeak = null;
         private List<float> peakDecibelList = new List<float>();
@@ -865,6 +866,8 @@ namespace MitoPlayer_2024
         {
 
         }
+
+        
     }
 
 }

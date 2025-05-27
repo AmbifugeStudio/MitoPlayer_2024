@@ -562,7 +562,7 @@ namespace MitoPlayer_2024.Presenters
                 {
                     foreach (int trackId in trackIdList)
                     {
-                        if (!this.trackDao.IsTrackTagValueAlreadyExists(trackId, tag.Id))
+                        if (!this.trackDao.IsTrackTagValueAlreadyExists(trackId, tag.Id).Value)
                         {
                             TrackTagValue ttv = new TrackTagValue();
                             ttv.Id = this.settingDao.GetNextId(TableName.TrackTagValue.ToString());
@@ -607,7 +607,7 @@ namespace MitoPlayer_2024.Presenters
                     tv.TagId = tag.Id;
                     tv.TagName = tag.Name;
                     tv.Name = tag.Name;
-                    tv.Color = Color.White;
+                    tv.Color = HexToColor("#FFFFFF");
                     result = this.tagDao.CreateTagValue(tv);
                 }
             }

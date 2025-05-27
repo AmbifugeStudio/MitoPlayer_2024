@@ -249,15 +249,15 @@ namespace MitoPlayer_2024.Views
                 }
             }
 
-            if (model.CurrentPlaylistId != -1)
+            if (model.CurrentObjectId != -1)
             {
-                this.currentPlaylistId = model.CurrentPlaylistId;
+                this.currentPlaylistId = model.CurrentObjectId;
                 this.lblActualPlaylistName.Text = "[" + model.CurrentPlaylistName + "]";
             }
 
             this.playlistListBindingSource.ResetBindings(false);
 
-            this.UpdatePlaylistListColor(model.CurrentPlaylistId);
+            this.UpdatePlaylistListColor(model.CurrentObjectId);
         }
         private void dgvPlaylistList_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
         {
@@ -265,7 +265,7 @@ namespace MitoPlayer_2024.Views
         }
         public void ReloadPlaylistList(DataTableModel model)
         {
-            this.UpdatePlaylistListColor(model.CurrentPlaylistId);
+            this.UpdatePlaylistListColor(model.CurrentObjectId);
         }
         public void UpdatePlaylistListColor(int currentPlaylistId = -1)
         {

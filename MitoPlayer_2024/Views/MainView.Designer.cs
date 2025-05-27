@@ -74,6 +74,7 @@ namespace MitoPlayer_2024
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStripAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.pnlMainMenu = new System.Windows.Forms.Panel();
+            this.btnRules = new System.Windows.Forms.Button();
             this.lblPeak = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.pcbMasterPeakRightBackground = new System.Windows.Forms.PictureBox();
@@ -438,6 +439,8 @@ namespace MitoPlayer_2024
             // 
             // pnlMainMenu
             // 
+            this.pnlMainMenu.Controls.Add(this.pnlMarkerBackground);
+            this.pnlMainMenu.Controls.Add(this.btnRules);
             this.pnlMainMenu.Controls.Add(this.lblPeak);
             this.pnlMainMenu.Controls.Add(this.label2);
             this.pnlMainMenu.Controls.Add(this.pcbMasterPeakRightBackground);
@@ -455,10 +458,21 @@ namespace MitoPlayer_2024
             this.pnlMainMenu.Size = new System.Drawing.Size(91, 1017);
             this.pnlMainMenu.TabIndex = 2;
             // 
+            // btnRules
+            // 
+            this.btnRules.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnRules.Location = new System.Drawing.Point(0, 124);
+            this.btnRules.Name = "btnRules";
+            this.btnRules.Size = new System.Drawing.Size(91, 62);
+            this.btnRules.TabIndex = 50;
+            this.btnRules.Text = "Rules";
+            this.btnRules.UseVisualStyleBackColor = false;
+            this.btnRules.Click += new System.EventHandler(this.btnRules_Click);
+            // 
             // lblPeak
             // 
             this.lblPeak.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.lblPeak.Location = new System.Drawing.Point(3, 374);
+            this.lblPeak.Location = new System.Drawing.Point(3, 251);
             this.lblPeak.Name = "lblPeak";
             this.lblPeak.Size = new System.Drawing.Size(85, 37);
             this.lblPeak.TabIndex = 9;
@@ -468,7 +482,7 @@ namespace MitoPlayer_2024
             // 
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(42, 995);
+            this.label2.Location = new System.Drawing.Point(42, 872);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(15, 13);
             this.label2.TabIndex = 49;
@@ -480,7 +494,7 @@ namespace MitoPlayer_2024
             | System.Windows.Forms.AnchorStyles.Left)));
             this.pcbMasterPeakRightBackground.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.pcbMasterPeakRightBackground.Image = global::MitoPlayer_2024.Properties.Resources.MasterPeakBackground;
-            this.pcbMasterPeakRightBackground.Location = new System.Drawing.Point(37, 414);
+            this.pcbMasterPeakRightBackground.Location = new System.Drawing.Point(37, 291);
             this.pcbMasterPeakRightBackground.Name = "pcbMasterPeakRightBackground";
             this.pcbMasterPeakRightBackground.Size = new System.Drawing.Size(25, 573);
             this.pcbMasterPeakRightBackground.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -491,7 +505,7 @@ namespace MitoPlayer_2024
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(11, 995);
+            this.label1.Location = new System.Drawing.Point(11, 872);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(13, 13);
             this.label1.TabIndex = 48;
@@ -503,7 +517,7 @@ namespace MitoPlayer_2024
             | System.Windows.Forms.AnchorStyles.Left)));
             this.pcbMasterPeakRightColoured.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.pcbMasterPeakRightColoured.Image = global::MitoPlayer_2024.Properties.Resources.MasterPeakColoured1;
-            this.pcbMasterPeakRightColoured.Location = new System.Drawing.Point(37, 414);
+            this.pcbMasterPeakRightColoured.Location = new System.Drawing.Point(37, 291);
             this.pcbMasterPeakRightColoured.Name = "pcbMasterPeakRightColoured";
             this.pcbMasterPeakRightColoured.Size = new System.Drawing.Size(25, 573);
             this.pcbMasterPeakRightColoured.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -516,7 +530,7 @@ namespace MitoPlayer_2024
             | System.Windows.Forms.AnchorStyles.Left)));
             this.pcbMasterPeakLeftBackground.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.pcbMasterPeakLeftBackground.Image = global::MitoPlayer_2024.Properties.Resources.MasterPeakBackground;
-            this.pcbMasterPeakLeftBackground.Location = new System.Drawing.Point(6, 414);
+            this.pcbMasterPeakLeftBackground.Location = new System.Drawing.Point(6, 291);
             this.pcbMasterPeakLeftBackground.Name = "pcbMasterPeakLeftBackground";
             this.pcbMasterPeakLeftBackground.Size = new System.Drawing.Size(25, 573);
             this.pcbMasterPeakLeftBackground.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -529,7 +543,7 @@ namespace MitoPlayer_2024
             | System.Windows.Forms.AnchorStyles.Left)));
             this.pcbMasterPeakLeftColoured.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.pcbMasterPeakLeftColoured.Image = global::MitoPlayer_2024.Properties.Resources.MasterPeakColoured1;
-            this.pcbMasterPeakLeftColoured.Location = new System.Drawing.Point(6, 414);
+            this.pcbMasterPeakLeftColoured.Location = new System.Drawing.Point(6, 291);
             this.pcbMasterPeakLeftColoured.Name = "pcbMasterPeakLeftColoured";
             this.pcbMasterPeakLeftColoured.Size = new System.Drawing.Size(25, 573);
             this.pcbMasterPeakLeftColoured.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -539,7 +553,7 @@ namespace MitoPlayer_2024
             // btnSelector
             // 
             this.btnSelector.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSelector.Location = new System.Drawing.Point(0, 124);
+            this.btnSelector.Location = new System.Drawing.Point(0, 186);
             this.btnSelector.Name = "btnSelector";
             this.btnSelector.Size = new System.Drawing.Size(91, 62);
             this.btnSelector.TabIndex = 0;
@@ -811,7 +825,7 @@ namespace MitoPlayer_2024
             | System.Windows.Forms.AnchorStyles.Left)));
             this.pnlMarkerBackground.Controls.Add(this.pcbMarkerGrey);
             this.pnlMarkerBackground.Controls.Add(this.pcbMarkerRed);
-            this.pnlMarkerBackground.Location = new System.Drawing.Point(65, 438);
+            this.pnlMarkerBackground.Location = new System.Drawing.Point(65, 291);
             this.pnlMarkerBackground.Name = "pnlMarkerBackground";
             this.pnlMarkerBackground.Size = new System.Drawing.Size(20, 573);
             this.pnlMarkerBackground.TabIndex = 11;
@@ -866,7 +880,6 @@ namespace MitoPlayer_2024
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1904, 1041);
-            this.Controls.Add(this.pnlMarkerBackground);
             this.Controls.Add(this.pnlMediaPlayer);
             this.Controls.Add(this.pnlMainMenu);
             this.Controls.Add(this.strMenu);
@@ -976,6 +989,7 @@ namespace MitoPlayer_2024
         private System.Windows.Forms.CheckBox chbPreview;
         private System.Windows.Forms.Button btnPlot;
         private System.Windows.Forms.Panel pnlFrequency;
+        private System.Windows.Forms.Button btnRules;
     }
 }
 
