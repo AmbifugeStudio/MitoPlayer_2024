@@ -52,11 +52,8 @@
             this.lblMessage = new System.Windows.Forms.Label();
             this.btnSetTracklistToActive = new System.Windows.Forms.Button();
             this.btnSetSelectorToActive = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
             this.chbBestFit = new System.Windows.Forms.CheckBox();
             this.chbMove = new System.Windows.Forms.CheckBox();
-            this.rdbPlaylist = new System.Windows.Forms.RadioButton();
-            this.rdbDatabase = new System.Windows.Forms.RadioButton();
             this.cbbResultSize = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.lblSelectorTrackSumLength = new System.Windows.Forms.Label();
@@ -65,6 +62,9 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.dgvTrackList = new MitoPlayer_2024.Helpers.CustomDataGridView();
             this.dgvSelectorTrackList = new MitoPlayer_2024.Helpers.CustomDataGridView();
+            this.lblTracklistName = new System.Windows.Forms.Label();
+            this.lblSelectorName = new System.Windows.Forms.Label();
+            this.cbbSource = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPlaylistList)).BeginInit();
             this.pnlTagComponent.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
@@ -175,9 +175,9 @@
             // btnFilter
             // 
             this.btnFilter.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnFilter.Location = new System.Drawing.Point(196, 6);
+            this.btnFilter.Location = new System.Drawing.Point(173, 6);
             this.btnFilter.Name = "btnFilter";
-            this.btnFilter.Size = new System.Drawing.Size(66, 23);
+            this.btnFilter.Size = new System.Drawing.Size(46, 23);
             this.btnFilter.TabIndex = 46;
             this.btnFilter.Text = "Filter";
             this.btnFilter.UseVisualStyleBackColor = true;
@@ -197,11 +197,11 @@
             // 
             this.btnClearTagValueFilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnClearTagValueFilter.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnClearTagValueFilter.Location = new System.Drawing.Point(196, 575);
+            this.btnClearTagValueFilter.Location = new System.Drawing.Point(225, 6);
             this.btnClearTagValueFilter.Name = "btnClearTagValueFilter";
-            this.btnClearTagValueFilter.Size = new System.Drawing.Size(75, 23);
+            this.btnClearTagValueFilter.Size = new System.Drawing.Size(46, 23);
             this.btnClearTagValueFilter.TabIndex = 45;
-            this.btnClearTagValueFilter.Text = "Clear Filter";
+            this.btnClearTagValueFilter.Text = "Clear";
             this.btnClearTagValueFilter.UseVisualStyleBackColor = true;
             this.btnClearTagValueFilter.Click += new System.EventHandler(this.btnClearTagValueFilter_Click);
             // 
@@ -211,7 +211,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtbFilter.Location = new System.Drawing.Point(42, 8);
             this.txtbFilter.Name = "txtbFilter";
-            this.txtbFilter.Size = new System.Drawing.Size(148, 20);
+            this.txtbFilter.Size = new System.Drawing.Size(125, 20);
             this.txtbFilter.TabIndex = 42;
             this.txtbFilter.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtbFilter_KeyUp);
             // 
@@ -306,19 +306,10 @@
             this.btnSetSelectorToActive.UseVisualStyleBackColor = true;
             this.btnSetSelectorToActive.Click += new System.EventHandler(this.btnSetSelectorToActive_Click);
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(84, 8);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(44, 13);
-            this.label1.TabIndex = 75;
-            this.label1.Text = "Source:";
-            // 
             // chbBestFit
             // 
             this.chbBestFit.AutoSize = true;
-            this.chbBestFit.Location = new System.Drawing.Point(399, 9);
+            this.chbBestFit.Location = new System.Drawing.Point(340, 6);
             this.chbBestFit.Name = "chbBestFit";
             this.chbBestFit.Size = new System.Drawing.Size(61, 17);
             this.chbBestFit.TabIndex = 76;
@@ -329,37 +320,13 @@
             // chbMove
             // 
             this.chbMove.AutoSize = true;
-            this.chbMove.Location = new System.Drawing.Point(466, 9);
+            this.chbMove.Location = new System.Drawing.Point(407, 6);
             this.chbMove.Name = "chbMove";
             this.chbMove.Size = new System.Drawing.Size(53, 17);
             this.chbMove.TabIndex = 76;
             this.chbMove.Text = "Move";
             this.chbMove.UseVisualStyleBackColor = true;
             this.chbMove.CheckedChanged += new System.EventHandler(this.chbMove_CheckedChanged);
-            // 
-            // rdbPlaylist
-            // 
-            this.rdbPlaylist.AutoSize = true;
-            this.rdbPlaylist.Checked = true;
-            this.rdbPlaylist.Location = new System.Drawing.Point(134, 7);
-            this.rdbPlaylist.Name = "rdbPlaylist";
-            this.rdbPlaylist.Size = new System.Drawing.Size(57, 17);
-            this.rdbPlaylist.TabIndex = 77;
-            this.rdbPlaylist.TabStop = true;
-            this.rdbPlaylist.Text = "Playlist";
-            this.rdbPlaylist.UseVisualStyleBackColor = true;
-            this.rdbPlaylist.CheckedChanged += new System.EventHandler(this.rdbPlaylist_CheckedChanged);
-            // 
-            // rdbDatabase
-            // 
-            this.rdbDatabase.AutoSize = true;
-            this.rdbDatabase.Location = new System.Drawing.Point(197, 7);
-            this.rdbDatabase.Name = "rdbDatabase";
-            this.rdbDatabase.Size = new System.Drawing.Size(71, 17);
-            this.rdbDatabase.TabIndex = 77;
-            this.rdbDatabase.Text = "Database";
-            this.rdbDatabase.UseVisualStyleBackColor = true;
-            this.rdbDatabase.CheckedChanged += new System.EventHandler(this.rdbDatabase_CheckedChanged);
             // 
             // cbbResultSize
             // 
@@ -374,7 +341,7 @@
             "750",
             "1000",
             "1500"});
-            this.cbbResultSize.Location = new System.Drawing.Point(343, 7);
+            this.cbbResultSize.Location = new System.Drawing.Point(502, 4);
             this.cbbResultSize.Name = "cbbResultSize";
             this.cbbResultSize.Size = new System.Drawing.Size(50, 21);
             this.cbbResultSize.TabIndex = 78;
@@ -384,11 +351,11 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(274, 9);
+            this.label2.Location = new System.Drawing.Point(466, 7);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(63, 13);
+            this.label2.Size = new System.Drawing.Size(30, 13);
             this.label2.TabIndex = 79;
-            this.label2.Text = "Result Size:";
+            this.label2.Text = "Size:";
             // 
             // lblSelectorTrackSumLength
             // 
@@ -413,7 +380,7 @@
             // btnSubtract
             // 
             this.btnSubtract.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSubtract.Location = new System.Drawing.Point(525, 5);
+            this.btnSubtract.Location = new System.Drawing.Point(558, 2);
             this.btnSubtract.Name = "btnSubtract";
             this.btnSubtract.Size = new System.Drawing.Size(75, 23);
             this.btnSubtract.TabIndex = 82;
@@ -436,14 +403,13 @@
             // 
             // splitContainer1.Panel2
             // 
+            this.splitContainer1.Panel2.Controls.Add(this.cbbSource);
+            this.splitContainer1.Panel2.Controls.Add(this.lblSelectorName);
             this.splitContainer1.Panel2.Controls.Add(this.dgvSelectorTrackList);
-            this.splitContainer1.Panel2.Controls.Add(this.label1);
             this.splitContainer1.Panel2.Controls.Add(this.lblSelectorTrackSumLength);
             this.splitContainer1.Panel2.Controls.Add(this.lblSelectorTrackCount);
             this.splitContainer1.Panel2.Controls.Add(this.btnSubtract);
-            this.splitContainer1.Panel2.Controls.Add(this.rdbPlaylist);
             this.splitContainer1.Panel2.Controls.Add(this.btnSetSelectorToActive);
-            this.splitContainer1.Panel2.Controls.Add(this.rdbDatabase);
             this.splitContainer1.Panel2.Controls.Add(this.label2);
             this.splitContainer1.Panel2.Controls.Add(this.cbbResultSize);
             this.splitContainer1.Panel2.Controls.Add(this.chbMove);
@@ -524,11 +490,41 @@
             this.dgvSelectorTrackList.MouseMove += new System.Windows.Forms.MouseEventHandler(this.dgvSelectorTrackList_MouseMove);
             this.dgvSelectorTrackList.MouseUp += new System.Windows.Forms.MouseEventHandler(this.dgvSelectorTrackList_MouseUp);
             // 
+            // lblTracklistName
+            // 
+            this.lblTracklistName.Location = new System.Drawing.Point(320, 12);
+            this.lblTracklistName.Name = "lblTracklistName";
+            this.lblTracklistName.Size = new System.Drawing.Size(135, 23);
+            this.lblTracklistName.TabIndex = 84;
+            this.lblTracklistName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lblSelectorName
+            // 
+            this.lblSelectorName.Location = new System.Drawing.Point(86, 3);
+            this.lblSelectorName.Name = "lblSelectorName";
+            this.lblSelectorName.Size = new System.Drawing.Size(130, 23);
+            this.lblSelectorName.TabIndex = 85;
+            this.lblSelectorName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // cbbSource
+            // 
+            this.cbbSource.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbbSource.FormattingEnabled = true;
+            this.cbbSource.Items.AddRange(new object[] {
+            "Source: Playlist",
+            "Source: Database"});
+            this.cbbSource.Location = new System.Drawing.Point(222, 4);
+            this.cbbSource.Name = "cbbSource";
+            this.cbbSource.Size = new System.Drawing.Size(112, 21);
+            this.cbbSource.TabIndex = 86;
+            this.cbbSource.SelectedIndexChanged += new System.EventHandler(this.cbbSource_SelectedIndexChanged);
+            // 
             // SelectorView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1264, 681);
+            this.Controls.Add(this.lblTracklistName);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.btnSetTracklistToActive);
             this.Controls.Add(this.btnSave);
@@ -583,16 +579,16 @@
         private System.Windows.Forms.Label lblMessage;
         private System.Windows.Forms.Button btnSetTracklistToActive;
         private System.Windows.Forms.Button btnSetSelectorToActive;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.CheckBox chbBestFit;
         private System.Windows.Forms.CheckBox chbMove;
-        private System.Windows.Forms.RadioButton rdbPlaylist;
-        private System.Windows.Forms.RadioButton rdbDatabase;
         private System.Windows.Forms.ComboBox cbbResultSize;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label lblSelectorTrackSumLength;
         private System.Windows.Forms.Label lblSelectorTrackCount;
         private System.Windows.Forms.Button btnSubtract;
         private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.Label lblTracklistName;
+        private System.Windows.Forms.Label lblSelectorName;
+        private System.Windows.Forms.ComboBox cbbSource;
     }
 }

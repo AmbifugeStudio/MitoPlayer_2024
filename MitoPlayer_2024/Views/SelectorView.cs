@@ -203,7 +203,9 @@ namespace MitoPlayer_2024.Views
             if (model.CurrentObjectId != -1)
             {
                 this.currentPlaylistId = model.CurrentObjectId;
-                this.lblActualPlaylistName.Text = "[" + model.CurrentPlaylistName + "]";
+
+                this.lblTracklistName.Text = "[" + model.CurrentTracklistName + "]";
+                this.lblSelectorName.Text = "[" + model.CurrentSelectorName + "]";
             }
 
             this.playlistListBindingSource.ResetBindings(false);
@@ -1038,6 +1040,7 @@ namespace MitoPlayer_2024.Views
         {
             if (this.dgvPlaylistList.SelectedRows.Count > 0)
             {
+                this.lblTracklistName.Text = this.dgvPlaylistList.SelectedRows[0].Cells["Name"].Value.ToString();
                 this.LoadPlaylistIntoTracklistEvent?.Invoke(this, new Messenger() { IntegerField1 = Convert.ToInt32(this.dgvPlaylistList.SelectedRows[0].Cells["Id"].Value) });
             }
 
@@ -1051,6 +1054,7 @@ namespace MitoPlayer_2024.Views
         {
             if (this.dgvPlaylistList.SelectedRows.Count > 0)
             {
+                this.lblSelectorName.Text = this.dgvPlaylistList.SelectedRows[0].Cells["Name"].Value.ToString();
                 this.LoadPlaylistIntoSelectorEvent?.Invoke(this, new Messenger() { IntegerField1 = Convert.ToInt32(this.dgvPlaylistList.SelectedRows[0].Cells["Id"].Value) });
             }
 
@@ -2940,38 +2944,8 @@ namespace MitoPlayer_2024.Views
             });
         }
 
-        private void rdbPlaylist_CheckedChanged(object sender, EventArgs e)
-        {
-            if (this.rdbPlaylist.Checked)
-            {
-                this.chbMove.Enabled = true;
-                this.cbbResultSize.Enabled = false;
-                this.rdbDatabase.Checked = false;
-                this.btnSubtract.Enabled = true;
-                this.ChangePlaylistSource?.Invoke(this, new Messenger()
-                {
-                    BooleanField1 = true
-                });
-            }
-        }
-        private void rdbDatabase_CheckedChanged(object sender, EventArgs e)
-        {
-            if (this.rdbDatabase.Checked)
-            {
-                this.chbMove.Enabled = false;
-                if (this.chbMove.Checked)
-                {
-                    this.chbMove.Checked = false;
-                }
-                this.cbbResultSize.Enabled = true;
-                this.rdbPlaylist.Checked = false;
-                this.btnSubtract.Enabled = false;
-                this.ChangePlaylistSource?.Invoke(this, new Messenger()
-                {
-                    BooleanField1 = false
-                });
-            }
-        }
+
+
 
         private void chbBestFit_CheckedChanged(object sender, EventArgs e)
         {
@@ -3002,6 +2976,34 @@ namespace MitoPlayer_2024.Views
         private void btnSubtract_Click(object sender, EventArgs e)
         {
             this.SubtractTracksFromPlaylist?.Invoke(this, new EventArgs());
+        }
+
+        private void cbbSource_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (this.cbbSource.SelectedItem.Equals("Source: Playlist"))
+            {
+                this.chbMove.Enabled = true;
+                this.cbbResultSize.Enabled = false;
+                this.btnSubtract.Enabled = true;
+                this.ChangePlaylistSource?.Invoke(this, new Messenger()
+                {
+                    BooleanField1 = true
+                });
+            }
+            else
+            {
+                this.chbMove.Enabled = false;
+                if (this.chbMove.Checked)
+                {
+                    this.chbMove.Checked = false;
+                }
+                this.cbbResultSize.Enabled = true;
+                this.btnSubtract.Enabled = false;
+                this.ChangePlaylistSource?.Invoke(this, new Messenger()
+                {
+                    BooleanField1 = false
+                });
+            }
         }
     }
 }

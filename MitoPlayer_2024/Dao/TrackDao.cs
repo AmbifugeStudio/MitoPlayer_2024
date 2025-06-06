@@ -923,9 +923,9 @@ namespace MitoPlayer_2024.Dao
             {
                 var escaped = textFilter.Replace("'", "''");
                 textFilterQuery = $@"(
-                    UPPER(tra2.Artist) LIKE UPPER('%{escaped}%')
-                    OR UPPER(tra2.Title) LIKE UPPER('%{escaped}%')
-                    OR UPPER(tra2.Path) LIKE UPPER('%{escaped}%')
+                    UPPER(tra.Artist) LIKE UPPER('%{escaped}%')
+                    OR UPPER(tra.Title) LIKE UPPER('%{escaped}%')
+                    OR UPPER(tra.Path) LIKE UPPER('%{escaped}%')
                 )";
             }
 

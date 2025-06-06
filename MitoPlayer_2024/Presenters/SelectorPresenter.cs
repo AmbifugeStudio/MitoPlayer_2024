@@ -270,37 +270,17 @@ namespace MitoPlayer_2024.Presenters
             this.currentPlaylistId = this.settingDao.GetIntegerSetting(Settings.CurrentPlaylistIdInSelector.ToString()).Value;
             this.currentSelectorPlaylistId = this.settingDao.GetIntegerSetting(Settings.CurrentSelectorPlaylistId.ToString()).Value;
 
+            Playlist trackList = this.trackDao.GetPlaylist(this.currentPlaylistId).Value;
+            Playlist selector = this.trackDao.GetPlaylist(this.currentSelectorPlaylistId).Value;
+
             DataTableModel model = new DataTableModel()
             {
                 BindingSource = this.playlistListBindingSource,
                 ColumnVisibilityArray = this.playlistListColumnVisibilityArray,
-                CurrentObjectId = this.isTrackListActive ? this.currentPlaylistId : this.currentSelectorPlaylistId
+                CurrentObjectId = this.isTrackListActive ? this.currentPlaylistId : this.currentSelectorPlaylistId,
+                CurrentTracklistName = trackList?.Name,
+                CurrentSelectorName = selector?.Name
             };
-
-            if (this.isTrackListActive)
-            {
-                if (this.currentPlaylistId > -1)
-                {
-                    Playlist currentPlayist = this.trackDao.GetPlaylist(this.currentPlaylistId).Value;
-                    if (currentPlayist != null)
-                    {
-                        model.CurrentPlaylistName = currentPlayist.Name;
-                    }
-                }
-            }
-            else
-            {
-                if (this.currentSelectorPlaylistId > -1)
-                {
-                    Playlist currentPlayist = this.trackDao.GetPlaylist(this.currentSelectorPlaylistId).Value;
-                    if(currentPlayist != null)
-                    {
-                        model.CurrentPlaylistName = currentPlayist.Name;
-                    }
-                    
-                }
-            }
-            
 
             this.selectorView.InitializePlaylistList(model);
         }
@@ -3054,16 +3034,16 @@ namespace MitoPlayer_2024.Presenters
         private String textFilter = String.Empty;
         private void ChangeFilterParameters(object sender, Messenger e)
         {
+            String filterText = e.StringField1;
+            textFilter = filterText;
+
             if (isPlaylistDisplayed)
             {
                 DataView dv = this.selectorTrackListTable.DefaultView;
-                String filterText = e.StringField1;
-                textFilter = filterText;
+                
                 String filterQuery = String.Empty;
                 String filterQuery2 = String.Empty;
                 List<String> filteringColumnNames = new List<String>();
-
-                
 
                 if (!String.IsNullOrEmpty(filterText))
                 {

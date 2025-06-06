@@ -15,6 +15,8 @@ namespace MitoPlayer_2024.Helpers
         public int CurrentObjectId {  get; set; }
         public int CurrentTrackIdInPlaylist {  get; set; }
         public String CurrentPlaylistName {  get; set; }
+        public String CurrentTracklistName {  get; set; }
+        public String CurrentSelectorName {  get; set; }
 
         public DataTableModel()
         {

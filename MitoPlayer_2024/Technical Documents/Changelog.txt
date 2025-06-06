@@ -2,8 +2,16 @@
 CHANGELOG
 ======================
 
+display actual playlist names before end of seletor view development
 
 
+
+======================
+v0.16.1.37
+======================
+OK - BUG: selector view text filter fix
+OK - BUG: selector view tracklist loading fix
+OK - FEATURE: seletor - display selected tracklist
 ======================
 v0.16.1.34
 ======================
