@@ -57,7 +57,9 @@ namespace MitoPlayer_2024.Views
         public event EventHandler<Messenger> SetQuickListEvent;
         public event EventHandler<Messenger> ExportToM3UEvent;
         public event EventHandler<Messenger> ExportToTXTEvent;
+        public event EventHandler<Messenger> ExportToTXTPlainEvent;
         public event EventHandler<Messenger> ExportToDirectoryEvent;
+        public event EventHandler<Messenger> ExportToDirectoryAsDummyEvent;
         public event EventHandler<Messenger> MovePlaylistRowEvent;
         public event EventHandler DisplayPlaylistListEvent;
 
@@ -2785,6 +2787,30 @@ namespace MitoPlayer_2024.Views
         private void dgvPlaylistList_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
 
+        }
+
+        private void exportToDirAsDummyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CallExportToDirectoryAsDummyEvent();
+        }
+        public void CallExportToDirectoryAsDummyEvent()
+        {
+            if (this.dgvPlaylistList.SelectedRows.Count > 0)
+            {
+                this.ExportToDirectoryAsDummyEvent?.Invoke(this, new Messenger() { IntegerField1 = this.dgvPlaylistList.SelectedRows[0].Index });
+            }
+        }
+
+        private void exportToTxtPlainToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CallExportTxtPlainEvent();
+        }
+        public void CallExportTxtPlainEvent()
+        {
+            if (this.dgvPlaylistList.SelectedRows.Count > 0)
+            {
+                this.ExportToTXTPlainEvent?.Invoke(this, new Messenger() { IntegerField1 = this.dgvPlaylistList.SelectedRows[0].Index });
+            }
         }
     }
 }

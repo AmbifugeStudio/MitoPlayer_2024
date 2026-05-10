@@ -5,6 +5,7 @@ using MitoPlayer_2024.Views;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlTypes;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -31,8 +32,10 @@ namespace MitoPlayer_2024.Presenters
         private List<Model.Track> trackList { get; set; }
         private DataTable trackTable { get; set; }
         private BindingSource trackListBindingSource { get; set; }
+        private bool asDummy { get; set; }
 
-        public ExportToDirectoryPresenter(IExportToDirectoryView exportToDirectoryView,List<Model.Track> trackList, ITagDao tagDao, ISettingDao settingDao)
+
+        public ExportToDirectoryPresenter(IExportToDirectoryView exportToDirectoryView,List<Model.Track> trackList, ITagDao tagDao, ISettingDao settingDao, bool asDummy = false)
         {
             this.view = exportToDirectoryView;
             this.tagDao = tagDao;
@@ -50,6 +53,7 @@ namespace MitoPlayer_2024.Presenters
             this.view.SetTrunkedTitleEvent += SetTrunkedTitleEvent;
             this.view.SetArtistMinimumCharacterEvent += SetArtistMinimumCharacterEvent;
             this.view.SetTitleMinimumCharacterEvent += SetTitleMinimumCharacterEvent;
+            this.asDummy = asDummy;
         }
 
         public void Initialize()
@@ -84,6 +88,7 @@ namespace MitoPlayer_2024.Presenters
             String newFileName = String.Empty;
             String extension = String.Empty;
             String hasVocal = String.Empty;
+            String genre = String.Empty;
 
             if (this.trackList != null && this.trackList.Count > 0)
             {
@@ -95,193 +100,273 @@ namespace MitoPlayer_2024.Presenters
                     bpmNumber = String.Empty;
                     hasVocal = String.Empty;
 
-                    if (newFileName.Contains("_"))
-                    {
-                        String[] parts = newFileName.Split('_');
-
-                        //sorszam_key_bpm_title
-                        //key_bpm_title
-
-                        if (parts.Length == 4)
+                    if (!this.asDummy) {
+                        if (newFileName.Contains("_"))
                         {
-                            String removable = parts[0] + "_" + parts[1] + "_" + parts[2] + "_";
-                            newFileName = newFileName.Replace(removable, "");
-                        }
-                        else if (parts.Length == 3)
-                        {
-                            String removable = parts[0] + "_" + parts[1] + "_";
-                            newFileName = newFileName.Replace(removable, "");
-                        }
-                    }
+                            String[] parts = newFileName.Split('_');
 
-                    if(!String.IsNullOrEmpty(this.trackList[i].Artist) && !String.IsNullOrEmpty(this.trackList[i].Title))
-                    {
-                        String artist = String.Empty;
-                        String title = String.Empty;
-
-                        if (this.isTrunkedArtistChecked)
-                        {
-                            if(this.trackList[i].Artist.Length > this.artistMinimumCharacter)
+                            if (parts.Length == 4)
                             {
-                                artist = this.trackList[i].Artist.Substring(0, Convert.ToInt32(this.artistMinimumCharacter));
+                                String removable = parts[0] + "_" + parts[1] + "_" + parts[2] + "_";
+                                newFileName = newFileName.Replace(removable, "");
+                            }
+                            else if (parts.Length == 3)
+                            {
+                                String removable = parts[0] + "_" + parts[1] + "_";
+                                newFileName = newFileName.Replace(removable, "");
+                            }
+                        }
+
+                        if (!String.IsNullOrEmpty(this.trackList[i].Artist) && !String.IsNullOrEmpty(this.trackList[i].Title))
+                        {
+                            String artist = String.Empty;
+                            String title = String.Empty;
+
+                            if (this.isTrunkedArtistChecked)
+                            {
+                                if (this.trackList[i].Artist.Length > this.artistMinimumCharacter)
+                                {
+                                    artist = this.trackList[i].Artist.Substring(0, Convert.ToInt32(this.artistMinimumCharacter));
+                                }
+                                else
+                                {
+                                    artist = this.trackList[i].Artist;
+                                }
                             }
                             else
                             {
                                 artist = this.trackList[i].Artist;
                             }
-                        }
-                        else
-                        {
-                            artist = this.trackList[i].Artist;
-                        }
-                        if (this.isTrunkedTitleChecked)
-                        {
-                            if (this.trackList[i].Title.Length > this.titleMinimumCharacter)
+                            if (this.isTrunkedTitleChecked)
                             {
-                                title = this.trackList[i].Title.Substring(0, Convert.ToInt32(this.titleMinimumCharacter));
+                                if (this.trackList[i].Title.Length > this.titleMinimumCharacter)
+                                {
+                                    title = this.trackList[i].Title.Substring(0, Convert.ToInt32(this.titleMinimumCharacter));
+                                }
+                                else
+                                {
+                                    title = this.trackList[i].Title;
+                                }
                             }
                             else
                             {
                                 title = this.trackList[i].Title;
                             }
-                        }
-                        else
-                        {
-                            title = this.trackList[i].Title;
-                        }
-                        newFileName = artist + " - " + title;
-                    }
-
-                    if (this.isRowNumberChecked)
-                    {
-                        if(this.trackList.Count < 100)
-                        {
-                            if(i < 9)
-                            {
-                                rowNumber = "0" + (i + 1).ToString();
-                            }
-                            else
-                            {
-                                rowNumber = (i + 1).ToString();
-                            }
-                        }
-                        else if (this.trackList.Count >= 99 && this.trackList.Count < 999)
-                        {
-                            if (i < 9)
-                            {
-                                rowNumber = "00" + (i + 1).ToString();
-                            }
-                            else if(i >= 9 && i < 99)
-                            {
-                                rowNumber = "0" + (i + 1).ToString();
-                            }
-                            else
-                            {
-                                rowNumber = (i + 1).ToString();
-                            }
-                        }
-                        else if (this.trackList.Count >= 999 && this.trackList.Count < 9999)
-                        {
-                            if (i < 9)
-                            {
-                                rowNumber = "000" + (i + 1).ToString();
-                            }
-                            else if (i >= 9 && i < 99)
-                            {
-                                rowNumber = "00" + (i + 1).ToString();
-                            }
-                            else if (i >= 99 && i < 999)
-                            {
-                                rowNumber = "0" + (i + 1).ToString();
-                            }
-                            else
-                            {
-                                rowNumber = (i + 1).ToString();
-                            }
+                            newFileName = artist + " - " + title;
                         }
 
-
-                    }
-                    if (this.isKeyCodeChecked)
-                    {
-                        TrackTagValue ttv = this.trackList[i].TrackTagValues.Find(x => x.TagName == "Key");
-                        if(ttv != null && !String.IsNullOrEmpty(ttv.TagValueName))
+                        if (this.isRowNumberChecked)
                         {
-                            keyCode = ttv.TagValueName;
-                        }
-                    }
-                    if (this.isBpmNumberChecked)
-                    {
-                        TrackTagValue ttv = this.trackList[i].TrackTagValues.Find(x => x.TagName == "Bpm");
-                        if (ttv != null && !String.IsNullOrEmpty(ttv.Value))
-                        {
-                            bpmNumber = ttv.Value;
-                            if (bpmNumber.Contains(','))
+                            if (this.trackList.Count < 100)
                             {
-                                String[] parts = bpmNumber.Split(',');
-                                if(parts.Length > 1)
+                                if (i < 9)
                                 {
-                                    if (parts[1] == "0")
+                                    rowNumber = "0" + (i + 1).ToString();
+                                }
+                                else
+                                {
+                                    rowNumber = (i + 1).ToString();
+                                }
+                            }
+                            else if (this.trackList.Count >= 99 && this.trackList.Count < 999)
+                            {
+                                if (i < 9)
+                                {
+                                    rowNumber = "00" + (i + 1).ToString();
+                                }
+                                else if (i >= 9 && i < 99)
+                                {
+                                    rowNumber = "0" + (i + 1).ToString();
+                                }
+                                else
+                                {
+                                    rowNumber = (i + 1).ToString();
+                                }
+                            }
+                            else if (this.trackList.Count >= 999 && this.trackList.Count < 9999)
+                            {
+                                if (i < 9)
+                                {
+                                    rowNumber = "000" + (i + 1).ToString();
+                                }
+                                else if (i >= 9 && i < 99)
+                                {
+                                    rowNumber = "00" + (i + 1).ToString();
+                                }
+                                else if (i >= 99 && i < 999)
+                                {
+                                    rowNumber = "0" + (i + 1).ToString();
+                                }
+                                else
+                                {
+                                    rowNumber = (i + 1).ToString();
+                                }
+                            }
+
+
+                        }
+                        if (this.isKeyCodeChecked)
+                        {
+                            TrackTagValue ttv = this.trackList[i].TrackTagValues.Find(x => x.TagName == "Key");
+                            if (ttv != null && !String.IsNullOrEmpty(ttv.TagValueName))
+                            {
+                                keyCode = ttv.TagValueName;
+                            }
+                        }
+                        if (this.isBpmNumberChecked)
+                        {
+                            TrackTagValue ttv = this.trackList[i].TrackTagValues.Find(x => x.TagName == "Bpm");
+                            if (ttv != null && !String.IsNullOrEmpty(ttv.Value))
+                            {
+                                bpmNumber = ttv.Value;
+                                if (bpmNumber.Contains(','))
+                                {
+                                    String[] parts = bpmNumber.Split(',');
+                                    if (parts.Length > 1)
                                     {
-                                        bpmNumber = parts[0];
+                                        if (parts[1] == "0")
+                                        {
+                                            bpmNumber = parts[0];
+                                        }
+                                    }
+                                }
+
+                                if (this.isTrunkBpmChecked)
+                                {
+                                    decimal bpmNum = Convert.ToDecimal(ttv.Value);
+                                    if (bpmNum < 100)
+                                    {
+                                        bpmNumber = bpmNumber.Remove(0, 1);
                                     }
                                 }
                             }
-
-                            if (this.isTrunkBpmChecked)
+                        }
+                        if (true)
+                        {
+                            TrackTagValue ttv = this.trackList[i].TrackTagValues.Find(x => x.TagName.Contains("Style"));
+                            if (ttv != null)
                             {
-                                decimal bpmNum = Convert.ToDecimal(ttv.Value);
-                                if (bpmNum < 100)
-                                {
-                                    bpmNumber = bpmNumber.Remove(0, 1);
-                                }
+                                if(ttv.TagValueName.Contains("Liquid"))
+                                    genre = "L";
+                                else if(ttv.TagValueName.Contains("Deep"))
+                                    genre = "D";
+                                else if (ttv.TagValueName.Contains("Neuro"))
+                                    genre = "N";
+                                else if (ttv.TagValueName.Contains("Roller"))
+                                    genre = "R";
+                                else if (ttv.TagValueName.Contains("Party"))
+                                    genre = "P";
                             }
-                        }
-                    }
-                    if (true)
-                    {
-                        TrackTagValue ttv = this.trackList[i].TrackTagValues.Find(x => x.TagName == "HasVocal");
-                        if (ttv != null && !String.IsNullOrEmpty(ttv.TagValueName) && (ttv.TagValueName.Equals("3_FullVocal")))
-                        {
-                            hasVocal = "_V";
-                        }
-                        else if (ttv != null && !String.IsNullOrEmpty(ttv.TagValueName) && (ttv.TagValueName.Equals("2_HalfVocal")))
-                        {
-                            hasVocal = "_h";
-                        }
-                        else
-                        {
-                            hasVocal = "__";
-                        }
-                    }
 
-                    if (!String.IsNullOrEmpty(hasVocal))
-                    {
-                        newFileName = hasVocal + "_" + newFileName;
-                    }
-                    if (!String.IsNullOrEmpty(bpmNumber))
-                    {
-                        if (bpmNumber.Length == 2 || bpmNumber.Length == 1)
-                        {
-                            bpmNumber += "_";
+                          
+                            ttv = this.trackList[i].TrackTagValues.Find(x => x.TagName == "HasVocal");
+                            if (ttv != null && !String.IsNullOrEmpty(ttv.TagValueName) && (ttv.TagValueName.Equals("3_FullVocal")))
+                            {
+                                hasVocal = "V";
+                            }
+                            else if (ttv != null && !String.IsNullOrEmpty(ttv.TagValueName) && (ttv.TagValueName.Equals("2_HalfVocal")))
+                            {
+                                hasVocal = "h";
+                            }
+                            else
+                            {
+                                hasVocal = "";
+                            }
+
+                            
                         }
-                        if (!String.IsNullOrEmpty(hasVocal))
-                        {
-                            newFileName = bpmNumber + newFileName;
-                        }
-                        else
-                        {
-                            newFileName = bpmNumber + "_" + newFileName;
-                        }
-                           
+
+
+
+                        string originalName = newFileName;
+
+                        var partsx = new List<string>();
+
+                        if (!string.IsNullOrEmpty(rowNumber))
+                            partsx.Add(rowNumber);
+
+                        if (!string.IsNullOrEmpty(keyCode))
+                            partsx.Add(keyCode);
+
+                        string bpm = bpmNumber ?? "";
+                        string style = genre ?? "";
+                        bool hasV = !string.IsNullOrEmpty(hasVocal);
+                        bool hasDecimal = bpm.Contains(",");
+
+                        // style + vocal összevonva: D / DV / Dh
+                        string styleVocal = style + (hasV ? hasVocal : "");
+
+                        // elválasztás: ha NINCS vokál → "__", ha VAN → "_"
+                        string sep = hasV ? "_" : "__";
+
+                        // BPM utáni padding
+                        int tailUnderscores;
+                        if (!hasDecimal && !hasV) tailUnderscores = 3;      // D__7___
+                        else if (!hasDecimal && hasV) tailUnderscores = 3;  // DV_7___
+                        else if (hasDecimal && !hasV) tailUnderscores = 2;  // D__7,5__
+                        else tailUnderscores = 1;                            // DV_7,5_
+
+                        string block =
+                            styleVocal +
+                            sep +
+                            bpm +
+                            new string('_', tailUnderscores);
+
+                        partsx.Add(block);
+
+                        newFileName = string.Join("_", partsx) + originalName;
+
+
+
+                        /* if (!String.IsNullOrEmpty(hasVocal))
+                         {
+                             newFileName = hasVocal + "_" + newFileName;
+                         }
+
+
+                         if (!String.IsNullOrEmpty(genre))
+                         {
+                             newFileName = genre + "_" + newFileName;
+                         }
+
+
+
+                         if (!String.IsNullOrEmpty(bpmNumber))
+                         {
+                             if (bpmNumber.Length == 2 || bpmNumber.Length == 1)
+                             {
+                                 bpmNumber += "_";
+                             }
+                             if (!String.IsNullOrEmpty(hasVocal))
+                             {
+                                 newFileName = bpmNumber + newFileName;
+                             }
+                             else
+                             {
+                                 newFileName = bpmNumber + "_" + newFileName;
+                             }
+                         }
+
+                         if (!String.IsNullOrEmpty(keyCode))
+                         {
+                             newFileName = keyCode + "_" + newFileName;
+                         }
+
+                         if (!String.IsNullOrEmpty(rowNumber))
+                         {
+                             newFileName = rowNumber + "_" + newFileName;
+                         }*/
+
                     }
-                    if (!String.IsNullOrEmpty(keyCode))
+                    else
                     {
-                        newFileName = keyCode + "_" + newFileName;
-                    }
-                    if (!String.IsNullOrEmpty(rowNumber))
-                    {
-                        newFileName = rowNumber + "_" + newFileName;
+                        int index = i + 1;
+                        String indexString = String.Empty;
+                        if (i < 10)
+                        {
+                            indexString = "0";
+                        }
+                        newFileName = indexString + index.ToString() + "_Dummy";
                     }
 
                     if (this.trackList[i].Path.EndsWith(Extension.mp3.ToString()))
@@ -300,6 +385,7 @@ namespace MitoPlayer_2024.Presenters
                     {
                         newFileName = newFileName + "." + Extension.flac.ToString();
                     }
+
 
                     this.trackTable.Rows.Add(newFileName);
                 }

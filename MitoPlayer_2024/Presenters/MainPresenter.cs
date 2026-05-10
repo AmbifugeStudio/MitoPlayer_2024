@@ -1100,6 +1100,7 @@ namespace MitoPlayer_2024.Presenters
         }
 
 
+
         private void GetMediaPlayerProgressStatusEvent(object sender, EventArgs e)
         {
             if (this.mediaPlayerComponent.MediaPlayer.playState == WMPLib.WMPPlayState.wmppsPlaying)
@@ -1109,6 +1110,18 @@ namespace MitoPlayer_2024.Presenters
                     this.mediaPlayerComponent.GetDurationString(),
                     this.mediaPlayerComponent.GetCurrentPosition(),
                     this.mediaPlayerComponent.GetCurrentPositionString());
+
+                if (this.mediaPlayerComponent.IsPreviewEnabled)
+                {
+                    float duration = (float)this.mediaPlayerComponent.GetDuration();
+                    float currentPosition = (float)this.mediaPlayerComponent.GetCurrentPosition();
+
+                    if (duration / 100 * 40 < currentPosition)
+                    {
+                        if (this.actualView != null && this.actualView.GetType() == typeof(PlaylistView))
+                            ((PlaylistView)this.actualView).CallNextTrackEvent();
+                    }
+                }
             }
             else
             {

@@ -44,7 +44,9 @@ namespace MitoPlayer_2024.Views
         event EventHandler<Messenger> SetQuickListEvent;
         event EventHandler<Messenger> ExportToM3UEvent;
         event EventHandler<Messenger> ExportToTXTEvent;
+        event EventHandler<Messenger> ExportToTXTPlainEvent;
         event EventHandler<Messenger> ExportToDirectoryEvent;
+        event EventHandler<Messenger> ExportToDirectoryAsDummyEvent;
         event EventHandler<Messenger> MovePlaylistRowEvent;
         event EventHandler DisplayPlaylistListEvent;
 

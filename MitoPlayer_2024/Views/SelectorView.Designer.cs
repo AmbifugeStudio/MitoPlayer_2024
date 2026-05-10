@@ -61,10 +61,10 @@
             this.btnSubtract = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.dgvTrackList = new MitoPlayer_2024.Helpers.CustomDataGridView();
+            this.cbbSource = new System.Windows.Forms.ComboBox();
+            this.lblSelectorName = new System.Windows.Forms.Label();
             this.dgvSelectorTrackList = new MitoPlayer_2024.Helpers.CustomDataGridView();
             this.lblTracklistName = new System.Windows.Forms.Label();
-            this.lblSelectorName = new System.Windows.Forms.Label();
-            this.cbbSource = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPlaylistList)).BeginInit();
             this.pnlTagComponent.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
@@ -454,6 +454,27 @@
             this.dgvTrackList.MouseMove += new System.Windows.Forms.MouseEventHandler(this.dgvTrackList_MouseMove);
             this.dgvTrackList.MouseUp += new System.Windows.Forms.MouseEventHandler(this.dgvTrackList_MouseUp);
             // 
+            // cbbSource
+            // 
+            this.cbbSource.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbbSource.FormattingEnabled = true;
+            this.cbbSource.Items.AddRange(new object[] {
+            "Source: Playlist",
+            "Source: Database"});
+            this.cbbSource.Location = new System.Drawing.Point(222, 4);
+            this.cbbSource.Name = "cbbSource";
+            this.cbbSource.Size = new System.Drawing.Size(112, 21);
+            this.cbbSource.TabIndex = 86;
+            this.cbbSource.SelectedIndexChanged += new System.EventHandler(this.cbbSource_SelectedIndexChanged);
+            // 
+            // lblSelectorName
+            // 
+            this.lblSelectorName.Location = new System.Drawing.Point(86, 3);
+            this.lblSelectorName.Name = "lblSelectorName";
+            this.lblSelectorName.Size = new System.Drawing.Size(130, 23);
+            this.lblSelectorName.TabIndex = 85;
+            this.lblSelectorName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // dgvSelectorTrackList
             // 
             this.dgvSelectorTrackList.AllowDrop = true;
@@ -475,6 +496,7 @@
             this.dgvSelectorTrackList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvSelectorTrackList.Size = new System.Drawing.Size(765, 321);
             this.dgvSelectorTrackList.TabIndex = 60;
+            this.dgvSelectorTrackList.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvSelectorTrackList_CellMouseClick);
             this.dgvSelectorTrackList.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvSelectorTrackList_ColumnHeaderMouseClick);
             this.dgvSelectorTrackList.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this.dgvSelectorTrackList_DataBindingComplete);
             this.dgvSelectorTrackList.SelectionChanged += new System.EventHandler(this.dgvSelectorTrackList_SelectionChanged);
@@ -497,27 +519,6 @@
             this.lblTracklistName.Size = new System.Drawing.Size(135, 23);
             this.lblTracklistName.TabIndex = 84;
             this.lblTracklistName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // lblSelectorName
-            // 
-            this.lblSelectorName.Location = new System.Drawing.Point(86, 3);
-            this.lblSelectorName.Name = "lblSelectorName";
-            this.lblSelectorName.Size = new System.Drawing.Size(130, 23);
-            this.lblSelectorName.TabIndex = 85;
-            this.lblSelectorName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // cbbSource
-            // 
-            this.cbbSource.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbbSource.FormattingEnabled = true;
-            this.cbbSource.Items.AddRange(new object[] {
-            "Source: Playlist",
-            "Source: Database"});
-            this.cbbSource.Location = new System.Drawing.Point(222, 4);
-            this.cbbSource.Name = "cbbSource";
-            this.cbbSource.Size = new System.Drawing.Size(112, 21);
-            this.cbbSource.TabIndex = 86;
-            this.cbbSource.SelectedIndexChanged += new System.EventHandler(this.cbbSource_SelectedIndexChanged);
             // 
             // SelectorView
             // 

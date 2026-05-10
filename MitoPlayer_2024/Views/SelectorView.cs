@@ -3005,5 +3005,42 @@ namespace MitoPlayer_2024.Views
                 });
             }
         }
+
+
+        private void dgvSelectorTrackList_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                if(this.dgvSelectorTrackList.Rows != null && this.dgvSelectorTrackList.Rows.Count > 0)
+                {
+                    this.dgvSelectorTrackList.Rows[e.RowIndex].Selected = true;
+
+
+                    String path = this.dgvSelectorTrackList.Rows[e.RowIndex].Cells["Path"].Value.ToString();
+                    string[] pathList = new string[1];
+                    pathList[0] = path;
+
+                    int targetIndex = 0;
+
+                    if(this.dgvTrackList.Rows != null && this.dgvTrackList.Rows.Count > 0)
+                    {
+                        targetIndex = this.dgvTrackList.Rows.Count;
+                    }
+
+                    this.ExternalDragAndDropIntoTracklistEvent?.Invoke(this, new Messenger() { DragAndDropFilePathArray = pathList, IntegerField1 = targetIndex });
+
+                    dgvTrackList.ClearSelection();
+                    int addedRowIndex = FindRowIndexByFile(path);
+                    if (addedRowIndex >= 0)
+                    {
+                        dgvTrackList.Rows[addedRowIndex].Selected = true;
+                    }
+
+                    insertionLineIndex = -1;
+                    dgvTrackList.Invalidate(); 
+                    dgvSelectorTrackList.Invalidate();
+                }               
+            }
+        }
     }
 }

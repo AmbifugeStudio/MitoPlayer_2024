@@ -59,6 +59,7 @@ namespace MitoPlayer_2024.Presenters
             this.playlistView.ShowColumnVisibilityEditorEvent += ShowColumnVisibilityEditorEvent;
             this.playlistView.ScanKeyAndBpmEvent += ScanKeyAndBpmEvent;
             this.playlistView.ExportToDirectoryEvent += ExportToDirectoryEvent;
+            this.playlistView.ExportToDirectoryAsDummyEvent += ExportToDirectoryAsDummyEvent;
 
             this.playlistView.SaveTrackListEvent += SaveTrackListEvent;
 
@@ -70,6 +71,7 @@ namespace MitoPlayer_2024.Presenters
             this.playlistView.DeletePlaylistEvent += DeletePlaylistEvent;
             this.playlistView.ExportToM3UEvent += ExportToM3UEvent;
             this.playlistView.ExportToTXTEvent += ExportToTXTEvent;
+            this.playlistView.ExportToTXTPlainEvent += ExportToTXTPlainEvent;
             this.playlistView.DisplayPlaylistListEvent += DisplayPlaylistListEvent;
             this.playlistView.MovePlaylistRowEvent += MovePlaylistRowEvent;
 
@@ -2432,6 +2434,47 @@ namespace MitoPlayer_2024.Presenters
                 }
             }
         }
+        private void ExportToTXTPlainEvent(object sender, Messenger e)
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "Text files (*.txt)|*.txt";
+            sfd.RestoreDirectory = true;
+
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                String row = String.Empty;
+                int index = 1;
+
+                using (StreamWriter myStream = new StreamWriter(sfd.FileName))
+                {
+                    int playlistId = Convert.ToInt32(this.playlistListTable.Rows[e.IntegerField1]["Id"]);
+                    List<Model.Track> trackList = this.trackDao.GetTracklistWithTagsByPlaylistId(playlistId, this.tagList).Value;
+                    if (trackList != null && trackList.Count > 0)
+                    {
+                        foreach (Model.Track track in trackList)
+                        {
+                            row = " ";
+
+                            if (!string.IsNullOrEmpty(track.Title))
+                            {
+                                row += track.Artist + " - " + track.Title;
+                            }
+                            else
+                            {
+                                row += track.Artist;
+                            }
+
+                            row = row.Replace("(Original Mix)", "");
+
+                            myStream.WriteLine(row);
+
+                            index++;
+                        }
+                        myStream.Close();
+                    }
+                }
+            }
+        }
         private void ExportToDirectoryEvent(object sender, Messenger e)
         {
             ExportToDirectoryView exportToDirectoryView = new ExportToDirectoryView();
@@ -2441,6 +2484,24 @@ namespace MitoPlayer_2024.Presenters
             if (trackList != null && trackList.Count > 0)
             {
                 ExportToDirectoryPresenter presenter = new ExportToDirectoryPresenter(exportToDirectoryView, trackList, this.tagDao, this.settingDao);
+                presenter.Initialize();
+
+                if (exportToDirectoryView.ShowDialog((PlaylistView)this.playlistView) == DialogResult.OK)
+                {
+
+                }
+            }   
+        }        
+        
+        private void ExportToDirectoryAsDummyEvent(object sender, Messenger e)
+        {
+            ExportToDirectoryView exportToDirectoryView = new ExportToDirectoryView();
+
+            int playlistId = Convert.ToInt32(this.playlistListTable.Rows[e.IntegerField1]["Id"]);
+            List<Model.Track> trackList = this.trackDao.GetTracklistWithTagsByPlaylistId(playlistId, this.tagList).Value;
+            if (trackList != null && trackList.Count > 0)
+            {
+                ExportToDirectoryPresenter presenter = new ExportToDirectoryPresenter(exportToDirectoryView, trackList, this.tagDao, this.settingDao,true);
                 presenter.Initialize();
 
                 if (exportToDirectoryView.ShowDialog((PlaylistView)this.playlistView) == DialogResult.OK)
